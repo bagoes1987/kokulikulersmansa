@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Login Fasilitator - SMA Negeri 1 Belitang</title>
+    <link rel="icon" href="./logo-sekolah.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#059669",
+                        "terracotta": "#E2725B",
+                        "background-light": "#FDFCFB",
+                        "surface": "#FFFFFF",
+                        "sman-blue": "#00AEEF",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        :root {
+            --primary: #059669;
+            --terracotta: #E2725B;
+        }
+        body {
+            min-height: 100dvh;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-blur {
+            @apply backdrop-blur-xl bg-white/80;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 via-background-light to-emerald-50 font-display text-slate-800">
+    <main class="max-w-md mx-auto min-h-screen flex flex-col p-5 justify-center relative">
+
+        <!-- Back Button -->
+        <a href="login.html"
+            class="absolute top-8 left-5 flex items-center gap-2 text-slate-500 hover:text-sman-blue transition-colors">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="text-xs font-bold uppercase tracking-wider">Kembali</span>
+        </a>
+
+        <!-- Login Card -->
+        <div class="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 p-8 mt-10">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div
+                    class="size-16 rounded-2xl bg-blue-100 text-sman-blue flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-3xl">supervisor_account</span>
+                </div>
+                <h1 class="text-2xl font-black text-slate-900 mb-1">Login Fasilitator</h1>
+                <p class="text-xs text-slate-500 font-medium">Masuk sebagai guru pembimbing</p>
+            </div>
+
+            <!-- Form -->
+            <form id="loginForm" class="space-y-5">
+                <!-- Username Field -->
+                <div>
+                    <label for="username" class="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider">
+                        Username
+                    </label>
+                    <div class="relative">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
+                            person
+                        </span>
+                        <input type="text" id="username" name="username" required
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sman-blue focus:border-transparent transition-all"
+                            placeholder="Masukkan username Anda" />
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <label for="password" class="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <span
+                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">
+                            lock
+                        </span>
+                        <input type="password" id="password" name="password" required
+                            class="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sman-blue focus:border-transparent transition-all"
+                            placeholder="Masukkan password Anda" />
+                        <button type="button" onclick="togglePassword()"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                            <span id="toggleIcon" class="material-symbols-outlined text-xl">visibility_off</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-sman-blue to-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-sman-blue/30 hover:shadow-xl hover:shadow-sman-blue/40 active:scale-[0.98] transition-all text-sm uppercase tracking-wider">
+                    Masuk
+                </button>
+            </form>
+
+            <!-- Footer Info -->
+            <div class="mt-6 text-center">
+                <p class="text-[10px] text-slate-400 font-medium">
+                    Hubungi admin jika mengalami kesulitan login
+                </p>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="mt-8 text-center text-[10px] text-slate-400 font-medium">
+            &copy; 2026 - Tim Kurikulum SMA Negeri 1 Belitang
+        </div>
+    </main>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = 'visibility';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = 'visibility_off';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            console.log('Login attempt:', { username, password });
+            alert('Login berhasil!\\nUsername: ' + username + '\\n(Fitur autentikasi akan segera aktif)');
+        });
+    </script>
+</body>
+
+</html>

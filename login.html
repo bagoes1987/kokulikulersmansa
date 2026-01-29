@@ -135,12 +135,15 @@
 
     <script>
         function handleLogin(role) {
-            // Untuk saat ini, kita hanya log role yang dipilih
-            console.log("Selected role:", role);
+            // Redirect ke halaman login sesuai role
+            const loginPages = {
+                'siswa': 'login-siswa.html',
+                'koordinator': 'login-koordinator.html',
+                'fasilitator': 'login-fasilitator.html',
+                'admin': 'login-admin.html'
+            };
 
-            // Nantinya di sini kita akan mengarahkan ke halaman login spesifik atau memicu Supabase login
-            // Karena belum ada halaman spesifik per role, kita bisa tampilkan alert dulu atau redirect placeholder
-            alert("Akan masuk sebagai: " + role.toUpperCase() + "\n(Fitur authetikasi akan segera aktif)");
+            window.location.href = loginPages[role];
         }
     </script>
 </body>
