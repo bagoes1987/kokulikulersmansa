@@ -678,12 +678,21 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         // Initialize Supabase Client
-        // PENTING: Ganti 'YOUR_SUPABASE_ANON_KEY' dengan Anon Key asli dari dashboard Supabase Anda.
         const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
-        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         console.log("Supabase Client Initialized:", supabase);
+
+        // Simple Auth State Listener
+        supabase.auth.onAuthStateChange((event, session) => {
+            console.log("Auth Event:", event, session);
+            if (session) {
+                console.log("User Logged In:", session.user);
+            } else {
+                console.log("User Logged Out");
+            }
+        });
     </script>
 </body>
 
