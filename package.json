@@ -9,6 +9,7 @@
   "author": "Tim Kurikulum SMAN 1 Belitang",
   "license": "ISC",
   "dependencies": {
-    "serve": "^14.2.0"
+    "serve": "^14.2.0",
+    "xlsx": "^0.18.5"
   }
 }

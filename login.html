@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Login - SMA Negeri 1 Belitang</title>
+    <link rel="icon" href="./logo-sekolah.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#059669",
+                        "terracotta": "#E2725B",
+                        "background-light": "#FDFCFB",
+                        "surface": "#FFFFFF",
+                        "sman-blue": "#00AEEF",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        :root {
+            --primary: #059669;
+            --terracotta: #E2725B;
+        }
+        body {
+            min-height: 100dvh;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-blur {
+            @apply backdrop-blur-xl bg-white/80;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light font-display text-slate-800">
+    <main class="max-w-md mx-auto min-h-screen flex flex-col p-5 justify-center relative">
+
+        <!-- Back Button -->
+        <a href="index.html"
+            class="absolute top-8 left-5 flex items-center gap-2 text-slate-500 hover:text-primary transition-colors">
+            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="text-xs font-bold uppercase tracking-wider">Kembali</span>
+        </a>
+
+        <div class="text-center mb-8 mt-10">
+            <img alt="Logo SMAN 1 Belitang" class="h-16 w-auto mx-auto mb-4 object-contain" src="./logo-sekolah.png" />
+            <h1 class="text-2xl font-black text-slate-900 mb-1">Pilih Peran</h1>
+            <p class="text-xs text-slate-500 font-medium">Silakan masuk sesuai dengan peran Anda</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4">
+            <!-- Siswa -->
+            <button onclick="handleLogin('siswa')"
+                class="group relative bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all active:scale-[0.98] text-left flex items-center gap-4 overflow-hidden">
+                <div class="absolute inset-0 bg-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div
+                    class="size-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 relative z-10 transition-colors group-hover:bg-white group-hover:text-emerald-500">
+                    <span class="material-symbols-outlined text-2xl">school</span>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="font-bold text-slate-900 text-lg">Siswa</h3>
+                    <p class="text-[11px] text-slate-500 leading-tight">Masuk sebagai peserta didik</p>
+                </div>
+                <span
+                    class="material-symbols-outlined ml-auto text-slate-300 group-hover:text-emerald-500 transition-colors relative z-10">chevron_right</span>
+            </button>
+
+            <!-- Koordinator -->
+            <button onclick="handleLogin('koordinator')"
+                class="group relative bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all active:scale-[0.98] text-left flex items-center gap-4 overflow-hidden">
+                <div class="absolute inset-0 bg-orange-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div
+                    class="size-12 rounded-2xl bg-orange-100 text-terracotta flex items-center justify-center shrink-0 relative z-10 transition-colors group-hover:bg-white group-hover:text-terracotta">
+                    <span class="material-symbols-outlined text-2xl">diversity_3</span>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="font-bold text-slate-900 text-lg">Koordinator</h3>
+                    <p class="text-[11px] text-slate-500 leading-tight">Masuk sebagai koordinator P5</p>
+                </div>
+                <span
+                    class="material-symbols-outlined ml-auto text-slate-300 group-hover:text-terracotta transition-colors relative z-10">chevron_right</span>
+            </button>
+
+            <!-- Fasilitator -->
+            <button onclick="handleLogin('fasilitator')"
+                class="group relative bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all active:scale-[0.98] text-left flex items-center gap-4 overflow-hidden">
+                <div class="absolute inset-0 bg-blue-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div
+                    class="size-12 rounded-2xl bg-blue-100 text-sman-blue flex items-center justify-center shrink-0 relative z-10 transition-colors group-hover:bg-white group-hover:text-sman-blue">
+                    <span class="material-symbols-outlined text-2xl">supervisor_account</span>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="font-bold text-slate-900 text-lg">Fasilitator</h3>
+                    <p class="text-[11px] text-slate-500 leading-tight">Masuk sebagai guru pembimbing</p>
+                </div>
+                <span
+                    class="material-symbols-outlined ml-auto text-slate-300 group-hover:text-sman-blue transition-colors relative z-10">chevron_right</span>
+            </button>
+
+            <!-- Admin -->
+            <button onclick="handleLogin('admin')"
+                class="group relative bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all active:scale-[0.98] text-left flex items-center gap-4 overflow-hidden">
+                <div class="absolute inset-0 bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div
+                    class="size-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 relative z-10 transition-colors group-hover:bg-white group-hover:text-slate-800">
+                    <span class="material-symbols-outlined text-2xl">admin_panel_settings</span>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="font-bold text-slate-900 text-lg">Admin</h3>
+                    <p class="text-[11px] text-slate-500 leading-tight">Akses halaman administrator</p>
+                </div>
+                <span
+                    class="material-symbols-outlined ml-auto text-slate-300 group-hover:text-slate-800 transition-colors relative z-10">chevron_right</span>
+            </button>
+        </div>
+
+        <div class="mt-8 text-center text-[10px] text-slate-400 font-medium">
+            &copy; 2026 - Tim Kurikulum SMA Negeri 1 Belitang
+        </div>
+    </main>
+
+    <script>
+        function handleLogin(role) {
+            // Untuk saat ini, kita hanya log role yang dipilih
+            console.log("Selected role:", role);
+
+            // Nantinya di sini kita akan mengarahkan ke halaman login spesifik atau memicu Supabase login
+            // Karena belum ada halaman spesifik per role, kita bisa tampilkan alert dulu atau redirect placeholder
+            alert("Akan masuk sebagai: " + role.toUpperCase() + "\n(Fitur authetikasi akan segera aktif)");
+        }
+    </script>
+</body>
+
+</html>
