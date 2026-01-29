@@ -1,0 +1,14 @@
+{
+  "name": "kokulikuler-sman1-belitang",
+  "version": "1.0.0",
+  "description": "Landing Page Kokulikuler SMA Negeri 1 Belitang",
+  "scripts": {
+    "start": "serve ."
+  },
+  "keywords": [],
+  "author": "Tim Kurikulum SMAN 1 Belitang",
+  "license": "ISC",
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
