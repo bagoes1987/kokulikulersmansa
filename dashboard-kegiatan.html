@@ -44,7 +44,8 @@
         }
 
         .circular-progress {
-            background: conic-gradient(#10B981 72deg, #E2E8F0 0deg);
+            background: conic-gradient(#10B981 0deg, #E2E8F0 0deg);
+            transition: background 0.5s ease-out;
         }
     </style>
     <style>
@@ -70,12 +71,15 @@
                 </div>
             </div>
             <div class="relative flex items-center justify-center">
-                <div class="circular-progress h-12 w-12 rounded-full flex items-center justify-center">
+                <div class="circular-progress h-12 w-12 rounded-full flex items-center justify-center"
+                    id="progressCircle">
                     <div class="h-9 w-9 bg-white rounded-full flex items-center justify-center">
                         <span class="text-[10px] font-bold text-emerald-custom" id="progressPercent">0%</span>
                     </div>
                 </div>
-                <div class="absolute -bottom-2 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+                <!-- Checkmark muncul jika 100% -->
+                <div class="absolute -bottom-2 -right-1 bg-white rounded-full p-0.5 shadow-sm hidden"
+                    id="progressCheck">
                     <span class="material-symbols-outlined !text-xs text-emerald-custom">check_circle</span>
                 </div>
             </div>
@@ -105,7 +109,7 @@
         <!-- Module Grid -->
         <div class="grid grid-cols-2 gap-4 px-6">
             <!-- Pertanyaan Pemantik -->
-            <div
+            <div onclick="toggleModule('pemantik')"
                 class="bg-amber-50/50 p-4 rounded-[24px] ios-shadow border border-amber-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                 <div
                     class="h-12 w-12 rounded-2xl bg-amber-400 flex items-center justify-center text-white shadow-lg shadow-amber-200">
@@ -123,7 +127,7 @@
             </div>
 
             <!-- Materi Belajar -->
-            <div
+            <div onclick="toggleModule('materi')"
                 class="bg-blue-50/50 p-4 rounded-[24px] ios-shadow border border-blue-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                 <div
                     class="h-12 w-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-200">
@@ -131,12 +135,17 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-slate-800">Materi Belajar</h3>
-                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">8 Halaman PDF</p>
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined !text-[14px] text-slate-400"
+                            id="status-materi">radio_button_unchecked</span>
+                        <span class="text-[11px] font-semibold text-slate-400" id="label-materi">Belum
+                            Selesai</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Video Belajar -->
-            <div
+            <div onclick="toggleModule('video')"
                 class="bg-red-50/50 p-4 rounded-[24px] ios-shadow border border-red-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                 <div
                     class="h-12 w-12 rounded-2xl bg-red-500 flex items-center justify-center text-white shadow-lg shadow-red-200">
@@ -144,12 +153,17 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-slate-800">Video Belajar</h3>
-                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">12:45 Menit</p>
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined !text-[14px] text-slate-400"
+                            id="status-video">radio_button_unchecked</span>
+                        <span class="text-[11px] font-semibold text-slate-400" id="label-video">Belum
+                            Selesai</span>
+                    </div>
                 </div>
             </div>
 
             <!-- LKPD Digital -->
-            <div
+            <div onclick="toggleModule('lkpd')"
                 class="bg-orange-50/50 p-4 rounded-[24px] ios-shadow border border-orange-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                 <div
                     class="h-12 w-12 rounded-2xl bg-terracotta flex items-center justify-center text-white shadow-lg shadow-terracotta/30">
@@ -157,12 +171,17 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-slate-800">LKPD Digital</h3>
-                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Tugas Mandiri</p>
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined !text-[14px] text-slate-400"
+                            id="status-lkpd">radio_button_unchecked</span>
+                        <span class="text-[11px] font-semibold text-slate-400" id="label-lkpd">Belum
+                            Selesai</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Asesmen -->
-            <div
+            <div onclick="toggleModule('asesmen')"
                 class="bg-purple-50/50 p-4 rounded-[24px] ios-shadow border border-purple-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                 <div
                     class="h-12 w-12 rounded-2xl bg-purple-500 flex items-center justify-center text-white shadow-lg shadow-purple-200">
@@ -170,12 +189,17 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-slate-800">Asesmen</h3>
-                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Kuis Pilihan</p>
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined !text-[14px] text-slate-400"
+                            id="status-asesmen">radio_button_unchecked</span>
+                        <span class="text-[11px] font-semibold text-slate-400" id="label-asesmen">Belum
+                            Selesai</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Rangkuman -->
-            <div
+            <div onclick="toggleModule('rangkuman')"
                 class="bg-indigo-50/50 p-4 rounded-[24px] ios-shadow border border-indigo-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                 <div
                     class="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
@@ -183,12 +207,17 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-slate-800">Rangkuman</h3>
-                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Intisari Materi</p>
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined !text-[14px] text-slate-400"
+                            id="status-rangkuman">radio_button_unchecked</span>
+                        <span class="text-[11px] font-semibold text-slate-400" id="label-rangkuman">Belum
+                            Selesai</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Glosarium -->
-            <div
+            <div onclick="toggleModule('glosarium')"
                 class="bg-cyan-50/50 p-4 rounded-[24px] ios-shadow border border-cyan-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                 <div
                     class="h-12 w-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-white shadow-lg shadow-cyan-200">
@@ -196,12 +225,17 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-slate-800">Glosarium</h3>
-                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Kamus Istilah</p>
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined !text-[14px] text-slate-400"
+                            id="status-glosarium">radio_button_unchecked</span>
+                        <span class="text-[11px] font-semibold text-slate-400" id="label-glosarium">Belum
+                            Selesai</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Refleksi -->
-            <div
+            <div onclick="toggleModule('refleksi')"
                 class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                 <div
                     class="h-12 w-12 rounded-2xl bg-emerald-custom flex items-center justify-center text-white shadow-lg shadow-emerald-200">
@@ -209,7 +243,12 @@
                 </div>
                 <div>
                     <h3 class="text-sm font-bold text-slate-800">Refleksi</h3>
-                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Jurnal Harian</p>
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined !text-[14px] text-slate-400"
+                            id="status-refleksi">radio_button_unchecked</span>
+                        <span class="text-[11px] font-semibold text-slate-400" id="label-refleksi">Belum
+                            Selesai</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -249,6 +288,15 @@
 
         let currentDay = 1;
 
+        // Struktur data progress default (3 hari x 8 modul)
+        const defaultProgress = {
+            day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, rangkuman: false, glosarium: false, refleksi: false },
+            day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, rangkuman: false, glosarium: false, refleksi: false },
+            day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, rangkuman: false, glosarium: false, refleksi: false }
+        };
+
+        let studentProgress = JSON.parse(JSON.stringify(defaultProgress));
+
         // Load student data
         async function loadStudentData() {
             try {
@@ -273,8 +321,9 @@
                     }
                 }
 
-                // Load progress
+                // Load progress dari localStorage
                 loadProgress();
+                updateDashboardUI();
 
             } catch (error) {
                 console.error('Error loading student data:', error);
@@ -282,11 +331,97 @@
             }
         }
 
-        // Load progress
+        // Load progress logic
         function loadProgress() {
-            // TODO: Load from database
-            // For now, show demo progress
-            document.getElementById('progressPercent').textContent = '20%';
+            const savedProgress = localStorage.getItem('student_progress');
+            if (savedProgress) {
+                studentProgress = JSON.parse(savedProgress);
+            } else {
+                studentProgress = JSON.parse(JSON.stringify(defaultProgress));
+            }
+            calculateGlobalProgress();
+        }
+
+        function saveProgress() {
+            localStorage.setItem('student_progress', JSON.stringify(studentProgress));
+            calculateGlobalProgress();
+        }
+
+        // Toggle module completion
+        function toggleModule(moduleId) {
+            const dayKey = `day${currentDay}`;
+
+            // Toggle status
+            studentProgress[dayKey][moduleId] = !studentProgress[dayKey][moduleId];
+
+            // Save & Update UI
+            saveProgress();
+            updateModuleUI(moduleId, studentProgress[dayKey][moduleId]);
+        }
+
+        // Update UI for a single module
+        function updateModuleUI(moduleId, isComplete) {
+            const statusIcon = document.getElementById(`status-${moduleId}`);
+            const statusLabel = document.getElementById(`label-${moduleId}`);
+
+            if (isComplete) {
+                statusIcon.textContent = 'check_circle';
+                statusIcon.classList.remove('text-slate-400');
+                statusIcon.classList.add('text-emerald-custom');
+
+                statusLabel.textContent = 'Selesai';
+                statusLabel.classList.remove('text-slate-400');
+                statusLabel.classList.add('text-emerald-custom');
+            } else {
+                statusIcon.textContent = 'radio_button_unchecked';
+                statusIcon.classList.remove('text-emerald-custom');
+                statusIcon.classList.add('text-slate-400');
+
+                statusLabel.textContent = 'Belum Selesai';
+                statusLabel.classList.remove('text-emerald-custom');
+                statusLabel.classList.add('text-slate-400');
+            }
+        }
+
+        // Update all modules UI based on current day
+        function updateDashboardUI() {
+            const dayKey = `day${currentDay}`;
+            const currentDayProgress = studentProgress[dayKey];
+
+            Object.keys(currentDayProgress).forEach(moduleId => {
+                updateModuleUI(moduleId, currentDayProgress[moduleId]);
+            });
+        }
+
+        // Calculate and update global progress circle
+        function calculateGlobalProgress() {
+            let totalItems = 0;
+            let completedItems = 0;
+
+            // Hitung semua item dari 3 hari
+            Object.values(studentProgress).forEach(day => {
+                Object.values(day).forEach(status => {
+                    totalItems++;
+                    if (status) completedItems++;
+                });
+            });
+
+            const percent = Math.round((completedItems / totalItems) * 100);
+
+            // Update Text
+            document.getElementById('progressPercent').textContent = `${percent}%`;
+
+            // Update Circle Gradient
+            const degree = Math.round((percent / 100) * 360);
+            document.getElementById('progressCircle').style.background = `conic-gradient(#10B981 ${degree}deg, #E2E8F0 0deg)`;
+
+            // Show checkmark if 100%
+            const checkmark = document.getElementById('progressCheck');
+            if (percent === 100) {
+                checkmark.classList.remove('hidden');
+            } else {
+                checkmark.classList.add('hidden');
+            }
         }
 
         // Switch day tabs
@@ -303,8 +438,8 @@
                 }
             }
 
-            // TODO: Load modules for selected day
-            console.log(`Switched to day ${day}`);
+            // Update modules display based on new day
+            updateDashboardUI();
         }
 
         // Load data on page load
