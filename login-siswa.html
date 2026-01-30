@@ -197,8 +197,8 @@
                 // Tampilkan pesan sukses
                 alert(`✅ Login berhasil!\n\nSelamat datang, ${studentData.nama}\nKelas: ${studentData.kelas}`);
 
-                // Redirect ke dashboard siswa
-                window.location.href = 'dashboard-siswa.html';
+                // Redirect ke dashboard kegiatan
+                window.location.href = 'dashboard-kegiatan.html';
 
             } catch (error) {
                 console.error('Login error:', error);
@@ -225,8 +225,8 @@
         window.addEventListener('load', async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
-                // Sudah login, redirect ke dashboard
-                window.location.href = 'dashboard-siswa.html';
+                // Sudah login, redirect ke dashboard kegiatan
+                window.location.href = 'dashboard-kegiatan.html';
             }
         });
     </script>
