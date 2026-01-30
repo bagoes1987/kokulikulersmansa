@@ -271,6 +271,11 @@
                 <span class="material-symbols-outlined !text-2xl">person</span>
                 <span class="text-[10px] font-medium">Profil</span>
             </button>
+            <button onclick="logout()"
+                class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90 hover:text-red-500">
+                <span class="material-symbols-outlined !text-2xl">logout</span>
+                <span class="text-[10px] font-medium">Keluar</span>
+            </button>
         </nav>
     </div>
 
@@ -437,6 +442,19 @@
 
             // Update modules display based on new day
             updateDashboardUI();
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+                if (error) throw error;
+                // Redirect to index.html (Beranda)
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error logging out:', error.message);
+                alert('Gagal keluar. Silakan coba lagi.');
+            }
         }
 
         // Load data on page load
