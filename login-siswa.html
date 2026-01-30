@@ -63,7 +63,7 @@
                     <span class="material-symbols-outlined text-3xl">school</span>
                 </div>
                 <h1 class="text-2xl font-black text-slate-900 mb-1">Login Siswa</h1>
-                <p class="text-xs text-slate-500 font-medium">Masuk menggunakan NISN dan NIS Anda</p>
+                <p class="text-xs text-slate-500 font-medium">Gunakan NISN sebagai username dan NIS sebagai password</p>
             </div>
 
             <!-- Form -->
@@ -71,7 +71,7 @@
                 <!-- NISN Field -->
                 <div>
                     <label for="nisn" class="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wider">
-                        NISN
+                        NISN (Username)
                     </label>
                     <div class="relative">
                         <span
@@ -105,7 +105,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit"
+                <button type="submit" id="submitBtn"
                     class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 active:scale-[0.98] transition-all text-sm uppercase tracking-wider">
                     Masuk
                 </button>
@@ -125,7 +125,15 @@
         </div>
     </main>
 
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
+        // Inisialisasi Supabase
+        const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
         function togglePassword() {
             const nisInput = document.getElementById('nis');
             const toggleIcon = document.getElementById('toggleIcon');
@@ -139,14 +147,87 @@
             }
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const nisn = document.getElementById('nisn').value;
-            const nis = document.getElementById('nis').value;
 
-            // Placeholder untuk autentikasi
-            console.log('Login attempt:', { nisn, nis });
-            alert('Login berhasil!\\nNISN: ' + nisn + '\\n(Fitur autentikasi akan segera aktif)');
+            const nisn = document.getElementById('nisn').value.trim();
+            const nis = document.getElementById('nis').value.trim();
+            const submitButton = document.getElementById('submitBtn');
+
+            // Validasi input
+            if (!nisn || !nis) {
+                alert('❌ Mohon isi NISN dan NIS Anda!');
+                return;
+            }
+
+            // Disable button dan ubah text
+            submitButton.disabled = true;
+            submitButton.textContent = 'Memproses...';
+
+            try {
+                // Format email: nisn@smansa.sch.id
+                const email = `${nisn}@smansa.sch.id`;
+                const password = nis;
+
+                // Login dengan Supabase
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                // Ambil data siswa dari tabel students
+                const { data: studentData, error: studentError } = await supabaseClient
+                    .from('students')
+                    .select('*')
+                    .eq('id', data.user.id)
+                    .single();
+
+                if (studentError) {
+                    throw studentError;
+                }
+
+                // Simpan data siswa ke localStorage
+                localStorage.setItem('student_data', JSON.stringify(studentData));
+                localStorage.setItem('user_role', 'siswa');
+
+                // Tampilkan pesan sukses
+                alert(`✅ Login berhasil!\n\nSelamat datang, ${studentData.nama}\nKelas: ${studentData.kelas}`);
+
+                // Redirect ke dashboard siswa
+                window.location.href = 'dashboard-siswa.html';
+
+            } catch (error) {
+                console.error('Login error:', error);
+
+                let errorMessage = '❌ Login gagal!\n\n';
+
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMessage += 'NISN atau NIS yang Anda masukkan salah.\n\nPastikan:\n• NISN sudah benar\n• NIS sudah benar\n\nHubungi admin jika masih bermasalah.';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage += 'Akun Anda belum diaktifkan.\nHubungi admin untuk aktivasi.';
+                } else {
+                    errorMessage += error.message;
+                }
+
+                alert(errorMessage);
+
+                // Enable button kembali
+                submitButton.disabled = false;
+                submitButton.textContent = 'Masuk';
+            }
+        });
+
+        // Cek apakah sudah login
+        window.addEventListener('load', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                // Sudah login, redirect ke dashboard
+                window.location.href = 'dashboard-siswa.html';
+            }
         });
     </script>
 </body>

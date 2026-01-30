@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Profil Siswa - SMAN 1 Belitang</title>
+    <link rel="icon" href="./logo-sekolah.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "accent-terracotta": "#E2725B",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111814] dark:text-white min-h-screen">
+    <div
+        class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden max-w-[430px] mx-auto shadow-2xl bg-white dark:bg-background-dark">
+        <!-- TopAppBar -->
+        <div
+            class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-gray-100 dark:border-gray-800">
+            <div class="text-primary flex size-12 shrink-0 items-center justify-start">
+                <span class="material-symbols-outlined text-3xl">school</span>
+            </div>
+            <h2
+                class="text-[#111814] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
+                Profil Siswa</h2>
+            <div class="flex w-12 items-center justify-end">
+                <button
+                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-transparent text-[#111814] dark:text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ProfileHeader -->
+        <div class="flex p-6 @container">
+            <div class="flex w-full flex-col gap-6 items-center">
+                <div class="flex gap-4 flex-col items-center relative">
+                    <div class="relative">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-primary/20 shadow-lg"
+                            id="profilePhoto"
+                            style='background-image: url("https://ui-avatars.com/api/?name=Siswa&background=13ec6d&color=fff&size=256");'>
+                        </div>
+                        <button
+                            class="absolute bottom-0 right-0 bg-primary text-background-dark p-2 rounded-full shadow-md border-2 border-white dark:border-background-dark flex items-center justify-center">
+                            <span class="material-symbols-outlined text-sm">edit</span>
+                        </button>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        <p class="text-[#111814] dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em] text-center"
+                            id="studentName">Loading...</p>
+                        <p class="text-[#618972] dark:text-primary/70 text-base font-medium leading-normal text-center">
+                            SMAN 1 Belitang</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-4 py-2">
+            <!-- SectionHeader -->
+            <h3 class="text-[#111814] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-4">Data
+                Akademik</h3>
+
+            <!-- ListItems -->
+            <div class="flex flex-col gap-3">
+                <!-- Kelas Item -->
+                <div
+                    class="flex items-center gap-4 bg-background-light dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm">
+                    <div class="flex items-center gap-4 flex-1">
+                        <div
+                            class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+                            <span class="material-symbols-outlined">meeting_room</span>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p
+                                class="text-[#618972] dark:text-gray-400 text-xs font-normal leading-normal uppercase tracking-wider">
+                                Kelas</p>
+                            <p class="text-[#111814] dark:text-white text-base font-semibold leading-normal"
+                                id="studentClass">-</p>
+                        </div>
+                    </div>
+                    <div class="shrink-0">
+                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
+                    </div>
+                </div>
+
+                <!-- NISN Item -->
+                <div
+                    class="flex items-center gap-4 bg-background-light dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm">
+                    <div class="flex items-center gap-4 flex-1">
+                        <div
+                            class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+                            <span class="material-symbols-outlined">badge</span>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p
+                                class="text-[#618972] dark:text-gray-400 text-xs font-normal leading-normal uppercase tracking-wider">
+                                NISN</p>
+                            <p class="text-[#111814] dark:text-white text-base font-semibold leading-normal"
+                                id="studentNISN">-</p>
+                        </div>
+                    </div>
+                    <button onclick="copyToClipboard('nisn')" class="shrink-0">
+                        <span
+                            class="material-symbols-outlined text-gray-400 hover:text-primary transition-colors">content_copy</span>
+                    </button>
+                </div>
+
+                <!-- NIS Item -->
+                <div
+                    class="flex items-center gap-4 bg-background-light dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/10 shadow-sm">
+                    <div class="flex items-center gap-4 flex-1">
+                        <div
+                            class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+                            <span class="material-symbols-outlined">tag</span>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p
+                                class="text-[#618972] dark:text-gray-400 text-xs font-normal leading-normal uppercase tracking-wider">
+                                NIS</p>
+                            <p class="text-[#111814] dark:text-white text-base font-semibold leading-normal"
+                                id="studentNIS">-</p>
+                        </div>
+                    </div>
+                    <button onclick="copyToClipboard('nis')" class="shrink-0">
+                        <span
+                            class="material-symbols-outlined text-gray-400 hover:text-primary transition-colors">content_copy</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="mt-auto p-4 flex flex-col gap-4 pb-10">
+            <button
+                class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] shadow-lg active:scale-95 transition-transform">
+                <span class="material-symbols-outlined mr-2">settings</span>
+                <span class="truncate">Pengaturan Akun</span>
+            </button>
+            <button onclick="logout()"
+                class="flex w-full cursor-pointer items-center justify-center h-12 bg-transparent text-accent-terracotta text-base font-bold leading-normal hover:bg-accent-terracotta/5 rounded-xl transition-colors">
+                <span class="material-symbols-outlined mr-2">logout</span>
+                <span>Keluar</span>
+            </button>
+            <p class="text-center text-[#618972] text-xs font-normal mt-4">
+                Kokulikuler SMAN 1 Belitang v1.0.0
+            </p>
+        </div>
+
+        <!-- iOS Bottom Indicator Mockup -->
+        <div class="flex justify-center pb-2">
+            <div class="w-32 h-1 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Inisialisasi Supabase
+        const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Load student data
+        async function loadStudentData() {
+            try {
+                // Cek apakah sudah login
+                const { data: { session } } = await supabaseClient.auth.getSession();
+
+                if (!session) {
+                    // Belum login, redirect ke halaman login
+                    window.location.href = 'login-siswa.html';
+                    return;
+                }
+
+                // Ambil data siswa dari localStorage (sudah disimpan saat login)
+                const studentDataStr = localStorage.getItem('student_data');
+
+                if (studentDataStr) {
+                    const studentData = JSON.parse(studentDataStr);
+
+                    // Update UI dengan data siswa
+                    document.getElementById('studentName').textContent = studentData.nama;
+                    document.getElementById('studentClass').textContent = studentData.kelas;
+                    document.getElementById('studentNISN').textContent = studentData.nisn;
+                    document.getElementById('studentNIS').textContent = studentData.nis;
+
+                    // Update foto profil dengan initial nama
+                    const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentData.nama)}&background=13ec6d&color=fff&size=256`;
+                    document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+                } else {
+                    // Jika tidak ada data di localStorage, ambil dari database
+                    const { data: studentData, error } = await supabaseClient
+                        .from('students')
+                        .select('*')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    // Simpan ke localStorage
+                    localStorage.setItem('student_data', JSON.stringify(studentData));
+
+                    // Update UI
+                    document.getElementById('studentName').textContent = studentData.nama;
+                    document.getElementById('studentClass').textContent = studentData.kelas;
+                    document.getElementById('studentNISN').textContent = studentData.nisn;
+                    document.getElementById('studentNIS').textContent = studentData.nis;
+
+                    const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentData.nama)}&background=13ec6d&color=fff&size=256`;
+                    document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+                }
+
+            } catch (error) {
+                console.error('Error loading student data:', error);
+                alert('Gagal memuat data siswa. Silakan login kembali.');
+                window.location.href = 'login-siswa.html';
+            }
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(type) {
+            let text = '';
+            if (type === 'nisn') {
+                text = document.getElementById('studentNISN').textContent;
+            } else if (type === 'nis') {
+                text = document.getElementById('studentNIS').textContent;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`✅ ${type.toUpperCase()} berhasil disalin: ${text}`);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Logout function
+        async function logout() {
+            const confirm = window.confirm('Apakah Anda yakin ingin keluar?');
+            if (!confirm) return;
+
+            try {
+                // Logout dari Supabase
+                const { error } = await supabaseClient.auth.signOut();
+
+                if (error) {
+                    throw error;
+                }
+
+                // Hapus data dari localStorage
+                localStorage.removeItem('student_data');
+                localStorage.removeItem('user_role');
+
+                // Redirect ke halaman login
+                window.location.href = 'login.html';
+
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Gagal logout. Silakan coba lagi.');
+            }
+        }
+
+        // Load data saat halaman dimuat
+        window.addEventListener('load', loadStudentData);
+    </script>
+</body>
+
+</html>
