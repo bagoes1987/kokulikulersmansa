@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Dashboard Kegiatan - SMAN 1 Belitang</title>
+    <link rel="icon" href="./logo-sekolah.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "emerald-custom": "#10B981",
+                        "terracotta": "#E2725B",
+                        "bg-main": "#F8FAFB",
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-sans bg-bg-main text-slate-800;
+            }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+
+        .ios-shadow {
+            box-shadow: 0 4px 20px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .circular-progress {
+            background: conic-gradient(#10B981 72deg, #E2E8F0 0deg);
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-bg-main overflow-x-hidden pb-24">
+        <!-- Header -->
+        <header
+            class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-full bg-cover bg-center border border-slate-100" id="studentPhoto"
+                    style='background-image: url("https://ui-avatars.com/api/?name=Siswa&background=13ec6d&color=fff&size=256");'>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-slate-900 leading-none">SMAN 1 Belitang</h1>
+                    <p class="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-1" id="programName">
+                        Jajanan Nusantara</p>
+                </div>
+            </div>
+            <div class="relative flex items-center justify-center">
+                <div class="circular-progress h-12 w-12 rounded-full flex items-center justify-center">
+                    <div class="h-9 w-9 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-[10px] font-bold text-emerald-custom" id="progressPercent">0%</span>
+                    </div>
+                </div>
+                <div class="absolute -bottom-2 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+                    <span class="material-symbols-outlined !text-xs text-emerald-custom">check_circle</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Day Tabs -->
+        <div class="px-6 py-6">
+            <div class="bg-slate-200/50 p-1 rounded-2xl flex items-center">
+                <button onclick="switchDay(1)"
+                    class="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-white text-emerald-custom shadow-sm transition-all"
+                    id="tab-day1">Hari 1</button>
+                <button onclick="switchDay(2)"
+                    class="flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all"
+                    id="tab-day2">Hari 2</button>
+                <button onclick="switchDay(3)"
+                    class="flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all"
+                    id="tab-day3">Hari 3</button>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <div class="px-6 mb-4">
+            <h2 class="text-xl font-bold text-slate-900">Dasbor Kegiatan</h2>
+            <p class="text-sm text-slate-500">Selesaikan modul hari ini</p>
+        </div>
+
+        <!-- Module Grid -->
+        <div class="grid grid-cols-2 gap-4 px-6">
+            <!-- Pertanyaan Pemantik -->
+            <div
+                class="bg-amber-50/50 p-4 rounded-[24px] ios-shadow border border-amber-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-amber-400 flex items-center justify-center text-white shadow-lg shadow-amber-200">
+                    <span class="material-symbols-outlined !text-2xl">lightbulb</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">Pertanyaan Pemantik</h3>
+                    <div class="flex items-center gap-1 mt-1">
+                        <span class="material-symbols-outlined !text-[14px] text-slate-400"
+                            id="status-pemantik">radio_button_unchecked</span>
+                        <span class="text-[11px] font-semibold text-slate-400" id="label-pemantik">Belum
+                            Selesai</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Materi Belajar -->
+            <div
+                class="bg-blue-50/50 p-4 rounded-[24px] ios-shadow border border-blue-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                    <span class="material-symbols-outlined !text-2xl">description</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">Materi Belajar</h3>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">8 Halaman PDF</p>
+                </div>
+            </div>
+
+            <!-- Video Belajar -->
+            <div
+                class="bg-red-50/50 p-4 rounded-[24px] ios-shadow border border-red-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-red-500 flex items-center justify-center text-white shadow-lg shadow-red-200">
+                    <span class="material-symbols-outlined !text-2xl">play_circle</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">Video Belajar</h3>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">12:45 Menit</p>
+                </div>
+            </div>
+
+            <!-- LKPD Digital -->
+            <div
+                class="bg-orange-50/50 p-4 rounded-[24px] ios-shadow border border-orange-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-terracotta flex items-center justify-center text-white shadow-lg shadow-terracotta/30">
+                    <span class="material-symbols-outlined !text-2xl">edit_note</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">LKPD Digital</h3>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Tugas Mandiri</p>
+                </div>
+            </div>
+
+            <!-- Asesmen -->
+            <div
+                class="bg-purple-50/50 p-4 rounded-[24px] ios-shadow border border-purple-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-purple-500 flex items-center justify-center text-white shadow-lg shadow-purple-200">
+                    <span class="material-symbols-outlined !text-2xl">task_alt</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">Asesmen</h3>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Kuis Pilihan</p>
+                </div>
+            </div>
+
+            <!-- Rangkuman -->
+            <div
+                class="bg-indigo-50/50 p-4 rounded-[24px] ios-shadow border border-indigo-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                    <span class="material-symbols-outlined !text-2xl">auto_stories</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">Rangkuman</h3>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Intisari Materi</p>
+                </div>
+            </div>
+
+            <!-- Glosarium -->
+            <div
+                class="bg-cyan-50/50 p-4 rounded-[24px] ios-shadow border border-cyan-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-white shadow-lg shadow-cyan-200">
+                    <span class="material-symbols-outlined !text-2xl">dictionary</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">Glosarium</h3>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Kamus Istilah</p>
+                </div>
+            </div>
+
+            <!-- Refleksi -->
+            <div
+                class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <div
+                    class="h-12 w-12 rounded-2xl bg-emerald-custom flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                    <span class="material-symbols-outlined !text-2xl">psychology_alt</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800">Refleksi</h3>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1 uppercase">Jurnal Harian</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav
+            class="fixed bottom-0 w-full max-w-md bg-white/90 backdrop-blur-xl border-t border-slate-100 px-8 py-3 pb-8 flex justify-between items-center z-[100]">
+            <button onclick="window.location.href='dashboard-kegiatan.html'"
+                class="flex flex-col items-center gap-1 text-emerald-custom transition-transform active:scale-90">
+                <span class="material-symbols-outlined !text-2xl">grid_view</span>
+                <span class="text-[10px] font-bold">Dasbor</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
+                <span class="material-symbols-outlined !text-2xl">calendar_month</span>
+                <span class="text-[10px] font-medium">Jadwal</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
+                <span class="material-symbols-outlined !text-2xl">notifications</span>
+                <span class="text-[10px] font-medium">Pesan</span>
+            </button>
+            <button onclick="window.location.href='dashboard-siswa.html'"
+                class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
+                <span class="material-symbols-outlined !text-2xl">person</span>
+                <span class="text-[10px] font-medium">Profil</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Inisialisasi Supabase
+        const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentDay = 1;
+
+        // Load student data
+        async function loadStudentData() {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+
+                if (!session) {
+                    window.location.href = 'login-siswa.html';
+                    return;
+                }
+
+                const studentDataStr = localStorage.getItem('student_data');
+
+                if (studentDataStr) {
+                    const studentData = JSON.parse(studentDataStr);
+
+                    // Update header photo
+                    if (studentData.photo_url) {
+                        document.getElementById('studentPhoto').style.backgroundImage = `url("${studentData.photo_url}")`;
+                    } else {
+                        const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentData.nama)}&background=13ec6d&color=fff&size=256`;
+                        document.getElementById('studentPhoto').style.backgroundImage = `url("${photoUrl}")`;
+                    }
+                }
+
+                // Load progress
+                loadProgress();
+
+            } catch (error) {
+                console.error('Error loading student data:', error);
+                window.location.href = 'login-siswa.html';
+            }
+        }
+
+        // Load progress
+        function loadProgress() {
+            // TODO: Load from database
+            // For now, show demo progress
+            document.getElementById('progressPercent').textContent = '20%';
+        }
+
+        // Switch day tabs
+        function switchDay(day) {
+            currentDay = day;
+
+            // Update tab styles
+            for (let i = 1; i <= 3; i++) {
+                const tab = document.getElementById(`tab-day${i}`);
+                if (i === day) {
+                    tab.className = 'flex-1 py-2.5 rounded-xl text-sm font-semibold bg-white text-emerald-custom shadow-sm transition-all';
+                } else {
+                    tab.className = 'flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all';
+                }
+            }
+
+            // TODO: Load modules for selected day
+            console.log(`Switched to day ${day}`);
+        }
+
+        // Load data on page load
+        window.addEventListener('load', loadStudentData);
+    </script>
+</body>
+
+</html>
