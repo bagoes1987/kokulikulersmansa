@@ -658,17 +658,17 @@
     </main>
     <nav class="fixed bottom-0 left-0 right-0 ios-blur border-t border-slate-200 z-50 max-w-md mx-auto">
         <div class="flex justify-around items-center h-20 pb-4">
-            <button class="flex flex-col items-center gap-1.5 text-primary">
+            <button onclick="window.location.reload()" class="flex flex-col items-center gap-1.5 text-primary">
                 <div class="p-1 rounded-lg">
                     <span class="material-symbols-outlined text-[26px]">home_app_logo</span>
                 </div>
                 <span class="text-[9px] font-black uppercase tracking-wider">Beranda</span>
             </button>
-            <a href="login.html" class="flex flex-col items-center gap-1.5 text-slate-400">
+            <a href="login.html" id="authButton" class="flex flex-col items-center gap-1.5 text-slate-400">
                 <div class="p-1">
-                    <span class="material-symbols-outlined text-[26px]">login</span>
+                    <span class="material-symbols-outlined text-[26px]" id="authIcon">login</span>
                 </div>
-                <span class="text-[9px] font-black uppercase tracking-wider">Login</span>
+                <span class="text-[9px] font-black uppercase tracking-wider" id="authText">Login</span>
             </a>
         </div>
     </nav>
@@ -681,17 +681,37 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
         const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        console.log("Supabase Client Initialized:", supabase);
+        const authButton = document.getElementById('authButton');
+        const authIcon = document.getElementById('authIcon');
+        const authText = document.getElementById('authText');
 
-        // Simple Auth State Listener
-        supabase.auth.onAuthStateChange((event, session) => {
-            console.log("Auth Event:", event, session);
-            if (session) {
-                console.log("User Logged In:", session.user);
-            } else {
-                console.log("User Logged Out");
-            }
+        // Check initial session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            updateAuthUI(session);
         });
+
+        // Listen for auth changes
+        supabase.auth.onAuthStateChange((event, session) => {
+            updateAuthUI(session);
+        });
+
+        function updateAuthUI(session) {
+            if (session) {
+                // User is logged in
+                authButton.href = 'dashboard-kegiatan.html';
+                authIcon.textContent = 'grid_view';
+                authText.textContent = 'Dasbor';
+                authButton.classList.remove('text-slate-400');
+                authButton.classList.add('text-primary'); // Highlight dashboard button
+            } else {
+                // User is logged out
+                authButton.href = 'login.html';
+                authIcon.textContent = 'login';
+                authText.textContent = 'Login';
+                authButton.classList.add('text-slate-400');
+                authButton.classList.remove('text-primary');
+            }
+        }
     </script>
 </body>
 
