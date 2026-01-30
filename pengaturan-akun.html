@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pengaturan Akun - SMAN 1 Belitang</title>
+    <link rel="icon" href="./logo-sekolah.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "accent-terracotta": "#E2725B",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+
+        #photoPreview {
+            transition: all 0.3s ease;
+        }
+
+        .upload-overlay {
+            transition: opacity 0.2s ease;
+        }
+
+        .upload-overlay:hover {
+            opacity: 1 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111814] dark:text-white min-h-screen">
+    <div
+        class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden max-w-[430px] mx-auto shadow-2xl bg-white dark:bg-background-dark">
+        <!-- TopAppBar -->
+        <div
+            class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-gray-100 dark:border-gray-800">
+            <button onclick="goBack()"
+                class="text-[#111814] dark:text-white flex size-12 shrink-0 items-center justify-center">
+                <span class="material-symbols-outlined text-3xl">arrow_back</span>
+            </button>
+            <h2
+                class="text-[#111814] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
+                Pengaturan Akun</h2>
+            <div class="flex w-12 items-center justify-end">
+                <!-- Spacer -->
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 overflow-auto pb-20">
+            <!-- Profile Photo Section -->
+            <div class="flex p-6 @container">
+                <div class="flex w-full flex-col gap-6 items-center">
+                    <div class="flex gap-4 flex-col items-center relative">
+                        <div class="relative group">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-primary/20 shadow-lg"
+                                id="photoPreview"
+                                style='background-image: url("https://ui-avatars.com/api/?name=Siswa&background=13ec6d&color=fff&size=256");'>
+                            </div>
+                            <!-- Upload Overlay -->
+                            <div
+                                class="upload-overlay absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer">
+                                <label for="photoInput" class="cursor-pointer flex flex-col items-center gap-1">
+                                    <span class="material-symbols-outlined text-white text-3xl">photo_camera</span>
+                                    <span class="text-white text-xs font-medium">Ubah Foto</span>
+                                </label>
+                            </div>
+                            <input type="file" id="photoInput" accept="image/jpeg,image/png,image/jpg" class="hidden">
+                        </div>
+                        <div class="flex flex-col items-center justify-center">
+                            <p class="text-[#111814] dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em] text-center"
+                                id="studentName">Loading...</p>
+                            <p
+                                class="text-[#618972] dark:text-primary/70 text-base font-medium leading-normal text-center">
+                                SMAN 1 Belitang</p>
+                        </div>
+                        <p class="text-[#618972] dark:text-gray-400 text-sm text-center max-w-xs">
+                            Klik pada foto untuk mengubah. Maksimal 2MB (JPEG/PNG)
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Information -->
+            <div class="px-4 py-2">
+                <h3 class="text-[#111814] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-4">
+                    Informasi Akun</h3>
+
+                <div class="flex flex-col gap-3">
+                    <!-- Kelas -->
+                    <div
+                        class="flex items-center gap-4 bg-background-light dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/10">
+                        <div
+                            class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+                            <span class="material-symbols-outlined">meeting_room</span>
+                        </div>
+                        <div class="flex flex-col justify-center flex-1">
+                            <p
+                                class="text-[#618972] dark:text-gray-400 text-xs font-normal leading-normal uppercase tracking-wider">
+                                Kelas</p>
+                            <p class="text-[#111814] dark:text-white text-base font-semibold leading-normal"
+                                id="studentClass">-</p>
+                        </div>
+                    </div>
+
+                    <!-- NISN -->
+                    <div
+                        class="flex items-center gap-4 bg-background-light dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/10">
+                        <div
+                            class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+                            <span class="material-symbols-outlined">badge</span>
+                        </div>
+                        <div class="flex flex-col justify-center flex-1">
+                            <p
+                                class="text-[#618972] dark:text-gray-400 text-xs font-normal leading-normal uppercase tracking-wider">
+                                NISN</p>
+                            <p class="text-[#111814] dark:text-white text-base font-semibold leading-normal"
+                                id="studentNISN">-</p>
+                        </div>
+                    </div>
+
+                    <!-- NIS -->
+                    <div
+                        class="flex items-center gap-4 bg-background-light dark:bg-white/5 p-4 rounded-xl border border-gray-100 dark:border-white/10">
+                        <div
+                            class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+                            <span class="material-symbols-outlined">tag</span>
+                        </div>
+                        <div class="flex flex-col justify-center flex-1">
+                            <p
+                                class="text-[#618972] dark:text-gray-400 text-xs font-normal leading-normal uppercase tracking-wider">
+                                NIS</p>
+                            <p class="text-[#111814] dark:text-white text-base font-semibold leading-normal"
+                                id="studentNIS">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Bottom Actions -->
+        <div
+            class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800 p-4 pb-6">
+            <div class="flex gap-3">
+                <button onclick="goBack()"
+                    class="flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-gray-100 dark:bg-white/10 text-[#111814] dark:text-white text-base font-bold leading-normal tracking-[0.015em] active:scale-95 transition-transform flex">
+                    <span class="truncate">Batal</span>
+                </button>
+                <button onclick="saveChanges()" id="saveButton"
+                    class="flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] shadow-lg active:scale-95 transition-transform flex">
+                    <span class="material-symbols-outlined mr-2" id="saveIcon">save</span>
+                    <span class="truncate" id="saveText">Simpan Perubahan</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- iOS Bottom Indicator -->
+        <div class="flex justify-center pb-2 pt-2">
+            <div class="w-32 h-1 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Inisialisasi Supabase
+        const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentStudent = null;
+        let selectedFile = null;
+
+        // Load student data
+        async function loadStudentData() {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+
+                if (!session) {
+                    window.location.href = 'login-siswa.html';
+                    return;
+                }
+
+                const studentDataStr = localStorage.getItem('student_data');
+
+                if (studentDataStr) {
+                    currentStudent = JSON.parse(studentDataStr);
+                    updateUI();
+                } else {
+                    const { data: studentData, error } = await supabaseClient
+                        .from('students')
+                        .select('*')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (error) throw error;
+
+                    currentStudent = studentData;
+                    localStorage.setItem('student_data', JSON.stringify(studentData));
+                    updateUI();
+                }
+            } catch (error) {
+                console.error('Error loading student data:', error);
+                alert('Gagal memuat data siswa. Silakan login kembali.');
+                window.location.href = 'login-siswa.html';
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('studentName').textContent = currentStudent.nama;
+            document.getElementById('studentClass').textContent = currentStudent.kelas;
+            document.getElementById('studentNISN').textContent = currentStudent.nisn;
+            document.getElementById('studentNIS').textContent = currentStudent.nis;
+
+            // Update photo preview
+            if (currentStudent.photo_url) {
+                document.getElementById('photoPreview').style.backgroundImage = `url("${currentStudent.photo_url}")`;
+            } else {
+                const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentStudent.nama)}&background=13ec6d&color=fff&size=256`;
+                document.getElementById('photoPreview').style.backgroundImage = `url("${photoUrl}")`;
+            }
+        }
+
+        // Handle photo selection
+        document.getElementById('photoInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.match('image/(jpeg|jpg|png)')) {
+                alert('❌ Format file tidak didukung. Gunakan JPEG atau PNG.');
+                return;
+            }
+
+            // Validate file size (2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('❌ Ukuran file terlalu besar. Maksimal 2MB.');
+                return;
+            }
+
+            selectedFile = file;
+
+            // Preview the image
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('photoPreview').style.backgroundImage = `url("${e.target.result}")`;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Save changes
+        async function saveChanges() {
+            if (!selectedFile) {
+                alert('ℹ️ Tidak ada perubahan untuk disimpan.');
+                return;
+            }
+
+            const saveButton = document.getElementById('saveButton');
+            const saveIcon = document.getElementById('saveIcon');
+            const saveText = document.getElementById('saveText');
+
+            try {
+                // Disable button and show loading
+                saveButton.disabled = true;
+                saveButton.classList.add('opacity-50', 'cursor-not-allowed');
+                saveIcon.textContent = 'sync';
+                saveIcon.classList.add('animate-spin');
+                saveText.textContent = 'Mengunggah...';
+
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session) throw new Error('Session expired');
+
+                // Create unique filename
+                const fileExt = selectedFile.name.split('.').pop();
+                const fileName = `${session.user.id}_${Date.now()}.${fileExt}`;
+                const filePath = `${fileName}`;
+
+                // Upload to Supabase Storage
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                    .from('profile-photos')
+                    .upload(filePath, selectedFile, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+
+                if (uploadError) throw uploadError;
+
+                // Get public URL
+                const { data: { publicUrl } } = supabaseClient.storage
+                    .from('profile-photos')
+                    .getPublicUrl(filePath);
+
+                // Update database
+                const { error: updateError } = await supabaseClient
+                    .from('students')
+                    .update({ photo_url: publicUrl })
+                    .eq('id', session.user.id);
+
+                if (updateError) throw updateError;
+
+                // Update local data
+                currentStudent.photo_url = publicUrl;
+                localStorage.setItem('student_data', JSON.stringify(currentStudent));
+
+                // Show success
+                saveIcon.textContent = 'check_circle';
+                saveIcon.classList.remove('animate-spin');
+                saveText.textContent = 'Berhasil!';
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard-siswa.html';
+                }, 1000);
+
+            } catch (error) {
+                console.error('Error saving photo:', error);
+
+                // Reset button
+                saveButton.disabled = false;
+                saveButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                saveIcon.textContent = 'save';
+                saveIcon.classList.remove('animate-spin');
+                saveText.textContent = 'Simpan Perubahan';
+
+                if (error.message.includes('Bucket not found')) {
+                    alert('❌ Storage belum dikonfigurasi. Hubungi administrator untuk membuat bucket "profile-photos".');
+                } else {
+                    alert('❌ Gagal menyimpan foto. Silakan coba lagi.\n\nError: ' + error.message);
+                }
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'dashboard-siswa.html';
+        }
+
+        // Load data on page load
+        window.addEventListener('load', loadStudentData);
+    </script>
+</body>
+
+</html>

@@ -71,8 +71,8 @@
                             id="profilePhoto"
                             style='background-image: url("https://ui-avatars.com/api/?name=Siswa&background=13ec6d&color=fff&size=256");'>
                         </div>
-                        <button
-                            class="absolute bottom-0 right-0 bg-primary text-background-dark p-2 rounded-full shadow-md border-2 border-white dark:border-background-dark flex items-center justify-center">
+                        <button onclick="window.location.href='pengaturan-akun.html'"
+                            class="absolute bottom-0 right-0 bg-primary text-background-dark p-2 rounded-full shadow-md border-2 border-white dark:border-background-dark flex items-center justify-center hover:scale-110 transition-transform cursor-pointer">
                             <span class="material-symbols-outlined text-sm">edit</span>
                         </button>
                     </div>
@@ -162,7 +162,7 @@
 
         <!-- Footer Actions -->
         <div class="mt-auto p-4 flex flex-col gap-4 pb-10">
-            <button
+            <button onclick="window.location.href='pengaturan-akun.html'"
                 class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] shadow-lg active:scale-95 transition-transform">
                 <span class="material-symbols-outlined mr-2">settings</span>
                 <span class="truncate">Pengaturan Akun</span>
@@ -216,9 +216,13 @@
                     document.getElementById('studentNISN').textContent = studentData.nisn;
                     document.getElementById('studentNIS').textContent = studentData.nis;
 
-                    // Update foto profil dengan initial nama
-                    const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentData.nama)}&background=13ec6d&color=fff&size=256`;
-                    document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+                    // Update foto profil - gunakan photo_url jika ada, atau fallback ke UI Avatars
+                    if (studentData.photo_url) {
+                        document.getElementById('profilePhoto').style.backgroundImage = `url("${studentData.photo_url}")`;
+                    } else {
+                        const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentData.nama)}&background=13ec6d&color=fff&size=256`;
+                        document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+                    }
                 } else {
                     // Jika tidak ada data di localStorage, ambil dari database
                     const { data: studentData, error } = await supabaseClient
@@ -240,8 +244,13 @@
                     document.getElementById('studentNISN').textContent = studentData.nisn;
                     document.getElementById('studentNIS').textContent = studentData.nis;
 
-                    const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentData.nama)}&background=13ec6d&color=fff&size=256`;
-                    document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+                    // Update foto profil - gunakan photo_url jika ada, atau fallback ke UI Avatars
+                    if (studentData.photo_url) {
+                        document.getElementById('profilePhoto').style.backgroundImage = `url("${studentData.photo_url}")`;
+                    } else {
+                        const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentData.nama)}&background=13ec6d&color=fff&size=256`;
+                        document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+                    }
                 }
 
             } catch (error) {

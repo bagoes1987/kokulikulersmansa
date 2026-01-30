@@ -9,6 +9,7 @@
   "author": "Tim Kurikulum SMAN 1 Belitang",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.93.3",
     "serve": "^14.2.0",
     "xlsx": "^0.18.5"
   }
