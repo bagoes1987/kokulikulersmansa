@@ -47,6 +47,17 @@
             background: conic-gradient(#10B981 0deg, #E2E8F0 0deg);
             transition: background 0.5s ease-out;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        .animate-slide-up { animation: slideUp 0.4s ease-out; }
     </style>
     <style>
         body {
@@ -351,14 +362,31 @@
 
         // Toggle module completion
         function toggleModule(moduleId) {
-            const dayKey = `day${currentDay}`;
+            // Override untuk Hari 1
+            if (currentDay === 1) {
+                if (moduleId === 'mantik' || moduleId === 'pemantik') {
+                    openPemantikModal();
+                    return;
+                }
+                if (moduleId === 'materi') {
+                    openMateriModal();
+                    return;
+                }
+            }
 
+            const dayKey = `day${currentDay}`;
             // Toggle status
             studentProgress[dayKey][moduleId] = !studentProgress[dayKey][moduleId];
-
-            // Save & Update UI
             saveProgress();
             updateModuleUI(moduleId, studentProgress[dayKey][moduleId]);
+        }
+
+        // Helper untuk memanggil toggle original dari dalam modal
+        function forceCompleteModule(moduleId) {
+            const dayKey = `day${currentDay}`;
+            studentProgress[dayKey][moduleId] = true;
+            saveProgress();
+            updateModuleUI(moduleId, true);
         }
 
         // Update UI for a single module
@@ -481,27 +509,6 @@
             modal.classList.remove('flex');
         }
 
-        // Handle Override Toggle Module
-        // Simpan fungsi original
-        const originalToggleModule = toggleModule;
-
-        // Override fungsi toggleModule untuk handle kasus khusus
-        toggleModule = function (moduleId) {
-            // Jika modul 'pemantik' di Hari 1 - Buka Modal
-            if (moduleId === 'pemantik' && currentDay === 1) {
-                openPemantikModal();
-                return; // Jangan toggle checkbox otomatis
-            }
-
-            // Jika modul 'materi' di Hari 1 - Buka Modal Slide
-            if (moduleId === 'materi' && currentDay === 1) {
-                openMateriModal();
-                return;
-            }
-
-            // Untuk modul lain, jalan normal
-            originalToggleModule(moduleId);
-        }
 
         // ==========================================
         // FITUR MATERI BELAJAR (SLIDE)
@@ -576,8 +583,8 @@
         }
 
         function settleMateri() {
-            // Mark as complete in state
-            originalToggleModule('materi');
+            // Mark as complete
+            forceCompleteModule('materi');
             alert('Selamat! Kamu telah menyelesaikan materi hari ini.');
             closeMateriModal();
         }
@@ -803,5 +810,298 @@
             </div>
         </div>
     </div>
+    <!-- MODAL MATERI BELAJAR (SLIDE) -->
+    <div id="modalMateri"
+        class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/60 backdrop-blur-md p-0 md:p-4 animate-fade-in">
+        <div
+            class="bg-white w-full max-w-lg h-full md:h-auto md:max-h-[85vh] md:rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden relative">
+
+            <!-- Progress Top -->
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-slate-100">
+                <div id="materiProgressBar" class="h-full bg-emerald-500 transition-all duration-500"
+                    style="width: 12.5%"></div>
+            </div>
+
+            <!-- Header -->
+            <div class="px-6 pt-8 pb-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined font-icon">menu_book</span>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-black text-slate-800 leading-tight">Materi Hari 1</h3>
+                        <p id="materiStepText" class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                            Halaman 1 dari 8</p>
+                    </div>
+                </div>
+                <button onclick="closeMateriModal()"
+                    class="size-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-all">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
+
+            <!-- Content Area -->
+            <div id="materiContentArea" class="flex-1 overflow-y-auto px-6 py-4 no-scrollbar">
+
+                <!-- SLIDE 1: PENGERTIAN -->
+                <div id="slide-materi-0" class="animate-slide-up">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <span class="material-symbols-outlined text-5xl text-emerald-500 mb-2">info</span>
+                        <h4 class="text-lg font-black text-slate-800">Pengertian & Ruang Lingkup</h4>
+                    </div>
+                    <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium">
+                        <p>Jajanan Nusantara merupakan ragam penganan tradisional khas Indonesia yang dinikmati sebagai
+                            makanan selingan. Lahir dari kreativitas masyarakat memanfaatkan bahan lokal melimpah
+                            seperti beras, ketan, singkong, ubi, kelapa, hingga gula aren.</p>
+                        <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                            <p class="text-emerald-800 font-bold text-xs uppercase mb-3 tracking-wider">Karakteristik
+                                Jajanan Pasar:</p>
+                            <ul class="space-y-2 text-xs">
+                                <li class="flex gap-2"><span class="text-emerald-500 font-bold">1.</span> <b>Porsi
+                                        Praktis:</b> Ukuran kecil sekali makan (bite-sized).</li>
+                                <li class="flex gap-2"><span class="text-emerald-500 font-bold">2.</span>
+                                    <b>Ekonomis:</b> Harga terjangkau seluruh lapisan.
+                                </li>
+                                <li class="flex gap-2"><span class="text-emerald-500 font-bold">3.</span> <b>Alami:</b>
+                                    Tanpa pengawet kimia sintetis.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 2: SEJARAH -->
+                <div id="slide-materi-1" class="hidden animate-slide-up">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <span class="material-symbols-outlined text-5xl text-amber-500 mb-2">history</span>
+                        <h4 class="text-lg font-black text-slate-800">Sejarah & Perkembangan</h4>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="relative pl-6 border-l-2 border-slate-100 space-y-4">
+                            <div class="relative">
+                                <div
+                                    class="absolute -left-[31px] top-0 size-4 rounded-full bg-emerald-500 border-4 border-white">
+                                </div>
+                                <p class="text-[11px] font-bold text-emerald-600 uppercase">Era Kerajaan</p>
+                                <p class="text-xs text-slate-600">Akar budaya lokal dengan teknik rebus dan kukus asli
+                                    Nusantara.</p>
+                            </div>
+                            <div class="relative">
+                                <div
+                                    class="absolute -left-[31px] top-0 size-4 rounded-full bg-blue-500 border-4 border-white">
+                                </div>
+                                <p class="text-[11px] font-bold text-blue-600 uppercase">Abad ke-7 (Tionghoa)</p>
+                                <p class="text-xs text-slate-600">Mengenal istilah "Kue", berbagai tepung, dan teknik
+                                    menggoreng.</p>
+                            </div>
+                            <div class="relative">
+                                <div
+                                    class="absolute -left-[31px] top-0 size-4 rounded-full bg-rose-500 border-4 border-white">
+                                </div>
+                                <p class="text-[11px] font-bold text-rose-600 uppercase">Era Kolonial (Eropa)</p>
+                                <p class="text-xs text-slate-600">Pengenalan mentega, susu, telur, dan teknik memanggang
+                                    oven.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 3: TEKNIK -->
+                <div id="slide-materi-2" class="hidden animate-slide-up">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <span class="material-symbols-outlined text-5xl text-orange-500 mb-2">cooking</span>
+                        <h4 class="text-lg font-black text-slate-800">Teknik Pengolahan</h4>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col gap-2">
+                            <span class="material-symbols-outlined text-emerald-500">cloud</span>
+                            <p class="text-xs font-black text-slate-800 leading-tight">Mengukus</p>
+                            <p class="text-[10px] text-slate-500 leading-relaxed font-medium">Mempertahankan gizi
+                                maksimal. Contoh: Nagasari, Putu Ayu.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col gap-2">
+                            <span class="material-symbols-outlined text-blue-500">waves</span>
+                            <p class="text-xs font-black text-slate-800 leading-tight">Merebus</p>
+                            <p class="text-[10px] text-slate-500 leading-relaxed font-medium">Menghasilkan tekstur
+                                kenyal. Contoh: Klepon, Cenil.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col gap-2">
+                            <span class="material-symbols-outlined text-orange-500">local_fire_department</span>
+                            <p class="text-xs font-black text-slate-800 leading-tight">Membakar</p>
+                            <p class="text-[10px] text-slate-500 leading-relaxed font-medium">Aroma smoky daun pisang.
+                                Contoh: Lemper Bakar.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col gap-2">
+                            <span class="material-symbols-outlined text-rose-500">frying_pan</span>
+                            <p class="text-xs font-black text-slate-800 leading-tight">Menggoreng</p>
+                            <p class="text-[10px] text-slate-500 leading-relaxed font-medium">Tekstur renyah di luar.
+                                Contoh: Pastel, Onde-onde.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 4: ATLAS -->
+                <div id="slide-materi-3" class="hidden animate-slide-up">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <span class="material-symbols-outlined text-5xl text-indigo-500 mb-2">map</span>
+                        <h4 class="text-lg font-black text-slate-800">Atlas Kuliner Nusantara</h4>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-4 p-3 bg-indigo-50 rounded-2xl">
+                            <div
+                                class="size-10 rounded-full bg-indigo-100 flex items-center justify-center font-black text-indigo-600 text-xs text-center flex-shrink-0">
+                                SUM</div>
+                            <div>
+                                <p class="text-xs font-bold text-indigo-900">Sumatra</p>
+                                <p class="text-[10px] text-indigo-700 font-medium">Aceh (Timphan), Sumut (Bika Ambon),
+                                    Sumsel (Srikaya).</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-emerald-50 rounded-2xl">
+                            <div
+                                class="size-10 rounded-full bg-emerald-100 flex items-center justify-center font-black text-emerald-600 text-xs text-center flex-shrink-0">
+                                JAW</div>
+                            <div>
+                                <p class="text-xs font-bold text-emerald-900">Jawa</p>
+                                <p class="text-[10px] text-emerald-700 font-medium">Jabar (Peuyeum), Jateng (Getuk),
+                                    Jatim (Klepon).</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-amber-50 rounded-2xl">
+                            <div
+                                class="size-10 rounded-full bg-amber-100 flex items-center justify-center font-black text-amber-600 text-xs text-center flex-shrink-0">
+                                KUL</div>
+                            <div>
+                                <p class="text-xs font-bold text-amber-900">Sulawesi & Papua</p>
+                                <p class="text-[10px] text-amber-700 font-medium">Sulsel (Barongko), Papua (Sagu
+                                    Lempeng).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 5: GIZI -->
+                <div id="slide-materi-4" class="hidden animate-slide-up">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <span class="material-symbols-outlined text-5xl text-rose-500 mb-2">nutrition</span>
+                        <h4 class="text-lg font-black text-slate-800">Analisis Kandungan Gizi</h4>
+                    </div>
+                    <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-sm">
+                        <table class="w-full text-left text-[10px]">
+                            <thead class="bg-slate-50 border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3 font-black text-slate-600">Wilayah</th>
+                                    <th class="p-3 font-black text-slate-600">Bahan Utama</th>
+                                    <th class="p-3 font-black text-slate-600">Zat Gizi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 font-medium text-slate-600">
+                                <tr>
+                                    <td class="p-3 bg-slate-50/30">Jawa Tengah</td>
+                                    <td class="p-3">Singkong</td>
+                                    <td class="p-3">Serat Pangan</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 bg-slate-50/30">Sumut</td>
+                                    <td class="p-3">Tapioka & Telur</td>
+                                    <td class="p-3">Karbohidrat & Protein</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 bg-slate-50/30">Sulsel</td>
+                                    <td class="p-3">Pisang & Telur</td>
+                                    <td class="p-3">Kalium & Protein</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 bg-slate-50/30">Papua</td>
+                                    <td class="p-3">Pati Sagu</td>
+                                    <td class="p-3">Karbohidrat Kompleks</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SLIDE 6: INOVASI -->
+                <div id="slide-materi-5" class="hidden animate-slide-up">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <span class="material-symbols-outlined text-5xl text-cyan-500 mb-2">lightbulb</span>
+                        <h4 class="text-lg font-black text-slate-800">Strategi Inovasi</h4>
+                    </div>
+                    <div class="space-y-4">
+                        <div
+                            class="p-4 bg-white border-2 border-dashed border-slate-100 rounded-3xl flex gap-4 items-start shadow-sm">
+                            <span
+                                class="material-symbols-outlined text-cyan-500 bg-cyan-50 p-2 rounded-xl">add_moderator</span>
+                            <div>
+                                <p class="text-sm font-bold text-slate-800 mb-1">Fortifikasi Nutrisi</p>
+                                <p class="text-[11px] text-slate-500 leading-relaxed font-medium">Memasukkan puree
+                                    sayuran ke adonan.</p>
+                            </div>
+                        </div>
+                        <div
+                            class="p-4 bg-white border-2 border-dashed border-slate-100 rounded-3xl flex gap-4 items-start shadow-sm">
+                            <span
+                                class="material-symbols-outlined text-emerald-500 bg-emerald-50 p-2 rounded-xl">published_with_changes</span>
+                            <div>
+                                <p class="text-sm font-bold text-slate-800 mb-1">Substitusi Bahan</p>
+                                <p class="text-[11px] text-slate-500 leading-relaxed font-medium">Gula aren/madu &
+                                    teknik Air Fryer.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 7: BAZAR -->
+                <div id="slide-materi-6" class="hidden animate-slide-up">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <span class="material-symbols-outlined text-5xl text-purple-500 mb-2">storefront</span>
+                        <h4 class="text-lg font-black text-slate-800">Manajemen Bazar</h4>
+                    </div>
+                    <div class="space-y-3 font-medium">
+                        <div class="p-4 bg-slate-50 rounded-2xl flex gap-3 items-center"><span
+                                class="size-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-[10px] font-bold">1</span>
+                            <p class="text-[11px]">USP: Label 'Kuliner Sehat'</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl flex gap-3 items-center"><span
+                                class="size-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-[10px] font-bold">2</span>
+                            <p class="text-[11px]">Daya Tarik: Stand Estetis & Tester</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl flex gap-3 items-center"><span
+                                class="size-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-[10px] font-bold">3</span>
+                            <p class="text-[11px]">Pelayanan: Ramah & Informatif</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 8: KEMASAN -->
+                <div id="slide-materi-7" class="hidden animate-slide-up">
+                    <div class="flex flex-col items-center text-center mb-6">
+                        <span class="material-symbols-outlined text-5xl text-sky-500 mb-2">package_2</span>
+                        <h4 class="text-lg font-black text-slate-800">Pengemasan & Labeling</h4>
+                    </div>
+                    <div class="bg-sky-50 p-5 rounded-[2.5rem] border border-sky-100">
+                        <ul class="space-y-4 text-xs font-bold text-sky-800">
+                            <li class="flex gap-2"><span>♻️</span> Material Ramah Lingkungan</li>
+                            <li class="flex gap-2"><span>📦</span> Desain Estetik & Informatif</li>
+                            <li class="flex gap-2"><span>🏷️</span> Label Harga & Info Gizi</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Controls -->
+            <div class="p-6 border-t border-slate-50 bg-white flex gap-3">
+                <button id="btnPrevMateri" onclick="prevMateriSlide()"
+                    class="flex-1 py-3.5 rounded-2xl bg-slate-50 text-slate-400 font-bold text-xs transition-all invisible">Kembali</button>
+                <button id="btnNextMateri" onclick="nextMateriSlide()"
+                    class="flex-[3] py-3.5 rounded-2xl bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 active:scale-95">Selanjutnya</button>
+                <button id="btnFinishMateri" onclick="settleMateri()"
+                    class="flex-[3] py-3.5 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-lg shadow-emerald-500/30 transition-all active:scale-95 hidden">Selesaikan
+                    Materi</button>
+            </div>
+        </div>
+    </div>
+
+</body>
 
 </html>
