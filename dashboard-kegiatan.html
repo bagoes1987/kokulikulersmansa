@@ -493,8 +493,93 @@
                 return; // Jangan toggle checkbox otomatis
             }
 
+            // Jika modul 'materi' di Hari 1 - Buka Modal Slide
+            if (moduleId === 'materi' && currentDay === 1) {
+                openMateriModal();
+                return;
+            }
+
             // Untuk modul lain, jalan normal
             originalToggleModule(moduleId);
+        }
+
+        // ==========================================
+        // FITUR MATERI BELAJAR (SLIDE)
+        // ==========================================
+
+        let currentMateriSlide = 0;
+        const totalMateriSlides = 8;
+
+        function openMateriModal() {
+            currentMateriSlide = 0;
+            document.getElementById('modalMateri').classList.remove('hidden');
+            document.getElementById('modalMateri').classList.add('flex');
+            updateMateriSlideUI();
+        }
+
+        function closeMateriModal() {
+            document.getElementById('modalMateri').classList.add('hidden');
+            document.getElementById('modalMateri').classList.remove('flex');
+        }
+
+        function nextMateriSlide() {
+            if (currentMateriSlide < totalMateriSlides - 1) {
+                currentMateriSlide++;
+                updateMateriSlideUI();
+                // Scroll content ke atas setiap ganti slide
+                document.getElementById('materiContentArea').scrollTop = 0;
+            }
+        }
+
+        function prevMateriSlide() {
+            if (currentMateriSlide > 0) {
+                currentMateriSlide--;
+                updateMateriSlideUI();
+                document.getElementById('materiContentArea').scrollTop = 0;
+            }
+        }
+
+        function updateMateriSlideUI() {
+            // Hide semua slide
+            for (let i = 0; i < totalMateriSlides; i++) {
+                const s = document.getElementById(`slide-materi-${i}`);
+                if (s) s.classList.add('hidden');
+            }
+            // Tampilkan slide aktif
+            document.getElementById(`slide-materi-${currentMateriSlide}`).classList.remove('hidden');
+
+            // Update Progress Bar
+            const progress = ((currentMateriSlide + 1) / totalMateriSlides) * 100;
+            document.getElementById('materiProgressBar').style.width = `${progress}%`;
+            document.getElementById('materiStepText').textContent = `Halaman ${currentMateriSlide + 1} dari ${totalMateriSlides}`;
+
+            // Update Tombol
+            const btnPrev = document.getElementById('btnPrevMateri');
+            const btnNext = document.getElementById('btnNextMateri');
+            const btnFinish = document.getElementById('btnFinishMateri');
+
+            // Tombol Kembali
+            if (currentMateriSlide === 0) {
+                btnPrev.classList.add('invisible');
+            } else {
+                btnPrev.classList.remove('invisible');
+            }
+
+            // Tombol Lanjut vs Selesai
+            if (currentMateriSlide === totalMateriSlides - 1) {
+                btnNext.classList.add('hidden');
+                btnFinish.classList.remove('hidden');
+            } else {
+                btnNext.classList.remove('hidden');
+                btnFinish.classList.add('hidden');
+            }
+        }
+
+        function settleMateri() {
+            // Mark as complete in state
+            originalToggleModule('materi');
+            alert('Selamat! Kamu telah menyelesaikan materi hari ini.');
+            closeMateriModal();
         }
 
         // Kirim Jawaban
