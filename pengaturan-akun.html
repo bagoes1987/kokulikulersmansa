@@ -103,6 +103,9 @@
                         <p class="text-[#618972] dark:text-gray-400 text-sm text-center max-w-xs">
                             Klik pada foto untuk mengubah. Foto akan dioptimalkan otomatis.
                         </p>
+                        <p class="text-[#618972] dark:text-gray-400 text-xs text-center max-w-xs mt-1">
+                            Maksimal ukuran foto: 1 MB
+                        </p>
                     </div>
                 </div>
             </div>
@@ -297,9 +300,9 @@
                 return;
             }
 
-            // Validate file size (2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                alert('❌ Ukuran file terlalu besar. Maksimal 2MB.');
+            // Validate file size (1MB)
+            if (file.size > 1 * 1024 * 1024) {
+                alert('❌ Ukuran file terlalu besar. Maksimal 1MB.');
                 return;
             }
 
