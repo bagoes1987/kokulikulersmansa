@@ -1,61 +1,40 @@
 <!DOCTYPE html>
-<html lang="id">
+<html class="dark" lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Dashboard Admin - SMAN 1 Belitang</title>
-    <link rel="icon" href="./logo-sekolah.png" type="image/png">
+    <title>Admin Dashboard - SMAN 1 Belitang</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <script id="tailwind-config">
         tailwind.config = {
+            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#334155", // Slate 700
-                        "primary-dark": "#1e293b",
-                        "accent": "#f59e0b",
-                        "blue-accent": "#2563eb",
-                        "surface": "#f8fafc",
-                        "card-bg": "#ffffff",
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
                     },
                     fontFamily: {
-                        "sans": ["Lexend", "sans-serif"],
+                        "display": ["Inter", "sans-serif"]
                     },
-                    borderRadius: {
-                        "2xl": "24px",
-                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
                 },
             },
         }
     </script>
-    <style type="text/tailwindcss">
-        @layer base {
-            body { @apply bg-[#f1f5f9] text-[#1e293b] font-sans; }
-        }
-        .ios-segment-control {
-            background-color: rgba(148, 163, 184, 0.1);
-            padding: 2px;
-            border-radius: 10px;
-        }
-        .ios-segment-btn.active {
-            background-color: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-            color: #0f172a;
-        }
-    </style>
     <style>
-        body {
-            min-height: max(884px, 100dvh);
-            -webkit-tap-highlight-color: transparent;
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
-        #profilePhoto {
-            transition: all 0.3s ease;
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: max(884px, 100dvh);
         }
 
         .no-scrollbar::-webkit-scrollbar {
@@ -72,144 +51,159 @@
         }
 
         .row-item {
-            @apply border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors p-3;
+            @apply border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors p-3;
+        }
+
+        .ios-segment-control {
+            background-color: rgba(148, 163, 184, 0.1);
+            padding: 2px;
+            border-radius: 10px;
+        }
+
+        .ios-segment-btn.active {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            color: #137fec;
         }
     </style>
 </head>
 
-<body class="min-h-screen pb-20">
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
-        <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-white font-display antialiased">
+    <div
+        class="relative flex h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-white dark:bg-slate-900 shadow-2xl">
+        <!-- TopAppBar -->
+        <div
+            class="flex items-center bg-white dark:bg-slate-900 p-4 pb-2 justify-between safe-top border-b border-gray-100 dark:border-slate-800">
             <div class="flex items-center gap-3">
-                <div class="size-12 rounded-full overflow-hidden shadow-sm border border-slate-100 flex items-center justify-center bg-white relative group cursor-pointer"
+                <div class="size-10 rounded-full overflow-hidden shadow-sm border border-gray-200 cursor-pointer"
                     onclick="window.location.href='profil-admin.html'">
                     <div id="profilePhoto" class="w-full h-full bg-cover bg-center"
-                        style="background-image: url('https://ui-avatars.com/api/?name=A&background=334155&color=fff');">
+                        style="background-image: url('https://ui-avatars.com/api/?name=Admin&background=137fec&color=fff');">
                     </div>
                 </div>
                 <div>
-                    <h1 class="text-sm font-bold text-slate-900 leading-none" id="adminName">Administrator</h1>
-                    <p class="text-[9px] text-primary font-bold tracking-wide uppercase mt-1">PANEL ADMINISTRATOR</p>
-                    <p class="text-[9px] text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
+                    <h2 class="text-sm font-bold leading-tight">Administrator</h2>
+                    <p class="text-[10px] text-gray-500 font-medium tracking-wide">PANEL ADMIN</p>
                 </div>
             </div>
-            <div class="size-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 cursor-pointer"
+            <div class="size-10 flex items-center justify-center text-gray-500 cursor-pointer hover:bg-gray-50 rounded-full transition-colors"
                 onclick="logout()">
                 <span class="material-symbols-outlined text-xl">logout</span>
             </div>
         </div>
-        <div class="max-w-md mx-auto px-5 pb-3">
-            <div class="ios-segment-control flex text-[13px] font-semibold text-slate-400">
-                <button onclick="switchTab('koordinator')" id="tab-koordinator"
-                    class="ios-segment-btn active flex-1 py-1.5 rounded-lg transition-all">Koord</button>
-                <button onclick="switchTab('fasilitator')" id="tab-fasilitator"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Fasil</button>
-                <button onclick="switchTab('siswa')" id="tab-siswa"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Siswa</button>
-                <button onclick="switchTab('monitoring')" id="tab-monitoring"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Monitor</button>
-            </div>
-        </div>
-    </header>
 
-    <main class="max-w-md mx-auto px-5 py-6 space-y-6">
-
-        <!-- Tab 1: Koordinator -->
-        <div id="view-koordinator" class="space-y-4 animate-in fade-in duration-300">
-            <h2 class="text-lg font-bold text-slate-800 flex justify-between items-center">
-                Data Koordinator
-                <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-normal"
-                    id="count-coord">Loading...</span>
-            </h2>
-            <div id="list-coord"
-                class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
-                <div class="p-8 text-center text-slate-400 text-sm">Memuat data...</div>
-            </div>
-        </div>
-
-        <!-- Tab 2: Fasilitator -->
-        <div id="view-fasilitator" class="hidden space-y-4 animate-in fade-in duration-300">
-            <h2 class="text-lg font-bold text-slate-800 flex justify-between items-center">
-                Data Fasilitator
-                <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-normal"
-                    id="count-fasil">Loading...</span>
-            </h2>
-            <div id="list-fasil"
-                class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
-                <div class="p-8 text-center text-slate-400 text-sm">Memuat data...</div>
-            </div>
-        </div>
-
-        <!-- Tab 3: Siswa -->
-        <div id="view-siswa" class="hidden space-y-4 animate-in fade-in duration-300">
-            <div class="flex items-center justify-between">
-                <h2 class="text-lg font-bold text-slate-800">Data Siswa</h2>
-                <select id="filter-class" onchange="loadStudents(0)"
-                    class="text-xs border-slate-200 rounded-lg py-1 px-2 text-slate-600 font-medium focus:ring-0">
-                    <option value="">Semua Kelas</option>
-                    <!-- Options populated via JS -->
-                </select>
-            </div>
-
-            <div id="list-siswa"
-                class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
-                <div class="p-8 text-center text-slate-400 text-sm">Memuat data...</div>
-            </div>
-
-            <!-- Pagination -->
-            <div class="flex justify-between items-center pt-2">
-                <button onclick="prevPage()" id="btn-prev"
-                    class="px-4 py-2 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-400 disabled:opacity-50"
-                    disabled>Previous</button>
-                <span class="text-xs font-medium text-slate-400" id="page-info">Halaman 1</span>
-                <button onclick="nextPage()" id="btn-next"
-                    class="px-4 py-2 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-600 shadow-sm">Next</button>
-            </div>
-        </div>
-
-        <!-- Tab 4: Monitoring -->
-        <div id="view-monitoring" class="hidden space-y-6 animate-in fade-in duration-300">
-            <h2 class="text-xl font-bold text-slate-800">Monitoring Kinerja</h2>
-
-            <!-- Summary Cards -->
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">Total Jawaban</p>
-                    <p class="text-xl font-black text-slate-800" id="mon-total-responses">0</p>
-                </div>
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                    <p class="text-[10px] text-slate-400 font-bold uppercase">Sudah Dinilai</p>
-                    <p class="text-xl font-black text-emerald-600" id="mon-total-reviewed">0</p>
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto pb-20">
+            <!-- Tabs -->
+            <div
+                class="sticky top-0 bg-white dark:bg-slate-900 z-10 p-4 border-b border-gray-100 dark:border-slate-800">
+                <div class="ios-segment-control flex text-[13px] font-semibold text-gray-400">
+                    <button onclick="switchTab('koordinator')" id="tab-koordinator"
+                        class="ios-segment-btn active flex-1 py-1.5 rounded-lg transition-all">Koord</button>
+                    <button onclick="switchTab('fasilitator')" id="tab-fasilitator"
+                        class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Fasil</button>
+                    <button onclick="switchTab('siswa')" id="tab-siswa"
+                        class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Siswa</button>
+                    <button onclick="switchTab('monitoring')" id="tab-monitoring"
+                        class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Monitor</button>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <h3 class="font-bold text-slate-800 text-sm">Progres Fasilitator (Per Kelas)</h3>
-                <div id="list-monitoring-fasil"
-                    class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
-                    <div class="p-8 text-center text-slate-400 text-sm">Memuat data monitoring...</div>
+            <div class="p-4 space-y-6">
+                <!-- Tab 1: Koordinator -->
+                <div id="view-koordinator" class="space-y-4 animate-in fade-in duration-300">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-base font-bold text-gray-900 dark:text-white">Data Koordinator</h2>
+                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded font-bold"
+                            id="count-coord">Loading...</span>
+                    </div>
+                    <div id="list-coord"
+                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden divide-y divide-gray-100">
+                        <div class="p-8 text-center text-gray-400 text-sm">Memuat data...</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="space-y-4">
-                <h3 class="font-bold text-slate-800 text-sm">Progres Koordinator</h3>
-                <div id="list-monitoring-coord"
-                    class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
-                    <div class="p-8 text-center text-slate-400 text-sm">Memuat data koordinator...</div>
+                <!-- Tab 2: Fasilitator -->
+                <div id="view-fasilitator" class="hidden space-y-4 animate-in fade-in duration-300">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-base font-bold text-gray-900 dark:text-white">Data Fasilitator</h2>
+                        <span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded font-bold"
+                            id="count-fasil">Loading...</span>
+                    </div>
+                    <div id="list-fasil"
+                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden divide-y divide-gray-100">
+                        <div class="p-8 text-center text-gray-400 text-sm">Memuat data...</div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Siswa -->
+                <div id="view-siswa" class="hidden space-y-4 animate-in fade-in duration-300">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-base font-bold text-gray-900 dark:text-white">Data Siswa</h2>
+                        <select id="filter-class" onchange="loadStudents(0)"
+                            class="text-xs border-gray-200 rounded-lg py-1 px-2 text-gray-600 font-medium focus:ring-0">
+                            <option value="">Semua Kelas</option>
+                            <!-- Options populated via JS -->
+                        </select>
+                    </div>
+
+                    <div id="list-siswa"
+                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden divide-y divide-gray-100">
+                        <div class="p-8 text-center text-gray-400 text-sm">Memuat data...</div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex justify-between items-center pt-2">
+                        <button onclick="prevPage()" id="btn-prev"
+                            class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-[10px] font-bold text-gray-400 disabled:opacity-50"
+                            disabled>PREV</button>
+                        <span class="text-[10px] font-medium text-gray-400" id="page-info">Halaman 1</span>
+                        <button onclick="nextPage()" id="btn-next"
+                            class="px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-[10px] font-bold text-gray-600 shadow-sm">NEXT</button>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Monitoring -->
+                <div id="view-monitoring" class="hidden space-y-6 animate-in fade-in duration-300">
+                    <h2 class="text-base font-bold text-gray-900 dark:text-white">Monitoring Kinerja</h2>
+
+                    <!-- Summary Cards -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-[9px] text-gray-400 font-bold uppercase mb-1">Total Submission</p>
+                            <p class="text-xl font-black text-gray-800" id="mon-total-responses">0</p>
+                        </div>
+                        <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                            <p class="text-[9px] text-gray-400 font-bold uppercase mb-1">Total Reviewed</p>
+                            <p class="text-xl font-black text-emerald-600" id="mon-total-reviewed">0</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h3 class="font-bold text-gray-700 text-xs uppercase tracking-wider">Progres Fasilitator</h3>
+                        <div id="list-monitoring-fasil"
+                            class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden divide-y divide-gray-100">
+                            <div class="p-8 text-center text-gray-400 text-sm">Memuat data...</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h3 class="font-bold text-gray-700 text-xs uppercase tracking-wider">Progres Koordinator</h3>
+                        <div id="list-monitoring-coord"
+                            class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden divide-y divide-gray-100">
+                            <div class="p-8 text-center text-gray-400 text-sm">Memuat data...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-    </main>
-
+    <!-- Logic Script (Preserved same logic, just style updates) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // WARNING: SERVICE KEY INCLUDED FOR ADMIN DASHBOARD USE AS REQUESTED.
-        // DO NOT DEPLOY THIS TO PRODUCTION WITHOUT BACKEND PROXY.
         const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
         const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTY2MDc0MiwiZXhwIjoyMDg1MjM2NzQyfQ.sJN3LkaB2nmykbItVxWWQPJExeiKBBbWZlgTLeuNo24';
-
-        // FIX: Use different variable name than 'supabase' class
         const adminClient = supabase.createClient(supabaseUrl, supabaseServiceKey);
 
         let currentPage = 0;
@@ -217,17 +211,20 @@
 
         async function init() {
             try {
-                // Check auth using adminClient
                 const { data: { session } } = await adminClient.auth.getSession();
                 if (!session || session.user.user_metadata.role !== 'admin') {
-                    // Optional: Redirect if not allowed
+                    // Optional Check
+                }
+
+                // Load profile avatar if available
+                if (session?.user?.user_metadata?.avatar_url) {
+                    document.getElementById('profilePhoto').style.backgroundImage = `url('${session.user.user_metadata.avatar_url}')`;
                 }
 
                 loadCoordinators();
                 loadFacilitators();
                 loadMonitoring();
 
-                // Populate Class Filter
                 const classes = ['X. 1', 'X. 2', 'X. 3', 'X. 4', 'X. 5', 'X. 6', 'X. 7', 'X. 8', 'X. 9', 'X. 10', 'X. 11',
                     'XI. 1', 'XI. 2', 'XI. 3', 'XI. 4', 'XI. 5', 'XI. 6', 'XI. 7', 'XI. 8', 'XI. 9', 'XI. 10', 'XI. 11',
                     'XII. 1', 'XII. 2', 'XII. 3', 'XII. 4', 'XII. 5', 'XII. 6', 'XII. 7', 'XII. 8', 'XII. 9', 'XII. 10'];
@@ -261,112 +258,91 @@
         // --- FETCH COORDINATORS ---
         async function loadCoordinators() {
             const container = document.getElementById('list-coord');
-
             const { data: { users }, error } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
-
             if (error) {
                 container.innerHTML = '<div class="p-4 text-red-500 text-xs text-center">' + error.message + '</div>';
                 return;
             }
 
-            // Exclude trial accounts
-            const coords = users.filter(u =>
-                u.user_metadata.role === 'koordinator' &&
-                !u.user_metadata.username?.toLowerCase().includes('trial')
-            );
+            const coords = users.filter(u => u.user_metadata.role === 'koordinator' && !u.user_metadata.username?.toLowerCase().includes('trial'));
             document.getElementById('count-coord').textContent = coords.length + ' Orang';
 
             let html = '';
             coords.forEach(u => {
                 const meta = u.user_metadata;
-                // Since trial is hidden, we assume all are real users
                 const password = 'kokulikuler@2026';
-
-                let classes = '-';
-                if (meta.managed_classes) {
-                    if (Array.isArray(meta.managed_classes)) classes = meta.managed_classes.join(', ');
-                    else classes = meta.managed_classes;
-                }
+                let classes = Array.isArray(meta.managed_classes) ? meta.managed_classes.join(', ') : (meta.managed_classes || '-');
 
                 html += `
                 <div class="row-item">
                     <div class="flex justify-between items-start mb-1">
                         <div>
-                            <h3 class="text-sm font-bold text-slate-800">${meta.full_name || 'No Name'}</h3>
-                            <p class="text-[10px] text-slate-500">${u.email}</p>
+                            <h3 class="text-sm font-bold text-gray-900">${meta.full_name || 'No Name'}</h3>
+                            <p class="text-[10px] text-gray-500">${u.email}</p>
                         </div>
-                        <span class="text-[10px] bg-slate-100 text-slate-500 py-0.5 px-2 rounded font-mono">Role: Koord</span>
                     </div>
                     <div class="mt-2 grid grid-cols-2 gap-2 text-[10px]">
-                        <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
-                            <span class="block text-slate-400 uppercase tracking-wider text-[8px] font-bold">Username</span>
-                            <span class="font-mono text-slate-700 font-semibold">${meta.username || '-'}</span>
+                        <div class="bg-gray-50 p-2 rounded border border-gray-200">
+                            <span class="block text-gray-400 uppercase tracking-wider text-[8px] font-bold">User</span>
+                            <span class="font-mono text-gray-700 font-semibold">${meta.username || '-'}</span>
                         </div>
-                        <div class="bg-amber-50 p-1.5 rounded border border-amber-100">
-                            <span class="block text-amber-400 uppercase tracking-wider text-[8px] font-bold">Password</span>
-                            <span class="font-mono text-amber-700 font-semibold">${password}</span>
+                        <div class="bg-blue-50/50 p-2 rounded border border-blue-100">
+                            <span class="block text-blue-400 uppercase tracking-wider text-[8px] font-bold">Pass</span>
+                            <span class="font-mono text-blue-700 font-semibold">${password}</span>
                         </div>
                     </div>
                     <div class="mt-2">
-                        <p class="text-[9px] text-slate-400 font-bold uppercase mb-1">Kelas Ampuan:</p>
+                        <p class="text-[9px] text-gray-400 font-bold uppercase mb-1">Kelas Ampuan:</p>
                         <div class="flex flex-wrap gap-1">
-                            ${classes === '-' ? '<span class="text-xs text-slate-400">-</span>' :
+                            ${classes === '-' ? '<span class="text-xs text-gray-400">-</span>' :
                         classes.split(',').map(c => `<span class="pill-class">${c.trim()}</span>`).join('')}
                         </div>
                     </div>
                 </div>`;
             });
-
-            container.innerHTML = html || '<div class="p-8 text-center text-slate-400 text-sm">Tidak ada data</div>';
+            container.innerHTML = html || '<div class="p-8 text-center text-gray-400 text-sm">Tidak ada data</div>';
         }
 
         // --- FETCH FACILITATORS ---
         async function loadFacilitators() {
             const container = document.getElementById('list-fasil');
-
             const { data: { users }, error } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
             if (error) {
                 container.innerHTML = '<div class="p-4 text-red-500 text-xs text-center">' + error.message + '</div>';
                 return;
             }
 
-            // Exclude trial accounts
-            const fasils = users.filter(u =>
-                u.user_metadata.role === 'fasilitator' &&
-                !u.user_metadata.username?.toLowerCase().includes('trial')
-            );
+            const fasils = users.filter(u => u.user_metadata.role === 'fasilitator' && !u.user_metadata.username?.toLowerCase().includes('trial'));
             fasils.sort((a, b) => (a.user_metadata.kelas || '').localeCompare(b.user_metadata.kelas || ''));
-
             document.getElementById('count-fasil').textContent = fasils.length + ' Orang';
 
             let html = '';
             fasils.forEach(u => {
                 const meta = u.user_metadata;
-                // Since trial is hidden
                 const password = 'kokulikuler@2026';
 
                 html += `
                 <div class="row-item">
                      <div class="flex justify-between items-start mb-1">
                         <div>
-                            <h3 class="text-sm font-bold text-slate-800">${meta.full_name || 'No Name'}</h3>
-                            <p class="text-[10px] text-slate-500">${u.email}</p>
+                            <h3 class="text-sm font-bold text-gray-900">${meta.full_name || 'No Name'}</h3>
+                            <p class="text-[10px] text-gray-500">${u.email}</p>
                         </div>
                          <span class="text-[10px] bg-blue-50 text-blue-600 py-0.5 px-2 rounded font-bold border border-blue-100">${meta.kelas || '-'}</span>
                     </div>
                      <div class="mt-2 grid grid-cols-2 gap-2 text-[10px]">
-                        <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
-                            <span class="block text-slate-400 uppercase tracking-wider text-[8px] font-bold">Username</span>
-                            <span class="font-mono text-slate-700 font-semibold">${meta.username || '-'}</span>
+                        <div class="bg-gray-50 p-2 rounded border border-gray-200">
+                            <span class="block text-gray-400 uppercase tracking-wider text-[8px] font-bold">User</span>
+                            <span class="font-mono text-gray-700 font-semibold">${meta.username || '-'}</span>
                         </div>
-                        <div class="bg-amber-50 p-1.5 rounded border border-amber-100">
-                            <span class="block text-amber-400 uppercase tracking-wider text-[8px] font-bold">Password</span>
-                            <span class="font-mono text-amber-700 font-semibold">${password}</span>
+                        <div class="bg-blue-50/50 p-2 rounded border border-blue-100">
+                            <span class="block text-blue-400 uppercase tracking-wider text-[8px] font-bold">Pass</span>
+                            <span class="font-mono text-blue-700 font-semibold">${password}</span>
                         </div>
                     </div>
                 </div>`;
             });
-            container.innerHTML = html || '<div class="p-8 text-center text-slate-400 text-sm">Tidak ada data</div>';
+            container.innerHTML = html || '<div class="p-8 text-center text-gray-400 text-sm">Tidak ada data</div>';
         }
 
         // --- FETCH STUDENTS ---
@@ -374,28 +350,17 @@
             currentPage = page;
             const container = document.getElementById('list-siswa');
             const classFilter = document.getElementById('filter-class').value;
+            container.innerHTML = '<div class="p-8 text-center text-gray-400 text-xs"><span class="animate-pulse">Loading...</span></div>';
 
-            container.innerHTML = '<div class="p-8 text-center text-slate-400 text-xs text-center"><span class="animate-pulse">Memuat data siswa...</span></div>';
-
-            let query = adminClient.from('students').select('*', { count: 'exact' });
-
-            // Exclude trial students (assuming NISN starts with or contains 'trial')
-            query = query.not('nisn', 'ilike', '%trial%');
-
+            let query = adminClient.from('students').select('*', { count: 'exact' }).not('nisn', 'ilike', '%trial%');
             if (classFilter) query = query.eq('kelas', classFilter);
 
-            // Pagination
             const start = page * limit;
             const end = start + limit - 1;
             query = query.range(start, end).order('kelas', { ascending: true }).order('nama', { ascending: true });
 
             const { data: students, count, error } = await query;
-
-            if (error) {
-                console.error(error);
-                container.innerHTML = '<div class="p-4 text-red-500 text-xs text-center">' + error.message + '</div>';
-                return;
-            }
+            if (error) { container.innerHTML = '<div class="text-red-500 text-xs">' + error.message + '</div>'; return; }
 
             const totalPages = Math.ceil(count / limit);
             document.getElementById('page-info').textContent = count === 0 ? '0 Data' : `Halaman ${page + 1} / ${totalPages}`;
@@ -408,26 +373,26 @@
                 <div class="row-item">
                      <div class="flex justify-between items-start mb-1">
                         <div>
-                            <h3 class="text-sm font-bold text-slate-800 line-clamp-1">${s.nama}</h3>
+                            <h3 class="text-sm font-bold text-gray-900 line-clamp-1">${s.nama}</h3>
                             <div class="flex items-center gap-2 mt-0.5">
-                                <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded border border-slate-200">${s.kelas}</span>
-                                <span class="text-[10px] text-slate-400">NISN: ${s.nisn}</span>
+                                <span class="text-[10px] bg-gray-100 text-gray-500 px-1.5 rounded border border-gray-200">${s.kelas}</span>
+                                <span class="text-[10px] text-gray-400">NISN: ${s.nisn}</span>
                             </div>
                         </div>
                     </div>
                      <div class="mt-2 grid grid-cols-2 gap-2 text-[10px]">
-                        <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
-                            <span class="block text-slate-400 uppercase tracking-wider text-[8px] font-bold">Username</span>
-                            <span class="font-mono text-slate-700 font-semibold">${s.nisn}</span>
+                        <div class="bg-gray-50 p-1.5 rounded border border-gray-100">
+                            <span class="block text-gray-400 uppercase tracking-wider text-[8px] font-bold">User</span>
+                            <span class="font-mono text-gray-700 font-semibold">${s.nisn}</span> 
                         </div>
-                        <div class="bg-emerald-50 p-1.5 rounded border border-emerald-100">
-                            <span class="block text-emerald-500 uppercase tracking-wider text-[8px] font-bold">Password</span>
-                            <span class="font-mono text-emerald-700 font-semibold">${s.nis}</span>
+                        <div class="bg-green-50 p-1.5 rounded border border-green-100">
+                            <span class="block text-green-500 uppercase tracking-wider text-[8px] font-bold">Pass</span>
+                            <span class="font-mono text-green-700 font-semibold">${s.nis}</span>
                         </div>
                     </div>
                 </div>`;
             });
-            container.innerHTML = html || '<div class="p-8 text-center text-slate-400 text-sm">Tidak ada data siswa</div>';
+            container.innerHTML = html || '<div class="p-8 text-center text-gray-400 text-sm">Tidak ada data siswa</div>';
         }
 
         function nextPage() { loadStudents(currentPage + 1); }
@@ -442,11 +407,7 @@
 
         // --- MONITORING ---
         async function loadMonitoring() {
-            // Exclude trial students
-            const { data: students, error: errStd } = await adminClient.from('students')
-                .select('id, kelas')
-                .not('nisn', 'ilike', '%trial%');
-
+            const { data: students, error: errStd } = await adminClient.from('students').select('id, kelas').not('nisn', 'ilike', '%trial%');
             if (errStd) {
                 document.getElementById('list-monitoring-fasil').innerHTML = '<div class="text-red-500 p-4">Error loading students</div>';
                 return;
@@ -454,10 +415,11 @@
 
             const { data: responses, error: errResp } = await adminClient.from('module_responses').select('student_id, status');
             if (errResp) {
-                // If table doesn't exist yet, handle gracefully
                 document.getElementById('list-monitoring-fasil').innerHTML = '<div class="text-slate-400 p-4 text-center text-xs">Belum ada respon aktivitas</div>';
                 return;
             }
+
+            if (!students) return;
 
             const classStats = {};
             const studentClassMap = {};
@@ -471,50 +433,36 @@
             let totalResponses = 0;
             let totalReviewed = 0;
 
-            responses.forEach(r => {
-                const kelas = studentClassMap[r.student_id];
-                // Only count if student is NOT trial (part of the map)
-                if (kelas) {
-                    totalResponses++;
-                    if (r.status === 'reviewed') totalReviewed++;
-
-                    if (classStats[kelas]) {
-                        classStats[kelas].submitted++;
-                        if (r.status === 'reviewed') classStats[kelas].reviewed++;
+            if (responses) {
+                responses.forEach(r => {
+                    const kelas = studentClassMap[r.student_id];
+                    if (kelas) {
+                        totalResponses++;
+                        if (r.status === 'reviewed') totalReviewed++;
+                        if (classStats[kelas]) {
+                            classStats[kelas].submitted++;
+                            if (r.status === 'reviewed') classStats[kelas].reviewed++;
+                        }
                     }
-                }
-            });
+                });
+            }
 
             document.getElementById('mon-total-responses').textContent = totalResponses;
             document.getElementById('mon-total-reviewed').textContent = totalReviewed;
 
             // Render Fasil
             const { data: { users } } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
-            // Exclude trial fasils
-            const fasils = users.filter(u =>
-                u.user_metadata.role === 'fasilitator' &&
-                !u.user_metadata.username?.toLowerCase().includes('trial')
-            );
-            // Exclude trial coords
-            const coords = users.filter(u =>
-                u.user_metadata.role === 'koordinator' &&
-                !u.user_metadata.username?.toLowerCase().includes('trial')
-            );
+            const fasils = users.filter(u => u.user_metadata.role === 'fasilitator' && !u.user_metadata.username?.toLowerCase().includes('trial'));
+            const coords = users.filter(u => u.user_metadata.role === 'koordinator' && !u.user_metadata.username?.toLowerCase().includes('trial'));
 
             let htmlFasil = '';
             fasils.forEach(f => {
                 const k = f.user_metadata.kelas;
                 const stat = classStats[k] || { totalStd: 0, submitted: 0, reviewed: 0 };
                 let percent = 0;
-                // Avoid division by zero
-                if (stat.submitted > 0) {
-                    percent = Math.round((stat.reviewed / stat.submitted) * 100);
-                } else if (stat.totalStd > 0) {
-                    // If no submissions yet, percent is 0
-                    percent = 0;
-                }
+                if (stat.submitted > 0) percent = Math.round((stat.reviewed / stat.submitted) * 100);
 
-                let color = 'bg-slate-100 text-slate-500';
+                let color = 'bg-gray-100 text-gray-500';
                 if (percent > 50) color = 'bg-amber-100 text-amber-600';
                 if (percent === 100) color = 'bg-emerald-100 text-emerald-600';
 
@@ -522,17 +470,17 @@
                 <div class="row-item">
                     <div class="flex justify-between items-center mb-2">
                         <div>
-                            <h4 class="text-sm font-bold text-slate-800">${f.user_metadata.full_name}</h4>
-                            <span class="text-[10px] text-slate-500 font-medium">Kelas: ${k || '-'}</span>
+                            <h4 class="text-sm font-bold text-gray-800">${f.user_metadata.full_name}</h4>
+                            <span class="text-[10px] text-gray-500 font-medium">Kelas: ${k || '-'}</span>
                         </div>
                         <div class="text-right">
                              <span class="text-xs font-black ${color} px-2 py-1 rounded-lg">${percent}%</span>
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-2 text-center">
-                        <div class="bg-slate-50 rounded p-1">
-                            <span class="block text-[8px] text-slate-400 uppercase font-bold">Siswa</span>
-                            <span class="text-xs font-bold text-slate-700">${stat.totalStd}</span>
+                        <div class="bg-gray-50 rounded p-1">
+                            <span class="block text-[8px] text-gray-400 uppercase font-bold">Siswa</span>
+                            <span class="text-xs font-bold text-gray-700">${stat.totalStd}</span>
                         </div>
                         <div class="bg-blue-50 rounded p-1">
                             <span class="block text-[8px] text-blue-400 uppercase font-bold">Masuk</span>
@@ -545,7 +493,7 @@
                     </div>
                 </div>`;
             });
-            document.getElementById('list-monitoring-fasil').innerHTML = htmlFasil || '<div class="p-8 text-center text-slate-400">Belum ada data</div>';
+            document.getElementById('list-monitoring-fasil').innerHTML = htmlFasil || '<div class="p-8 text-center text-gray-400">Belum ada data</div>';
 
             // Render Coord
             let htmlCoord = '';
@@ -563,7 +511,7 @@
                 });
 
                 const percent = myTotalSubmitted > 0 ? Math.round((myTotalReviewed / myTotalSubmitted) * 100) : 0;
-                let color = 'bg-slate-100 text-slate-500';
+                let color = 'bg-gray-100 text-gray-500';
                 if (percent > 50) color = 'bg-amber-100 text-amber-600';
                 if (percent === 100) color = 'bg-emerald-100 text-emerald-600';
 
@@ -571,18 +519,18 @@
                 <div class="row-item">
                     <div class="flex justify-between items-center mb-1">
                         <div>
-                            <h4 class="text-sm font-bold text-slate-800">${c.user_metadata.full_name}</h4>
-                            <p class="text-[10px] text-slate-400 line-clamp-1">Mengampu: ${classes.join(', ')}</p>
+                            <h4 class="text-sm font-bold text-gray-800">${c.user_metadata.full_name}</h4>
+                            <p class="text-[10px] text-gray-400 line-clamp-1">Mengampu: ${classes.join(', ')}</p>
                         </div>
                         <span class="text-xs font-black ${color} px-2 py-1 rounded-lg">${percent}%</span>
                     </div>
                     <div class="flex gap-4 text-[10px]">
-                        <span class="text-slate-500">Total Masuk: <b>${myTotalSubmitted}</b></span>
+                        <span class="text-gray-500">Total Masuk: <b>${myTotalSubmitted}</b></span>
                         <span class="text-emerald-600">Total Dinilai: <b>${myTotalReviewed}</b></span>
                     </div>
                 </div>`;
             });
-            document.getElementById('list-monitoring-coord').innerHTML = htmlCoord || '<div class="p-8 text-center text-slate-400">Belum ada data</div>';
+            document.getElementById('list-monitoring-coord').innerHTML = htmlCoord || '<div class="p-8 text-center text-gray-400">Belum ada data</div>';
         }
 
         window.addEventListener('load', init);
