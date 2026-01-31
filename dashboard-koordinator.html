@@ -517,58 +517,30 @@
                 modal.id = modalId;
                 modal.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4';
                 modal.innerHTML = `
-                    <div class="bg-white w-full max-w-4xl rounded-[2rem] shadow-2xl max-h-[90vh] flex flex-col overflow-hidden animate-fade-in">
+                    <div class="bg-white w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden animate-fade-in">
                         <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <div>
-                                <h3 class="text-lg font-black text-slate-800">Analisis Progres Siswa</h3>
-                                <p class="text-xs text-slate-500 font-medium">Monitoring pengerjaan modul per kelas</p>
+                                <h3 class="text-lg font-black text-slate-800">Analisis Performa Kelas</h3>
+                                <p class="text-xs text-slate-500 font-medium">Perbandingan tingkat penyelesaian modul</p>
                             </div>
                             <button onclick="document.getElementById('${modalId}').remove()" class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
                                 <span class="material-symbols-outlined">close</span>
                             </button>
                         </div>
                         
-                        <div class="p-4 border-b border-slate-50 flex gap-2 overflow-x-auto no-scrollbar" id="modalClassTabs">
-                            <!-- Tabs kelas -->
-                        </div>
-
                         <!-- Chart Section -->
-                        <div class="p-6 bg-slate-50/30 border-b border-slate-50">
-                            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Grafik Performa Antar Kelas</h4>
-                            <div class="h-48">
+                        <div class="p-8">
+                            <div class="h-64 mb-6">
                                 <canvas id="analysisChart"></canvas>
                             </div>
-                        </div>
-
-                        <div class="flex-1 overflow-auto p-4">
-                            <div class="min-w-[800px]">
-                                <table class="w-full text-left text-xs border-collapse">
-                                    <thead class="sticky top-0 bg-white z-10">
-                                        <tr>
-                                            <th class="p-2 border-b-2 border-slate-100 font-bold text-slate-400 uppercase tracking-widest w-40">Nama Siswa</th>
-                                            <th class="p-2 border-b-2 border-slate-100 font-bold text-slate-400 uppercase text-center w-16">Mantik</th>
-                                            <th class="p-2 border-b-2 border-slate-100 font-bold text-slate-400 uppercase text-center w-16">Materi</th>
-                                            <th class="p-2 border-b-2 border-slate-100 font-bold text-slate-400 uppercase text-center w-16">Video</th>
-                                            <th class="p-2 border-b-2 border-slate-100 font-bold text-slate-400 uppercase text-center w-16">LKPD</th>
-                                            <th class="p-2 border-b-2 border-slate-100 font-bold text-slate-400 uppercase text-center w-16">Asesmen</th>
-                                            <th class="p-2 border-b-2 border-slate-100 font-bold text-slate-400 uppercase text-center w-16">Rangkum</th>
-                                            <th class="p-2 border-b-2 border-slate-100 font-bold text-slate-400 uppercase text-center w-16">Glosar</th>
-                                            <th class="p-2 border-b-2 border-slate-100 font-bold text-slate-400 uppercase text-center w-16">Refleksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="analysisTableBody">
-                                        <tr><td colspan="9" class="p-8 text-center text-slate-400 italic">Memuat data siswa...</td></tr>
-                                    </tbody>
-                                </table>
+                            
+                            <div class="grid grid-cols-2 gap-4 px-2" id="chartStatsContainer">
+                                <!-- Stats will be injected here -->
                             </div>
                         </div>
                         
-                        <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
-                            <div class="flex gap-4 text-xs font-bold uppercase tracking-wider">
-                                <div class="flex items-center gap-1.5"><span class="size-2 rounded-full bg-emerald-500"></span> Selesai</div>
-                                <div class="flex items-center gap-1.5"><span class="size-2 rounded-full bg-slate-200"></span> Belum</div>
-                            </div>
-                            <p class="text-xs text-slate-400 font-medium">Data diupdate otomatis.</p>
+                        <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-center items-center">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Data diperbarui otomatis dari sistem pusat</p>
                         </div>
                     </div>
                 `;
@@ -579,25 +551,22 @@
             const classes = session.user.user_metadata.kelas;
             const classArray = Array.isArray(classes) ? classes : [classes];
 
-            const tabsContainer = document.getElementById('modalClassTabs');
-            tabsContainer.innerHTML = classArray.map((cls, idx) => `
-                <button onclick="loadAnalysisData('${cls}')" class="class-tab px-4 py-2 rounded-xl text-xs font-bold transition-all ${idx === 0 ? 'bg-primary text-white shadow-lg shadow-emerald-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}" data-class="${cls}">
-                    Kelas ${cls}
-                </button>
-            `).join('');
-
             if (classArray.length > 0) {
-                loadAnalysisData(classArray[0]);
                 renderAnalysisChart(classArray);
             }
         }
 
         let myChart = null;
         async function renderAnalysisChart(classes) {
-            const ctx = document.getElementById('analysisChart').getContext('2d');
+            const chartCanvas = document.getElementById('analysisChart');
+            if (!chartCanvas) return;
+            const ctx = chartCanvas.getContext('2d');
 
             try {
                 const dataPoints = [];
+                const statsContainer = document.getElementById('chartStatsContainer');
+                statsContainer.innerHTML = '';
+
                 for (const cls of classes) {
                     const { count: studentCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).eq('kelas', cls);
                     const { data: students } = await supabaseClient.from('students').select('id').eq('kelas', cls);
@@ -606,38 +575,81 @@
                     const totalPossible = (studentCount || 0) * 3 * 8;
                     const progress = totalPossible > 0 ? Math.round((completedCount / totalPossible) * 100) : 0;
                     dataPoints.push(progress);
+
+                    // Add small stat cards
+                    statsContainer.innerHTML += `
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Kelas ${cls}</p>
+                            <p class="text-lg font-black text-slate-800">${progress}% <span class="text-[10px] font-medium text-slate-400">Complete</span></p>
+                        </div>
+                    `;
                 }
 
                 if (myChart) myChart.destroy();
+
+                // Create Gradient
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, '#10b981');   // Emerald 500
+                gradient.addColorStop(1, '#ecfdf5');   // Emerald 50
 
                 myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: classes.map(c => 'Kelas ' + c),
                         datasets: [{
-                            label: 'Progres Selesai (%)',
+                            label: 'Progres',
                             data: dataPoints,
-                            backgroundColor: '#10b981',
-                            borderRadius: 8,
-                            barThickness: 30
+                            backgroundColor: gradient,
+                            hoverBackgroundColor: '#059669',
+                            borderRadius: 12,
+                            barThickness: 40,
+                            borderWidth: 0
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeOutQuart'
+                        },
                         plugins: {
-                            legend: { display: false }
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#1e293b',
+                                titleFont: { size: 12, weight: 'bold' },
+                                bodyFont: { size: 12 },
+                                padding: 12,
+                                cornerRadius: 10,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function (context) {
+                                        return `Progres: ${context.parsed.y}% Selesai`;
+                                    }
+                                }
+                            }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
                                 max: 100,
-                                grid: { display: false },
-                                ticks: { font: { size: 10 } }
+                                grid: {
+                                    color: '#f1f5f9',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    stepSize: 20,
+                                    font: { size: 10, weight: '600' },
+                                    color: '#94a3b8',
+                                    callback: value => value + '%'
+                                }
                             },
                             x: {
                                 grid: { display: false },
-                                ticks: { font: { size: 10, weight: 'bold' } }
+                                ticks: {
+                                    font: { size: 11, weight: 'bold' },
+                                    color: '#1e293b'
+                                }
                             }
                         }
                     }
@@ -647,78 +659,6 @@
             }
         }
 
-        async function loadAnalysisData(className) {
-            // Update Tab UI
-            document.querySelectorAll('.class-tab').forEach(btn => {
-                if (btn.getAttribute('data-class') === className) {
-                    btn.className = 'class-tab px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white shadow-lg shadow-emerald-200 transition-all';
-                } else {
-                    btn.className = 'class-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all';
-                }
-            });
-
-            const tableBody = document.getElementById('analysisTableBody');
-            tableBody.innerHTML = '<tr><td colspan="9" class="p-8 text-center text-slate-400 italic">Mengambil data kelas ' + className + '...</td></tr>';
-
-            try {
-                // 1. Get all students in this class
-                const { data: students, error: studentError } = await supabaseClient
-                    .from('students')
-                    .select('id, nama')
-                    .eq('kelas', className)
-                    .order('nama');
-
-                if (studentError) throw studentError;
-
-                if (!students || students.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="9" class="p-8 text-center text-slate-400 italic">Tidak ada siswa di kelas ini.</td></tr>';
-                    return;
-                }
-
-                // 2. Get all responses for these students
-                const studentIds = students.map(s => s.id);
-                const { data: responses, error: responseError } = await supabaseClient
-                    .from('module_responses')
-                    .select('student_id, module_type, status')
-                    .in('student_id', studentIds);
-
-                if (responseError) throw responseError;
-
-                // 3. Render Table
-                const moduleTypes = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'rangkuman', 'glosarium', 'refleksi'];
-
-                tableBody.innerHTML = students.map(student => {
-                    const studentResponses = responses.filter(r => r.student_id === student.id);
-
-                    const cells = moduleTypes.map(type => {
-                        const resp = studentResponses.find(r => r.module_type === type);
-                        const isComplete = resp && (resp.status === 'reviewed' || type === 'materi' || type === 'video' || type === 'rangkuman' || type === 'glosarium');
-                        // Note: some modules might not need 'reviewed' status to be considered complete in this context
-
-                        return `
-                            <td class="p-2 border-b border-slate-50 text-center">
-                                <div class="flex justify-center">
-                                    <span class="material-symbols-outlined !text-xl ${isComplete ? 'text-emerald-500' : 'text-slate-200'}">
-                                        ${isComplete ? 'check_circle' : 'circle'}
-                                    </span>
-                                </div>
-                            </td>
-                        `;
-                    }).join('');
-
-                    return `
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="p-2 border-b border-slate-50 font-bold text-slate-700">${student.nama}</td>
-                            ${cells}
-                        </tr>
-                    `;
-                }).join('');
-
-            } catch (error) {
-                console.error('Error loading analysis data:', error);
-                tableBody.innerHTML = '<tr><td colspan="9" class="p-8 text-center text-red-400 italic">Gagal memuat data kelas.</td></tr>';
-            }
-        }
 
         // Image Compression
         async function compressImage(file, maxWidth = 400, quality = 0.7) {
