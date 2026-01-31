@@ -193,7 +193,7 @@
                 alert(`✅ Login berhasil!\n\nSelamat datang, ${data.user.user_metadata.full_name}`);
 
                 // Redirect ke dashboard koordinator
-                window.location.href = 'dashboard-koordinator.html';
+                window.location.href = 'dashboard-koordinator.html?v=2';
 
             } catch (error) {
                 console.error('Login error:', error);
@@ -217,7 +217,7 @@
         window.addEventListener('load', async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session && session.user.user_metadata.role === 'koordinator') {
-                window.location.href = 'dashboard-koordinator.html';
+                window.location.href = 'dashboard-koordinator.html?v=2';
             }
         });
     </script>
