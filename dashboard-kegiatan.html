@@ -76,9 +76,16 @@
                     style='background-image: url("https://ui-avatars.com/api/?name=Siswa&background=13ec6d&color=fff&size=256");'>
                 </div>
                 <div>
-                    <h1 class="text-base font-bold text-slate-900 leading-none">SMAN 1 Belitang</h1>
-                    <p class="text-[13px] text-slate-500 font-medium uppercase tracking-wider mt-1" id="programName">
-                        Jajanan Nusantara</p>
+                    <h1 class="text-[15px] font-bold text-slate-900 leading-none" id="headerStudentName">Memuat...</h1>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1">
+                        <span id="headerClass">...</span> • SMAN 1 BELITANG
+                    </p>
+                    <div class="mt-2 flex flex-col gap-0.5">
+                        <p class="text-[10px] text-slate-400 font-medium">Koord: <span id="headerCoord"
+                                class="text-slate-600 font-bold">-</span></p>
+                        <p class="text-[10px] text-slate-400 font-medium">Fasil: <span id="headerFasil"
+                                class="text-slate-600 font-bold">-</span></p>
+                    </div>
                 </div>
             </div>
             <div class="relative flex items-center justify-center">
@@ -325,12 +332,36 @@
                 if (studentDataStr) {
                     const studentData = JSON.parse(studentDataStr);
 
+                    // Update Header Info (Nama & Kelas)
+                    document.getElementById('headerStudentName').textContent = studentData.nama || 'Siswa';
+                    document.getElementById('headerClass').textContent = studentData.kelas || 'X.1';
+
                     // Update header photo
                     if (studentData.photo_url) {
                         document.getElementById('studentPhoto').style.backgroundImage = `url("${studentData.photo_url}")`;
                     } else {
                         const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(studentData.nama)}&background=13ec6d&color=fff&size=256`;
                         document.getElementById('studentPhoto').style.backgroundImage = `url("${photoUrl}")`;
+                    }
+
+                    // --- MAPPING KOORDINATOR & FASILITATOR ---
+                    const trialMap = {
+                        'X.TRIAL-1': { koord: 'Koordinator Trial A', fasil: 'Fasilitator Trial 1' },
+                        'X.TRIAL-2': { koord: 'Koordinator Trial A', fasil: 'Fasilitator Trial 2' },
+                        'X.TRIAL-3': { koord: 'Koordinator Trial B', fasil: 'Fasilitator Trial 3' }
+                    };
+
+                    const userClass = studentData.kelas;
+
+                    if (trialMap[userClass]) {
+                        // Jika kelas trial
+                        document.getElementById('headerCoord').textContent = trialMap[userClass].koord;
+                        document.getElementById('headerFasil').textContent = trialMap[userClass].fasil;
+                    } else {
+                        // Jika kelas real (Logic Sementara / Placeholder)
+                        // TODO: Implementasi fetch real jika tabel relasi sudah siap
+                        document.getElementById('headerCoord').textContent = 'Bu Lucia Erviana';
+                        document.getElementById('headerFasil').textContent = 'Fasilitator Kelas ' + (userClass || '-');
                     }
                 }
 
