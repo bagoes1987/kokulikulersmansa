@@ -167,8 +167,6 @@
             submitButton.textContent = 'Memproses...';
 
             try {
-                // Format email: username@smansa.sch.id
-                const email = `${username}@smansa.sch.id`;
 
                 // Login dengan Supabase
                 const { data, error } = await supabaseClient.auth.signInWithPassword({
