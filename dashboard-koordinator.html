@@ -47,7 +47,8 @@
         }
 
         .ios-blur {
-            backdrop-blur: xl;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             background-color: rgba(255, 255, 255, 0.8);
         }
     </style>
@@ -208,6 +209,32 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+        async function loadCoordinatorData() {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+
+                if (!session || session.user.user_metadata.role !== 'koordinator') {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const userData = session.user.user_metadata;
+
+                // Update UI
+                document.getElementById('coordName').textContent = userData.full_name;
+                document.getElementById('coordNip').textContent = userData.nip || '-';
+                document.getElementById('coordSubject').textContent = userData.mapel || '-';
+                document.getElementById('coordClass').textContent = userData.kelas || '-';
+
+                // Photo fallback
+                const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=E2725B&color=fff&size=256`;
+                document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+
+            } catch (error) {
+                console.error('Error loading coordinator data:', error);
+            }
+        }
+
         async function logout() {
             const confirmLogout = window.confirm('Apakah Anda yakin ingin keluar?');
             if (!confirmLogout) return;
@@ -221,6 +248,8 @@
                 alert('Gagal logout. Silakan coba lagi.');
             }
         }
+
+        window.addEventListener('load', loadCoordinatorData);
     </script>
 </body>
 
