@@ -193,6 +193,22 @@
                 </div>
             </div>
 
+            <!-- Aktivitas Fasilitator Card -->
+            <section class="space-y-4">
+                <div class="flex items-center justify-between px-1">
+                    <h2 class="text-lg font-bold text-slate-800">Aktivitas Fasilitator</h2>
+                    <button onclick="loadFacilitatorActivities()"
+                        class="text-[10px] font-black uppercase text-primary tracking-widest hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">Lihat
+                        Semua</button>
+                </div>
+                <div id="fasilActivityContainer" class="space-y-3">
+                    <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
+                        <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari
+                            fasilitator/siswa.</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- Target Partisipasi Card -->
             <div
                 class="bg-primary-dark rounded-3xl p-6 text-white shadow-xl overflow-hidden relative group cursor-pointer active:scale-95 transition-transform">
@@ -360,6 +376,7 @@
 
             renderClassPills();
             loadStats();
+            loadFacilitatorActivities();
         }
 
         function renderClassPills() {
@@ -380,6 +397,7 @@
                 updateProgressUI(progress);
                 loadClassList();
                 renderAnalysisChart();
+                loadFacilitatorActivities();
             } catch (e) { console.error(e); }
         }
 
@@ -541,6 +559,69 @@
                     scales: { y: { beginAtZero: true, max: 100 } }
                 }
             });
+        }
+
+        async function loadFacilitatorActivities() {
+            const container = document.getElementById('fasilActivityContainer');
+            try {
+                // Get student IDs for managed classes
+                const { data: students, error: sError } = await supabaseClient
+                    .from('students')
+                    .select('id, nama, kelas')
+                    .in('kelas', myClasses);
+
+                if (sError) throw sError;
+                if (!students || students.length === 0) return;
+
+                const studentIds = students.map(s => s.id);
+                const studentMap = Object.fromEntries(students.map(s => [s.id, { nama: s.nama, kelas: s.kelas }]));
+
+                // Get latest 5 activities
+                const { data: recent, error: rError } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .in('student_id', studentIds)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (rError) throw rError;
+
+                if (!recent || recent.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
+                            <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari fasilitator/siswa.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = recent.map(r => {
+                    const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
+                    const sInfo = studentMap[r.student_id] || { nama: '?', kelas: '?' };
+                    const initials = sInfo.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+                    return `
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openClassDetail('${sInfo.kelas}')">
+                            <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-500 border border-slate-100 shadow-inner">${initials}</div>
+                            <div class="flex-1">
+                                <p class="text-[13px] font-black text-slate-800 leading-tight">${sInfo.nama}</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Kelas ${sInfo.kelas} • Hari ${r.day_id} • ${r.module_type}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] font-black text-slate-800">${time}</p>
+                                <div class="flex items-center gap-1 justify-end mt-1">
+                                    <span class="size-1.5 rounded-full ${statusColor}"></span>
+                                    <span class="text-[8px] font-black uppercase text-slate-400 tracking-tighter">${r.status === 'reviewed' ? 'Dinilai' : 'Menunggu'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                console.error('Facilitator Activity Error:', e);
+            }
         }
 
         async function logout() {
