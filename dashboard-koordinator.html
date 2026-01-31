@@ -164,11 +164,10 @@
                         </div>
                         <div class="flex flex-col">
                             <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wide">
-                                Kelas
-                                Koordinator</p>
-                            <p class="text-[#111814] dark:text-white text-lg font-bold" id="coordClass">Kelas X.1 / Fase
-                                E
-                            </p>
+                                Kelas yang Diampu</p>
+                            <div class="flex flex-wrap gap-2 mt-2" id="coordClass">
+                                <!-- Pill kelas akan muncul di sini -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -236,7 +235,23 @@
                 document.getElementById('coordName').textContent = userData.full_name;
                 document.getElementById('coordNip').textContent = userData.nip || '-';
                 document.getElementById('coordSubject').textContent = userData.mapel || '-';
-                document.getElementById('coordClass').textContent = userData.kelas || '-';
+
+                // Render Kelas Pills
+                const classContainer = document.getElementById('coordClass');
+                classContainer.innerHTML = '';
+
+                const classes = Array.isArray(userData.kelas) ? userData.kelas : (userData.kelas ? [userData.kelas] : []);
+
+                if (classes.length > 0) {
+                    classes.forEach(cls => {
+                        const pill = document.createElement('span');
+                        pill.className = 'px-3 py-1 bg-terracotta/10 text-terracotta rounded-full text-sm font-bold border border-terracotta/20';
+                        pill.textContent = cls;
+                        classContainer.appendChild(pill);
+                    });
+                } else {
+                    classContainer.innerHTML = '<span class="text-gray-400 text-sm italic">Belum ada kelas</span>';
+                }
 
                 // Photo load
                 if (userData.photo_url) {

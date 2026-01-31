@@ -150,14 +150,17 @@
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const username = document.getElementById('username').value.trim();
+            const usernameInput = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const submitButton = e.target.querySelector('button[type="submit"]');
 
-            if (!username || !password) {
+            if (!usernameInput || !password) {
                 alert('❌ Mohon isi username dan password Anda!');
                 return;
             }
+
+            // Tambahkan email domain secara otomatis jika tidak ada
+            const email = usernameInput.includes('@') ? usernameInput : `${usernameInput}@kokulikuler.id`;
 
             // Disable button dan ubah text
             submitButton.disabled = true;

@@ -118,14 +118,10 @@
 
                 <div class="space-y-2">
                     <label
-                        class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-1">Kelas
-                        (Akan Datang)</label>
-                    <div
-                        class="flex items-center gap-4 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl border border-slate-100 dark:border-white/10 opacity-60">
-                        <span class="material-symbols-outlined text-terracotta">school</span>
-                        <input type="text" id="inputClass" disabled
-                            class="bg-transparent border-none focus:ring-0 flex-1 text-lg font-semibold p-0"
-                            placeholder="Pembagian kelas menyusul">
+                        class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-1">Daftar
+                        Kelas yang Diampu</label>
+                    <div class="flex flex-wrap gap-2 mt-1" id="classPills">
+                        <!-- Pills akan muncul di sini -->
                     </div>
                 </div>
             </div>
@@ -174,6 +170,22 @@
 
             // Photo
             updatePhotoPreview(userData.photo_url, userData.full_name);
+
+            // Render Classes
+            const classPills = document.getElementById('classPills');
+            classPills.innerHTML = '';
+            const classes = Array.isArray(userData.kelas) ? userData.kelas : (userData.kelas ? [userData.kelas] : []);
+
+            if (classes.length > 0) {
+                classes.forEach(cls => {
+                    const pill = document.createElement('span');
+                    pill.className = 'px-3 py-1 bg-terracotta/10 text-terracotta rounded-full text-sm font-bold border border-terracotta/20';
+                    pill.textContent = cls;
+                    classPills.appendChild(pill);
+                });
+            } else {
+                classPills.innerHTML = '<span class="text-gray-400 text-sm italic">Belum ada kelas</span>';
+            }
         }
 
         function updatePhotoPreview(url, name) {
