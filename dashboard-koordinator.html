@@ -139,7 +139,18 @@
                     <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Pantau real-time kelas aktif.
                     </p>
                 </div>
-                <!-- 2. Rekap Penilaian -->
+                <!-- 2. Monitoring Fasilitator (NEW) -->
+                <div onclick="openFacilitatorMonitoring()"
+                    class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                    <div
+                        class="size-10 bg-blue-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                        <span class="material-symbols-outlined text-2xl">group</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Monitoring Fasil</h3>
+                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Pantau kinerja tim
+                        fasilitator.</p>
+                </div>
+                <!-- 3. Rekap Penilaian -->
                 <div onclick="switchTab('laporan')"
                     class="bg-orange-50/50 border border-orange-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
                     <div
@@ -149,25 +160,15 @@
                     <h3 class="font-bold text-slate-800 text-sm">Rekap Penilaian</h3>
                     <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Hasil asesmen siswa.</p>
                 </div>
-                <!-- 3. Alur Kegiatan -->
+                <!-- 4. Alur Kegiatan -->
                 <div onclick="alert('Timeline Alur Kegiatan sedang disiapkan...')"
-                    class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                    class="bg-purple-50/50 border border-purple-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
                     <div
-                        class="size-10 bg-blue-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                        class="size-10 bg-purple-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">route</span>
                     </div>
                     <h3 class="font-bold text-slate-800 text-sm">Alur Kegiatan</h3>
                     <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Timeline & roadmap kerja.</p>
-                </div>
-                <!-- 4. Edit Profil -->
-                <div onclick="window.location.href='pengaturan-akun-koordinator.html'"
-                    class="bg-slate-50 border border-slate-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">account_circle</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Edit Profil</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">NIP, Mapel & Biodata.</p>
                 </div>
                 <!-- 5. Laporan Akhir -->
                 <div onclick="alert('Menu Laporan & Ekspor Sertifikat sedang disiapkan...')"
@@ -310,6 +311,30 @@
             <div class="max-h-[60vh] overflow-y-auto no-scrollbar p-8 pt-6">
                 <div id="detailFasilitators" class="mb-8"></div>
                 <div id="detailStudents" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Monitoring Fasilitator -->
+    <div id="modalFacilitatorMonitoring"
+        class="fixed inset-0 z-[200] hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
+        <div
+            class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-blue-50/30">
+                <div>
+                    <h3 class="text-xl font-black text-slate-800">Tim Fasilitator</h3>
+                    <p class="text-xs text-slate-500 font-semibold tracking-wide mt-1 uppercase">Kinerja & Progress</p>
+                </div>
+                <button onclick="closeFacilitatorModal()"
+                    class="size-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="max-h-[60vh] overflow-y-auto no-scrollbar p-8 pt-6">
+                <div id="facilitatorListContainer" class="space-y-4">
+                    <!-- Facilitator Cards -->
+                </div>
             </div>
         </div>
     </div>
@@ -622,6 +647,76 @@
             } catch (e) {
                 console.error('Facilitator Activity Error:', e);
             }
+        }
+
+        async function openFacilitatorMonitoring() {
+            const modal = document.getElementById('modalFacilitatorMonitoring');
+            const container = document.getElementById('facilitatorListContainer');
+            modal.classList.remove('hidden');
+            container.innerHTML = '<div class="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse text-center py-10">Memuat data kinerja tim...</div>';
+
+            try {
+                container.innerHTML = '';
+                for (const cls of myClasses) {
+                    // Fetch data per class
+                    const { data: students } = await supabaseClient.from('students').select('id').eq('kelas', cls);
+                    if (!students || students.length === 0) continue;
+
+                    const studentIds = students.map(s => s.id);
+                    const { data: responses } = await supabaseClient
+                        .from('module_responses')
+                        .select('status')
+                        .in('student_id', studentIds);
+
+                    const totalResponses = responses ? responses.length : 0;
+                    const reviewedCount = responses ? responses.filter(r => r.status === 'reviewed').length : 0;
+                    const gradingProgress = totalResponses > 0 ? Math.round((reviewedCount / totalResponses) * 100) : 0;
+
+                    container.innerHTML += `
+                        <div onclick="closeFacilitatorModal(); openClassDetail('${cls}')" class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="size-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500">
+                                        <span class="material-symbols-outlined text-xl">group</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[13px] font-black text-slate-800 leading-tight">Fasilitator Kelas ${cls}</p>
+                                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">${totalResponses} Jawaban Masuk</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-lg font-black text-blue-600">${gradingProgress}%</span>
+                                </div>
+                            </div>
+                            
+                            <div class="w-full h-2 bg-slate-50 rounded-full overflow-hidden mb-2">
+                                <div class="bg-blue-500 h-full rounded-full transition-all duration-1000" style="width: ${gradingProgress}%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status Penilaian</span>
+                                <span class="text-[9px] font-bold text-slate-500">${reviewedCount} dari ${totalResponses} Selesai</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (container.innerHTML === '') {
+                    container.innerHTML = `
+                        <div class="text-center py-10">
+                            <p class="text-xs text-slate-400 font-medium italic">Tidak ada kelas yang terhubung.</p>
+                        </div>
+                    `;
+                }
+
+            } catch (e) {
+                console.error('Facilitator Monitoring Error:', e);
+                container.innerHTML = '<div class="text-center py-10 text-red-500 text-xs font-bold">Gagal memuat data.</div>';
+            }
+        }
+
+        function closeFacilitatorModal() {
+            document.getElementById('modalFacilitatorMonitoring').classList.add('hidden');
         }
 
         async function logout() {
