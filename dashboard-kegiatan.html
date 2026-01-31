@@ -81,11 +81,15 @@
                     <p class="text-[13px] text-slate-500 font-bold mt-0.5">
                         <span id="headerClass">...</span> • SMAN 1 BELITANG
                     </p>
-                    <div class="mt-2.5 flex flex-col gap-1">
-                        <p class="text-[11px] text-slate-400 font-medium leading-none">Koord: <span id="headerCoord"
-                                class="text-slate-700 font-bold">-</span></p>
-                        <p class="text-[11px] text-slate-400 font-medium leading-none">Fasil: <span id="headerFasil"
-                                class="text-slate-700 font-bold">-</span></p>
+                    <div class="mt-2.5 flex flex-col gap-1.5">
+                        <div class="flex items-start gap-1 text-[11px] leading-tight">
+                            <span class="text-slate-400 font-medium w-[38px] shrink-0">Koord:</span>
+                            <span id="headerCoord" class="text-slate-700 font-bold">-</span>
+                        </div>
+                        <div class="flex items-start gap-1 text-[11px] leading-tight">
+                            <span class="text-slate-400 font-medium w-[38px] shrink-0">Fasil:</span>
+                            <span id="headerFasil" class="text-slate-700 font-bold">-</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -365,7 +369,7 @@
                         'X.9': { koord: 'Aprilyan Dona, S.Pd.', fasil: 'Andree Prasetyo, S.Pd. & Sindy Dwi Pertiwi, M.Pd.' },
                         'X.10': { koord: 'Ika Setiawati, S.Pd', fasil: 'Indah Sulmayanti, M.Pd. & M. Hafiz Sytar, S.Kom.' },
                         'X.11': { koord: 'Anastasiya Candra M, S.Pd.', fasil: 'Pandu Aditya, M.Pd. & Tiar Hajunilato, M.Pd.' },
-                        
+
                         // KELAS XI
                         'XI.1': { koord: 'Dr. Didi Franzhardi, M.Pd.', fasil: 'Try Puri anggraini, S.Pd., M.Pd. & Lia Ningrum, S.Pd.' },
                         'XI.2': { koord: 'Dr. Didi Franzhardi, M.Pd.', fasil: 'Hermanto, S.Pd., M.Pd. & Santi Aryanti, S.Pd.' },
@@ -393,7 +397,7 @@
                     };
 
                     const userClass = studentData.kelas;
-                    
+
                     if (trialMap[userClass]) {
                         // Jika kelas trial
                         document.getElementById('headerCoord').textContent = trialMap[userClass].koord;
@@ -402,7 +406,7 @@
                         // Jika kelas real
                         const data = realClassMap[userClass];
                         document.getElementById('headerCoord').textContent = data.koord;
-                        
+
                         // Format Fasil (Split by & and number them)
                         const fasils = data.fasil.split('&').map(s => s.trim());
                         if (fasils.length > 1) {
