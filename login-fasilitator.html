@@ -126,7 +126,13 @@
         </div>
     </main>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const toggleIcon = document.getElementById('toggleIcon');
@@ -140,13 +146,54 @@
             }
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const username = document.getElementById('username').value;
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
 
-            console.log('Login attempt:', { username, password });
-            alert('Login berhasil!\\nUsername: ' + username + '\\n(Fitur autentikasi akan segera aktif)');
+            // Simple validation
+            if (!username || !password) return;
+
+            // Visual feedback
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span>';
+
+            try {
+                // Background email conversion: fasil_nama -> fasil_nama@kokulikuler.id
+                const email = `${username}@kokulikuler.id`;
+
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                // Check role
+                if (data.user.user_metadata.role !== 'fasilitator') {
+                    await supabaseClient.auth.signOut();
+                    throw new Error('Maaf, akun ini bukan akun Fasilitator.');
+                }
+
+                // Success
+                window.location.href = 'dashboard-fasilitator.html';
+
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Gagal Login: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+
+        // Check session if already logged in
+        window.addEventListener('load', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session && session.user.user_metadata.role === 'fasilitator') {
+                window.location.href = 'dashboard-fasilitator.html';
+            }
         });
     </script>
 </body>
