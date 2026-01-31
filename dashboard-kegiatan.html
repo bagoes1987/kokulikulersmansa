@@ -352,16 +352,59 @@
                         'X.TRIAL-3': { koord: 'Koordinator Trial B', fasil: 'Fasilitator Trial 3' }
                     };
 
+                    const realClassMap = {
+                        // KELAS X
+                        'X.1': 'Sukirno, S.Pd. & Ari Muchtrinai N. N, S.Pd.I.',
+                        'X.2': 'Handaroh, S.Pd. & Fantas Jaya A, S.Pd.',
+                        'X.3': 'Flortentinus Supriyanto, S.Pd. & Nelly Kurniasih, S.Pd.',
+                        'X.4': 'Siti Anita, S.Pd. & Latifatu Anisa, S. Pd.',
+                        'X.5': 'Atik Setianingsih, S.Pd. & Lovelya Valentina, S.Pd.',
+                        'X.6': 'Wiwik Eko Prihatin, S.Pd., M.M. & Andi Cahya Sanjaya, S.Pd.',
+                        'X.7': 'Azuari Dian Prasasti, S.Pd. & Deni Yunarti, S.Pd.',
+                        'X.8': 'Fajar Abdul Majid, S.Pd & Nora Nurhalita, S.Pd.',
+                        'X.9': 'Andree Prasetyo, S.Pd. & Sindy Dwi Pertiwi, M.Pd.',
+                        'X.10': 'Indah Sulmayanti, M.Pd. & M. Hafiz Sytar, S.Kom.',
+                        'X.11': 'Pandu Aditya, M.Pd. & Tiar Hajunilato, M.Pd.',
+
+                        // KELAS XI
+                        'XI.1': 'Try Puri anggraini, S.Pd., M.Pd. & Lia Ningrum, S.Pd.',
+                        'XI.2': 'Hermanto, S.Pd., M.Pd. & Santi Aryanti, S.Pd.',
+                        'XI.3': 'Nengsi Juita, M.Pd.Si. & Hedi Prawito, S.Pd.',
+                        'XI.4': 'Anggun Saymona, S.Pd., M.Pd. & Lia Kurniasari, S.Pd.',
+                        'XI.5': 'Nyoman Kopariyanto, S.Pd. & Etik Prasetyaningsih, S.Pd.',
+                        'XI.6': 'Abdul Hafiz, S.Pd. & Suhaib Jawahir, S.Pd.',
+                        'XI.7': 'Singgih Sudarmawan, S.Ag. & Suparmono, S.Ag.',
+                        'XI.8': 'Wely Marisa, S.Pd.',
+                        'XI.9': 'A.Thoriq Ganda, S.Pd.',
+                        'XI.10': 'Ari Yani A M, S.T.',
+                        'XI.11': 'Bagus Panca Wiratama, S.Pd., M.Pd.',
+
+                        // KELAS XII
+                        'XII.1': 'Tri Tamti Nugraheni, S.Pd. & Yuni Asrina, S.Pd.',
+                        'XII.2': 'Titin Sumarni, S.Pd. & Sukirok, S.Pd.',
+                        'XII.3': 'Nur Azizah, S.Pd.I. & Febrianita Prasasti, S.Pd.',
+                        'XII.4': 'Atik Apriliawati, S.Pd. & Ferdinasari, S.pd.',
+                        'XII.5': 'Nur Rohmad Safarudin, M.Pd. & Fery Ardianto, M.Pd.',
+                        'XII.6': 'Ade Ervani M, S.Sn. & Dra. Hj. Endang Suwartijah',
+                        'XII.7': 'Ribuwati, M.Pd. & Nasution, S.Pd.',
+                        'XII.8': 'Apriana, S.Pd. & Agung Subaryanto, S.Pd.',
+                        'XII.9': 'Ari Astuti, S.Pd. & Erfizah, S.Pd',
+                        'XII.10': 'Muh. Zuhdi, S.Pd. & Ellys Trisnowati, M.Pd.I.'
+                    };
+
                     const userClass = studentData.kelas;
 
                     if (trialMap[userClass]) {
                         // Jika kelas trial
                         document.getElementById('headerCoord').textContent = trialMap[userClass].koord;
                         document.getElementById('headerFasil').textContent = trialMap[userClass].fasil;
+                    } else if (realClassMap[userClass]) {
+                        // Jika kelas real (Data Fasilitator Lengkap)
+                        document.getElementById('headerCoord').textContent = 'Lucia Erviana, S.Pd.';
+                        document.getElementById('headerFasil').textContent = realClassMap[userClass];
                     } else {
-                        // Jika kelas real (Logic Sementara / Placeholder)
-                        // TODO: Implementasi fetch real jika tabel relasi sudah siap
-                        document.getElementById('headerCoord').textContent = 'Bu Lucia Erviana';
+                        // Fallback
+                        document.getElementById('headerCoord').textContent = 'Lucia Erviana, S.Pd.';
                         document.getElementById('headerFasil').textContent = 'Fasilitator Kelas ' + (userClass || '-');
                     }
                 }
