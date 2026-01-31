@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html class="light" lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Pengaturan Akun Koordinator - SMAN 1 Belitang</title>
+    <link rel="icon" href="./logo-sekolah.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "terracotta": "#E2725B",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            min-height: 100dvh;
+        }
+
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111814] dark:text-white min-h-screen">
+    <div
+        class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden max-w-[430px] mx-auto shadow-2xl bg-white dark:bg-background-dark">
+        <!-- TopAppBar -->
+        <div
+            class="flex items-center bg-white dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-gray-100 dark:border-gray-800">
+            <button onclick="goBack()" class="text-[#111814] dark:text-white flex items-center gap-2 shrink-0">
+                <span class="material-symbols-outlined text-3xl">arrow_back</span>
+                <span class="text-sm font-semibold">Dasbor</span>
+            </button>
+            <h2
+                class="text-[#111814] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
+                Profil Koordinator</h2>
+            <div class="flex w-20 items-center justify-end"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 overflow-auto pb-32">
+            <!-- Profile Photo Section -->
+            <div class="flex p-6 @container">
+                <div class="flex w-full flex-col gap-6 items-center">
+                    <div class="relative group">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-terracotta/20 shadow-lg"
+                            id="photoPreview">
+                        </div>
+                        <!-- Upload Overlay -->
+                        <label for="photoInput"
+                            class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                            <span class="material-symbols-outlined text-white text-3xl">photo_camera</span>
+                        </label>
+                        <input type="file" id="photoInput" accept="image/jpeg,image/png,image/jpg" class="hidden">
+                    </div>
+                    <div class="flex flex-col items-center justify-center text-center">
+                        <input type="text" id="inputName"
+                            class="text-2xl font-bold bg-transparent border-none text-center focus:ring-0 w-full"
+                            placeholder="Nama Lengkap">
+                        <p class="text-terracotta text-sm font-bold uppercase tracking-wider">Koordinator Kokulikuler
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Information -->
+            <div class="px-6 space-y-5">
+                <div class="space-y-2">
+                    <label
+                        class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-1">NIP</label>
+                    <div
+                        class="flex items-center gap-4 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl border border-slate-100 dark:border-white/10">
+                        <span class="material-symbols-outlined text-terracotta">id_card</span>
+                        <input type="text" id="inputNip"
+                            class="bg-transparent border-none focus:ring-0 flex-1 text-lg font-semibold p-0"
+                            placeholder="Masukkan NIP">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-1">Mata
+                        Pelajaran</label>
+                    <div
+                        class="flex items-center gap-4 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl border border-slate-100 dark:border-white/10">
+                        <span class="material-symbols-outlined text-terracotta">menu_book</span>
+                        <input type="text" id="inputSubject"
+                            class="bg-transparent border-none focus:ring-0 flex-1 text-lg font-semibold p-0"
+                            placeholder="Mata Pelajaran yang Diampu">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label
+                        class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider ml-1">Kelas
+                        (Akan Datang)</label>
+                    <div
+                        class="flex items-center gap-4 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl border border-slate-100 dark:border-white/10 opacity-60">
+                        <span class="material-symbols-outlined text-terracotta">school</span>
+                        <input type="text" id="inputClass" disabled
+                            class="bg-transparent border-none focus:ring-0 flex-1 text-lg font-semibold p-0"
+                            placeholder="Pembagian kelas menyusul">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fixed Bottom Actions -->
+        <div
+            class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-white/80 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800 p-4 pb-10">
+            <div class="flex gap-3">
+                <button onclick="goBack()"
+                    class="flex-1 rounded-2xl h-14 bg-gray-100 dark:bg-white/10 text-slate-600 dark:text-white font-bold active:scale-95 transition-transform">
+                    Batal
+                </button>
+                <button onclick="saveChanges()" id="saveBtn"
+                    class="flex-1 rounded-2xl h-14 bg-terracotta text-white font-bold shadow-lg shadow-terracotta/30 active:scale-95 transition-transform flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined" id="saveIcon">save</span>
+                    <span id="saveText">Simpan</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let userData = null;
+        let selectedFile = null;
+
+        async function loadProfile() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            userData = session.user.user_metadata;
+
+            // Fill inputs
+            document.getElementById('inputName').value = userData.full_name || '';
+            document.getElementById('inputNip').value = userData.nip || '';
+            document.getElementById('inputSubject').value = userData.mapel || '';
+
+            // Photo
+            updatePhotoPreview(userData.photo_url, userData.full_name);
+        }
+
+        function updatePhotoPreview(url, name) {
+            const photoPreview = document.getElementById('photoPreview');
+            if (url) {
+                photoPreview.style.backgroundImage = `url("${url}")`;
+            } else {
+                const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=E2725B&color=fff&size=256`;
+                photoPreview.style.backgroundImage = `url("${fallback}")`;
+            }
+        }
+
+        async function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > 800) {
+                            height = (height * 800) / width;
+                            width = 800;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.8);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        document.getElementById('photoInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            selectedFile = file;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('photoPreview').style.backgroundImage = `url("${e.target.result}")`;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        async function saveChanges() {
+            const btn = document.getElementById('saveBtn');
+            const icon = document.getElementById('saveIcon');
+            const txt = document.getElementById('saveText');
+
+            try {
+                btn.disabled = true;
+                icon.textContent = 'sync';
+                icon.classList.add('animate-spin');
+                txt.textContent = 'Menyimpan...';
+
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                let photoUrl = userData.photo_url;
+
+                if (selectedFile) {
+                    const compressedBlob = await compressImage(selectedFile);
+                    const fileName = `${session.user.id}_${Date.now()}.jpg`;
+                    const { error: uploadError } = await supabaseClient.storage
+                        .from('profile-photos')
+                        .upload(fileName, compressedBlob);
+                    if (uploadError) throw uploadError;
+
+                    const { data: { publicUrl } } = supabaseClient.storage.from('profile-photos').getPublicUrl(fileName);
+                    photoUrl = publicUrl;
+                }
+
+                const { error: updateError } = await supabaseClient.auth.updateUser({
+                    data: {
+                        full_name: document.getElementById('inputName').value,
+                        nip: document.getElementById('inputNip').value,
+                        mapel: document.getElementById('inputSubject').value,
+                        photo_url: photoUrl
+                    }
+                });
+
+                if (updateError) throw updateError;
+
+                alert('✅ Profil berhasil diperbarui!');
+                window.location.href = 'dashboard-koordinator.html';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Gagal menyimpan: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                icon.textContent = 'save';
+                icon.classList.remove('animate-spin');
+                txt.textContent = 'Simpan';
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'dashboard-koordinator.html';
+        }
+
+        window.addEventListener('load', loadProfile);
+    </script>
+</body>
+
+</html>
