@@ -1,58 +1,63 @@
 <!DOCTYPE html>
-<html class="light" lang="id">
+<html lang="id">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Profil Guru Koordinator - SMAN 1 Belitang</title>
+    <title>Professional Dashboard Koordinator</title>
     <link rel="icon" href="./logo-sekolah.png" type="image/png">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
     <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#13ec6d",
-                        "terracotta": "#E2725B",
-                        "background-light": "#f6f8f7",
-                        "background-dark": "#102218",
+                        "primary": "#10b981", // Emerald 500
+                        "primary-dark": "#065f46", // Emerald 800
+                        "accent": "#e2725b", // Terracotta
+                        "surface": "#f8fafc",
+                        "card-bg": "#ffffff",
                     },
                     fontFamily: {
-                        "display": ["Lexend", "sans-serif"]
+                        "sans": ["Lexend", "sans-serif"],
                     },
                     borderRadius: {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
+                        "2xl": "24px",
                     },
                 },
             },
         }
     </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body { @apply bg-[#f1f5f9] text-[#1e293b] font-sans; }
+        }
+        .ios-segment-control {
+            background-color: rgba(148, 163, 184, 0.1);
+            padding: 2px;
+            border-radius: 10px;
+        }
+        .ios-segment-btn.active {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            color: #0f172a;
+        }
+        .circular-progress {
+            background: conic-gradient(var(--primary-color) 244.8deg, #e2e8f0 0deg);
+            border-radius: 50%;
+        }
+    </style>
     <style>
         body {
-            font-family: 'Lexend', sans-serif;
-            -webkit-tap-highlight-color: transparent;
             min-height: max(884px, 100dvh);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-
-        .ios-blur {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background-color: rgba(255, 255, 255, 0.8);
-        }
-
-        #photoPreview {
+        #profilePhoto {
             transition: all 0.3s ease;
         }
 
@@ -63,155 +68,210 @@
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark text-[#111814] dark:text-white min-h-screen">
-    <div
-        class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden max-w-[430px] mx-auto shadow-2xl bg-white dark:bg-background-dark">
-
-        <!-- Top Navigation Bar -->
-        <header
-            class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
-            <div class="flex items-center justify-between px-4 h-16 w-full">
-                <button onclick="window.location.href='index.html'"
-                    class="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                    <span class="material-symbols-outlined text-[#111814] dark:text-white">arrow_back_ios_new</span>
-                </button>
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center overflow-hidden">
-                        <img class="w-full h-full object-cover" src="./logo-sekolah.png" alt="Logo SMAN 1 Belitang" />
-                    </div>
-                    <h1 class="text-[#111814] dark:text-white text-base font-bold leading-tight tracking-tight">SMAN 1
-                        Belitang</h1>
-                </div>
-                <div class="w-10"></div>
-            </div>
-        </header>
-
-        <main class="flex-1 w-full pb-32">
-            <!-- Profile Header Section -->
-            <section class="flex flex-col items-center pt-8 pb-6 px-4">
-                <div class="relative group">
-                    <div
-                        class="w-32 h-32 rounded-full border-4 border-terracotta p-1 shadow-lg overflow-hidden bg-white dark:bg-gray-800 relative">
-                        <div class="w-full h-full rounded-full bg-cover bg-center" id="profilePhoto"
-                            style='background-image: url("https://ui-avatars.com/api/?name=Koordinator&background=E2725B&color=fff&size=256");'>
-                        </div>
-                        <!-- Upload Overlay -->
-                        <label for="photoInput"
-                            class="upload-overlay absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-full">
-                            <span class="material-symbols-outlined text-white text-3xl">photo_camera</span>
-                        </label>
-                    </div>
-                    <input type="file" id="photoInput" accept="image/jpeg,image/png,image/jpg" class="hidden">
-                    <div class="absolute bottom-0 right-0 bg-terracotta text-white p-1.5 rounded-full shadow-md z-10">
-                        <span class="material-symbols-outlined text-sm">verified</span>
-                    </div>
-                </div>
-                <div class="mt-4 text-center">
-                    <h2 class="text-[#111814] dark:text-white text-3xl font-bold tracking-tight" id="coordName">Nama
-                        Koordinator</h2>
-                    <p class="text-terracotta text-base font-semibold mt-1 uppercase tracking-wider">Koordinator
-                        Kokulikuler SMAN 1 Belitang</p>
-                    <div
-                        class="mt-3 inline-flex items-center px-4 py-1.5 rounded-full bg-terracotta/10 text-terracotta text-sm font-medium">
-                        Cita Rasa Jajanan Nusantara
-                    </div>
-                </div>
-            </section>
-
-            <!-- Information Sections -->
-            <section class="px-5 space-y-4">
-                <div class="flex items-center justify-between pt-4">
-                    <h3 class="text-[#111814] dark:text-white text-lg font-bold tracking-tight">Informasi Biodata</h3>
-                </div>
-
-                <div class="space-y-3">
-                    <!-- NIP -->
-                    <div
-                        class="flex items-center gap-4 bg-slate-50 dark:bg-gray-900 p-4 rounded-2xl border border-slate-100 dark:border-gray-800 shadow-sm">
-                        <div
-                            class="flex items-center justify-center rounded-xl bg-terracotta/10 text-terracotta shrink-0 w-12 h-12">
-                            <span class="material-symbols-outlined">id_card</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wide">NIP
-                            </p>
-                            <p class="text-[#111814] dark:text-white text-lg font-bold" id="coordNip">19850101 201001 1
-                                001</p>
-                        </div>
-                    </div>
-
-                    <!-- Guru Mata Pelajaran -->
-                    <div
-                        class="flex items-center gap-4 bg-slate-50 dark:bg-gray-900 p-4 rounded-2xl border border-slate-100 dark:border-gray-800 shadow-sm">
-                        <div
-                            class="flex items-center justify-center rounded-xl bg-terracotta/10 text-terracotta shrink-0 w-12 h-12">
-                            <span class="material-symbols-outlined">menu_book</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wide">Mata
-                                Pelajaran</p>
-                            <p class="text-[#111814] dark:text-white text-lg font-bold" id="coordSubject">Bahasa
-                                Indonesia</p>
-                        </div>
-                    </div>
-
-                    <!-- Kelas Koordinator -->
-                    <div
-                        class="flex items-center gap-4 bg-slate-50 dark:bg-gray-900 p-4 rounded-2xl border border-slate-100 dark:border-gray-800 shadow-sm">
-                        <div
-                            class="flex items-center justify-center rounded-xl bg-terracotta/10 text-terracotta shrink-0 w-12 h-12">
-                            <span class="material-symbols-outlined">school</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase tracking-wide">
-                                Kelas yang Diampu</p>
-                            <div class="flex flex-wrap gap-2 mt-2" id="coordClass">
-                                <!-- Pill kelas akan muncul di sini -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Context Card -->
+<body class="min-h-screen pb-12">
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
                 <div
-                    class="mt-6 p-6 rounded-3xl bg-gradient-to-br from-terracotta to-[#c25a44] text-white shadow-xl relative overflow-hidden">
-                    <div class="relative z-10">
-                        <h4 class="font-bold text-xl">Kokulikuler SMAN 1 Belitang</h4>
-                        <p class="text-white/90 text-base mt-2 leading-relaxed">Cita Rasa Jajanan Nusantara</p>
+                    class="size-10 rounded-full overflow-hidden shadow-sm border border-slate-100 flex items-center justify-center bg-white relative group">
+                    <div id="profilePhoto" class="w-full h-full bg-cover bg-center"
+                        style="background-image: url('https://ui-avatars.com/api/?name=K&background=10b981&color=fff');">
                     </div>
-                    <div class="absolute -right-6 -bottom-6 opacity-20">
-                        <span class="material-symbols-outlined text-9xl">local_dining</span>
+                    <!-- Upload Overlay -->
+                    <label for="photoInput"
+                        class="upload-overlay absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="material-symbols-outlined text-white text-base">photo_camera</span>
+                    </label>
+                </div>
+                <input type="file" id="photoInput" accept="image/jpeg,image/png,image/jpg" class="hidden">
+                <div>
+                    <h1 class="text-sm font-bold text-slate-900 leading-none" id="coordName">Memuat...</h1>
+                    <p class="text-[10px] text-primary font-semibold tracking-wide uppercase mt-1">Panel Koordinator
+                        SMAN
+                        1 Belitang</p>
+                </div>
+            </div>
+            <div
+                class="relative flex items-center justify-center size-12 shadow-sm rounded-full bg-white border border-slate-100">
+                <svg class="size-12 -rotate-90">
+                    <circle cx="24" cy="24" fill="transparent" r="18" stroke="#f1f5f9" stroke-width="4"></circle>
+                    <circle cx="24" cy="24" fill="transparent" r="18" stroke="#10b981" stroke-dasharray="113"
+                        stroke-dashoffset="30" stroke-linecap="round" stroke-width="4"></circle>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-[10px] font-bold text-slate-800">75%</span>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-md mx-auto px-5 pb-3">
+            <div class="ios-segment-control flex text-[13px] font-medium text-slate-500">
+                <button class="ios-segment-btn active flex-1 py-1.5 rounded-lg transition-all">Ringkasan</button>
+                <button class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Progres Kelas</button>
+                <button class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Laporan</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-5 py-6 space-y-6">
+        <div class="space-y-1">
+            <h2 class="text-xl font-bold text-slate-800">Cita Rasa Jajanan</h2>
+            <p class="text-sm text-slate-500">P5: Kewirausahaan & Budaya Nusantara</p>
+            <div class="flex flex-wrap gap-2 mt-3" id="coordClass">
+                <!-- Pills kelas akan muncul di sini -->
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div
+                class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                <div class="size-10 bg-primary rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-2xl">monitoring</span>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">Monitoring Kelas</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Pantau real-time kelas aktif.</p>
+            </div>
+            <div
+                class="bg-orange-50 border border-orange-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                <div class="size-10 bg-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-2xl">assignment_turned_in</span>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">Rekap Penilaian</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Hasil asesmen siswa.</p>
+            </div>
+            <div
+                class="bg-blue-50 border border-blue-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                <div class="size-10 bg-blue-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-2xl">route</span>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">Alur Kegiatan</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Timeline & roadmap kerja.</p>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer"
+                onclick="window.location.href='pengaturan-akun-koordinator.html'">
+                <div class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-2xl">account_circle</span>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">Edit Profil</h3>
+                <p class="text-[11px] text-slate-500 mt-1">NIP, Mapel & Biodata.</p>
+            </div>
+            <div
+                class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                <div
+                    class="size-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-2xl">description</span>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">Laporan Akhir</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Ekspor dokumen P5 & sertifikat.</p>
+            </div>
+            <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer"
+                onclick="window.location.href='pengaturan-akun-koordinator.html'">
+                <div
+                    class="size-10 bg-orange-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                    <span class="material-symbols-outlined text-2xl">settings</span>
+                </div>
+                <h3 class="font-bold text-slate-800 text-sm">Pengaturan</h3>
+                <p class="text-[11px] text-slate-500 mt-1">Konfigurasi jadwal & peran.</p>
+            </div>
+        </div>
+
+        <div class="bg-primary-dark rounded-2xl p-5 text-white shadow-lg overflow-hidden relative">
+            <div class="relative z-10 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-white/70 font-medium uppercase tracking-widest">Target Partisipasi</p>
+                    <p class="text-2xl font-bold mt-1" id="studentCount">450 <span
+                            class="text-sm font-normal text-white/60">Siswa Aktif</span></p>
+                </div>
+                <div class="bg-white/10 p-3 rounded-full">
+                    <span class="material-symbols-outlined text-3xl">school</span>
+                </div>
+            </div>
+            <div class="absolute -bottom-6 -right-6 size-24 bg-primary/20 rounded-full blur-2xl"></div>
+        </div>
+
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-800">Informasi Jabatan</h2>
+                <button onclick="loadCoordinatorData()"
+                    class="text-primary text-xs font-semibold hover:bg-primary/5 px-2 py-1 rounded-lg">Refresh</button>
+            </div>
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-5">
+                <div class="flex items-start gap-4">
+                    <div class="size-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                        <span class="material-symbols-outlined text-2xl">id_card</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">NIP</p>
+                        <p class="text-sm font-bold text-slate-800" id="coordNip">Memuat...</p>
                     </div>
                 </div>
-            </section>
-        </main>
+                <div class="h-px bg-slate-100"></div>
+                <div class="flex items-start gap-4">
+                    <div class="size-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                        <span class="material-symbols-outlined text-2xl">menu_book</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Mata Pelajaran</p>
+                        <p class="text-sm font-bold text-slate-800" id="coordSubject">Memuat...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <!-- Bottom Navigation (iOS Style) -->
-        <nav
-            class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto bg-white/90 backdrop-blur-xl border-t border-slate-100 px-8 py-3 pb-8 flex justify-between items-center z-[100]">
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-800">Status Terbaru</h2>
+            </div>
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-4">
+                <div class="flex items-center gap-4">
+                    <div class="size-2 rounded-full bg-primary animate-pulse"></div>
+                    <div class="flex-1">
+                        <p class="text-[13px] font-semibold text-slate-800">Kelas X-1 Aktif</p>
+                        <p class="text-[11px] text-slate-500">Tahap Pengolahan Jajanan</p>
+                    </div>
+                    <span class="text-[10px] text-slate-400">2m lalu</span>
+                </div>
+                <div class="h-px bg-slate-100"></div>
+                <div class="flex items-center gap-4">
+                    <div class="size-2 rounded-full bg-accent"></div>
+                    <div class="flex-1">
+                        <p class="text-[13px] font-semibold text-slate-800">Evaluasi XII-4</p>
+                        <p class="text-[11px] text-slate-500">Menunggu Review Koordinator</p>
+                    </div>
+                    <span class="text-[10px] text-slate-400">15m lalu</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav
+        class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 safe-area-bottom z-[100]">
+        <div class="max-w-md mx-auto flex justify-around items-center pt-3 pb-6 px-4">
             <button onclick="window.location.href='index.html'"
                 class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
-                <span class="material-symbols-outlined !text-2xl">home</span>
-                <span class="text-[12px] font-medium">Beranda</span>
+                <span class="material-symbols-outlined">home</span>
+                <span class="text-[10px] font-medium">Beranda</span>
             </button>
             <button onclick="window.location.href='dashboard-koordinator.html'"
                 class="flex flex-col items-center gap-1 text-primary transition-transform active:scale-90">
-                <span class="material-symbols-outlined !text-2xl"
-                    style="font-variation-settings: 'FILL' 1">grid_view</span>
-                <span class="text-[12px] font-bold">Dasbor</span>
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+                <span class="text-[10px] font-bold">Dasbor</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
+                <span class="material-symbols-outlined">analytics</span>
+                <span class="text-[10px] font-medium">Analisis</span>
             </button>
             <button onclick="window.location.href='pengaturan-akun-koordinator.html'"
                 class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
-                <span class="material-symbols-outlined !text-2xl">person</span>
-                <span class="text-[12px] font-medium">Profil</span>
+                <span class="material-symbols-outlined">person</span>
+                <span class="text-[10px] font-medium">Profil</span>
             </button>
             <button onclick="logout()"
                 class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90 hover:text-red-500">
-                <span class="material-symbols-outlined !text-2xl">logout</span>
-                <span class="text-[12px] font-medium">Keluar</span>
+                <span class="material-symbols-outlined">logout</span>
+                <span class="text-[10px] font-medium font-bold">Keluar</span>
             </button>
-        </nav>
-    </div>
+        </div>
+    </nav>
 
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -239,35 +299,34 @@
                 // Render Kelas Pills
                 const classContainer = document.getElementById('coordClass');
                 classContainer.innerHTML = '';
-
                 const classes = Array.isArray(userData.kelas) ? userData.kelas : (userData.kelas ? [userData.kelas] : []);
 
                 if (classes.length > 0) {
                     classes.forEach(cls => {
                         const pill = document.createElement('span');
-                        pill.className = 'px-3 py-1 bg-terracotta/10 text-terracotta rounded-full text-sm font-bold border border-terracotta/20';
+                        pill.className = 'px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[11px] font-bold border border-emerald-200';
                         pill.textContent = cls;
                         classContainer.appendChild(pill);
                     });
                 } else {
-                    classContainer.innerHTML = '<span class="text-gray-400 text-sm italic">Belum ada kelas</span>';
+                    classContainer.innerHTML = '<span class="text-gray-400 text-xs italic">Belum ada kelas</span>';
                 }
 
                 // Photo load
                 if (userData.photo_url) {
                     document.getElementById('profilePhoto').style.backgroundImage = `url("${userData.photo_url}")`;
                 } else {
-                    const photoUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=E2725B&color=fff&size=256`;
-                    document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+                    const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=10b981&color=fff&size=256`;
+                    document.getElementById('profilePhoto').style.backgroundImage = `url("${fallback}")`;
                 }
 
             } catch (error) {
-                console.error('Error loading coordinator data:', error);
+                console.error('Error loading data:', error);
             }
         }
 
         // Image Compression
-        async function compressImage(file, maxWidth = 800, quality = 0.8) {
+        async function compressImage(file, maxWidth = 400, quality = 0.7) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onload = function (e) {
@@ -297,62 +356,48 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            if (!file.type.match('image/(jpeg|jpg|png)')) {
-                alert('❌ Format file tidak didukung. Gunakan JPEG atau PNG.');
-                return;
-            }
-
             try {
                 const { data: { session } } = await supabaseClient.auth.getSession();
                 if (!session) return;
 
                 const overlay = document.querySelector('.upload-overlay');
-                overlay.innerHTML = '<span class="material-symbols-outlined text-white text-3xl animate-spin">sync</span>';
+                overlay.innerHTML = '<span class="material-symbols-outlined text-white text-base animate-spin">sync</span>';
+                overlay.style.opacity = '1';
 
-                // Compress
                 const compressedBlob = await compressImage(file);
-                const compressedFile = new File([compressedBlob], `profile_${session.user.id}.jpg`, { type: 'image/jpeg' });
-
-                // Upload
                 const fileName = `${session.user.id}_${Date.now()}.jpg`;
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                const { error: uploadError } = await supabaseClient.storage
                     .from('profile-photos')
-                    .upload(fileName, compressedFile, { upsert: true });
+                    .upload(fileName, compressedBlob);
 
                 if (uploadError) throw uploadError;
 
                 const { data: { publicUrl } } = supabaseClient.storage.from('profile-photos').getPublicUrl(fileName);
 
-                // Update Local & Auth Metadata
                 const { error: updateError } = await supabaseClient.auth.updateUser({
                     data: { photo_url: publicUrl }
                 });
 
                 if (updateError) throw updateError;
 
-                // Update UI Immediately
                 document.getElementById('profilePhoto').style.backgroundImage = `url("${publicUrl}")`;
                 alert('✅ Foto profil berhasil diperbarui!');
 
             } catch (error) {
-                console.error('Error uploading photo:', error);
-                alert('❌ Gagal memperbarui foto: ' + error.message);
+                console.error('Error:', error);
+                alert('❌ Gagal: ' + error.message);
             } finally {
-                document.querySelector('.upload-overlay').innerHTML = '<span class="material-symbols-outlined text-white text-3xl">photo_camera</span>';
+                const overlay = document.querySelector('.upload-overlay');
+                overlay.innerHTML = '<span class="material-symbols-outlined text-white text-base">photo_camera</span>';
+                overlay.style.opacity = '';
             }
         });
 
         async function logout() {
-            const confirmLogout = window.confirm('Apakah Anda yakin ingin keluar?');
-            if (!confirmLogout) return;
-
-            try {
+            if (confirm('Yakin ingin keluar?')) {
                 await supabaseClient.auth.signOut();
                 localStorage.clear();
                 window.location.href = 'login.html';
-            } catch (error) {
-                console.error('Logout error:', error);
-                alert('Gagal logout. Silakan coba lagi.');
             }
         }
 
