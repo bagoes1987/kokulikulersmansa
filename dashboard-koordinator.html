@@ -336,36 +336,49 @@
 
         async function loadRecentActivity(classes) {
             try {
-                // Fetch recent responses from students in coordinator's classes
-                const { data, error } = await supabaseClient
+                const listContainer = document.getElementById('recentActivityList');
+
+                // 1. Get all student IDs in the coordinator's classes
+                const { data: studentsInClass, error: studError } = await supabaseClient
+                    .from('students')
+                    .select('id, nama, kelas')
+                    .in('kelas', classes);
+
+                if (studError) throw studError;
+
+                if (!studentsInClass || studentsInClass.length === 0) {
+                    listContainer.innerHTML = '<div class="text-center py-4 text-xs text-slate-400 italic">Belum ada siswa di kelas bapak/ibu.</div>';
+                    return;
+                }
+
+                const studentIds = studentsInClass.map(s => s.id);
+
+                // 2. Fetch recent responses from these students
+                const { data: responses, error: respError } = await supabaseClient
                     .from('module_responses')
-                    .select(`
-                        created_at, 
-                        module_type, 
-                        status, 
-                        students!inner(nama, kelas)
-                    `)
-                    .in('students.kelas', classes)
+                    .select('student_id, created_at, module_type, status')
+                    .in('student_id', studentIds)
                     .order('created_at', { ascending: false })
                     .limit(5);
 
-                if (error) throw error;
+                if (respError) throw respError;
 
-                const listContainer = document.getElementById('recentActivityList');
-                if (data && data.length > 0) {
-                    listContainer.innerHTML = data.map((item, idx) => `
+                if (responses && responses.length > 0) {
+                    listContainer.innerHTML = responses.map((item, idx) => {
+                        const student = studentsInClass.find(s => s.id === item.student_id);
+                        return `
                         <div class="flex items-center gap-4">
                             <div class="size-2 rounded-full ${item.status === 'reviewed' ? 'bg-emerald-500' : 'bg-primary animate-pulse'}"></div>
                             <div class="flex-1">
-                                <p class="text-[13px] font-semibold text-slate-800">${item.students.nama} (${item.students.kelas})</p>
+                                <p class="text-[13px] font-semibold text-slate-800">${student ? student.nama : 'Siswa'} (${student ? student.kelas : '-'})</p>
                                 <p class="text-[11px] text-slate-500">Mengerjakan modul: <span class="capitalize font-bold">${item.module_type}</span></p>
                             </div>
                             <span class="text-[10px] text-slate-400">${formatTimeAgo(new Date(item.created_at))}</span>
                         </div>
-                        ${idx < data.length - 1 ? '<div class="h-px bg-slate-100"></div>' : ''}
-                    `).join('');
+                        ${idx < responses.length - 1 ? '<div class="h-px bg-slate-100"></div>' : ''}
+                    `}).join('');
                 } else {
-                    listContainer.innerHTML = '<div class="text-center py-4 text-xs text-slate-400 italic">Belum ada aktivitas terbaru</div>';
+                    listContainer.innerHTML = '<div class="text-center py-4 text-xs text-slate-400 italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</div>';
                 }
             } catch (error) {
                 console.error('Error loading recent activity:', error);
