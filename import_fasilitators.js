@@ -105,7 +105,7 @@ async function createAccounts() {
                 role: 'fasilitator',
                 username: fasil.username,
                 kelas: fasil.kelas,
-                mapel: 'Fasilitator P5'
+                mapel: 'Fasilitator Kokulikuler'
             }
         });
         if (error) console.log(`❌ Fasilitator ${fasil.username} gagal: ${error.message}`);
