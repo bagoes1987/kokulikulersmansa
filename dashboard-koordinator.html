@@ -85,8 +85,8 @@
                 </div>
                 <input type="file" id="photoInput" accept="image/jpeg,image/png,image/jpg" class="hidden">
                 <div>
-                    <h1 class="text-sm font-bold text-slate-900 leading-none" id="coordName">Memuat...</h1>
-                    <p class="text-[10px] text-primary font-semibold tracking-wide uppercase mt-1 leading-tight">
+                    <h1 class="text-base font-bold text-slate-900 leading-none" id="coordName">Memuat...</h1>
+                    <p class="text-xs text-primary font-semibold tracking-wide uppercase mt-1.5 leading-tight">
                         Panel Koordinator Kokulikuler<br>SMAN 1 Belitang
                     </p>
                 </div>
@@ -99,7 +99,7 @@
                         stroke-dashoffset="30" stroke-linecap="round" stroke-width="4"></circle>
                 </svg>
                 <div class="absolute inset-0 flex items-center justify-center">
-                    <span class="text-[10px] font-bold text-slate-800" id="progressText">0%</span>
+                    <span class="text-xs font-bold text-slate-800" id="progressText">0%</span>
                 </div>
             </div>
         </div>
@@ -127,32 +127,32 @@
                 <div class="size-10 bg-primary rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                     <span class="material-symbols-outlined text-2xl">monitoring</span>
                 </div>
-                <h3 class="font-bold text-slate-800 text-sm">Monitoring Kelas</h3>
-                <p class="text-[11px] text-slate-500 mt-1">Pantau real-time kelas aktif.</p>
+                <h3 class="font-bold text-slate-800 text-[15px]">Monitoring Kelas</h3>
+                <p class="text-xs text-slate-500 mt-1">Pantau real-time kelas aktif.</p>
             </div>
             <div
                 class="bg-orange-50 border border-orange-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
                 <div class="size-10 bg-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                     <span class="material-symbols-outlined text-2xl">assignment_turned_in</span>
                 </div>
-                <h3 class="font-bold text-slate-800 text-sm">Rekap Penilaian</h3>
-                <p class="text-[11px] text-slate-500 mt-1">Hasil asesmen siswa.</p>
+                <h3 class="font-bold text-slate-800 text-[15px]">Rekap Penilaian</h3>
+                <p class="text-xs text-slate-500 mt-1">Hasil asesmen siswa.</p>
             </div>
             <div
                 class="bg-blue-50 border border-blue-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
                 <div class="size-10 bg-blue-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                     <span class="material-symbols-outlined text-2xl">route</span>
                 </div>
-                <h3 class="font-bold text-slate-800 text-sm">Alur Kegiatan</h3>
-                <p class="text-[11px] text-slate-500 mt-1">Timeline & roadmap kerja.</p>
+                <h3 class="font-bold text-slate-800 text-[15px]">Alur Kegiatan</h3>
+                <p class="text-xs text-slate-500 mt-1">Timeline & roadmap kerja.</p>
             </div>
             <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer"
                 onclick="window.location.href='pengaturan-akun-koordinator.html'">
                 <div class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                     <span class="material-symbols-outlined text-2xl">account_circle</span>
                 </div>
-                <h3 class="font-bold text-slate-800 text-sm">Edit Profil</h3>
-                <p class="text-[11px] text-slate-500 mt-1">NIP, Mapel & Biodata.</p>
+                <h3 class="font-bold text-slate-800 text-[15px]">Edit Profil</h3>
+                <p class="text-xs text-slate-500 mt-1">NIP, Mapel & Biodata.</p>
             </div>
             <div
                 class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
@@ -160,8 +160,8 @@
                     class="size-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                     <span class="material-symbols-outlined text-2xl">description</span>
                 </div>
-                <h3 class="font-bold text-slate-800 text-sm">Laporan Akhir</h3>
-                <p class="text-[11px] text-slate-500 mt-1">Ekspor dokumen P5 & sertifikat.</p>
+                <h3 class="font-bold text-slate-800 text-[15px]">Laporan Akhir</h3>
+                <p class="text-xs text-slate-500 mt-1">Ekspor dokumen P5 & sertifikat.</p>
             </div>
             <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer"
                 onclick="window.location.href='pengaturan-akun-koordinator.html'">
@@ -169,8 +169,8 @@
                     class="size-10 bg-orange-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                     <span class="material-symbols-outlined text-2xl">settings</span>
                 </div>
-                <h3 class="font-bold text-slate-800 text-sm">Pengaturan</h3>
-                <p class="text-[11px] text-slate-500 mt-1">Konfigurasi jadwal & peran.</p>
+                <h3 class="font-bold text-slate-800 text-[15px]">Pengaturan</h3>
+                <p class="text-xs text-slate-500 mt-1">Konfigurasi jadwal & peran.</p>
             </div>
         </div>
 
@@ -200,8 +200,8 @@
                         <span class="material-symbols-outlined text-2xl">id_card</span>
                     </div>
                     <div class="flex-1">
-                        <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">NIP</p>
-                        <p class="text-sm font-bold text-slate-800" id="coordNip">Memuat...</p>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">NIP</p>
+                        <p class="text-[15px] font-bold text-slate-800" id="coordNip">Memuat...</p>
                     </div>
                 </div>
                 <div class="h-px bg-slate-100"></div>
@@ -210,8 +210,8 @@
                         <span class="material-symbols-outlined text-2xl">menu_book</span>
                     </div>
                     <div class="flex-1">
-                        <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Mata Pelajaran</p>
-                        <p class="text-sm font-bold text-slate-800" id="coordSubject">Memuat...</p>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Mata Pelajaran</p>
+                        <p class="text-[15px] font-bold text-slate-800" id="coordSubject">Memuat...</p>
                     </div>
                 </div>
             </div>
@@ -236,27 +236,27 @@
             <button onclick="window.location.href='index.html'"
                 class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
                 <span class="material-symbols-outlined">home</span>
-                <span class="text-[10px] font-medium">Beranda</span>
+                <span class="text-xs font-medium">Beranda</span>
             </button>
             <button onclick="window.location.href='dashboard-koordinator.html'"
                 class="flex flex-col items-center gap-1 text-primary transition-transform active:scale-90">
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
-                <span class="text-[10px] font-bold">Dasbor</span>
+                <span class="text-xs font-bold">Dasbor</span>
             </button>
             <button onclick="openAnalysisModal()"
                 class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
                 <span class="material-symbols-outlined">analytics</span>
-                <span class="text-[10px] font-medium">Analisis</span>
+                <span class="text-xs font-medium">Analisis</span>
             </button>
             <button onclick="window.location.href='pengaturan-akun-koordinator.html'"
                 class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
                 <span class="material-symbols-outlined">person</span>
-                <span class="text-[10px] font-medium">Profil</span>
+                <span class="text-xs font-medium">Profil</span>
             </button>
             <button onclick="logout()"
                 class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90 hover:text-red-500">
                 <span class="material-symbols-outlined">logout</span>
-                <span class="text-[10px] font-medium font-bold">Keluar</span>
+                <span class="text-xs font-medium font-bold">Keluar</span>
             </button>
         </div>
     </nav>
@@ -293,7 +293,7 @@
                 if (classes.length > 0) {
                     classes.forEach(cls => {
                         const pill = document.createElement('span');
-                        pill.className = 'px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[11px] font-bold border border-emerald-200';
+                        pill.className = 'px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200';
                         pill.textContent = cls;
                         classContainer.appendChild(pill);
                     });
@@ -427,10 +427,10 @@
                         <div class="flex items-center gap-4">
                             <div class="size-2 rounded-full ${item.status === 'reviewed' ? 'bg-emerald-500' : 'bg-primary animate-pulse'}"></div>
                             <div class="flex-1">
-                                <p class="text-[13px] font-semibold text-slate-800">${student ? student.nama : 'Siswa'} (${student ? student.kelas : '-'})</p>
-                                <p class="text-[11px] text-slate-500">Mengerjakan modul: <span class="capitalize font-bold">${item.module_type}</span></p>
+                                <p class="text-[15px] font-semibold text-slate-800">${student ? student.nama : 'Siswa'} (${student ? student.kelas : '-'})</p>
+                                <p class="text-xs text-slate-500">Mengerjakan modul: <span class="capitalize font-bold">${item.module_type}</span></p>
                             </div>
-                            <span class="text-[10px] text-slate-400">${formatTimeAgo(new Date(item.created_at))}</span>
+                            <span class="text-xs text-slate-400">${formatTimeAgo(new Date(item.created_at))}</span>
                         </div>
                         ${idx < responses.length - 1 ? '<div class="h-px bg-slate-100"></div>' : ''}
                     `}).join('');
@@ -510,11 +510,11 @@
                         </div>
                         
                         <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
-                            <div class="flex gap-4 text-[10px] font-bold uppercase tracking-wider">
+                            <div class="flex gap-4 text-xs font-bold uppercase tracking-wider">
                                 <div class="flex items-center gap-1.5"><span class="size-2 rounded-full bg-emerald-500"></span> Selesai</div>
                                 <div class="flex items-center gap-1.5"><span class="size-2 rounded-full bg-slate-200"></span> Belum</div>
                             </div>
-                            <p class="text-[10px] text-slate-400 font-medium">Data diupdate setiap kali modul dikirim/diselesaikan.</p>
+                            <p class="text-xs text-slate-400 font-medium">Data diupdate otomatis.</p>
                         </div>
                     </div>
                 `;
