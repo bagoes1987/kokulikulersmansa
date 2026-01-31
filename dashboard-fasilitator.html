@@ -399,11 +399,23 @@
                     return;
                 }
 
-                // Fetch student count for assigned classes
+                // Fetch student count for assigned classes with flexible formatting
+                // Generate alternative formats to ensure matching (e.g., "X. 11" and "X.11")
+                const allFormats = [];
+                myClasses.forEach(c => {
+                    const trimmed = c.trim();
+                    allFormats.push(trimmed);
+                    if (trimmed.includes('. ')) {
+                        allFormats.push(trimmed.replace('. ', '.'));
+                    } else if (trimmed.includes('.') && !trimmed.includes('. ')) {
+                        allFormats.push(trimmed.replace('.', '. '));
+                    }
+                });
+
                 const { data: students, count, error } = await supabaseClient
                     .from('students')
                     .select('*', { count: 'exact' })
-                    .in('kelas', myClasses);
+                    .in('kelas', allFormats);
 
                 if (error) throw error;
 
@@ -442,11 +454,24 @@
             container.innerHTML = '<div class="text-center py-12 text-slate-400 text-[10px] font-black uppercase tracking-widest animate-pulse">Menghubungkan ke database...</div>';
 
             try {
-                const { data: students, error: sError } = await supabaseClient.from('students').select('*').eq('kelas', cls.trim()).order('nama');
+                const clsTrimmed = cls.trim();
+                const alternatives = [clsTrimmed];
+                if (clsTrimmed.includes('. ')) {
+                    alternatives.push(clsTrimmed.replace('. ', '.'));
+                } else if (clsTrimmed.includes('.') && !clsTrimmed.includes('. ')) {
+                    alternatives.push(clsTrimmed.replace('.', '. '));
+                }
+
+                const { data: students, error: sError } = await supabaseClient
+                    .from('students')
+                    .select('*')
+                    .in('kelas', alternatives)
+                    .order('nama');
                 if (sError) throw sError;
 
                 if (!students || students.length === 0) {
                     container.innerHTML = `<div class="text-center py-12 text-slate-400 text-[10px] font-bold">Tidak ada siswa di Kelas ${cls}.</div>`;
+                    console.log('No students found for alternatives:', alternatives);
                     return;
                 }
 
@@ -574,8 +599,16 @@
 
             const dataPoints = [];
             for (const cls of myClasses) {
-                const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).eq('kelas', cls);
-                const { data: students } = await supabaseClient.from('students').select('id').eq('kelas', cls);
+                const clsTrimmed = cls.trim();
+                const alternatives = [clsTrimmed];
+                if (clsTrimmed.includes('. ')) {
+                    alternatives.push(clsTrimmed.replace('. ', '.'));
+                } else if (clsTrimmed.includes('.') && !clsTrimmed.includes('. ')) {
+                    alternatives.push(clsTrimmed.replace('.', '. '));
+                }
+
+                const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).in('kelas', alternatives);
+                const { data: students } = await supabaseClient.from('students').select('id').in('kelas', alternatives);
                 const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', students ? students.map(s => s.id) : []);
                 const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
                 dataPoints.push(pct);
