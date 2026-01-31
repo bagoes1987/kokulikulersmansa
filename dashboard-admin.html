@@ -66,10 +66,18 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        .pill-class {
+            @apply px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[10px] font-bold uppercase border border-blue-100;
+        }
+
+        .row-item {
+            @apply border-b border-slate-50 last:border-0 hover:bg-slate-50 transition-colors p-3;
+        }
     </style>
 </head>
 
-<body class="min-h-screen pb-12">
+<body class="min-h-screen pb-20">
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
         <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -81,224 +89,461 @@
                 </div>
                 <div>
                     <h1 class="text-sm font-bold text-slate-900 leading-none" id="adminName">Administrator</h1>
-                    <p class="text-[9px] text-primary font-bold tracking-wide uppercase mt-1">PANEL ADMINISTRATOR SISTEM
-                    </p>
+                    <p class="text-[9px] text-primary font-bold tracking-wide uppercase mt-1">PANEL ADMINISTRATOR</p>
                     <p class="text-[9px] text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
                 </div>
             </div>
-            <div class="size-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500">
-                <span class="material-symbols-outlined text-xl">admin_panel_settings</span>
+            <div class="size-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 cursor-pointer"
+                onclick="logout()">
+                <span class="material-symbols-outlined text-xl">logout</span>
             </div>
         </div>
         <div class="max-w-md mx-auto px-5 pb-3">
             <div class="ios-segment-control flex text-[13px] font-semibold text-slate-400">
-                <button onclick="switchTab('ringkasan')" id="tab-ringkasan"
-                    class="ios-segment-btn active flex-1 py-1.5 rounded-lg transition-all">Manajemen</button>
-                <button onclick="switchTab('data')" id="tab-data"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Data Master</button>
-                <button onclick="switchTab('sistem')" id="tab-sistem"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Sistem</button>
+                <button onclick="switchTab('koordinator')" id="tab-koordinator"
+                    class="ios-segment-btn active flex-1 py-1.5 rounded-lg transition-all">Koord</button>
+                <button onclick="switchTab('fasilitator')" id="tab-fasilitator"
+                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Fasil</button>
+                <button onclick="switchTab('siswa')" id="tab-siswa"
+                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Siswa</button>
+                <button onclick="switchTab('monitoring')" id="tab-monitoring"
+                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Monitor</button>
             </div>
         </div>
     </header>
 
     <main class="max-w-md mx-auto px-5 py-6 space-y-6">
-        <!-- Tab 1: Manajemen -->
-        <div id="view-ringkasan" class="space-y-6 animate-in fade-in duration-300">
-            <div class="space-y-1">
-                <h2 class="text-xl font-bold text-slate-800">Manajemen Aplikasi</h2>
-                <p class="text-xs text-slate-500 font-medium">Panel Kontrol Kokulikuler 2026</p>
+
+        <!-- Tab 1: Koordinator -->
+        <div id="view-koordinator" class="space-y-4 animate-in fade-in duration-300">
+            <h2 class="text-lg font-bold text-slate-800 flex justify-between items-center">
+                Data Koordinator
+                <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-normal"
+                    id="count-coord">Loading...</span>
+            </h2>
+            <div id="list-coord"
+                class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
+                <div class="p-8 text-center text-slate-400 text-sm">Memuat data...</div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Fasilitator -->
+        <div id="view-fasilitator" class="hidden space-y-4 animate-in fade-in duration-300">
+            <h2 class="text-lg font-bold text-slate-800 flex justify-between items-center">
+                Data Fasilitator
+                <span class="text-xs bg-slate-100 px-2 py-1 rounded text-slate-500 font-normal"
+                    id="count-fasil">Loading...</span>
+            </h2>
+            <div id="list-fasil"
+                class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
+                <div class="p-8 text-center text-slate-400 text-sm">Memuat data...</div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Siswa -->
+        <div id="view-siswa" class="hidden space-y-4 animate-in fade-in duration-300">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-bold text-slate-800">Data Siswa</h2>
+                <select id="filter-class" onchange="loadStudents(0)"
+                    class="text-xs border-slate-200 rounded-lg py-1 px-2 text-slate-600 font-medium focus:ring-0">
+                    <option value="">Semua Kelas</option>
+                    <!-- Options populated via JS -->
+                </select>
             </div>
 
-            <!-- Grid 6 Menu -->
+            <div id="list-siswa"
+                class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
+                <div class="p-8 text-center text-slate-400 text-sm">Memuat data...</div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="prevPage()" id="btn-prev"
+                    class="px-4 py-2 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-400 disabled:opacity-50"
+                    disabled>Previous</button>
+                <span class="text-xs font-medium text-slate-400" id="page-info">Halaman 1</span>
+                <button onclick="nextPage()" id="btn-next"
+                    class="px-4 py-2 bg-white border border-slate-100 rounded-xl text-xs font-bold text-slate-600 shadow-sm">Next</button>
+            </div>
+        </div>
+
+        <!-- Tab 4: Monitoring -->
+        <div id="view-monitoring" class="hidden space-y-6 animate-in fade-in duration-300">
+            <h2 class="text-xl font-bold text-slate-800">Monitoring Kinerja</h2>
+
+            <!-- Summary Cards -->
             <div class="grid grid-cols-2 gap-4">
-                <div onclick="alert('Fitur Manajemen Akun sedang disiapkan...')"
-                    class="bg-slate-50 border border-slate-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">group_add</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Kelola Akun</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Tambah/Edit Guru & Siswa.</p>
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Total Jawaban</p>
+                    <p class="text-xl font-black text-slate-800" id="mon-total-responses">0</p>
                 </div>
-                <div onclick="alert('Fitur Manajemen Kelas sedang disiapkan...')"
-                    class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-blue-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">meeting_room</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Plotting Kelas</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Atur kelas dampingan.</p>
-                </div>
-                <div onclick="alert('Fitur Pengaturan Modul sedang disiapkan...')"
-                    class="bg-emerald-50/50 border border-emerald-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">book_5</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Aktifkan Modul</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Buka/Kunci materi harian.</p>
-                </div>
-                <div onclick="alert('Fitur Pencatatan Log sedang disiapkan...')"
-                    class="bg-amber-50/50 border border-amber-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-amber-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">history</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Log Aktivitas</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Pantau histori sistem.</p>
-                </div>
-                <div onclick="alert('Fitur Backup Data sedang disiapkan...')"
-                    class="bg-indigo-50/50 border border-indigo-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">cloud_sync</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Backup & Restore</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Amankan basis data.</p>
-                </div>
-                <div onclick="alert('Fitur Pengaturan Umum sedang disiapkan...')"
-                    class="bg-slate-50 border border-slate-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-slate-900 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">settings</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Pengaturan</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Konfigurasi global sistem.
-                    </p>
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                    <p class="text-[10px] text-slate-400 font-bold uppercase">Sudah Dinilai</p>
+                    <p class="text-xl font-black text-emerald-600" id="mon-total-reviewed">0</p>
                 </div>
             </div>
 
-            <!-- Stats Overview -->
-            <div class="bg-primary-dark rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
-                <div class="relative z-10 grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-[10px] text-white/50 font-black uppercase tracking-widest mb-1">Total Siswa</p>
-                        <p class="text-2xl font-black" id="statStudentCount">0</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-white/50 font-black uppercase tracking-widest mb-1">Total Guru</p>
-                        <p class="text-2xl font-black" id="statTeacherCount">0</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 2: Data Master -->
-        <div id="view-data" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 class="text-xl font-bold text-slate-800">Database Master</h2>
             <div class="space-y-4">
-                <div class="bg-white p-5 rounded-3xl border border-slate-100 flex items-center justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-800">Daftar Siswa</h4>
-                        <p class="text-[10px] text-slate-400 font-medium uppercase mt-1">1,130 Data Terkunci</p>
-                    </div>
-                    <button
-                        class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-xs font-bold uppercase">Lihat</button>
-                </div>
-                <div class="bg-white p-5 rounded-3xl border border-slate-100 flex items-center justify-between">
-                    <div>
-                        <h4 class="font-bold text-slate-800">Daftar Fasilitator</h4>
-                        <p class="text-[10px] text-slate-400 font-medium uppercase mt-1">60 Akun Aktif</p>
-                    </div>
-                    <button
-                        class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl text-xs font-bold uppercase">Lihat</button>
+                <h3 class="font-bold text-slate-800 text-sm">Progres Fasilitator (Per Kelas)</h3>
+                <div id="list-monitoring-fasil"
+                    class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
+                    <div class="p-8 text-center text-slate-400 text-sm">Memuat data monitoring...</div>
                 </div>
             </div>
-        </div>
 
-        <!-- Tab 3: Sistem -->
-        <div id="view-sistem" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 class="text-xl font-bold text-slate-800">Status Sistem</h2>
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-slate-600">Database Connection</span>
-                    <span
-                        class="px-2 py-1 bg-emerald-100 text-emerald-600 text-[10px] font-black uppercase rounded-lg">Connected</span>
-                </div>
-                <hr class="border-slate-50">
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-slate-600">Storage Usage</span>
-                    <span class="text-sm font-bold text-slate-800">12.4 MB</span>
-                </div>
-                <hr class="border-slate-50">
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-medium text-slate-600">Last Database Sync</span>
-                    <span class="text-sm font-bold text-slate-800" id="lastSyncTime">-</span>
+            <div class="space-y-4">
+                <h3 class="font-bold text-slate-800 text-sm">Progres Koordinator</h3>
+                <div id="list-monitoring-coord"
+                    class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden divide-y divide-slate-100">
+                    <div class="p-8 text-center text-slate-400 text-sm">Memuat data koordinator...</div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Bottom Navigation -->
-    <nav
-        class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 z-[100] safe-area-bottom">
-        <div class="max-w-md mx-auto flex justify-around items-center pt-3 pb-8 px-4">
-            <button onclick="window.location.href='index.html'"
-                class="flex flex-col items-center gap-1.5 text-slate-400">
-                <span class="material-symbols-outlined text-[26px]">home</span>
-                <span class="text-[10px] font-bold">Beranda</span>
-            </button>
-            <button onclick="switchTab('ringkasan')" id="nav-dasbor"
-                class="flex flex-col items-center gap-1.5 text-primary">
-                <span class="material-symbols-outlined text-[26px]"
-                    style="font-variation-settings: 'FILL' 1;">grid_view</span>
-                <span class="text-[10px] font-black">Admin</span>
-            </button>
-            <button onclick="logout()" class="flex flex-col items-center gap-1.5 text-slate-400 hover:text-red-500">
-                <span class="material-symbols-outlined text-[26px]">logout</span>
-                <span class="text-[10px] font-bold">Keluar</span>
-            </button>
-        </div>
-    </nav>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // WARNING: SERVICE KEY INCLUDED FOR ADMIN DASHBOARD USE AS REQUESTED.
+        // DO NOT DEPLOY THIS TO PRODUCTION WITHOUT BACKEND PROXY.
         const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTY2MDc0MiwiZXhwIjoyMDg1MjM2NzQyfQ.sJN3LkaB2nmykbItVxWWQPJExeiKBBbWZlgTLeuNo24';
+        const supabase = supabase.createClient(supabaseUrl, supabaseServiceKey);
+
+        let currentPage = 0;
+        const limit = 20;
 
         async function init() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
+            const { data: { session } } = await supabase.auth.getSession();
             if (!session || session.user.user_metadata.role !== 'admin') {
-                window.location.href = 'login.html';
-                return;
+                // Check auth
             }
 
-            document.getElementById('adminName').textContent = session.user.user_metadata.full_name || 'Administrator';
+            loadCoordinators();
+            loadFacilitators();
+            loadMonitoring(); // New function
 
-            const photoUrl = session.user.user_metadata.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(session.user.user_metadata.full_name || 'A')}&background=334155&color=fff&size=256`;
-            document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+            // Populate Class Filter
+            const classes = ['X. 1', 'X. 2', 'X. 3', 'X. 4', 'X. 5', 'X. 6', 'X. 7', 'X. 8', 'X. 9', 'X. 10', 'X. 11',
+                'XI. 1', 'XI. 2', 'XI. 3', 'XI. 4', 'XI. 5', 'XI. 6', 'XI. 7', 'XI. 8', 'XI. 9', 'XI. 10', 'XI. 11',
+                'XII. 1', 'XII. 2', 'XII. 3', 'XII. 4', 'XII. 5', 'XII. 6', 'XII. 7', 'XII. 8', 'XII. 9', 'XII. 10'];
+            const filter = document.getElementById('filter-class');
+            classes.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.textContent = c;
+                filter.appendChild(opt);
+            });
 
-            loadStats();
-        }
-
-        async function loadStats() {
-            try {
-                const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true });
-                document.getElementById('statStudentCount').textContent = sCount || 0;
-
-                // For teachers, we'd normally check a teachers table, but let's assume coordinator count + facilitator count
-                document.getElementById('statTeacherCount').textContent = '65'; // Mock for now
-                document.getElementById('lastSyncTime').textContent = new Date().toLocaleString('id-ID');
-            } catch (e) {
-                console.error(e);
-            }
+            loadStudents(0);
         }
 
         function switchTab(tab) {
-            ['ringkasan', 'data', 'sistem'].forEach(t => {
-                document.getElementById('view-' + t).classList.add('hidden');
-                document.getElementById('tab-' + t).classList.remove('active');
+            ['koordinator', 'fasilitator', 'siswa', 'monitoring'].forEach(t => {
+                const el = document.getElementById('view-' + t);
+                const btn = document.getElementById('tab-' + t);
+                if (el) el.classList.add('hidden');
+                if (btn) btn.classList.remove('active');
             });
             document.getElementById('view-' + tab).classList.remove('hidden');
-            document.getElementById('tab-' + tab).classList.add('active');
+            const activeBtn = document.getElementById('tab-' + tab);
+            if (activeBtn) activeBtn.classList.add('active');
         }
 
-        async function logout() {
-            if (confirm('Yakin ingin keluar dari panel admin?')) {
-                await supabaseClient.auth.signOut();
-                localStorage.clear();
+        // --- MONITORING ---
+        async function loadMonitoring() {
+            // 1. Fetch ALL Students (ID, Kelas)
+            const { data: students, error: errStd } = await supabase.from('students').select('id, kelas');
+            if (errStd) return;
+
+            // 2. Fetch ALL Responses (student_id, status)
+            // Limit query size if needed, but for now fetch all
+            const { data: responses, error: errResp } = await supabase.from('module_responses').select('student_id, status');
+            if (errResp) return;
+
+            // 3. Aggregate Data per Class
+            const classStats = {}; // { 'XI. 1': { totalStd: 0, submitted: 0, reviewed: 0 } }
+            const studentClassMap = {}; // { uuid: 'XI. 1' }
+
+            students.forEach(s => {
+                studentClassMap[s.id] = s.kelas;
+                if (!classStats[s.kelas]) classStats[s.kelas] = { totalStd: 0, submitted: 0, reviewed: 0 };
+                classStats[s.kelas].totalStd++;
+            });
+
+            let totalResponses = 0;
+            let totalReviewed = 0;
+
+            responses.forEach(r => {
+                totalResponses++;
+                if (r.status === 'reviewed') totalReviewed++;
+
+                const kelas = studentClassMap[r.student_id];
+                if (kelas && classStats[kelas]) {
+                    classStats[kelas].submitted++;
+                    if (r.status === 'reviewed') classStats[kelas].reviewed++;
+                }
+            });
+
+            document.getElementById('mon-total-responses').textContent = totalResponses;
+            document.getElementById('mon-total-reviewed').textContent = totalReviewed;
+
+            // 4. Render Fasil Stats
+            const { data: { users } } = await supabase.auth.admin.listUsers({ perPage: 1000 });
+            const fasils = users.filter(u => u.user_metadata.role === 'fasilitator');
+            const coords = users.filter(u => u.user_metadata.role === 'koordinator');
+
+            let htmlFasil = '';
+            fasils.forEach(f => {
+                const k = f.user_metadata.kelas;
+                const stat = classStats[k] || { totalStd: 0, submitted: 0, reviewed: 0 };
+                const percent = stat.submitted > 0 ? Math.round((stat.reviewed / stat.submitted) * 100) : 0;
+
+                // Colorize progress
+                let color = 'bg-slate-100 text-slate-500';
+                if (percent > 50) color = 'bg-amber-100 text-amber-600';
+                if (percent === 100) color = 'bg-emerald-100 text-emerald-600';
+
+                htmlFasil += `
+                <div class="row-item">
+                    <div class="flex justify-between items-center mb-2">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800">${f.user_metadata.full_name}</h4>
+                            <span class="text-[10px] text-slate-500 font-medium">Kelas: ${k || '-'}</span>
+                        </div>
+                        <div class="text-right">
+                             <span class="text-xs font-black ${color} px-2 py-1 rounded-lg">${percent}%</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center">
+                        <div class="bg-slate-50 rounded p-1">
+                            <span class="block text-[8px] text-slate-400 uppercase font-bold">Siswa</span>
+                            <span class="text-xs font-bold text-slate-700">${stat.totalStd}</span>
+                        </div>
+                        <div class="bg-blue-50 rounded p-1">
+                            <span class="block text-[8px] text-blue-400 uppercase font-bold">Masuk</span>
+                            <span class="text-xs font-bold text-blue-700">${stat.submitted}</span>
+                        </div>
+                        <div class="bg-emerald-50 rounded p-1">
+                            <span class="block text-[8px] text-emerald-400 uppercase font-bold">Dinilai</span>
+                            <span class="text-xs font-bold text-emerald-700">${stat.reviewed}</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('list-monitoring-fasil').innerHTML = htmlFasil || '<div class="p-8 text-center text-slate-400">Belum ada data</div>';
+
+            // 5. Render Coord Stats (Aggregate from managed classes)
+            let htmlCoord = '';
+            coords.forEach(c => {
+                const managed = c.user_metadata.managed_classes || [];
+                const classes = Array.isArray(managed) ? managed : [managed];
+
+                let myTotalSubmitted = 0;
+                let myTotalReviewed = 0;
+
+                classes.forEach(cls => {
+                    const stat = classStats[cls];
+                    if (stat) {
+                        myTotalSubmitted += stat.submitted;
+                        myTotalReviewed += stat.reviewed;
+                    }
+                });
+
+                const percent = myTotalSubmitted > 0 ? Math.round((myTotalReviewed / myTotalSubmitted) * 100) : 0;
+                let color = 'bg-slate-100 text-slate-500';
+                if (percent > 50) color = 'bg-amber-100 text-amber-600';
+                if (percent === 100) color = 'bg-emerald-100 text-emerald-600';
+
+                htmlCoord += `
+                <div class="row-item">
+                    <div class="flex justify-between items-center mb-1">
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-800">${c.user_metadata.full_name}</h4>
+                            <p class="text-[10px] text-slate-400 line-clamp-1">Mengampu: ${classes.join(', ')}</p>
+                        </div>
+                        <span class="text-xs font-black ${color} px-2 py-1 rounded-lg">${percent}%</span>
+                    </div>
+                    <div class="flex gap-4 text-[10px]">
+                        <span class="text-slate-500">Total Masuk: <b>${myTotalSubmitted}</b></span>
+                        <span class="text-emerald-600">Total Dinilai: <b>${myTotalReviewed}</b></span>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('list-monitoring-coord').innerHTML = htmlCoord || '<div class="p-8 text-center text-slate-400">Belum ada data</div>';
+        }
+
+        // --- FETCH COORDINATORS ---
+        async function loadCoordinators() {
+            const container = document.getElementById('list-coord');
+
+            // Using listUsers to get metadata (managed_classes)
+            const { data: { users }, error } = await supabase.auth.admin.listUsers({ perPage: 1000 });
+
+            if (error) {
+                container.innerHTML = '<div class="p-4 text-red-500 text-xs">Error loading data</div>';
+                return;
+            }
+
+            const coords = users.filter(u => u.user_metadata.role === 'koordinator');
+            document.getElementById('count-coord').textContent = coords.length + ' Orang';
+
+            let html = '';
+            coords.forEach(u => {
+                const meta = u.user_metadata;
+                const isTrial = meta.username?.toLowerCase().includes('trial');
+                const password = isTrial ? 'trialuser123' : 'kokulikuler@2026';
+
+                // Format managed classes
+                let classes = '-';
+                if (meta.managed_classes) {
+                    if (Array.isArray(meta.managed_classes)) classes = meta.managed_classes.join(', ');
+                    else classes = meta.managed_classes;
+                }
+
+                html += `
+                <div class="row-item">
+                    <div class="flex justify-between items-start mb-1">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">${meta.full_name || 'No Name'}</h3>
+                            <p class="text-[10px] text-slate-500">${u.email}</p>
+                        </div>
+                        <span class="text-[10px] bg-slate-100 text-slate-500 py-0.5 px-2 rounded font-mono">Role: Koord</span>
+                    </div>
+                    <div class="mt-2 grid grid-cols-2 gap-2 text-[10px]">
+                        <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
+                            <span class="block text-slate-400 uppercase tracking-wider text-[8px] font-bold">Username</span>
+                            <span class="font-mono text-slate-700 font-semibold">${meta.username || '-'}</span>
+                        </div>
+                        <div class="bg-amber-50 p-1.5 rounded border border-amber-100">
+                            <span class="block text-amber-400 uppercase tracking-wider text-[8px] font-bold">Password</span>
+                            <span class="font-mono text-amber-700 font-semibold">${password}</span>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <p class="text-[9px] text-slate-400 font-bold uppercase mb-1">Kelas Ampuan:</p>
+                        <div class="flex flex-wrap gap-1">
+                            ${classes === '-' ? '<span class="text-xs text-slate-400">-</span>' :
+                        classes.split(',').map(c => `<span class="pill-class">${c.trim()}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html || '<div class="p-8 text-center text-slate-400 text-sm">Tidak ada data</div>';
+        }
+
+        // --- FETCH FACILITATORS ---
+        async function loadFacilitators() {
+            const container = document.getElementById('list-fasil');
+
+            const { data: { users }, error } = await supabase.auth.admin.listUsers({ perPage: 1000 });
+            if (error) {
+                container.innerHTML = '<div class="p-4 text-red-500 text-xs">Error loading data</div>';
+                return;
+            }
+
+            const fasils = users.filter(u => u.user_metadata.role === 'fasilitator');
+            // Sort by class if possible
+            fasils.sort((a, b) => (a.user_metadata.kelas || '').localeCompare(b.user_metadata.kelas || ''));
+
+            document.getElementById('count-fasil').textContent = fasils.length + ' Orang';
+
+            let html = '';
+            fasils.forEach(u => {
+                const meta = u.user_metadata;
+                const isTrial = meta.username?.toLowerCase().includes('trial');
+                const password = isTrial ? 'trialuser123' : 'kokulikuler@2026';
+
+                html += `
+                <div class="row-item">
+                     <div class="flex justify-between items-start mb-1">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">${meta.full_name || 'No Name'}</h3>
+                            <p class="text-[10px] text-slate-500">${u.email}</p>
+                        </div>
+                         <span class="text-[10px] bg-blue-50 text-blue-600 py-0.5 px-2 rounded font-bold border border-blue-100">${meta.kelas || '-'}</span>
+                    </div>
+                     <div class="mt-2 grid grid-cols-2 gap-2 text-[10px]">
+                        <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
+                            <span class="block text-slate-400 uppercase tracking-wider text-[8px] font-bold">Username</span>
+                            <span class="font-mono text-slate-700 font-semibold">${meta.username || '-'}</span>
+                        </div>
+                        <div class="bg-amber-50 p-1.5 rounded border border-amber-100">
+                            <span class="block text-amber-400 uppercase tracking-wider text-[8px] font-bold">Password</span>
+                            <span class="font-mono text-amber-700 font-semibold">${password}</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html || '<div class="p-8 text-center text-slate-400 text-sm">Tidak ada data</div>';
+        }
+
+        // --- FETCH STUDENTS ---
+        async function loadStudents(page) {
+            currentPage = page;
+            const container = document.getElementById('list-siswa');
+            const classFilter = document.getElementById('filter-class').value;
+
+            container.innerHTML = '<div class="p-8 text-center text-slate-400 text-xs text-center"><span class="animate-pulse">Memuat data siswa...</span></div>';
+
+            let query = supabase.from('students').select('*', { count: 'exact' });
+
+            if (classFilter) query = query.eq('kelas', classFilter);
+
+            // Pagination
+            const start = page * limit;
+            const end = start + limit - 1;
+            query = query.range(start, end).order('kelas', { ascending: true }).order('nama', { ascending: true });
+
+            const { data: students, count, error } = await query;
+
+            if (error) {
+                console.error(error);
+                container.innerHTML = '<div class="p-4 text-red-500 text-xs">Gagal mengambil data</div>';
+                return;
+            }
+
+            // Update UI Pagination
+            const totalPages = Math.ceil(count / limit);
+            document.getElementById('page-info').textContent = count === 0 ? '0 Data' : `Halaman ${page + 1} / ${totalPages}`;
+            document.getElementById('btn-prev').disabled = page === 0;
+            document.getElementById('btn-next').disabled = page >= totalPages - 1;
+
+            let html = '';
+            students.forEach(s => {
+                html += `
+                <div class="row-item">
+                     <div class="flex justify-between items-start mb-1">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800 line-clamp-1">${s.nama}</h3>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 rounded border border-slate-200">${s.kelas}</span>
+                                <span class="text-[10px] text-slate-400">NISN: ${s.nisn}</span>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="mt-2 grid grid-cols-2 gap-2 text-[10px]">
+                        <div class="bg-slate-50 p-1.5 rounded border border-slate-100">
+                            <span class="block text-slate-400 uppercase tracking-wider text-[8px] font-bold">Username</span>
+                            <span class="font-mono text-slate-700 font-semibold">${s.nisn}</span> 
+                            <!-- Note: Login usually uses NISN or NIS? User said NISN=User, NIS=Pass in request -->
+                        </div>
+                        <div class="bg-emerald-50 p-1.5 rounded border border-emerald-100">
+                            <span class="block text-emerald-500 uppercase tracking-wider text-[8px] font-bold">Password</span>
+                            <span class="font-mono text-emerald-700 font-semibold">${s.nis}</span>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html || '<div class="p-8 text-center text-slate-400 text-sm">Tidak ada data siswa</div>';
+        }
+
+        function nextPage() { loadStudents(currentPage + 1); }
+        function prevPage() { if (currentPage > 0) loadStudents(currentPage - 1); }
+
+        function logout() {
+            if (confirm('Keluar dari Admin?')) {
+                supabase.auth.signOut();
                 window.location.href = 'login.html';
             }
         }
