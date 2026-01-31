@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Professional Dashboard Koordinator</title>
+    <title>Dashboard Koordinator - SMAN 1 Belitang</title>
     <link rel="icon" href="./logo-sekolah.png" type="image/png">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
@@ -17,8 +17,9 @@
                 extend: {
                     colors: {
                         "primary": "#10b981", // Emerald 500
-                        "primary-dark": "#065f46", // Emerald 800
-                        "accent": "#e2725b", // Terracotta
+                        "primary-dark": "#065f46",
+                        "accent": "#f97316", // Orange
+                        "blue-accent": "#3b82f6",
                         "surface": "#f8fafc",
                         "card-bg": "#ffffff",
                     },
@@ -57,11 +58,6 @@
             transition: all 0.3s ease;
         }
 
-        .upload-overlay {
-            transition: opacity 0.2s ease;
-            cursor: pointer;
-        }
-
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -69,6 +65,10 @@
         .no-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
+        }
+
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
@@ -78,15 +78,16 @@
         <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div
-                    class="size-10 rounded-full overflow-hidden shadow-sm border border-slate-100 flex items-center justify-center bg-white relative group">
+                    class="size-12 rounded-full overflow-hidden shadow-sm border border-slate-100 flex items-center justify-center bg-white relative group">
                     <div id="profilePhoto" class="w-full h-full bg-cover bg-center"
                         style="background-image: url('https://ui-avatars.com/api/?name=K&background=10b981&color=fff');">
                     </div>
                 </div>
                 <div>
                     <h1 class="text-sm font-bold text-slate-900 leading-none" id="coordName">Memuat...</h1>
-                    <p class="text-[10px] text-primary font-semibold tracking-wide uppercase mt-1">Koordinator SMAN 1
-                        Belitang</p>
+                    <p class="text-[9px] text-primary font-bold tracking-wide uppercase mt-1" id="coordRole">PANEL
+                        KOORDINATOR KOKULIKULER</p>
+                    <p class="text-[9px] text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
                 </div>
             </div>
             <div
@@ -103,86 +104,142 @@
             </div>
         </div>
         <div class="max-w-md mx-auto px-5 pb-3">
-            <div class="ios-segment-control flex text-[13px] font-medium text-slate-500">
+            <div class="ios-segment-control flex text-[13px] font-semibold text-slate-400">
                 <button onclick="switchTab('ringkasan')" id="tab-ringkasan"
                     class="ios-segment-btn active flex-1 py-1.5 rounded-lg transition-all">Ringkasan</button>
                 <button onclick="switchTab('progres')" id="tab-progres"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Progres</button>
+                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Progres Kelas</button>
                 <button onclick="switchTab('laporan')" id="tab-laporan"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Analisis</button>
+                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Laporan</button>
             </div>
         </div>
     </header>
 
     <main class="max-w-md mx-auto px-5 py-6 space-y-6">
         <!-- Tab 1: Ringkasan -->
-        <div id="view-ringkasan" class="space-y-6">
+        <div id="view-ringkasan" class="space-y-6 animate-in fade-in duration-300">
             <div class="space-y-1">
-                <h2 class="text-xl font-bold text-slate-800">Kokulikuler SMAN 1 Belitang</h2>
-                <p class="text-sm text-slate-500">Tema: Cita Rasa Jajanan Nusantara</p>
-                <div class="flex flex-wrap gap-2 mt-3" id="coordClass">
-                    <!-- Pills kelas akan muncul di sini -->
+                <h2 class="text-xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
+                <p class="text-xs text-slate-500 font-medium">SMAN 1 Belitang</p>
+                <div class="flex flex-wrap gap-2 mt-3" id="coordClassPills">
+                    <!-- Pills -->
                 </div>
             </div>
 
+            <!-- Grid 6 Menu -->
             <div class="grid grid-cols-2 gap-4">
+                <!-- 1. Monitoring Kelas -->
                 <div onclick="switchTab('progres')"
-                    class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                    class="bg-emerald-50/50 border border-emerald-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
                     <div
-                        class="size-10 bg-primary rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                        class="size-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">monitoring</span>
                     </div>
                     <h3 class="font-bold text-slate-800 text-sm">Monitoring Kelas</h3>
-                    <p class="text-[11px] text-slate-500 mt-1">Pantau real-time kelas aktif.</p>
+                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Pantau real-time kelas aktif.
+                    </p>
                 </div>
-                <div onclick="alert('Fitur Rekap tersedia di menu Analisis')"
-                    class="bg-orange-50 border border-orange-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                <!-- 2. Rekap Penilaian -->
+                <div onclick="switchTab('laporan')"
+                    class="bg-orange-50/50 border border-orange-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
                     <div
                         class="size-10 bg-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">assignment_turned_in</span>
+                        <span class="material-symbols-outlined text-full">assignment_turned_in</span>
                     </div>
                     <h3 class="font-bold text-slate-800 text-sm">Rekap Penilaian</h3>
-                    <p class="text-[11px] text-slate-500 mt-1">Hasil asesmen siswa.</p>
+                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Hasil asesmen siswa.</p>
+                </div>
+                <!-- 3. Alur Kegiatan -->
+                <div onclick="alert('Timeline Alur Kegiatan sedang disiapkan...')"
+                    class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                    <div
+                        class="size-10 bg-blue-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                        <span class="material-symbols-outlined text-2xl">route</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Alur Kegiatan</h3>
+                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Timeline & roadmap kerja.</p>
+                </div>
+                <!-- 4. Edit Profil -->
+                <div onclick="window.location.href='pengaturan-akun-koordinator.html'"
+                    class="bg-slate-50 border border-slate-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                    <div
+                        class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                        <span class="material-symbols-outlined text-2xl">account_circle</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Edit Profil</h3>
+                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">NIP, Mapel & Biodata.</p>
+                </div>
+                <!-- 5. Laporan Akhir -->
+                <div onclick="alert('Menu Laporan & Ekspor Sertifikat sedang disiapkan...')"
+                    class="bg-emerald-50/50 border border-emerald-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                    <div
+                        class="size-10 bg-emerald-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                        <span class="material-symbols-outlined text-2xl">description</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Laporan Akhir</h3>
+                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Ekspor dokumen & sertifikat.
+                    </p>
+                </div>
+                <!-- 6. Pengaturan -->
+                <div onclick="alert('Konfigurasi Pengaturan sedang disiapkan...')"
+                    class="bg-orange-50/30 border border-orange-100/30 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                    <div
+                        class="size-10 bg-orange-400 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                        <span class="material-symbols-outlined text-2xl">settings</span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Pengaturan</h3>
+                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Konfigurasi jadwal & peran.
+                    </p>
                 </div>
             </div>
 
-            <div class="bg-primary-dark rounded-2xl p-5 text-white shadow-lg overflow-hidden relative">
+            <!-- Target Partisipasi Card -->
+            <div
+                class="bg-primary-dark rounded-3xl p-6 text-white shadow-xl overflow-hidden relative group cursor-pointer active:scale-95 transition-transform">
                 <div class="relative z-10 flex items-center justify-between">
                     <div>
-                        <p class="text-xs text-white/70 font-medium uppercase tracking-widest">Total Siswa Koordinasi
-                        </p>
-                        <p class="text-2xl font-bold mt-1" id="studentCount">0 <span
-                                class="text-sm font-normal text-white/60">Siswa Aktif</span></p>
+                        <p class="text-[10px] text-white/70 font-black uppercase tracking-[0.2em] mb-1">Target
+                            Partisipasi</p>
+                        <p class="text-3xl font-black mt-1" id="studentCount">0 <span
+                                class="text-sm font-medium text-white/60 ml-1">Siswa Terdaftar</span></p>
                     </div>
-                    <div class="bg-white/10 p-3 rounded-full">
+                    <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md">
                         <span class="material-symbols-outlined text-3xl">school</span>
                     </div>
                 </div>
-                <div class="absolute -bottom-6 -right-6 size-24 bg-primary/20 rounded-full blur-2xl"></div>
+                <div
+                    class="absolute -bottom-10 -right-10 size-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors">
+                </div>
             </div>
 
             <section class="space-y-4">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between px-1">
                     <h2 class="text-lg font-bold text-slate-800">Informasi Jabatan</h2>
+                    <button onclick="loadStats()"
+                        class="text-[10px] font-black uppercase text-primary tracking-widest hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">Refresh</button>
                 </div>
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-5">
-                    <div class="flex items-start gap-4">
-                        <div class="size-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
-                            <span class="material-symbols-outlined text-2xl">id_card</span>
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-5">
+                    <div class="flex items-center gap-5">
+                        <div
+                            class="size-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 shadow-inner">
+                            <span class="material-symbols-outlined text-2xl">badge</span>
                         </div>
-                        <div class="flex-1">
-                            <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">NIP / Identitas</p>
+                        <div>
+                            <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.15em] mb-1">NIP /
+                                Identitas</p>
                             <p class="text-sm font-bold text-slate-800" id="coordNip">-</p>
                         </div>
                     </div>
-                    <div class="h-px bg-slate-100"></div>
-                    <div class="flex items-start gap-4">
-                        <div class="size-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                    <div class="h-px bg-slate-50"></div>
+                    <div class="flex items-center gap-5">
+                        <div
+                            class="size-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 shadow-inner">
                             <span class="material-symbols-outlined text-2xl">menu_book</span>
                         </div>
-                        <div class="flex-1">
-                            <p class="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Tanggung Jawab</p>
-                            <p class="text-sm font-bold text-slate-800" id="coordSubject">Koordinator Kokulikuler</p>
+                        <div>
+                            <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.15em] mb-1">Mapel /
+                                Bidang</p>
+                            <p class="text-sm font-bold text-slate-800" id="coordSubject">-</p>
                         </div>
                     </div>
                 </div>
@@ -190,91 +247,85 @@
         </div>
 
         <!-- Tab 2: Progres Kelas -->
-        <div id="view-progres" class="hidden space-y-6">
-            <h2 class="text-xl font-bold text-slate-800">Progres Kerja Fasilitator</h2>
+        <div id="view-progres" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h2 class="text-xl font-bold text-slate-800">Mulai Monitoring</h2>
             <div id="classMonitoringList" class="space-y-4">
-                <!-- Class status cards with facilitator names -->
-                <div class="text-center py-8 text-slate-400 italic text-xs">Mengambil data progres...</div>
+                <!-- Cards -->
             </div>
         </div>
 
-        <!-- Tab 3: Analisis -->
-        <div id="view-laporan" class="hidden space-y-6">
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-                <h2 class="text-lg font-bold text-slate-800 mb-4">Grafik Penyelesaian Modul</h2>
-                <div class="h-64">
+        <!-- Tab 3: Laporan -->
+        <div id="view-laporan" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
+                <h2 class="text-lg font-bold text-slate-800 mb-6">Grafik Penyelesaian Modul</h2>
+                <div class="h-64 mb-6">
                     <canvas id="analysisChart"></canvas>
+                </div>
+                <div class="grid grid-cols-2 gap-4" id="statsGrid">
+                    <!-- Stats -->
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4" id="statsGrid">
-                <!-- Stats injected here -->
-            </div>
-
-            <button onclick="alert('Ekspor Excel sedang disiapkan...')"
-                class="w-full bg-slate-800 text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-xl">file_download</span>
+            <button onclick="alert('Export Excel sedang diproses...')"
+                class="w-full bg-slate-900 text-white font-bold py-5 rounded-3xl shadow-xl active:scale-95 transition-transform flex items-center justify-center gap-3">
+                <span class="material-symbols-outlined">description</span>
                 Unduh Rekapitulasi (Excel)
             </button>
         </div>
     </main>
 
-    <!-- Modal Monitoring Detail -->
+    <!-- Modal Detail Monitoring -->
     <div id="modalDetail"
-        class="fixed inset-0 z-[200] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-        <div class="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden animate-scale-in">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+        class="fixed inset-0 z-[200] hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
+        <div
+            class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
                 <div>
-                    <h3 class="text-lg font-bold text-slate-800" id="detailTitle">Kelas XII.1</h3>
-                    <p class="text-xs text-slate-500 font-medium">Monitoring Real-time</p>
+                    <h3 class="text-xl font-black text-slate-800" id="detailTitle">Kelas XII.1</h3>
+                    <p class="text-xs text-slate-500 font-semibold tracking-wide mt-1 uppercase">Monitoring Real-time
+                    </p>
                 </div>
                 <button onclick="closeModal()"
-                    class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                    class="size-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
 
-            <div class="max-h-[70vh] overflow-y-auto no-scrollbar p-6">
-                <!-- Facilitators section -->
-                <div class="mb-6">
-                    <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3">Tim Fasilitator
-                    </h4>
-                    <div id="detailFasilitators" class="space-y-2"></div>
-                </div>
-
-                <!-- Students list -->
-                <div>
-                    <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3"
-                        id="detailStudentHeader">Daftar Siswa</h4>
-                    <div id="detailStudents" class="space-y-3"></div>
-                </div>
+            <div class="max-h-[60vh] overflow-y-auto no-scrollbar p-8 pt-6">
+                <div id="detailFasilitators" class="mb-8"></div>
+                <div id="detailStudents" class="space-y-3"></div>
             </div>
         </div>
     </div>
 
+    <!-- Bottom Navigation -->
     <nav
-        class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 safe-area-bottom z-[100]">
-        <div class="max-w-md mx-auto flex justify-around items-center pt-3 pb-6 px-4">
+        class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 z-[100] safe-area-bottom">
+        <div class="max-w-md mx-auto flex justify-around items-center pt-3 pb-8 px-4">
             <button onclick="window.location.href='index.html'"
-                class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
-                <span class="material-symbols-outlined">home</span>
-                <span class="text-[10px] font-medium">Beranda</span>
+                class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all">
+                <span class="material-symbols-outlined text-[26px]">home</span>
+                <span class="text-[10px] font-bold">Beranda</span>
+            </button>
+            <button onclick="switchTab('ringkasan')" id="nav-dasbor"
+                class="flex flex-col items-center gap-1.5 text-primary group transition-all">
+                <span class="material-symbols-outlined text-[26px]"
+                    style="font-variation-settings: 'FILL' 1;">grid_view</span>
+                <span class="text-[10px] font-black">Dasbor</span>
+            </button>
+            <button onclick="switchTab('laporan')" id="nav-analisis"
+                class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all">
+                <span class="material-symbols-outlined text-[26px]">analytics</span>
+                <span class="text-[10px] font-bold">Analisis</span>
             </button>
             <button onclick="switchTab('ringkasan')"
-                class="flex flex-col items-center gap-1 text-primary transition-transform active:scale-90"
-                id="nav-dasbor">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
-                <span class="text-[10px] font-bold">Dasbor</span>
-            </button>
-            <button onclick="switchTab('laporan')"
-                class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90"
-                id="nav-analisis">
-                <span class="material-symbols-outlined">analytics</span>
-                <span class="text-[10px] font-medium">Analisis</span>
+                class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all">
+                <span class="material-symbols-outlined text-[26px]">person</span>
+                <span class="text-[10px] font-bold">Profil</span>
             </button>
             <button onclick="logout()"
-                class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90 hover:text-red-500">
-                <span class="material-symbols-outlined">logout</span>
+                class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all hover:text-red-500">
+                <span class="material-symbols-outlined text-[26px]">logout</span>
                 <span class="text-[10px] font-bold">Keluar</span>
             </button>
         </div>
@@ -302,29 +353,30 @@
 
             document.getElementById('coordName').textContent = userData.full_name;
             document.getElementById('coordNip').textContent = userData.nip || '-';
+            document.getElementById('coordSubject').textContent = userData.mapel || 'Koordinator Kokulikuler';
+
+            const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=10b981&color=fff&size=256`;
+            document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
 
             renderClassPills();
             loadStats();
         }
 
         function renderClassPills() {
-            const cont = document.getElementById('coordClass');
-            cont.innerHTML = myClasses.map(c => `<span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[11px] font-bold border border-emerald-200">${c}</span>`).join('');
+            const cont = document.getElementById('coordClassPills');
+            cont.innerHTML = myClasses.map(c => `<span class="px-4 py-1.5 bg-emerald-100/50 text-emerald-700 rounded-full text-[11px] font-black border border-emerald-200/50 uppercase tracking-wider">${c}</span>`).join('');
         }
 
         async function loadStats() {
             try {
                 const { count } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).in('kelas', myClasses);
-                document.getElementById('studentCount').innerHTML = `${count || 0} <span class="text-sm font-normal text-white/60">Siswa Aktif</span>`;
+                document.getElementById('studentCount').innerHTML = `${count || 0} <span class="text-sm font-medium text-white/60 ml-1">Siswa Terdaftar</span>`;
 
-                // Fetch progress for overall circle
                 const { data: students } = await supabaseClient.from('students').select('id').in('kelas', myClasses);
                 const ids = students.map(s => s.id);
                 const { count: responses } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', ids);
 
-                const totalPossible = (count || 0) * 24;
-                const progress = totalPossible > 0 ? Math.round((responses / totalPossible) * 100) : 0;
-
+                const progress = count > 0 ? Math.round((responses / (count * 24)) * 100) : 0;
                 updateProgressUI(progress);
                 loadClassList();
                 renderAnalysisChart();
@@ -346,23 +398,25 @@
                 const { data: students } = await supabaseClient.from('students').select('id').eq('kelas', cls);
                 const sIds = students.map(s => s.id);
                 const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', sIds);
-
                 const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
 
                 cont.innerHTML += `
-                    <div onclick="openClassDetail('${cls}')" class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer active:scale-95 transition-transform">
-                        <div class="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold">
+                    <div onclick="openClassDetail('${cls}')" class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-50 flex items-center gap-5 cursor-pointer active:scale-95 transition-all">
+                        <div class="size-14 rounded-2xl bg-emerald-500 flex items-center justify-center text-white font-black text-lg shadow-lg shadow-emerald-500/20">
                             ${cls}
                         </div>
                         <div class="flex-1">
-                            <div class="flex justify-between items-center mb-2">
-                                <h3 class="font-bold text-slate-800">Kelas ${cls}</h3>
-                                <span class="text-xs font-bold text-primary">${pct}%</span>
+                            <div class="flex justify-between items-center mb-2.5">
+                                <h3 class="font-black text-slate-800 tracking-tight text-base">Kelas ${cls}</h3>
+                                <span class="text-xs font-black text-emerald-600">${pct}%</span>
                             </div>
-                            <div class="w-full h-1.5 bg-slate-50 rounded-full overflow-hidden">
-                                <div class="bg-primary h-full" style="width: ${pct}%"></div>
+                            <div class="w-full h-2 bg-slate-50 rounded-full overflow-hidden">
+                                <div class="bg-emerald-500 h-full rounded-full transition-all duration-1000" style="width: ${pct}%"></div>
                             </div>
-                            <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-widest">${sCount} Siswa • Klik untuk Detail</p>
+                            <div class="flex items-center justify-between mt-3">
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">${sCount} Siswa Aktif</p>
+                                <span class="material-symbols-outlined text-slate-300 text-sm">arrow_forward_ios</span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -377,29 +431,27 @@
             const fasilCont = document.getElementById('detailFasilitators');
             const studentCont = document.getElementById('detailStudents');
 
-            fasilCont.innerHTML = '<div class="text-xs animate-pulse text-slate-400">Memuat Tim Fasilitator...</div>';
-            studentCont.innerHTML = '<div class="text-xs animate-pulse text-slate-400">Memuat Daftar Siswa...</div>';
+            fasilCont.innerHTML = '<div class="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse">Menghitung progres tim...</div>';
+            studentCont.innerHTML = '<div class="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse mt-4">Memuat daftar siswa...</div>';
 
             try {
-                // Fetch students & responses
                 const { data: students } = await supabaseClient.from('students').select('*').eq('kelas', cls).order('nama');
                 const { data: responses } = await supabaseClient.from('module_responses').select('*').in('student_id', students.map(s => s.id));
 
-                // Calculate Grading Progress
-                const reviewedCount = responses.filter(r => r.status === 'reviewed').length;
-                const totalResponses = responses.length;
-                const gradingProgress = totalResponses > 0 ? Math.round((reviewedCount / totalResponses) * 100) : 0;
+                const reviewed = responses.filter(r => r.status === 'reviewed').length;
+                const total = responses.length;
+                const gradingProgress = total > 0 ? Math.round((reviewed / total) * 100) : 0;
 
                 fasilCont.innerHTML = `
-                    <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 mb-4">
-                        <div class="flex justify-between items-center mb-2">
-                            <p class="text-[10px] font-black text-emerald-800 uppercase tracking-widest">Status Penilaian Tim</p>
-                            <span class="text-xs font-bold text-emerald-700">${gradingProgress}%</span>
+                    <div class="p-6 bg-emerald-50 rounded-3xl border border-emerald-100/50">
+                        <div class="flex justify-between items-center mb-3">
+                            <p class="text-[10px] font-black text-emerald-800 uppercase tracking-[0.2em]">Kinerja Fasilitator</p>
+                            <span class="text-xs font-black text-emerald-700">${gradingProgress}%</span>
                         </div>
-                        <div class="w-full h-1.5 bg-white rounded-full overflow-hidden">
-                            <div class="bg-emerald-500 h-full" style="width: ${gradingProgress}%"></div>
+                        <div class="w-full h-2 bg-white rounded-full overflow-hidden mb-3">
+                            <div class="bg-emerald-500 h-full rounded-full transition-all duration-1000" style="width: ${gradingProgress}%"></div>
                         </div>
-                        <p class="text-[9px] text-emerald-600 font-bold mt-2 uppercase tracking-widest">${reviewedCount} dari ${totalResponses} Jawaban telah dinilai</p>
+                        <p class="text-[9px] text-emerald-600 font-bold uppercase tracking-widest">${reviewed}/${total} jawaban telah dinilai</p>
                     </div>
                 `;
 
@@ -409,29 +461,26 @@
                     const pending = sRes.some(r => r.status === 'submitted');
                     const initials = s.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                     return `
-                        <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
-                            <div class="size-8 rounded-full bg-white shadow-sm flex items-center justify-center text-[10px] font-bold text-slate-500">${initials}</div>
+                        <div class="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
+                            <div class="size-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-[10px] font-black text-slate-500 border border-slate-50">${initials}</div>
                             <div class="flex-1">
-                                <div class="flex justify-between items-center">
-                                    <p class="text-[12px] font-bold text-slate-800">${s.nama}</p>
-                                    ${pending ? '<span class="size-2 bg-amber-400 rounded-full animate-pulse"></span>' : ''}
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <p class="text-[13px] font-black text-slate-800 leading-tight">${s.nama}</p>
+                                    ${pending ? '<span class="size-2 bg-amber-400 rounded-full animate-pulse shadow-sm shadow-amber-400/20"></span>' : ''}
                                 </div>
-                                <div class="w-full h-1 bg-slate-200 rounded-full mt-1"><div class="bg-emerald-400 h-full" style="width:${pct}%"></div></div>
+                                <div class="w-full h-1 bg-slate-200 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-400 h-full rounded-full" style="width:${pct}%"></div>
+                                </div>
                             </div>
                             <span class="text-[10px] font-black text-slate-400">${pct}%</span>
                         </div>
                     `;
                 }).join('');
 
-            } catch (e) {
-                console.error(e);
-                studentCont.innerHTML = "Gagal memuat data.";
-            }
+            } catch (e) { console.error(e); }
         }
 
-        function closeModal() {
-            document.getElementById('modalDetail').classList.add('hidden');
-        }
+        function closeModal() { document.getElementById('modalDetail').classList.add('hidden'); }
 
         function switchTab(tab) {
             ['ringkasan', 'progres', 'laporan'].forEach(t => {
@@ -441,12 +490,17 @@
             document.getElementById('view-' + tab).classList.remove('hidden');
             document.getElementById('tab-' + tab).classList.add('active');
 
-            // Update bottom nav active style
-            document.getElementById('nav-dasbor').classList.replace('text-primary', 'text-slate-400');
-            document.getElementById('nav-analisis').classList.replace('text-primary', 'text-slate-400');
-
-            if (tab === 'ringkasan') document.getElementById('nav-dasbor').classList.replace('text-slate-400', 'text-primary');
-            if (tab === 'laporan') document.getElementById('nav-analisis').classList.replace('text-slate-400', 'text-primary');
+            const navs = { 'ringkasan': 'nav-dasbor', 'laporan': 'nav-analisis' };
+            ['nav-dasbor', 'nav-analisis'].forEach(n => {
+                const el = document.getElementById(n);
+                el.classList.replace('text-primary', 'text-slate-400');
+                el.querySelector('span').style.fontVariationSettings = "'FILL' 0";
+            });
+            if (navs[tab]) {
+                const el = document.getElementById(navs[tab]);
+                el.classList.replace('text-slate-400', 'text-primary');
+                el.querySelector('span').style.fontVariationSettings = "'FILL' 1";
+            }
         }
 
         async function renderAnalysisChart() {
@@ -461,11 +515,10 @@
                 const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', students.map(s => s.id));
                 const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
                 dataPoints.push(pct);
-
                 grid.innerHTML += `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${cls}</p>
-                        <p class="text-xl font-bold text-slate-800 mt-1">${pct}%</p>
+                    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">${cls}</p>
+                        <p class="text-xl font-black text-slate-800">${pct}%</p>
                     </div>
                 `;
             }
@@ -476,7 +529,6 @@
                 data: {
                     labels: myClasses,
                     datasets: [{
-                        label: 'Persentase Penyelesaian',
                         data: dataPoints,
                         backgroundColor: '#10b981',
                         borderRadius: 12,
