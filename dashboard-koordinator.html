@@ -390,7 +390,12 @@
             }
 
             const userData = session.user.user_metadata;
-            myClasses = Array.isArray(userData.kelas) ? userData.kelas : [userData.kelas];
+            // Support both 'kelas' (legacy) and 'managed_classes' (new/trial)
+            myClasses = userData.managed_classes || (Array.isArray(userData.kelas) ? userData.kelas : [userData.kelas]);
+
+            // Filter out undefined/null and ensure it's an array
+            myClasses = myClasses.filter(c => c);
+            if (myClasses.length === 0) myClasses = ['X.1']; // Fallback default
 
             document.getElementById('coordName').textContent = userData.full_name;
             document.getElementById('coordNip').textContent = userData.nip || '-';
