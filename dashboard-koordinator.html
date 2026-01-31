@@ -1,60 +1,59 @@
 <!DOCTYPE html>
-<html lang="id">
+<html class="light" lang="id">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Dasbor Koordinator</title>
+    <title>Dasbor Koordinator - SMAN 1 Belitang</title>
     <link rel="icon" href="./logo-sekolah.png" type="image/png">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Noto+Sans:wght@100..900&display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
     <script id="tailwind-config">
         tailwind.config = {
+            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#10b981", // Emerald 500
-                        "primary-dark": "#065f46", // Emerald 800
-                        "accent": "#e2725b", // Terracotta
-                        "surface": "#f8fafc",
-                        "card-bg": "#ffffff",
+                        "primary": "#10b981", // Emerald for Coordinator
+                        "terracotta": "#e2725b",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
                     },
                     fontFamily: {
-                        "sans": ["Lexend", "sans-serif"],
+                        "display": ["Lexend", "sans-serif"]
                     },
                     borderRadius: {
-                        "2xl": "24px",
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
                     },
                 },
             },
         }
     </script>
-    <style type="text/tailwindcss">
-        @layer base {
-            body { @apply bg-[#f1f5f9] text-[#1e293b] font-sans; }
-        }
-        .ios-segment-control {
-            background-color: rgba(148, 163, 184, 0.1);
-            padding: 2px;
-            border-radius: 12px;
-        }
-        .tab-btn.active {
-            background-color: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
-            color: #059669; /* Emerald 600 */
-        }
-        .circular-progress {
-            background: conic-gradient(var(--primary-color) 244.8deg, #e2e8f0 0deg);
-            border-radius: 50%;
-        }
-    </style>
     <style>
         body {
+            font-family: 'Lexend', sans-serif;
             min-height: max(884px, 100dvh);
             -webkit-tap-highlight-color: transparent;
+        }
+
+        .ios-shadow {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         #profilePhoto {
@@ -68,251 +67,339 @@
     </style>
 </head>
 
-<body class="min-h-screen pb-12">
-    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
-        <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div
-                    class="size-10 rounded-full overflow-hidden shadow-sm border border-slate-100 flex items-center justify-center bg-white relative group">
-                    <div id="profilePhoto" class="w-full h-full bg-cover bg-center"
-                        style="background-image: url('https://ui-avatars.com/api/?name=K&background=10b981&color=fff');">
-                    </div>
-                    <!-- Upload Overlay -->
-                    <label for="photoInput"
-                        class="upload-overlay absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span class="material-symbols-outlined text-white text-base">photo_camera</span>
-                    </label>
+<body class="bg-background-light dark:bg-background-dark text-[#111814] dark:text-white transition-colors duration-300">
+    <div class="relative flex h-auto min-h-screen w-full flex-col max-w-md mx-auto overflow-x-hidden pb-24">
+
+        <!-- TopAppBar -->
+        <header
+            class="sticky top-0 z-50 flex items-center bg-white/80 dark:bg-[#1a2e23]/80 backdrop-blur-md p-4 pb-2 border-b border-gray-100 dark:border-emerald-900/30">
+            <div class="flex items-center gap-3 flex-1">
+                <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8"
+                        style='background-image: url("./logo-sekolah.png");'></div>
                 </div>
-                <input type="file" id="photoInput" accept="image/jpeg,image/png,image/jpg" class="hidden">
                 <div>
-                    <h1 class="text-base font-bold text-slate-900 leading-none" id="coordName">Memuat...</h1>
-                    <p class="text-xs text-primary font-semibold tracking-wide uppercase mt-1.5 leading-tight">
-                        Panel Koordinator Kokulikuler<br>SMAN 1 Belitang
-                    </p>
+                    <h1 class="text-[#111814] dark:text-white text-sm font-bold leading-tight" id="headerTitle">SMAN 1
+                        Belitang</h1>
+                    <p class="text-primary text-[10px] uppercase font-bold tracking-wider" id="headerSubtitle">Dasbor
+                        Koordinator</p>
                 </div>
             </div>
+            <div class="flex gap-2 items-center">
+                <button
+                    class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-gray-50 dark:bg-gray-800 text-[#111814] dark:text-white">
+                    <span class="material-symbols-outlined text-xl">notifications</span>
+                </button>
+                <div onclick="toggleProfileModal()"
+                    class="size-10 rounded-full border-2 border-primary/20 p-0.5 relative group overflow-hidden cursor-pointer">
+                    <div id="profilePhoto" class="w-full h-full rounded-full bg-center bg-cover"
+                        style='background-image: url("https://ui-avatars.com/api/?name=K&background=10b981&color=fff");'>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Context Banner -->
+        <div id="contextBanner" class="px-4 pt-4 hidden">
             <div
-                class="relative flex items-center justify-center size-12 shadow-sm rounded-full bg-white border border-slate-100">
-                <svg class="size-12 -rotate-90">
-                    <circle cx="24" cy="24" fill="transparent" r="18" stroke="#f1f5f9" stroke-width="4"></circle>
-                    <circle cx="24" cy="24" fill="transparent" r="18" stroke="#10b981" stroke-dasharray="113"
-                        stroke-dashoffset="30" stroke-linecap="round" stroke-width="4"></circle>
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <span class="text-xs font-bold text-slate-800" id="progressText">0%</span>
-                </div>
+                class="bg-primary/10 dark:bg-primary/5 rounded-lg p-2.5 flex items-center gap-2 border border-primary/10">
+                <span
+                    class="material-symbols-outlined text-emerald-600 dark:text-primary text-[18px]">restaurant_menu</span>
+                <span
+                    class="text-[10px] font-bold text-emerald-800 dark:text-emerald-200 uppercase tracking-widest">PROYEK:
+                    CITA RASA JAJANAN NUSANTARA</span>
             </div>
         </div>
-        <div class="max-w-md mx-auto px-5 pb-3">
-            <div class="ios-segment-control flex text-xs font-medium text-slate-500">
-                <button onclick="switchTab('ringkasan')" id="btn-ringkasan"
-                    class="tab-btn active flex-1 py-1.5 rounded-lg transition-all">Ringkasan</button>
-                <button onclick="switchTab('progres')" id="btn-progres"
-                    class="tab-btn flex-1 py-1.5 rounded-lg transition-all">Progres Kelas</button>
-                <button onclick="switchTab('laporan')" id="btn-laporan"
-                    class="tab-btn flex-1 py-1.5 rounded-lg transition-all">Laporan</button>
+
+        <!-- View 1: Beranda -->
+        <div id="homeView">
+            <div class="px-4 pt-6">
+                <h2 class="text-[#111814] dark:text-white text-2xl font-bold" id="coordWelcome">Halo, Memuat...</h2>
+                <p class="text-[#618972] text-sm" id="coordSubjectText">Koordinator Kokulikuler</p>
+            </div>
+
+            <!-- Stats Summary -->
+            <div class="flex flex-wrap gap-3 p-4">
+                <div
+                    class="flex min-w-[140px] flex-1 flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1a2e23] ios-shadow border border-gray-50 dark:border-emerald-900/30">
+                    <div class="flex items-center gap-2 text-[#618972]">
+                        <span class="material-symbols-outlined text-sm">school</span>
+                        <p class="text-[11px] font-bold uppercase tracking-wider">Total Siswa</p>
+                    </div>
+                    <p class="text-[#111814] dark:text-white tracking-tight text-2xl font-bold leading-tight"
+                        id="totalSiswa">0</p>
+                </div>
+                <div
+                    class="flex min-w-[140px] flex-1 flex-col gap-2 rounded-xl p-4 bg-primary/10 dark:bg-primary/5 border border-primary/20">
+                    <div class="flex items-center gap-2 text-primary">
+                        <span class="material-symbols-outlined text-sm">analytics</span>
+                        <p class="text-[11px] font-bold uppercase tracking-wider">Laporan Masuk</p>
+                    </div>
+                    <p class="text-[#111814] dark:text-white tracking-tight text-2xl font-bold leading-tight"
+                        id="progresText">0%</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Actions -->
+            <div class="px-4 pb-2 pt-4">
+                <h3 class="text-[#111814] dark:text-white text-lg font-bold leading-tight">Aksi Koordinator</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-3 px-4 pb-6">
+                <button onclick="openAnalysisModal()"
+                    class="flex flex-col items-center gap-3 bg-white dark:bg-[#1a2e23] p-4 rounded-xl ios-shadow border border-gray-50 dark:border-emerald-900/30 active:scale-95 transition-all">
+                    <div
+                        class="size-12 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                        <span class="material-symbols-outlined">analytics</span>
+                    </div>
+                    <span class="text-[11px] font-bold uppercase">Analisis</span>
+                </button>
+                <button onclick="exportData()"
+                    class="flex flex-col items-center gap-3 bg-white dark:bg-[#1a2e23] p-4 rounded-xl ios-shadow border border-gray-50 dark:border-emerald-900/30 active:scale-95 transition-all">
+                    <div
+                        class="size-12 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                        <span class="material-symbols-outlined">description</span>
+                    </div>
+                    <span class="text-[11px] font-bold uppercase">Rekap Excel</span>
+                </button>
+            </div>
+
+            <div class="px-4 pb-3">
+                <h3 class="text-[#111814] dark:text-white text-lg font-bold leading-tight">Daftar Kelas</h3>
+            </div>
+            <div class="flex flex-col gap-2 px-4 pb-24" id="classListContainer">
+                <div class="text-center py-8 text-slate-400 italic text-xs">Memuat data kelas...</div>
             </div>
         </div>
-    </header>
 
-    <main class="max-w-md mx-auto px-5 py-6">
-        <!-- TAB: RINGKASAN (Original Content) -->
-        <div id="tab-content-ringkasan" class="tab-content space-y-6">
-            <div class="space-y-1">
-                <h2 class="text-xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
-                <p class="text-xs text-slate-500">SMAN 1 Belitang</p>
-                <div class="flex flex-wrap gap-2 mt-3" id="coordClass">
-                    <!-- Pills kelas akan muncul di sini -->
+        <!-- View 2: Monitoring -->
+        <div id="monitoringView" class="hidden animate-fade-in">
+            <div class="p-4 grid grid-cols-2 gap-3">
+                <div
+                    class="flex flex-col gap-1 rounded-xl p-4 bg-white dark:bg-[#1a2e23] shadow-sm border border-gray-100 dark:border-emerald-900/30">
+                    <p
+                        class="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest leading-normal">
+                        Refleksi Masuk</p>
+                    <div class="flex items-end justify-between">
+                        <p class="text-[#111814] dark:text-white text-2xl font-black leading-tight" id="monRefCount">0/0
+                        </p>
+                    </div>
+                    <div class="w-full bg-gray-100 dark:bg-emerald-950 h-1.5 rounded-full mt-2 overflow-hidden">
+                        <div id="monRefBar" class="bg-primary h-full rounded-full transition-all duration-500"
+                            style="width: 0%;"></div>
+                    </div>
+                </div>
+                <div
+                    class="flex flex-col gap-1 rounded-xl p-4 bg-white dark:bg-[#1a2e23] shadow-sm border border-gray-100 dark:border-emerald-900/30">
+                    <p
+                        class="text-gray-500 dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest leading-normal">
+                        Selesai LKPD</p>
+                    <div class="flex items-end justify-between">
+                        <p class="text-[#111814] dark:text-white text-2xl font-black leading-tight" id="monLkpdCount">
+                            0/0</p>
+                    </div>
+                    <div class="w-full bg-gray-100 dark:bg-emerald-950 h-1.5 rounded-full mt-2 overflow-hidden">
+                        <div id="monLkpdBar" class="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                            style="width: 0%;"></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div onclick="openMonitoringModal()"
-                    class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+            <div class="px-4">
+                <div class="flex flex-col gap-3">
                     <div
-                        class="size-10 bg-primary rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">monitoring</span>
+                        class="flex h-12 w-full items-stretch rounded-xl bg-white dark:bg-[#1a2e23] border border-gray-100 dark:border-emerald-900/30 overflow-hidden shadow-sm">
+                        <div class="text-gray-400 flex items-center justify-center pl-4">
+                            <span class="material-symbols-outlined text-[20px]">search</span>
+                        </div>
+                        <input id="studentSearch" oninput="filterStudents()"
+                            class="flex w-full min-w-0 flex-1 border-none bg-transparent focus:ring-0 text-[#111814] dark:text-white placeholder:text-gray-400 px-3 text-sm font-medium"
+                            placeholder="Cari nama siswa..." />
                     </div>
-                    <h3 class="font-bold text-slate-800 text-[15px]">Monitoring Kelas</h3>
-                    <p class="text-xs text-slate-500 mt-1">Pantau real-time kelas aktif.</p>
-                </div>
-                <div
-                    class="bg-orange-50 border border-orange-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">assignment_turned_in</span>
+                    <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar" id="statusFilters">
+                        <button onclick="setStatusFilter('semua')"
+                            class="filter-btn h-8 shrink-0 px-4 rounded-full bg-primary text-[#111814] text-[12px] font-bold shadow-sm transition-all">Semua</button>
+                        <button onclick="setStatusFilter('belum')"
+                            class="filter-btn h-8 shrink-0 px-4 rounded-full bg-white dark:bg-[#1a2e23] border border-gray-200 dark:border-emerald-900/30 text-gray-500 text-[12px] font-bold">Belum
+                            Mulai</button>
+                        <button onclick="setStatusFilter('proses')"
+                            class="filter-btn h-8 shrink-0 px-4 rounded-full bg-white dark:bg-[#1a2e23] border border-gray-200 dark:border-emerald-900/30 text-gray-500 text-[12px] font-bold">Proses</button>
+                        <button onclick="setStatusFilter('selesai')"
+                            class="filter-btn h-8 shrink-0 px-4 rounded-full bg-white dark:bg-[#1a2e23] border border-gray-200 dark:border-emerald-900/30 text-gray-500 text-[12px] font-bold">Selesai</button>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-[15px]">Rekap Penilaian</h3>
-                    <p class="text-xs text-slate-500 mt-1">Hasil asesmen siswa.</p>
-                </div>
-                <div
-                    class="bg-blue-50 border border-blue-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-blue-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">route</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-[15px]">Alur Kegiatan</h3>
-                    <p class="text-xs text-slate-500 mt-1">Timeline & roadmap kerja.</p>
-                </div>
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer"
-                    onclick="window.location.href='pengaturan-akun-koordinator.html'">
-                    <div
-                        class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">account_circle</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-[15px]">Edit Profil</h3>
-                    <p class="text-xs text-slate-500 mt-1">NIP, Mapel & Biodata.</p>
-                </div>
-                <div
-                    class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">description</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-[15px]">Laporan Akhir</h3>
-                    <p class="text-xs text-slate-500 mt-1">Ekspor dokumen Kokulikuler & sertifikat.</p>
-                </div>
-                <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer"
-                    onclick="window.location.href='pengaturan-akun-koordinator.html'">
-                    <div
-                        class="size-10 bg-orange-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">settings</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-[15px]">Pengaturan</h3>
-                    <p class="text-xs text-slate-500 mt-1">Konfigurasi jadwal & peran.</p>
                 </div>
             </div>
 
-            <div class="bg-primary-dark rounded-2xl p-5 text-white shadow-lg overflow-hidden relative">
-                <div class="relative z-10 flex items-center justify-between">
+            <div class="flex items-center justify-between px-4 pt-6 pb-2">
+                <h2 class="text-[#111814] dark:text-white text-lg font-bold" id="monSelectedClass">Daftar Siswa</h2>
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest" id="monTotalCount">0
+                    Siswa</span>
+            </div>
+
+            <div class="px-4 flex flex-col gap-3 pb-32" id="studentListContainer">
+                <!-- Cards injected here -->
+            </div>
+        </div>
+
+        <!-- Floating Bottom Navigation -->
+        <nav
+            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 dark:bg-[#1a2e23]/90 backdrop-blur-md border-t border-gray-100 dark:border-emerald-900/30 ios-bottom-nav z-[90]">
+            <div class="flex justify-around items-center h-16">
+                <button onclick="switchView('home')" id="navHome"
+                    class="flex flex-col items-center gap-0.5 text-primary">
+                    <span class="material-symbols-outlined text-[26px]">grid_view</span>
+                    <span class="text-[10px] font-bold">Beranda</span>
+                </button>
+                <button onclick="switchView('monitoring')" id="navMonitoring"
+                    class="flex flex-col items-center gap-0.5 text-gray-400">
+                    <span class="material-symbols-outlined text-[26px]">groups</span>
+                    <span class="text-[10px] font-bold">Siswa</span>
+                </button>
+                <button onclick="toggleProfileModal()" class="flex flex-col items-center gap-0.5 text-gray-400">
+                    <span class="material-symbols-outlined text-[26px]">account_circle</span>
+                    <span class="text-[10px] font-bold">Profil</span>
+                </button>
+                <button onclick="logout()" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-red-500">
+                    <span class="material-symbols-outlined text-[26px]">logout</span>
+                    <span class="text-[10px] font-bold">Keluar</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 z-[100] hidden flex items-end justify-center sm:items-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="toggleProfileModal()"></div>
+        <div
+            class="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-t-[2rem] sm:rounded-[2rem] overflow-hidden shadow-2xl animate-slide-up sm:animate-fade-in p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold dark:text-white">Profil Koordinator</h3>
+                <button onclick="toggleProfileModal()"
+                    class="size-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="flex flex-col items-center gap-4 mb-8">
+                <div class="size-24 rounded-full border-4 border-primary/20 p-1 relative">
+                    <div id="modalPhoto" class="w-full h-full rounded-full bg-center bg-cover"
+                        style='background-image: url("https://ui-avatars.com/api/?name=K&background=10b981&color=fff");'>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h4 class="text-lg font-bold dark:text-white" id="modalName">Memuat...</h4>
+                    <p class="text-primary text-sm font-bold uppercase tracking-wider" id="modalMapel">Koordinator
+                        Kokulikuler</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div
+                    class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+                    <div class="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined">id_card</span>
+                    </div>
                     <div>
-                        <p class="text-xs text-white/70 font-medium uppercase tracking-widest">Target Partisipasi</p>
-                        <p class="text-2xl font-bold mt-1" id="studentCount">0 <span
-                                class="text-sm font-normal text-white/60">Siswa Terdaftar</span></p>
-                    </div>
-                    <div class="bg-white/10 p-3 rounded-full">
-                        <span class="material-symbols-outlined text-3xl">school</span>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#618972]">NIP / Identitas</p>
+                        <p class="font-bold dark:text-white" id="modalNip">-</p>
                     </div>
                 </div>
-                <div class="absolute -bottom-6 -right-6 size-24 bg-primary/20 rounded-full blur-2xl"></div>
-            </div>
-
-            <section class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-bold text-slate-800">Informasi Jabatan</h2>
-                    <button onclick="loadCoordinatorData()"
-                        class="text-primary text-xs font-semibold hover:bg-primary/5 px-2 py-1 rounded-lg">Refresh</button>
-                </div>
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-5">
-                    <div class="flex items-start gap-4">
-                        <div class="size-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
-                            <span class="material-symbols-outlined text-2xl">id_card</span>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">NIP</p>
-                            <p class="text-[15px] font-bold text-slate-800" id="coordNip">Memuat...</p>
-                        </div>
+                <div
+                    class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+                    <div class="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined">school</span>
                     </div>
-                    <div class="h-px bg-slate-100"></div>
-                    <div class="flex items-start gap-4">
-                        <div class="size-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
-                            <span class="material-symbols-outlined text-2xl">menu_book</span>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Mata Pelajaran</p>
-                            <p class="text-[15px] font-bold text-slate-800" id="coordSubject">Memuat...</p>
+                    <div class="flex-1">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-[#618972]">Kelas Koordinasi</p>
+                        <div class="flex flex-wrap gap-1.5 mt-1" id="modalKelas">
+                            <!-- Pills here -->
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <section class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-bold text-slate-800">Status Terbaru</h2>
-                </div>
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 space-y-4"
-                    id="recentActivityList">
-                    <!-- Data Status Terbaru akan di-render di sini -->
-                    <div class="flex items-center justify-center py-4">
-                        <p class="text-xs text-slate-400 italic">Memuat aktivitas...</p>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- TAB: PROGRES KELAS -->
-        <div id="tab-content-progres" class="tab-content hidden space-y-6">
-            <div class="space-y-1">
-                <h2 class="text-xl font-bold text-slate-800">Progres Kelas</h2>
-                <p class="text-xs text-slate-500">Perbandingan penyelesaian modul antar kelas.</p>
-            </div>
-            <div id="classProgressGrid" class="grid gap-4">
-                <!-- Progress cards will be injected here -->
-                <div class="bg-white p-8 rounded-2xl border border-slate-100 text-center animate-pulse">
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest">Memuat Progres...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB: LAPORAN -->
-        <div id="tab-content-laporan" class="tab-content hidden space-y-6">
-            <div class="space-y-1">
-                <h2 class="text-xl font-bold text-slate-800">Siswa Belum Tuntas</h2>
-                <p class="text-xs text-slate-500">Daftar siswa perlu tindak lanjut (bolong modul).</p>
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                    <span class="text-xs font-bold text-slate-500 uppercase">Rekap Data</span>
-                    <button onclick="exportData()"
-                        class="px-3 py-1.5 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider rounded-lg hover:bg-emerald-200 transition-colors">Ekspor
-                        Excel</button>
-                </div>
-                <div id="incompleteList" class="divide-y divide-slate-50">
-                    <div class="p-8 text-center text-xs text-slate-400 italic">Memuat rekap laporan...</div>
-                </div>
+            <div class="mt-8 flex gap-3">
+                <button onclick="logout()"
+                    class="flex-1 bg-red-50 text-red-600 font-bold py-3 rounded-2xl hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">logout</span>
+                    Keluar Sesi
+                </button>
             </div>
         </div>
-    </main>
+    </div>
 
-    <nav
-        class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 safe-area-bottom z-[100]">
-        <div class="max-w-md mx-auto flex justify-around items-center pt-3 pb-6 px-4">
-            <button onclick="window.location.href='index.html'"
-                class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
-                <span class="material-symbols-outlined">home</span>
-                <span class="text-xs font-medium">Beranda</span>
-            </button>
-            <button onclick="window.location.href='dashboard-koordinator.html'"
-                class="flex flex-col items-center gap-1 text-primary transition-transform active:scale-90">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
-                <span class="text-xs font-bold">Dasbor</span>
-            </button>
-            <button onclick="openAnalysisModal()"
-                class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
-                <span class="material-symbols-outlined">analytics</span>
-                <span class="text-xs font-medium">Analisis</span>
-            </button>
-            <button onclick="window.location.href='pengaturan-akun-koordinator.html'"
-                class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90">
-                <span class="material-symbols-outlined">person</span>
-                <span class="text-xs font-medium">Profil</span>
-            </button>
-            <button onclick="logout()"
-                class="flex flex-col items-center gap-1 text-slate-400 transition-transform active:scale-90 hover:text-red-500">
-                <span class="material-symbols-outlined">logout</span>
-                <span class="text-xs font-medium font-bold">Keluar</span>
-            </button>
+    <!-- Analysis Modal -->
+    <div id="modalAnalysis"
+        class="fixed inset-0 z-[200] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div
+            class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden animate-fade-in">
+            <div
+                class="p-6 border-b border-slate-100 dark:border-emerald-900/30 flex justify-between items-center bg-slate-50/50 dark:bg-[#1a2e23]/50">
+                <div>
+                    <h3 class="text-lg font-black text-slate-800 dark:text-white">Analisis Performa Kelas</h3>
+                    <p class="text-xs text-slate-500 font-medium">Perbandingan tingkat penyelesaian modul</p>
+                </div>
+                <button onclick="document.getElementById('modalAnalysis').classList.add('hidden')"
+                    class="size-10 rounded-full bg-slate-100 dark:bg-gray-800 flex items-center justify-center text-slate-500">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="p-8">
+                <div class="h-64 mb-6">
+                    <canvas id="analysisChart"></canvas>
+                </div>
+                <div class="grid grid-cols-2 gap-4 px-2" id="chartStatsContainer"></div>
+            </div>
+
+            <div
+                class="p-4 bg-slate-50 dark:bg-[#1a2e23] border-t border-slate-100 dark:border-emerald-900/30 flex justify-center items-center">
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">Data diperbarui
+                    otomatis dari sistem pusat</p>
+            </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- Supabase & Chart.js -->
+    <style>
+        @keyframes slide-up {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slide-up 0.3s ease-out;
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out;
+        }
+    </style>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let currentClass = '';
+        let allStudents = [];
+        let statusFilter = 'semua';
+        let myChart = null;
 
         async function loadCoordinatorData() {
             try {
@@ -324,43 +411,34 @@
                 }
 
                 const userData = session.user.user_metadata;
-                const coordId = session.user.id;
-
-                // Update UI from user metadata
-                document.getElementById('coordName').textContent = userData.full_name;
-                document.getElementById('coordNip').textContent = userData.nip || '-';
-                document.getElementById('coordSubject').textContent = userData.mapel || '-';
-
-                // Render Kelas Pills
-                const classContainer = document.getElementById('coordClass');
-                classContainer.innerHTML = '';
                 const classes = Array.isArray(userData.kelas) ? userData.kelas : (userData.kelas ? [userData.kelas] : []);
+                localStorage.setItem('coordClasses', JSON.stringify(classes));
 
-                if (classes.length > 0) {
-                    classes.forEach(cls => {
-                        const pill = document.createElement('span');
-                        pill.className = 'px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200';
-                        pill.textContent = cls;
-                        classContainer.appendChild(pill);
-                    });
+                // Update UI
+                const firstName = (userData.full_name || 'Koordinator').split(',')[0].split(' ')[0];
+                document.getElementById('coordWelcome').textContent = `Halo, ${firstName}`;
+                document.getElementById('coordSubjectText').textContent = userData.mapel || 'Koordinator Kokulikuler';
 
-                    // Fetch additional data
-                    loadParticipationStats(classes);
-                    loadRecentActivity(classes);
-                    loadCumulativeProgress(classes);
-                } else {
-                    classContainer.innerHTML = '<span class="text-gray-400 text-xs italic">Belum ada kelas</span>';
-                    document.getElementById('studentCount').innerHTML = '0 <span class="text-sm font-normal text-white/60">Siswa Terdaftar</span>';
-                    document.getElementById('recentActivityList').innerHTML = '<div class="text-center py-4 text-xs text-slate-400 italic">Belum ada aktivitas</div>';
-                    updateProgressUI(0);
-                }
+                // Update Modal Info
+                document.getElementById('modalName').textContent = userData.full_name;
+                document.getElementById('modalNip').textContent = userData.nip || '-';
+
+                const modalKelasCont = document.getElementById('modalKelas');
+                modalKelasCont.innerHTML = '';
+                classes.forEach(cls => {
+                    const pill = document.createElement('span');
+                    pill.className = 'px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[10px] font-bold';
+                    pill.textContent = cls;
+                    modalKelasCont.appendChild(pill);
+                });
 
                 // Photo load
-                if (userData.photo_url) {
-                    document.getElementById('profilePhoto').style.backgroundImage = `url("${userData.photo_url}")`;
-                } else {
-                    const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=10b981&color=fff&size=256`;
-                    document.getElementById('profilePhoto').style.backgroundImage = `url("${fallback}")`;
+                const pUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=10b981&color=fff&size=256`;
+                document.getElementById('profilePhoto').style.backgroundImage = `url("${pUrl}")`;
+                document.getElementById('modalPhoto').style.backgroundImage = `url("${pUrl}")`;
+
+                if (classes.length > 0) {
+                    loadStatsAndClasses(classes);
                 }
 
             } catch (error) {
@@ -368,205 +446,241 @@
             }
         }
 
-        async function loadParticipationStats(classes) {
+        async function loadStatsAndClasses(classes) {
             try {
-                const { count, error } = await supabaseClient
+                const { count: studentCount } = await supabaseClient
                     .from('students')
                     .select('*', { count: 'exact', head: true })
                     .in('kelas', classes);
 
-                if (error) throw error;
-                document.getElementById('studentCount').innerHTML = `${count || 0} <span class="text-sm font-normal text-white/60">Siswa Terdaftar</span>`;
+                document.getElementById('totalSiswa').textContent = studentCount || 0;
 
-                return count || 0;
-            } catch (error) {
-                console.error('Error fetching student count:', error);
-                return 0;
-            }
-        }
+                const container = document.getElementById('classListContainer');
+                container.innerHTML = '';
 
-        async function loadCumulativeProgress(classes) {
-            try {
-                // 1. Get total students first to know the maximum possible tasks
-                const totalStudents = await loadParticipationStats(classes);
+                let totalCompleted = 0;
+                let totalPossibleAll = (studentCount || 0) * 3 * 8;
 
-                if (totalStudents === 0) {
-                    updateProgressUI(0);
-                    return;
-                }
+                for (const cls of classes) {
+                    const { count: clsStudentCount } = await supabaseClient
+                        .from('students')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('kelas', cls);
 
-                // 2. Total tasks = Students * 3 days * 8 modules
-                const totalPossibleTasks = totalStudents * 3 * 8;
+                    const { data: students } = await supabaseClient
+                        .from('students')
+                        .select('id')
+                        .eq('kelas', cls);
 
-                // 3. Get total completed tasks from module_responses for these students
-                // First get student IDs in those classes
-                const { data: students, error: studError } = await supabaseClient
-                    .from('students')
-                    .select('id')
-                    .in('kelas', classes);
+                    const studentIds = students.map(s => s.id);
 
-                if (studError) throw studError;
-                const studentIds = students.map(s => s.id);
+                    const { count: clsCompletedCount } = await supabaseClient
+                        .from('module_responses')
+                        .select('*', { count: 'exact', head: true })
+                        .in('student_id', studentIds);
 
-                const { count: completedTasks, error: respError } = await supabaseClient
-                    .from('module_responses')
-                    .select('*', { count: 'exact', head: true })
-                    .in('student_id', studentIds);
+                    totalCompleted += (clsCompletedCount || 0);
+                    const clsTotalPossible = (clsStudentCount || 0) * 3 * 8;
+                    const progress = clsTotalPossible > 0 ? Math.round((clsCompletedCount / clsTotalPossible) * 100) : 0;
 
-                if (respError) throw respError;
-
-                const progressPercent = Math.min(100, Math.round((completedTasks / totalPossibleTasks) * 100));
-                updateProgressUI(progressPercent);
-
-            } catch (error) {
-                console.error('Error calculating cumulative progress:', error);
-                updateProgressUI(0);
-            }
-        }
-
-        function updateProgressUI(percent) {
-            const textEl = document.getElementById('progressText');
-            if (textEl) textEl.textContent = `${percent}%`;
-
-            // Update Circle Stroke
-            // circumference = 2 * pi * r = 2 * 3.14 * 18 = 113
-            const circle = document.querySelector('circle[stroke-dasharray="113"]');
-            if (circle) {
-                const offset = 113 - (percent / 100 * 113);
-                circle.setAttribute('stroke-dashoffset', offset);
-            }
-        }
-
-        async function loadRecentActivity(classes) {
-            try {
-                const listContainer = document.getElementById('recentActivityList');
-
-                // 1. Get all student IDs in the coordinator's classes
-                const { data: studentsInClass, error: studError } = await supabaseClient
-                    .from('students')
-                    .select('id, nama, kelas')
-                    .in('kelas', classes);
-
-                if (studError) throw studError;
-
-                if (!studentsInClass || studentsInClass.length === 0) {
-                    listContainer.innerHTML = '<div class="text-center py-4 text-xs text-slate-400 italic">Belum ada siswa di kelas bapak/ibu.</div>';
-                    return;
-                }
-
-                const studentIds = studentsInClass.map(s => s.id);
-
-                // 2. Fetch recent responses from these students
-                const { data: responses, error: respError } = await supabaseClient
-                    .from('module_responses')
-                    .select('student_id, created_at, module_type, status')
-                    .in('student_id', studentIds)
-                    .order('created_at', { ascending: false })
-                    .limit(5);
-
-                if (respError) throw respError;
-
-                if (responses && responses.length > 0) {
-                    listContainer.innerHTML = responses.map((item, idx) => {
-                        const student = studentsInClass.find(s => s.id === item.student_id);
-                        return `
-                        <div class="flex items-center gap-4">
-                            <div class="size-2 rounded-full ${item.status === 'reviewed' ? 'bg-emerald-500' : 'bg-primary animate-pulse'}"></div>
-                            <div class="flex-1">
-                                <p class="text-[15px] font-semibold text-slate-800">${student ? student.nama : 'Siswa'} (${student ? student.kelas : '-'})</p>
-                                <p class="text-xs text-slate-500">Mengerjakan modul: <span class="capitalize font-bold">${item.module_type}</span></p>
+                    container.innerHTML += `
+                        <div onclick="viewMonitoring('${cls}')" class="flex items-center gap-4 bg-white dark:bg-[#1a2e23] p-4 rounded-xl ios-shadow border border-gray-50 dark:border-emerald-900/30 cursor-pointer active:scale-95 transition-all">
+                            <div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+                                <span class="material-symbols-outlined">school</span>
                             </div>
-                            <span class="text-xs text-slate-400">${formatTimeAgo(new Date(item.created_at))}</span>
+                            <div class="flex-1 flex flex-col justify-center min-w-0">
+                                <div class="flex justify-between items-end mb-1">
+                                    <p class="text-[#111814] dark:text-white text-base font-bold truncate">Kelas ${cls}</p>
+                                    <p class="text-primary text-xs font-bold">${progress}%</p>
+                                </div>
+                                <div class="w-full h-1.5 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+                                    <div class="h-full rounded-full bg-primary" style="width: ${progress}%;"></div>
+                                </div>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-300">chevron_right</span>
                         </div>
-                        ${idx < responses.length - 1 ? '<div class="h-px bg-slate-100"></div>' : ''}
-                    `}).join('');
-                } else {
-                    listContainer.innerHTML = '<div class="text-center py-4 text-xs text-slate-400 italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</div>';
+                    `;
                 }
+
+                const overallProgress = totalPossibleAll > 0 ? Math.round((totalCompleted / totalPossibleAll) * 100) : 0;
+                document.getElementById('progresText').textContent = `${overallProgress}%`;
+
             } catch (error) {
-                console.error('Error loading recent activity:', error);
-                document.getElementById('recentActivityList').innerHTML = '<div class="text-center py-4 text-xs text-slate-400 italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</div>';
+                console.error('Error:', error);
             }
         }
 
-        function formatTimeAgo(date) {
-            const now = new Date();
-            const diffInSeconds = Math.floor((now - date) / 1000);
-            if (diffInSeconds < 60) return 'Baru saja';
-            const diffInMinutes = Math.floor(diffInSeconds / 60);
-            if (diffInMinutes < 60) return `${diffInMinutes}m lalu`;
-            const diffInHours = Math.floor(diffInMinutes / 60);
-            if (diffInHours < 24) return `${diffInHours}j lalu`;
-            return date.toLocaleDateString('id-ID');
+        async function viewMonitoring(className) {
+            currentClass = className;
+            switchView('monitoring');
+
+            document.getElementById('headerTitle').textContent = `Koordinator Kelas ${className}`;
+            document.getElementById('monSelectedClass').textContent = `Daftar Siswa ${className}`;
+
+            loadStudents(className);
         }
 
-        // --- Modals Integration ---
+        async function loadStudents(className) {
+            const container = document.getElementById('studentListContainer');
+            container.innerHTML = '<div class="text-center py-8 text-gray-400 animate-pulse font-bold uppercase tracking-widest text-[10px]">Sinkronisasi Data...</div>';
 
-        function openMonitoringModal() {
-            // Kita gunakan modal yang sama dengan Analisis namun dengan fokus tab berbeda atau UI ringkasan
-            openAnalysisModal();
+            try {
+                const { data: students, error: sErr } = await supabaseClient
+                    .from('students')
+                    .select('*')
+                    .eq('kelas', className)
+                    .order('nama');
+
+                if (sErr) throw sErr;
+
+                const { data: responses } = await supabaseClient
+                    .from('module_responses')
+                    .select('student_id, module_type')
+                    .in('student_id', students.map(s => s.id));
+
+                allStudents = students.map(s => {
+                    const sResponses = responses.filter(r => r.student_id === s.id);
+                    const lkpdCount = sResponses.filter(r => r.module_type === 'lkpd').length;
+                    const refCount = sResponses.filter(r => r.module_type === 'refleksi').length;
+
+                    let status = 'belum';
+                    if (sResponses.length >= 24) status = 'selesai';
+                    else if (sResponses.length > 0) status = 'proses';
+
+                    return { ...s, status, lkpdCount, refCount, totalRes: sResponses.length };
+                });
+
+                updateMonitoringStats();
+                renderStudentList();
+
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateMonitoringStats() {
+            const total = allStudents.length;
+            const refTotal = allStudents.reduce((acc, s) => acc + (s.refCount > 0 ? 1 : 0), 0);
+            const lkpdTotal = allStudents.reduce((acc, s) => acc + (s.lkpdCount > 0 ? 1 : 0), 0);
+
+            document.getElementById('monTotalCount').textContent = `${total} Siswa Total`;
+            document.getElementById('monRefCount').textContent = `${refTotal}/${total}`;
+            document.getElementById('monLkpdCount').textContent = `${lkpdTotal}/${total}`;
+
+            const refProgress = total > 0 ? (refTotal / total) * 100 : 0;
+            const lkpdProgress = total > 0 ? (lkpdTotal / total) * 100 : 0;
+
+            document.getElementById('monRefBar').style.width = `${refProgress}%`;
+            document.getElementById('monLkpdBar').style.width = `${lkpdProgress}%`;
+        }
+
+        function switchView(view) {
+            const home = document.getElementById('homeView');
+            const mon = document.getElementById('monitoringView');
+            const banner = document.getElementById('contextBanner');
+            const navHome = document.getElementById('navHome');
+            const navMon = document.getElementById('navMonitoring');
+
+            if (view === 'home') {
+                home.classList.remove('hidden');
+                mon.classList.add('hidden');
+                banner.classList.add('hidden');
+                navHome.classList.replace('text-gray-400', 'text-primary');
+                navMon.classList.replace('text-primary', 'text-gray-400');
+                document.getElementById('headerTitle').textContent = 'SMAN 1 Belitang';
+            } else {
+                home.classList.add('hidden');
+                mon.classList.remove('hidden');
+                banner.classList.remove('hidden');
+                navMon.classList.replace('text-gray-400', 'text-primary');
+                navHome.classList.replace('text-primary', 'text-gray-400');
+                if (!currentClass) {
+                    const classes = JSON.parse(localStorage.getItem('coordClasses') || '[]');
+                    if (classes.length > 0) viewMonitoring(classes[0]);
+                }
+            }
+        }
+
+        function renderStudentList() {
+            const query = document.getElementById('studentSearch').value.toLowerCase();
+            const container = document.getElementById('studentListContainer');
+
+            const filtered = allStudents.filter(s => {
+                const matchesQuery = s.nama.toLowerCase().includes(query) || (s.nisn && s.nisn.includes(query));
+                const matchesStatus = statusFilter === 'semua' || s.status === statusFilter;
+                return matchesQuery && matchesStatus;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="text-center py-12 text-gray-400">Tidak ada siswa ditemukan</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(s => {
+                let statusLabel = 'Belum Mulai';
+                let statusClass = 'bg-gray-100 dark:bg-gray-800 text-gray-500';
+                if (s.status === 'selesai') {
+                    statusLabel = 'Selesai';
+                    statusClass = 'bg-emerald-50 dark:bg-primary/10 text-emerald-600 dark:text-primary';
+                } else if (s.status === 'proses') {
+                    statusLabel = 'Proses';
+                    statusClass = 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400';
+                }
+
+                const initial = s.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+                return `
+                    <div class="bg-white dark:bg-[#1a2e23] rounded-xl p-4 shadow-sm border border-gray-100 dark:border-emerald-900/30">
+                        <div class="flex items-start justify-between mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-emerald-800 dark:text-primary font-bold text-sm">${initial}</div>
+                                <div>
+                                    <p class="text-[#111814] dark:text-white text-sm font-bold">${s.nama}</p>
+                                    <p class="text-gray-500 text-[11px]">NISN: ${s.nisn || '-'}</p>
+                                </div>
+                            </div>
+                            <div class="px-2 py-1 rounded-md ${statusClass} text-[9px] font-bold uppercase tracking-wider">
+                                ${statusLabel}
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-gray-400 font-bold">Progress: ${s.totalRes}/24 Modul</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function setStatusFilter(filter) {
+            statusFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-[#111814]', 'shadow-sm');
+                btn.classList.add('bg-white', 'dark:bg-[#1a2e23]', 'text-gray-500');
+            });
+            event.target.classList.add('bg-primary', 'text-[#111814]', 'shadow-sm');
+            renderStudentList();
+        }
+
+        function toggleProfileModal() {
+            document.getElementById('profileModal').classList.toggle('hidden');
         }
 
         async function openAnalysisModal() {
-            const modalId = 'modalAnalysis';
-            let modal = document.getElementById(modalId);
-
-            if (!modal) {
-                // Create Modal UI
-                modal = document.createElement('div');
-                modal.id = modalId;
-                modal.className = 'fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4';
-                modal.innerHTML = `
-                    <div class="bg-white w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden animate-fade-in">
-                        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                            <div>
-                                <h3 class="text-lg font-black text-slate-800">Analisis Performa Kelas</h3>
-                                <p class="text-xs text-slate-500 font-medium">Perbandingan tingkat penyelesaian modul</p>
-                            </div>
-                            <button onclick="document.getElementById('${modalId}').remove()" class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
-                                <span class="material-symbols-outlined">close</span>
-                            </button>
-                        </div>
-                        
-                        <!-- Chart Section -->
-                        <div class="p-8">
-                            <div class="h-64 mb-6">
-                                <canvas id="analysisChart"></canvas>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4 px-2" id="chartStatsContainer">
-                                <!-- Stats will be injected here -->
-                            </div>
-                        </div>
-                        
-                        <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-center items-center">
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Data diperbarui otomatis dari sistem pusat</p>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-            }
+            const modal = document.getElementById('modalAnalysis');
+            modal.classList.remove('hidden');
 
             const { data: { session } } = await supabaseClient.auth.getSession();
-            const classes = session.user.user_metadata.kelas;
-            const classArray = Array.isArray(classes) ? classes : [classes];
+            const classes = Array.isArray(session.user.user_metadata.kelas) ? session.user.user_metadata.kelas : [session.user.user_metadata.kelas];
 
-            if (classArray.length > 0) {
-                renderAnalysisChart(classArray);
-            }
+            renderAnalysisChart(classes);
         }
 
-        let myChart = null;
         async function renderAnalysisChart(classes) {
             const chartCanvas = document.getElementById('analysisChart');
-            if (!chartCanvas) return;
             const ctx = chartCanvas.getContext('2d');
+            const statsContainer = document.getElementById('chartStatsContainer');
+            statsContainer.innerHTML = '';
 
             try {
                 const dataPoints = [];
-                const statsContainer = document.getElementById('chartStatsContainer');
-                statsContainer.innerHTML = '';
-
                 for (const cls of classes) {
                     const { count: studentCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).eq('kelas', cls);
                     const { data: students } = await supabaseClient.from('students').select('id').eq('kelas', cls);
@@ -576,157 +690,38 @@
                     const progress = totalPossible > 0 ? Math.round((completedCount / totalPossible) * 100) : 0;
                     dataPoints.push(progress);
 
-                    // Add small stat cards
                     statsContainer.innerHTML += `
-                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-emerald-900/30">
                             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Kelas ${cls}</p>
-                            <p class="text-lg font-black text-slate-800">${progress}% <span class="text-[10px] font-medium text-slate-400">Complete</span></p>
+                            <p class="text-lg font-black text-slate-800 dark:text-white">${progress}%</p>
                         </div>
                     `;
                 }
 
                 if (myChart) myChart.destroy();
-
-                // Create Gradient
-                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, '#10b981');   // Emerald 500
-                gradient.addColorStop(1, '#ecfdf5');   // Emerald 50
-
                 myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: classes.map(c => 'Kelas ' + c),
                         datasets: [{
-                            label: 'Progres',
                             data: dataPoints,
-                            backgroundColor: gradient,
-                            hoverBackgroundColor: '#059669',
+                            backgroundColor: '#10b981',
                             borderRadius: 12,
-                            barThickness: 40,
-                            borderWidth: 0
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: {
-                            duration: 2000,
-                            easing: 'easeOutQuart'
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#1e293b',
-                                titleFont: { size: 12, weight: 'bold' },
-                                bodyFont: { size: 12 },
-                                padding: 12,
-                                cornerRadius: 10,
-                                displayColors: false,
-                                callbacks: {
-                                    label: function (context) {
-                                        return `Progres: ${context.parsed.y}% Selesai`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                max: 100,
-                                grid: {
-                                    color: '#f1f5f9',
-                                    drawBorder: false
-                                },
-                                ticks: {
-                                    stepSize: 20,
-                                    font: { size: 10, weight: '600' },
-                                    color: '#94a3b8',
-                                    callback: value => value + '%'
-                                }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: {
-                                    font: { size: 11, weight: 'bold' },
-                                    color: '#1e293b'
-                                }
-                            }
-                        }
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } } }
                     }
                 });
-            } catch (error) {
-                console.error('Error rendering chart:', error);
-            }
+            } catch (e) { console.error(e); }
         }
 
-
-        // Image Compression
-        async function compressImage(file, maxWidth = 400, quality = 0.7) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const img = new Image();
-                    img.onload = function () {
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > maxWidth) {
-                            height = (height * maxWidth) / width;
-                            width = maxWidth;
-                        }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
+        async function exportData() {
+            alert('Fitur ekspor Excel sedang disiapkan. Data rekapitulasi akan diunduh secara otomatis.');
         }
-
-        // Photo Upload Handler
-        document.getElementById('photoInput').addEventListener('change', async function (e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (!session) return;
-
-                const overlay = document.querySelector('.upload-overlay');
-                overlay.innerHTML = '<span class="material-symbols-outlined text-white text-base animate-spin">sync</span>';
-                overlay.style.opacity = '1';
-
-                const compressedBlob = await compressImage(file);
-                const fileName = `${session.user.id}_${Date.now()}.jpg`;
-                const { error: uploadError } = await supabaseClient.storage
-                    .from('profile-photos')
-                    .upload(fileName, compressedBlob);
-
-                if (uploadError) throw uploadError;
-
-                const { data: { publicUrl } } = supabaseClient.storage.from('profile-photos').getPublicUrl(fileName);
-
-                const { error: updateError } = await supabaseClient.auth.updateUser({
-                    data: { photo_url: publicUrl }
-                });
-
-                if (updateError) throw updateError;
-
-                document.getElementById('profilePhoto').style.backgroundImage = `url("${publicUrl}")`;
-                alert('✅ Foto profil berhasil diperbarui!');
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Gagal: ' + error.message);
-            } finally {
-                const overlay = document.querySelector('.upload-overlay');
-                overlay.innerHTML = '<span class="material-symbols-outlined text-white text-base">photo_camera</span>';
-                overlay.style.opacity = '';
-            }
-        });
 
         async function logout() {
             if (confirm('Yakin ingin keluar?')) {
@@ -734,183 +729,6 @@
                 localStorage.clear();
                 window.location.href = 'login.html';
             }
-        }
-
-        async function loadDetailedClassProgress() {
-            const grid = document.getElementById('classProgressGrid');
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                const classes = Array.isArray(session.user.user_metadata.kelas) ? session.user.user_metadata.kelas : [session.user.user_metadata.kelas];
-
-                grid.innerHTML = '';
-
-                for (const cls of classes) {
-                    // 1. Get students count
-                    const { count: studentCount } = await supabaseClient
-                        .from('students')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('kelas', cls);
-
-                    // 2. Get students IDs
-                    const { data: students } = await supabaseClient
-                        .from('students')
-                        .select('id')
-                        .eq('kelas', cls);
-
-                    const studentIds = students.map(s => s.id);
-
-                    // 3. Get total completed modules
-                    const { count: completedCount } = await supabaseClient
-                        .from('module_responses')
-                        .select('*', { count: 'exact', head: true })
-                        .in('student_id', studentIds);
-
-                    // 4. Get module popularity
-                    const { data: typeCounts } = await supabaseClient
-                        .from('module_responses')
-                        .select('module_type')
-                        .in('student_id', studentIds);
-
-                    const counts = {};
-                    typeCounts.forEach(t => counts[t.module_type] = (counts[t.module_type] || 0) + 1);
-                    const popularModule = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b, 'None');
-
-                    const totalPossible = (studentCount || 0) * 3 * 8;
-                    const progress = totalPossible > 0 ? Math.round((completedCount / totalPossible) * 100) : 0;
-
-                    grid.innerHTML += `
-                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="font-black text-slate-800 text-lg">Kelas ${cls}</h3>
-                                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">${studentCount} Siswa Terdaftar</p>
-                                </div>
-                                <span class="px-2.5 py-1 bg-emerald-50 text-primary text-[10px] font-black rounded-lg border border-emerald-100 uppercase tracking-wider">${progress}% Selesai</span>
-                            </div>
-                            
-                            <div class="space-y-2">
-                                <div class="flex justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wide">
-                                    <span>Penyelesaian Modul</span>
-                                    <span>${completedCount}/${totalPossible}</span>
-                                </div>
-                                <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-50">
-                                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width: ${progress}%"></div>
-                                </div>
-                            </div>
-
-                            <div class="pt-2 flex items-center justify-between text-[11px]">
-                                <span class="text-slate-400 font-medium">Modul Terpopuler:</span>
-                                <span class="font-black text-emerald-600 uppercase tracking-wider">${popularModule}</span>
-                            </div>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                console.error('Error loading class progress:', error);
-                grid.innerHTML = '<div class="p-8 text-center text-red-400 italic">Gagal memuat data progres kelas.</div>';
-            }
-        }
-
-        async function loadReportsData() {
-            const list = document.getElementById('incompleteList');
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                const classes = Array.isArray(session.user.user_metadata.kelas) ? session.user.user_metadata.kelas : [session.user.user_metadata.kelas];
-
-                // 1. Get all students
-                const { data: students } = await supabaseClient
-                    .from('students')
-                    .select('id, nama, kelas')
-                    .in('kelas', classes)
-                    .order('kelas', { ascending: true })
-                    .order('nama', { ascending: true });
-
-                // 2. Get all responses
-                const studentIds = students.map(s => s.id);
-                const { data: responses } = await supabaseClient
-                    .from('module_responses')
-                    .select('student_id, module_type')
-                    .in('student_id', studentIds);
-
-                const moduleTypes = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'rangkuman', 'glosarium', 'refleksi'];
-                let html = '';
-                let count = 0;
-
-                students.forEach(student => {
-                    const studentResps = responses.filter(r => r.student_id === student.id).map(r => r.module_type);
-                    const missing = moduleTypes.filter(m => !studentResps.includes(m));
-
-                    if (missing.length > 0) {
-                        count++;
-                        html += `
-                            <div class="p-4 hover:bg-slate-50/50 transition-colors">
-                                <div class="flex justify-between items-start mb-2">
-                                    <div>
-                                        <p class="text-sm font-black text-slate-800">${student.nama}</p>
-                                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${student.kelas}</p>
-                                    </div>
-                                    <span class="text-[10px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded border border-red-100">${missing.length} Modul Bolong</span>
-                                </div>
-                                <p class="text-[10px] text-slate-500 font-medium leading-relaxed italic">Missing: ${missing.join(', ')}</p>
-                            </div>
-                        `;
-                    }
-                });
-
-                list.innerHTML = html || '<div class="p-12 text-center text-xs text-slate-400 italic">Luar biasa! Semua siswa bapak/ibu sudah tuntas pengerjaan.</div>';
-            } catch (error) {
-                console.error('Error loading reports:', error);
-                list.innerHTML = '<div class="p-8 text-center text-red-400 italic">Gagal memuat rekap laporan.</div>';
-            }
-        }
-
-        async function exportData() {
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                const classes = Array.isArray(session.user.user_metadata.kelas) ? session.user.user_metadata.kelas : [session.user.user_metadata.kelas];
-
-                const { data: students } = await supabaseClient
-                    .from('students')
-                    .select('id, nama, kelas')
-                    .in('kelas', classes);
-
-                const { data: responses } = await supabaseClient
-                    .from('module_responses')
-                    .select('student_id, module_type, status, created_at')
-                    .in('student_id', students.map(s => s.id));
-
-                let csv = 'Nama,Kelas,Modul,Status,Tanggal\n';
-                responses.forEach(r => {
-                    const student = students.find(s => s.id === r.student_id);
-                    csv += `"${student.nama}","${student.kelas}","${r.module_type}","${r.status}","${new Date(r.created_at).toLocaleString()}"\n`;
-                });
-
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.setAttribute('hidden', '');
-                a.setAttribute('href', url);
-                a.setAttribute('download', `rekap_progres_${new Date().toISOString().split('T')[0]}.csv`);
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } catch (error) {
-                alert('Gagal mengekspor data: ' + error.message);
-            }
-        }
-
-        function switchTab(tabId) {
-            // Update Buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-' + tabId).classList.add('active');
-
-            // Update Content
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-            document.getElementById('tab-content-' + tabId).classList.remove('hidden');
-
-            // Trigger data load if needed
-            if (tabId === 'progres') loadDetailedClassProgress();
-            if (tabId === 'laporan') loadReportsData();
         }
 
         window.addEventListener('load', loadCoordinatorData);

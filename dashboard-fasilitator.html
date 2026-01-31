@@ -196,6 +196,29 @@
                 </div>
             </div>
 
+            <!-- Dashboard Actions -->
+            <div class="px-4 pb-2 pt-4">
+                <h3 class="text-[#111814] dark:text-white text-lg font-bold leading-tight">Aksi Fasilitator</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-3 px-4 pb-6">
+                <button onclick="openAnalysisModal()"
+                    class="flex flex-col items-center gap-3 bg-white dark:bg-[#1a2e23] p-4 rounded-xl ios-shadow border border-gray-50 dark:border-emerald-900/30 active:scale-95 transition-all">
+                    <div
+                        class="size-12 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                        <span class="material-symbols-outlined">analytics</span>
+                    </div>
+                    <span class="text-[11px] font-bold uppercase">Analisis</span>
+                </button>
+                <button onclick="alert('Rekapitulasi sedang disiapkan...')"
+                    class="flex flex-col items-center gap-3 bg-white dark:bg-[#1a2e23] p-4 rounded-xl ios-shadow border border-gray-50 dark:border-emerald-900/30 active:scale-95 transition-all">
+                    <div
+                        class="size-12 rounded-full bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                        <span class="material-symbols-outlined">description</span>
+                    </div>
+                    <span class="text-[11px] font-bold uppercase">Rekap Data</span>
+                </button>
+            </div>
+
             <!-- Class Progress Section -->
             <div class="flex items-center justify-between px-4 pb-3 pt-4">
                 <h3 class="text-[#111814] dark:text-white text-lg font-bold leading-tight">Pilih Kelas</h3>
@@ -365,6 +388,38 @@
         </div>
     </div>
 
+    <!-- Analysis Modal -->
+    <div id="modalAnalysis"
+        class="fixed inset-0 z-[200] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div
+            class="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden animate-fade-in">
+            <div
+                class="p-6 border-b border-slate-100 dark:border-emerald-900/30 flex justify-between items-center bg-slate-50/50 dark:bg-[#1a2e23]/50">
+                <div>
+                    <h3 class="text-lg font-black text-slate-800 dark:text-white">Analisis Performa Kelas</h3>
+                    <p class="text-xs text-slate-500 font-medium">Perbandingan tingkat penyelesaian modul</p>
+                </div>
+                <button onclick="document.getElementById('modalAnalysis').classList.add('hidden')"
+                    class="size-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-slate-500">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="p-8">
+                <div class="h-64 mb-6">
+                    <canvas id="analysisChart"></canvas>
+                </div>
+                <div class="grid grid-cols-2 gap-4 px-2" id="chartStatsContainer"></div>
+            </div>
+
+            <div
+                class="p-4 bg-slate-50 dark:bg-[#1a2e23] border-t border-slate-100 dark:border-emerald-900/30 flex justify-center items-center">
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center">Data diperbarui
+                    otomatis dari sistem pusat</p>
+            </div>
+        </div>
+    </div>
+
     <style>
         @keyframes slide-up {
             from {
@@ -379,10 +434,25 @@
         .animate-slide-up {
             animation: slide-up 0.3s ease-out;
         }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out;
+        }
     </style>
 
-    <!-- Supabase SDK -->
+    <!-- Supabase SDK & Chart JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
@@ -605,6 +675,64 @@
                     if (classes.length > 0) viewMonitoring(classes[0]);
                 }
             }
+        }
+
+        let myChart = null;
+
+        async function openAnalysisModal() {
+            const modal = document.getElementById('modalAnalysis');
+            modal.classList.remove('hidden');
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            const classes = Array.isArray(session.user.user_metadata.kelas) ? session.user.user_metadata.kelas : [session.user.user_metadata.kelas];
+
+            renderAnalysisChart(classes);
+        }
+
+        async function renderAnalysisChart(classes) {
+            const chartCanvas = document.getElementById('analysisChart');
+            const ctx = chartCanvas.getContext('2d');
+            const statsContainer = document.getElementById('chartStatsContainer');
+            statsContainer.innerHTML = '';
+
+            try {
+                const dataPoints = [];
+                for (const cls of classes) {
+                    const { count: studentCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).eq('kelas', cls);
+                    const { data: students } = await supabaseClient.from('students').select('id').eq('kelas', cls);
+                    const { count: completedCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', students.map(s => s.id));
+
+                    const totalPossible = (studentCount || 0) * 3 * 8;
+                    const progress = totalPossible > 0 ? Math.round((completedCount / totalPossible) * 100) : 0;
+                    dataPoints.push(progress);
+
+                    statsContainer.innerHTML += `
+                        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-gray-800 border border-slate-100 dark:border-emerald-900/30">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Kelas ${cls}</p>
+                            <p class="text-lg font-black text-slate-800 dark:text-white">${progress}%</p>
+                        </div>
+                    `;
+                }
+
+                if (myChart) myChart.destroy();
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: classes.map(c => 'Kelas ' + c),
+                        datasets: [{
+                            data: dataPoints,
+                            backgroundColor: '#13ec6d',
+                            borderRadius: 12,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } } }
+                    }
+                });
+            } catch (e) { console.error(e); }
         }
 
         let currentClass = '';

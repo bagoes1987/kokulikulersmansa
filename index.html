@@ -702,7 +702,16 @@
         function updateAuthUI(session) {
             if (session) {
                 // User is logged in
-                authButton.href = 'dashboard-kegiatan.html';
+                const role = session.user.user_metadata.role;
+                if (role === 'admin') {
+                    authButton.href = 'dashboard-admin.html';
+                } else if (role === 'koordinator') {
+                    authButton.href = 'dashboard-koordinator.html';
+                } else if (role === 'fasilitator') {
+                    authButton.href = 'dashboard-fasilitator.html';
+                } else {
+                    authButton.href = 'dashboard-kegiatan.html'; // student
+                }
                 authIcon.textContent = 'grid_view';
                 authText.textContent = 'Dasbor';
                 authButton.classList.remove('text-slate-400');
