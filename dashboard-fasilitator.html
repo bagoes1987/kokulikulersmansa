@@ -673,77 +673,120 @@
             }
 
             async function openStudentDetailModal(studentId, studentName) {
+                console.log('🔍 [DetailModal] Membuka untuk:', studentName);
                 const modal = document.getElementById('modalDetailSiswa');
-                document.getElementById('detailStudentName').textContent = studentName;
+                const title = document.getElementById('detailStudentName');
                 const container = document.getElementById('detailTaskContainer');
-                modal.classList.remove('hidden');
-                container.innerHTML = '<div class="text-center py-8 text-slate-400 text-[10px] font-black uppercase animate-pulse">Memuat progres...</div>';
 
-                const sRes = allResponses.filter(r => String(r.student_id) === String(studentId));
-                console.log('📊 Progres Detail Siswa:', studentName, sRes.length, 'data ditemukan');
-
-                let html = '';
-                for (let day = 1; day <= 3; day++) {
-                    const dayTasks = sRes.filter(r => r.day_id === day);
-
-                    html += `
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-3">
-                            <span class="size-1 w-8 bg-slate-100 rounded-full"></span>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Hari ${day}</p>
-                            <span class="flex-1 h-px bg-slate-50"></span>
-                        </div>
-                        <div class="grid grid-cols-1 gap-2">
-                            ${renderModuleItem(studentId, studentName, day, 'pemantik', dayTasks)}
-                            ${renderModuleItem(studentId, studentName, day, 'materi', dayTasks)}
-                            ${renderModuleItem(studentId, studentName, day, 'video', dayTasks)}
-                            ${renderModuleItem(studentId, studentName, day, 'lkpd', dayTasks)}
-                            ${renderModuleItem(studentId, studentName, day, 'kuis', dayTasks)}
-                            ${renderModuleItem(studentId, studentName, day, 'refleksi', dayTasks)}
-                        </div>
-                    </div>
-                    `;
+                if (!modal || !container) {
+                    console.error('❌ Elemen modal tidak ditemukan!');
+                    return;
                 }
-                container.innerHTML = html;
+
+                // Sembunyikan content lama dan tampilkan loading
+                modal.classList.remove('hidden');
+                title.textContent = studentName || 'Detail Siswa';
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-16 text-slate-400">
+                        <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin mb-4"></div>
+                        <p class="text-[10px] font-black uppercase tracking-widest animate-pulse">Memuat Progres...</p>
+                    </div>`;
+
+                try {
+                    // Robust data matching
+                    const responses = (allResponses || []);
+                    const sRes = responses.filter(r => String(r.student_id) === String(studentId));
+                    console.log('📊 [DetailModal] Data ditemukan:', sRes.length);
+
+                    let html = '';
+                    for (let day = 1; day <= 3; day++) {
+                        html += `
+                        <div class="space-y-4 bg-slate-50/50 p-5 rounded-[2rem] border border-slate-100">
+                            <div class="flex items-center gap-3 px-1">
+                                <span class="size-1.5 rounded-full bg-primary shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Hari ${day}</h4>
+                                <div class="flex-1 h-px bg-slate-100/60"></div>
+                            </div>
+                            <div class="grid grid-cols-1 gap-2.5">
+                                ${renderModuleItem(studentId, studentName, day, 'pemantik', sRes)}
+                                ${renderModuleItem(studentId, studentName, day, 'materi', sRes)}
+                                ${renderModuleItem(studentId, studentName, day, 'video', sRes)}
+                                ${renderModuleItem(studentId, studentName, day, 'lkpd', sRes)}
+                                ${renderModuleItem(studentId, studentName, day, 'kuis', sRes)}
+                                ${renderModuleItem(studentId, studentName, day, 'refleksi', sRes)}
+                            </div>
+                        </div>
+                        `;
+                    }
+
+                    // Gunakan setTimeout sebentar untuk memastikan DOM siap
+                    setTimeout(() => {
+                        container.innerHTML = html;
+                        console.log('✅ [DetailModal] Berhasil dirender');
+                    }, 50);
+
+                } catch (err) {
+                    console.error('❌ [DetailModal] Error:', err);
+                    container.innerHTML = `
+                        <div class="p-8 text-center bg-red-50 rounded-3xl border border-red-100">
+                            <span class="material-symbols-outlined text-red-400 text-4xl mb-4">error</span>
+                            <p class="text-red-500 font-black text-xs uppercase mb-2">Terjadi Kesalahan</p>
+                            <p class="text-red-400 text-[10px] font-medium leading-relaxed">${err.message}</p>
+                            <button onclick="closeDetailModal()" class="mt-6 px-6 py-2.5 bg-white text-red-500 text-[10px] font-black uppercase rounded-2xl border border-red-100 shadow-sm">Tutup</button>
+                        </div>`;
+                }
             }
 
             function renderModuleItem(studentId, studentName, dayId, type, responses) {
-                const r = responses.find(res => (res.module_type === type || (type === 'materi' && res.module_type === 'summary')) && res.day_id == dayId);
-                const config = {
-                    'pemantik': { label: 'Pemantik', icon: 'lightbulb' },
-                    'materi': { label: 'Materi', icon: 'menu_book' },
-                    'video': { label: 'Video', icon: 'play_circle' },
-                    'lkpd': { label: 'LKPD', icon: 'edit_note' },
-                    'kuis': { label: 'Asesmen', icon: 'quiz' },
-                    'refleksi': { label: 'Refleksi', icon: 'self_improvement' }
-                };
-                const c = config[type] || { label: type, icon: 'task' };
+                try {
+                    // Robust matching for module type and day_id (Relaxed equality for type and String comparison for day)
+                    const r = responses.find(res => {
+                        const isModuleMatch = res.module_type === type || (type === 'materi' && res.module_type === 'summary');
+                        const isDayMatch = String(res.day_id) === String(dayId);
+                        return isModuleMatch && isDayMatch;
+                    });
 
-                let statusHtml = '';
-                let clickAction = '';
+                    const config = {
+                        'pemantik': { label: 'Pemantik', icon: 'lightbulb' },
+                        'materi': { label: 'Materi', icon: 'menu_book' },
+                        'video': { label: 'Video', icon: 'play_circle' },
+                        'lkpd': { label: 'LKPD', icon: 'edit_note' },
+                        'kuis': { label: 'Asesmen', icon: 'quiz' },
+                        'refleksi': { label: 'Refleksi', icon: 'self_improvement' }
+                    };
+                    const c = config[type] || { label: type, icon: 'task' };
+                    // Escape single quotes for studentName to be safe in onclick
+                    const safeName = studentName ? studentName.replace(/'/g, "\\'") : 'Siswa';
 
-                if (r) {
-                    if (r.status === 'reviewed') {
-                        statusHtml = `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-[8px] font-black uppercase rounded-lg border border-emerald-200">Selesai</span>`;
-                    } else if (r.status === 'submitted') {
-                        statusHtml = `<span class="px-2 py-0.5 bg-amber-100 text-amber-600 text-[8px] font-black uppercase rounded-lg border border-amber-200 animate-pulse">Review</span>`;
+                    let statusHtml = '';
+                    let clickAction = '';
+
+                    if (r) {
+                        if (r.status === 'reviewed') {
+                            statusHtml = `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-[8px] font-black uppercase rounded-lg border border-emerald-200">Selesai</span>`;
+                        } else if (r.status === 'submitted') {
+                            statusHtml = `<span class="px-2 py-0.5 bg-amber-100 text-amber-600 text-[8px] font-black uppercase rounded-lg border border-amber-200 animate-pulse">Review</span>`;
+                        }
+                        clickAction = `onclick="openGradingModal('${studentId}', '${safeName}', ${dayId}, '${type}')"`;
+                    } else {
+                        statusHtml = `<span class="px-2 py-0.5 bg-slate-100 text-slate-400 text-[8px] font-black uppercase rounded-lg border border-slate-200">Belum</span>`;
                     }
-                    clickAction = `onclick="openGradingModal('${studentId}', '${studentName}', ${dayId}, '${type}')"`;
-                } else {
-                    statusHtml = `<span class="px-2 py-0.5 bg-slate-100 text-slate-400 text-[8px] font-black uppercase rounded-lg border border-slate-200">Belum</span>`;
-                }
 
-                return `
-                <div ${clickAction} class="flex items-center justify-between p-3 bg-white border border-slate-100/60 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group">
-                    <div class="flex items-center gap-3">
-                        <div class="size-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">${c.icon}</span>
+                    return `
+                    <div ${clickAction} class="flex items-center justify-between p-3.5 bg-white border border-slate-100 rounded-2xl hover:border-primary/40 hover:shadow-lg hover:shadow-slate-200/50 transition-all cursor-pointer group">
+                        <div class="flex items-center gap-3">
+                            <div class="size-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all">
+                                <span class="material-symbols-outlined text-[18px]">${c.icon}</span>
+                            </div>
+                            <p class="text-[11px] font-black text-slate-700 uppercase tracking-tight">${c.label}</p>
                         </div>
-                        <p class="text-[11px] font-bold text-slate-700">${c.label}</p>
+                        ${statusHtml}
                     </div>
-                    ${statusHtml}
-                </div>
-                `;
+                    `;
+                } catch (err) {
+                    console.error('renderModuleItem Error:', err);
+                    return `<div class="p-2 text-[8px] text-red-400 font-bold border border-red-100 rounded-lg">Render Error</div>`;
+                }
             }
 
             function closeDetailModal() {
