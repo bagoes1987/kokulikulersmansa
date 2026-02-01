@@ -373,11 +373,17 @@
 
                 document.getElementById('fasilName').textContent = userData.full_name;
 
-                // Update Header
-                if (document.getElementById('fasilNipHeader')) document.getElementById('fasilNipHeader').textContent = userData.nip || '-';
+                // Update Header - NIP
+                if (document.getElementById('fasilNipHeader')) {
+                    const nipValue = userData.nip || '-';
+                    document.getElementById('fasilNipHeader').textContent = `NIP: ${nipValue}`;
+                }
 
-                // Update Body Info
-                if (document.getElementById('fasilNipBody')) document.getElementById('fasilNipBody').textContent = userData.nip || '-';
+                // Update Header - Mapel
+                if (document.getElementById('fasilMapelHeader')) {
+                    const mapelValue = userData.mapel || 'Fasilitator Kokulikuler';
+                    document.getElementById('fasilMapelHeader').textContent = mapelValue;
+                }
 
                 // DEBUG: Log entire user metadata
                 console.log("=== FACILITATOR USER METADATA ===");
