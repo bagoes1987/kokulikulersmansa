@@ -428,6 +428,7 @@
 
                 // Cek feedback Pertanyaan Pemantik
                 checkExistingPemantik();
+                checkExistingMateri();
 
             } catch (error) {
                 console.error('Error loading student data:', error);
@@ -606,7 +607,7 @@
         // ==========================================
 
         let currentMateriSlide = 0;
-        const totalMateriSlides = 8;
+        const totalMateriSlides = 9;
 
         function openMateriModal() {
             currentMateriSlide = 0;
@@ -674,10 +675,153 @@
         }
 
         function settleMateri() {
-            // Mark as complete
+            // Check word count first if it's the last slide
+            if (currentMateriSlide === totalMateriSlides - 1) {
+                submitMateriSummary();
+                return;
+            }
+            // Fallback for older logic if needed
             forceCompleteModule('materi');
             alert('Selamat! Kamu telah menyelesaikan materi hari ini.');
             closeMateriModal();
+        }
+
+        function updateWordCount() {
+            const textarea = document.getElementById('summaryArea');
+            const counter = document.getElementById('wordCounter');
+            const text = textarea.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+
+            counter.textContent = `${words} / 200 kata`;
+
+            const btn = document.getElementById('btnFinishMateri');
+            if (words >= 200) {
+                counter.className = "text-[10px] font-bold text-emerald-500";
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                counter.className = "text-[10px] font-bold text-slate-400";
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        async function submitMateriSummary() {
+            const btn = document.getElementById('btnFinishMateri');
+            const summary = document.getElementById('summaryArea').value.trim();
+
+            if (summary.split(/\s+/).length < 200) {
+                alert('Pesan: Ringkasan minimal harus 200 kata.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = 'Mengirim...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error('Silakan login ulang.');
+
+                const { data: studentData } = await supabaseClient
+                    .from('students')
+                    .select('id')
+                    .eq('email', user.email)
+                    .single();
+
+                const finalStudentId = studentData ? studentData.id : user.id;
+
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: finalStudentId,
+                        day_id: 1,
+                        module_type: 'materi',
+                        answers: [summary],
+                        status: 'submitted'
+                    });
+
+                if (error) throw error;
+
+                alert('Pesan: Ringkasan berhasil dikirim! Silakan tunggu review dari Fasilitator.');
+                closeMateriModal();
+                checkExistingMateri();
+
+            } catch (e) {
+                console.error(e);
+                alert('Gagal mengirim: ' + e.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Selesaikan Materi';
+            }
+        }
+
+        async function checkExistingMateri() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data: studentData } = await supabaseClient
+                    .from('students')
+                    .select('id')
+                    .eq('email', user.email)
+                    .single();
+
+                if (!studentData) return;
+
+                const { data: responses } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', studentData.id)
+                    .eq('module_type', 'materi')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                if (responses && responses.length > 0) {
+                    const r = responses[0];
+                    updateMateriStatusUI(r.status, r.score, r.feedback);
+
+                    const area = document.getElementById('summaryArea');
+                    const msg = document.getElementById('materiStatusMsg');
+                    if (area) {
+                        area.value = r.answers[0] || '';
+                        if (r.status === 'submitted' || r.status === 'reviewed') {
+                            area.disabled = true;
+                            area.classList.add('bg-slate-100', 'text-slate-500');
+                        }
+                    }
+
+                    if (msg) {
+                        msg.classList.remove('hidden');
+                        if (r.status === 'submitted') {
+                            msg.className = "mb-4 p-4 rounded-3xl text-[11px] font-bold border border-amber-100 bg-amber-50 text-amber-700 animate-pulse";
+                            msg.innerHTML = `⏳ Ringkasanmu sedang menunggu review Fasilitator.`;
+                        } else if (r.status === 'reviewed') {
+                            msg.className = "mb-4 p-4 rounded-3xl text-[11px] font-bold border border-emerald-100 bg-emerald-50 text-emerald-700";
+                            msg.innerHTML = `✅ Dinilai: ${r.score}/100<br><span class="font-normal text-[10px] mt-1 block">"${r.feedback || 'Bagus sekali!'}"</span>`;
+                        }
+                    }
+                }
+            } catch (e) { console.error('Error checkExistingMateri:', e); }
+        }
+
+        function updateMateriStatusUI(status, score, feedback) {
+            const icon = document.getElementById('status-materi');
+            const label = document.getElementById('label-materi');
+            const card = icon.closest('div.cursor-pointer');
+
+            if (status === 'submitted') {
+                icon.textContent = 'pending';
+                icon.className = "material-symbols-outlined !text-base text-amber-500 animate-pulse";
+                label.textContent = "Menunggu Feedback";
+                label.className = "text-[13px] font-bold text-amber-500";
+                card.classList.replace('bg-blue-50/50', 'bg-amber-50/50');
+            } else if (status === 'reviewed') {
+                icon.textContent = 'check_circle';
+                icon.className = "material-symbols-outlined !text-base text-emerald-custom";
+                label.textContent = `Selesai (${score || 0})`;
+                label.className = "text-[13px] font-bold text-emerald-custom";
+                card.classList.replace('bg-blue-50/50', 'bg-emerald-50/50');
+                card.classList.replace('bg-amber-50/50', 'bg-emerald-50/50');
+            }
         }
 
         // Kirim Jawaban
@@ -1248,6 +1392,39 @@
                                         kualitas premium produk Anda.</p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 9: RINGKASAN (NEW) -->
+                <div id="slide-materi-8" class="hidden animate-slide-up h-full flex flex-col">
+                    <div class="flex flex-col items-center text-center mb-4">
+                        <span class="material-symbols-outlined text-4xl text-emerald-500 mb-1">edit_document</span>
+                        <h4 class="text-lg font-black text-slate-800">Bab IX: Ringkasan Materi</h4>
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Tuliskan apa yang kamu
+                            pelajari hari ini</p>
+                    </div>
+
+                    <div id="materiStatusMsg" class="hidden mb-4 p-3 rounded-2xl text-[11px] font-medium border"></div>
+
+                    <div class="flex-1 flex flex-col gap-3">
+                        <div class="relative flex-1">
+                            <textarea id="summaryArea" oninput="updateWordCount()"
+                                class="w-full h-full min-h-[200px] bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all resize-none font-medium leading-relaxed"
+                                placeholder="Tuliskan ringkasan materi minimal 200 kata..."></textarea>
+                            <div class="absolute bottom-3 right-4">
+                                <span id="wordCounter"
+                                    class="text-[10px] font-bold text-slate-400 bg-white/80 backdrop-blur px-2 py-1 rounded-lg border border-slate-100">0
+                                    / 200 kata</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-50 p-3 rounded-2xl border border-amber-100/50 flex gap-3">
+                            <span class="material-symbols-outlined text-amber-500 text-lg">info</span>
+                            <p class="text-[10px] text-amber-700 font-medium leading-relaxed">
+                                <b>Penting:</b> Ringkasan ini akan diperiksa oleh Fasilitator. Kamu baru dianggap
+                                menyelesaikan materi setelah mendapat review.
+                            </p>
                         </div>
                     </div>
                 </div>
