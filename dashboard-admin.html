@@ -541,30 +541,8 @@
                     let displayData = [];
                     let hasRealData = false;
 
-                    // 1. Try Fetching from Supabase (Real Users)
+                    // 1. Force Static Data for Koordinator & Fasilitator (Bypassing Supabase for now as per request)
                     if (type === 'koordinator' || type === 'fasilitator') {
-                        const response = await adminClient.auth.admin.listUsers({ perPage: 1000 });
-                        if (!response.error) {
-                            const users = response.data.users || [];
-                            const realUsers = users.filter(u => u.user_metadata.role === type);
-                            if (realUsers.length > 0) {
-                                hasRealData = true;
-                                realUsers.forEach(u => {
-                                    displayData.push({
-                                        name: u.user_metadata.full_name || 'No Name',
-                                        email: u.email,
-                                        role: type,
-                                        avatar: u.user_metadata.avatar_url,
-                                        status: 'Active',
-                                        source: 'Supabase'
-                                    });
-                                });
-                            }
-                        }
-                    }
-
-                    // 2. If No Real Data, Use Static Data from Markdown
-                    if (!hasRealData && (type === 'koordinator' || type === 'fasilitator')) {
                         console.log("Using Static Data for", type);
 
                         const processedNames = new Set(); // Avoid duplicates
@@ -574,12 +552,12 @@
                                 if (!processedNames.has(item.koordinator)) {
                                     displayData.push({
                                         name: item.koordinator,
-                                        email: 'koordinator@sman1belitang.sch.id', // Dummy email
+                                        email: 'admin@sman1belitang.sch.id', // Placeholder email
                                         role: 'koordinator',
                                         avatar: null, // Will use placeholder
                                         status: 'Active',
                                         source: 'Static',
-                                        kelas: item.kelas // Attach class info for potential use
+                                        kelas: item.kelas
                                     });
                                     processedNames.add(item.koordinator);
                                 }
@@ -588,7 +566,7 @@
                                     if (!processedNames.has(fasilName)) {
                                         displayData.push({
                                             name: fasilName,
-                                            email: 'fasilitator@sman1belitang.sch.id', // Dummy email
+                                            email: 'admin@sman1belitang.sch.id', // Placeholder email
                                             role: 'fasilitator',
                                             avatar: null,
                                             status: 'Active',
