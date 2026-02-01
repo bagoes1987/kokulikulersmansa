@@ -577,6 +577,7 @@
             }
 
             async function openGradingModal(studentId, studentName) {
+                console.log('🔍 Menyiapkan modal penilaian untuk:', studentName, '(' + studentId + ')');
                 const modal = document.getElementById('modalPenilaian');
                 modal.classList.remove('hidden');
                 document.getElementById('gradingStudentName').textContent = studentName;
@@ -585,16 +586,21 @@
                 answerCont.innerHTML = '<div class="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse">Memuat jawaban...</div>';
 
                 try {
-                    const { data: responses } = await supabaseClient.from('module_responses')
+                    const { data: responses, error } = await supabaseClient.from('module_responses')
                         .select('*')
                         .eq('student_id', studentId)
                         .order('day_id', { ascending: true })
                         .order('module_type');
 
+                    if (error) throw error;
+
                     if (!responses || !responses.length) {
+                        console.log('ℹ️ Belum ada respon untuk siswa ini.');
                         answerCont.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase tracking-widest text-[10px]">Belum ada jawaban.</div>';
                         return;
                     }
+
+                    console.log('✅ Respon ditemukan:', responses.length, 'data');
 
                     // Priority: Picking 'submitted' response first, otherwise the most recent one
                     let r = responses.find(res => res.status === 'submitted');
@@ -602,7 +608,14 @@
                         // If no submitted, pick the one with no score yet, or just the first one
                         r = responses.find(res => !res.score) || responses[0];
                     }
+
+                    if (!r) {
+                        alert('Gagal: Tidak bisa menentukan data mana yang akan dinilai.');
+                        return;
+                    }
+
                     selectedResponseId = r.id;
+                    console.log('📌 Mengambil Response ID:', selectedResponseId);
 
                     document.getElementById('gradingModuleTitle').textContent = `Hari ${r.day_id} • ${r.module_type.toUpperCase()}`;
 
@@ -617,25 +630,47 @@
                     document.getElementById('gradeScore').value = r.score || '';
                     document.getElementById('gradeFeedback').value = r.feedback || '';
 
-                } catch (e) { console.error(e); }
+                } catch (e) {
+                    console.error('❌ Error openGradingModal:', e);
+                    alert('Gagal memuat jawaban: ' + e.message);
+                }
             }
 
             async function saveGrade() {
-                if (!selectedResponseId) return;
+                if (!selectedResponseId) {
+                    alert('Gagal: ID data tidak ditemukan. Silakan buka ulang modal.');
+                    return;
+                }
                 const score = document.getElementById('gradeScore').value;
                 const feedback = document.getElementById('gradeFeedback').value;
 
+                console.log('💾 Menyimpan nilai...', { id: selectedResponseId, score, feedback });
+
                 try {
-                    const { error } = await supabaseClient.from('module_responses')
-                        .update({ status: 'reviewed', feedback: feedback, score: score })
-                        .eq('id', selectedResponseId);
+                    // Update data ke Supabase
+                    const { data, error } = await supabaseClient.from('module_responses')
+                        .update({
+                            status: 'reviewed',
+                            feedback: feedback,
+                            score: parseInt(score) || 0,
+                            reviewed_at: new Date().toISOString()
+                        })
+                        .eq('id', selectedResponseId)
+                        .select();
 
                     if (error) throw error;
+
+                    if (!data || data.length === 0) {
+                        console.error('⚠️ Update berhasil (no error) tapi 0 baris berubah.');
+                        throw new Error('Gagal memperbarui data di database. Cek izin akses (RLS).');
+                    }
+
+                    console.log('✅ Update Berhasil:', data);
                     alert('Pesan: Penilaian berhasil disimpan!');
                     closeGradingModal();
                     loadStudentsByClass(currentClass);
                 } catch (e) {
-                    console.error(e);
+                    console.error('❌ Error saveGrade:', e);
                     alert('Gagal menyimpan: ' + e.message);
                 }
             }
