@@ -76,51 +76,53 @@
 <body class="min-h-screen pb-12">
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
         <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div>
-                    <!-- Profile Photo (Static) -->
-                    <div id="profilePhoto"
-                        class="size-20 rounded-full bg-slate-200 bg-center bg-cover border-4 border-white shadow-lg mx-auto mb-3 transition-all relative group">
-                    </div>
-
-                    <h1 class="text-lg font-bold text-slate-900 leading-none" id="coordName">Memuat...</h1>
-                    <p class="text-xs text-primary font-bold tracking-wide uppercase mt-1" id="coordRole">KOORDINATOR
-                        KOKULIKULER</p>
-                    <p class="text-xs text-slate-400 font-bold tracking-wide uppercase mt-0.5" id="coordNip">-</p>
-
-                    <!-- Facilitator List Area -->
-                    <div id="facilitatorListArea"
-                        class="mt-4 text-[11px] text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 hidden">
-                        <p class="font-bold text-slate-400 text-[9px] uppercase tracking-wider mb-1">TIM FASILITATOR:
-                        </p>
-                        <div id="fasilListContent" class="space-y-1"></div>
-                    </div>
-
-                    <span id="coordSubject" class="hidden"></span>
+            <div>
+                <!-- Profile Photo (Static) -->
+                <div id="profilePhoto"
+                    class="size-20 rounded-full bg-slate-200 bg-center bg-cover border-4 border-white shadow-lg mb-3 transition-all relative group">
                 </div>
-                <div
-                    class="relative flex items-center justify-center size-12 shadow-sm rounded-full bg-white border border-slate-100">
-                    <svg class="size-12 -rotate-90">
-                        <circle cx="24" cy="24" fill="transparent" r="18" stroke="#f1f5f9" stroke-width="4"></circle>
-                        <circle id="headerProgressCircle" cx="24" cy="24" fill="transparent" r="18" stroke="#10b981"
-                            stroke-dasharray="113" stroke-dashoffset="113" stroke-linecap="round" stroke-width="4"
-                            class="transition-all duration-1000"></circle>
-                    </svg>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <span class="text-[10px] font-bold text-slate-800" id="headerProgressText">0%</span>
-                    </div>
-                </div>
+
+                <h1 class="text-lg font-bold text-slate-900 leading-none" id="coordName">Memuat...</h1>
+                <p class="text-xs text-primary font-bold tracking-wide uppercase mt-1" id="coordRole">KOORDINATOR
+                    KOKULIKULER</p>
+                <p class="text-xs text-slate-400 font-bold tracking-wide uppercase mt-0.5" id="coordNip">-</p>
+                <span id="coordSubject" class="hidden"></span>
             </div>
-            <div class="max-w-md mx-auto px-5 pb-3">
-                <div class="ios-segment-control flex text-sm font-semibold text-slate-400">
-                    <button onclick="switchTab('ringkasan')" id="tab-ringkasan"
-                        class="ios-segment-btn active flex-1 py-2 rounded-lg transition-all">Ringkasan</button>
-                    <button onclick="switchTab('progres')" id="tab-progres"
-                        class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Progres Kelas</button>
-                    <button onclick="switchTab('laporan')" id="tab-laporan"
-                        class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Laporan</button>
-                </div>
+        </div>
+
+        <!-- Progress Circle (Right aligned) -->
+        <div
+            class="relative flex items-center justify-center size-12 shadow-sm rounded-full bg-white border border-slate-100 shrink-0">
+            <svg class="size-12 -rotate-90">
+                <circle cx="24" cy="24" fill="transparent" r="18" stroke="#f1f5f9" stroke-width="4"></circle>
+                <circle id="headerProgressCircle" cx="24" cy="24" fill="transparent" r="18" stroke="#10b981"
+                    stroke-dasharray="113" stroke-dashoffset="113" stroke-linecap="round" stroke-width="4"
+                    class="transition-all duration-1000"></circle>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-[10px] font-bold text-slate-800" id="headerProgressText">0%</span>
             </div>
+        </div>
+        </div>
+
+        <!-- Faciliator List (Separate Row) -->
+        <div class="max-w-md mx-auto px-5 pb-4">
+            <div id="facilitatorListArea"
+                class="text-[11px] text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 hidden">
+                <p class="font-bold text-slate-400 text-[9px] uppercase tracking-wider mb-1">TIM FASILITATOR:</p>
+                <div id="fasilListContent" class="space-y-1"></div>
+            </div>
+        </div>
+        <div class="max-w-md mx-auto px-5 pb-3">
+            <div class="ios-segment-control flex text-sm font-semibold text-slate-400">
+                <button onclick="switchTab('ringkasan')" id="tab-ringkasan"
+                    class="ios-segment-btn active flex-1 py-2 rounded-lg transition-all">Ringkasan</button>
+                <button onclick="switchTab('progres')" id="tab-progres"
+                    class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Progres Kelas</button>
+                <button onclick="switchTab('laporan')" id="tab-laporan"
+                    class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Laporan</button>
+            </div>
+        </div>
     </header>
 
     <main class="max-w-md mx-auto px-5 py-6 space-y-6">
