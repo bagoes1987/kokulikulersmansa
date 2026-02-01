@@ -127,8 +127,10 @@
                             <p id="field1Label"
                                 class="text-[#618972] dark:text-gray-400 text-sm font-normal leading-normal uppercase tracking-wider">
                                 Kelas</p>
-                            <p class="text-[#111814] dark:text-white text-lg font-semibold leading-normal"
-                                id="field1Value">-</p>
+                            <!-- Changed to Input for Mapel editing -->
+                            <input type="text" id="field1Input"
+                                class="bg-transparent border-none p-0 text-[#111814] dark:text-white text-lg font-semibold leading-normal focus:ring-0 w-full"
+                                value="-" readonly>
                         </div>
                     </div>
 
@@ -257,7 +259,11 @@
             // Role specific UI adjustments
             if (userRole === 'fasilitator' || userRole === 'koordinator') {
                 document.getElementById('field1Label').textContent = 'Mata Pelajaran';
-                document.getElementById('field1Value').textContent = currentUser.mapel || 'Fasilitator Kokulikuler';
+                const mapelInput = document.getElementById('field1Input');
+                mapelInput.value = currentUser.mapel || 'Fasilitator Kokulikuler';
+                mapelInput.readOnly = false;
+                mapelInput.classList.add('border-b', 'border-gray-200', 'focus:border-primary');
+
                 document.getElementById('field1Icon').textContent = 'menu_book';
 
                 document.getElementById('field2Label').textContent = 'NIP / Identitas';
@@ -269,7 +275,8 @@
                 document.getElementById('field3Container').classList.add('hidden');
             } else {
                 // Default Siswa
-                document.getElementById('field1Value').textContent = currentUser.kelas;
+                document.getElementById('field1Input').value = currentUser.kelas;
+                document.getElementById('field1Input').readOnly = true;
                 document.getElementById('field2Input').value = currentUser.nisn;
                 document.getElementById('field3Value').textContent = currentUser.nis;
             }
@@ -427,6 +434,7 @@
                     const { error: updateError } = await supabaseClient.auth.updateUser({
                         data: {
                             nip: newNip,
+                            mapel: document.getElementById('field1Input').value.trim(),
                             photo_url: publicUrl
                         }
                     });
