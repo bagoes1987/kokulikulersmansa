@@ -495,6 +495,42 @@
                 await fetchAndRenderList(type);
             }
 
+            // Static Data from Markdown
+            const staticDataRequest = [
+                { no: 1, kelas: "X. 1", koordinator: "Lucia Erviana, S.Pd., M.Pd.", fasilitator: ["Sukirno, S.Pd.", "Ari Muchtrinai N. N, S.Pd.I."] },
+                { no: 2, kelas: "X. 2", koordinator: "Lucia Erviana, S.Pd., M.Pd.", fasilitator: ["Handaroh, S.Pd.", "Fantas Jaya A, S.Pd."] },
+                { no: 3, kelas: "X. 3", koordinator: "Lucia Erviana, S.Pd., M.Pd.", fasilitator: ["Flortentinus Supriyanto, S.Pd.", "Nelly Kurniasih, S.Pd."] },
+                { no: 4, kelas: "X. 4", koordinator: "Ninda Ningtyas, S.Pd., M.Si.", fasilitator: ["Siti Anita, S.Pd.", "Latifatu Anisa, S. Pd."] },
+                { no: 5, kelas: "X. 5", koordinator: "Vivi Amelia, S.Pd.", fasilitator: ["Atik Setianingsih, S.Pd.", "Lovelya Valentina, S.Pd."] },
+                { no: 6, kelas: "X. 6", koordinator: "Vivi Amelia, S.Pd.", fasilitator: ["Wiwik Eko Prihatin, S.Pd., M.M.", "Andi Cahya Sanjaya, S.Pd."] },
+                { no: 7, kelas: "X. 7", koordinator: "Kustiani, S.Pd.", fasilitator: ["Azuari Dian Prasasti, S.Pd.", "Deni Yunarti, S.Pd."] },
+                { no: 8, kelas: "X. 8", koordinator: "Aprilyan Dona, S.Pd.", fasilitator: ["Fajar Abdul Majid, S.Pd", "Nora Nurhalita, S.Pd."] },
+                { no: 9, kelas: "X. 9", koordinator: "Aprilyan Dona, S.Pd.", fasilitator: ["Andree Prasetyo, S.Pd.", "Sindy Dwi Pertiwi, M.Pd."] },
+                { no: 10, kelas: "X. 10", koordinator: "Ika Setiawati, S.Pd", fasilitator: ["Indah Sulmayanti, M.Pd.", "M. Hafiz Sytar, S.Kom."] },
+                { no: 11, kelas: "X. 11", koordinator: "Anastasiya Candra M, S.Pd.", fasilitator: ["Pandu Aditya, M.Pd.", "Tiar Hajunilato, M.Pd."] },
+                { no: 12, kelas: "XI. 1", koordinator: "Dr. Didi Franzhardi, M.Pd.", fasilitator: ["Try Puri anggraini, S.Pd., M.Pd.", "Lia Ningrum, S.Pd."] },
+                { no: 13, kelas: "XI. 2", koordinator: "Dr. Didi Franzhardi, M.Pd.", fasilitator: ["Hermanto, S.Pd., M.Pd.", "Santi Aryanti, S.Pd."] },
+                { no: 14, kelas: "XI. 3", koordinator: "Ika Setiawati, S.Pd", fasilitator: ["Nengsi Juita, M.Pd.Si.", "Hedi Prawito, S.Pd."] },
+                { no: 15, kelas: "XI. 4", koordinator: "Kartika Sari, S.Pd.", fasilitator: ["Anggun Saymona, S.Pd., M.Pd.", "Lia Kurniasari, S.Pd."] },
+                { no: 16, kelas: "XI. 5", koordinator: "Kartika Sari, S.Pd.", fasilitator: ["Nyoman Kopariyanto, S.Pd.", "Etik Prasetyaningsih, S.Pd."] },
+                { no: 17, kelas: "XI. 6", koordinator: "Kartika Sari, S.Pd.", fasilitator: ["Abdul Hafiz, S.Pd.", "Suhaib Jawahir, S.Pd."] },
+                { no: 18, kelas: "XI. 7", koordinator: "Neti Diana, M.Pd.", fasilitator: ["Singgih Sudarmawan, S.Ag.", "Suparmono, S.Ag."] },
+                { no: 19, kelas: "XI. 8", koordinator: "Neti Diana, M.Pd.", fasilitator: ["Wely Marisa, S.Pd."] },
+                { no: 20, kelas: "XI. 9", koordinator: "Neti Diana, M.Pd.", fasilitator: ["A.Thoriq Ganda, S.Pd."] },
+                { no: 21, kelas: "XI. 10", koordinator: "Maulidiawati, M.Pd.", fasilitator: ["Ari Yani A M, S.T."] },
+                { no: 22, kelas: "XI. 11", koordinator: "Agung Saputra, S.Pd.", fasilitator: ["Bagus Panca Wiratama, S.Pd., M.Pd."] },
+                { no: 23, kelas: "XII. 1", koordinator: "Chodman Ariyanto, S.Pd.", fasilitator: ["Tri Tamti Nugraheni, S.Pd.", "Yuni Asrina, S.Pd."] },
+                { no: 24, kelas: "XII. 2", koordinator: "Chodman Ariyanto, S.Pd.", fasilitator: ["Titin Sumarni, S.Pd.", "Sukirok, S.Pd."] },
+                { no: 25, kelas: "XII. 3", koordinator: "Chodman Ariyanto, S.Pd.", fasilitator: ["Nur Azizah, S.Pd.I.", "Febrianita Prasasti, S.Pd."] },
+                { no: 26, kelas: "XII. 4", koordinator: "Taufik Hidayat, S.Pd.", fasilitator: ["Atik Apriliawati, S.Pd.", "Ferdinasari, S.pd."] },
+                { no: 27, kelas: "XII. 5", koordinator: "Taufik Hidayat, S.Pd.", fasilitator: ["Nur Rohmad Safarudin, M.Pd.", "Fery Ardianto, M.Pd."] },
+                { no: 28, kelas: "XII. 6", koordinator: "Taufik Hidayat, S.Pd.", fasilitator: ["Ade Ervani M, S.Sn.", "Dra. Hj. Endang Suwartijah"] },
+                { no: 29, kelas: "XII. 7", koordinator: "Mas’ud abid, S.Pd., M.Pd.", fasilitator: ["Ribuwati, M.Pd.", "Nasution, S.Pd."] },
+                { no: 30, kelas: "XII. 8", koordinator: "Mas’ud abid, S.Pd., M.Pd.", fasilitator: ["Apriana, S.Pd.", "Agung Subaryanto, S.Pd."] },
+                { no: 31, kelas: "XII. 9", koordinator: "Ade Rohmah Apriani, S.Pd.", fasilitator: ["Ari Astuti, S.Pd.", "Erfizah, S.Pd"] },
+                { no: 32, kelas: "XII. 10", koordinator: "Ade Rohmah Apriani, S.Pd.", fasilitator: ["Muh. Zuhdi, S.Pd.", "Ellys Trisnowati, M.Pd.I."] }
+            ];
+
             async function fetchAndRenderList(type) {
                 const container = document.getElementById('list-container');
                 let html = '';
@@ -502,97 +538,128 @@
                 console.log("Fetching list for:", type); // DEBUG
 
                 try {
+                    let displayData = [];
+                    let hasRealData = false;
+
+                    // 1. Try Fetching from Supabase (Real Users)
                     if (type === 'koordinator' || type === 'fasilitator') {
-                        // Fetch Users
                         const response = await adminClient.auth.admin.listUsers({ perPage: 1000 });
-                        console.log("Supabase Response:", response); // DEBUG
-
-                        if (response.error) throw response.error;
-
-                        const users = response.data.users || [];
-                        const filtered = users.filter(u => u.user_metadata.role === type);
-
-                        if (filtered.length === 0) {
-                            container.innerHTML = `<div class="text-center py-10 text-gray-500">Tidak ada data ${type} ditemukan.<br><small class="text-slate-400">Total Users: ${users.length}</small></div>`;
-                            return;
+                        if (!response.error) {
+                            const users = response.data.users || [];
+                            const realUsers = users.filter(u => u.user_metadata.role === type);
+                            if (realUsers.length > 0) {
+                                hasRealData = true;
+                                realUsers.forEach(u => {
+                                    displayData.push({
+                                        name: u.user_metadata.full_name || 'No Name',
+                                        email: u.email,
+                                        role: type,
+                                        avatar: u.user_metadata.avatar_url,
+                                        status: 'Active',
+                                        source: 'Supabase'
+                                    });
+                                });
+                            }
                         }
+                    }
 
-                        filtered.forEach(u => {
-                            const meta = u.user_metadata;
-                            // Check if avatar url is valid, else use UI Avatars
-                            const avatarUrl = meta.avatar_url && meta.avatar_url.startsWith('http') ? meta.avatar_url : `https://ui-avatars.com/api/?name=${encodeURIComponent(meta.full_name || 'User')}&background=random`;
+                    // 2. If No Real Data, Use Static Data from Markdown
+                    if (!hasRealData && (type === 'koordinator' || type === 'fasilitator')) {
+                        console.log("Using Static Data for", type);
 
-                            html += `
-                            <div class="bg-gray-800/40 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-12 w-12 rounded-full bg-center bg-cover border-2 border-gray-700" 
-                                             style="background-image: url('${avatarUrl}');"></div>
-                                        <div>
-                                            <p class="font-semibold text-gray-100">${meta.full_name || 'No Name'}</p>
-                                            <p class="text-xs text-gray-400">${u.email}</p>
-                                        </div>
-                                    </div>
-                                    <!-- Options Menu Button (Future Use) -->
-                                    <button class="text-gray-400 p-1 hover:text-white"><span class="material-symbols-outlined">more_vert</span></button>
-                                </div>
-                                <div class="flex items-center justify-between pt-2 border-t border-gray-800/50">
-                                    <div class="flex gap-2">
-                                        <span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-primary/10 text-primary">${type}</span>
-                                        <span class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-green-500/10 text-green-500">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Active
-                                        </span>
-                                    </div>
-                                    <div class="flex gap-3">
-                                        <button class="text-gray-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-                                    </div>
-                                </div>
-                            </div>`;
+                        const processedNames = new Set(); // Avoid duplicates
+
+                        staticDataRequest.forEach(item => {
+                            if (type === 'koordinator') {
+                                if (!processedNames.has(item.koordinator)) {
+                                    displayData.push({
+                                        name: item.koordinator,
+                                        email: 'koordinator@sman1belitang.sch.id', // Dummy email
+                                        role: 'koordinator',
+                                        avatar: null, // Will use placeholder
+                                        status: 'Active',
+                                        source: 'Static',
+                                        kelas: item.kelas // Attach class info for potential use
+                                    });
+                                    processedNames.add(item.koordinator);
+                                }
+                            } else if (type === 'fasilitator') {
+                                item.fasilitator.forEach(fasilName => {
+                                    if (!processedNames.has(fasilName)) {
+                                        displayData.push({
+                                            name: fasilName,
+                                            email: 'fasilitator@sman1belitang.sch.id', // Dummy email
+                                            role: 'fasilitator',
+                                            avatar: null,
+                                            status: 'Active',
+                                            source: 'Static',
+                                            kelas: item.kelas
+                                        });
+                                        processedNames.add(fasilName);
+                                    }
+                                });
+                            }
                         });
+                    }
 
-                    } else if (type === 'siswa') {
-                        // Fetch Students
+                    // 3. Handle 'Siswa' separately (Limit for performance)
+                    if (type === 'siswa') {
                         const { data: students, error } = await adminClient.from('students')
                             .select('*')
                             .not('nisn', 'ilike', '%trial%')
                             .limit(50);
 
-                        if (error) throw error;
-
-                        if (!students || students.length === 0) {
-                            container.innerHTML = `<div class="text-center py-10 text-gray-500">Tidak ada data siswa</div>`;
-                            return;
+                        if (!error && students && students.length > 0) {
+                            students.forEach(s => {
+                                displayData.push({
+                                    name: s.nama,
+                                    email: s.nisn + ` • ${s.kelas}`, // Use email field for subtitle
+                                    role: 'siswa',
+                                    avatar: null,
+                                    status: 'Active',
+                                    source: 'Supabase'
+                                });
+                            });
                         }
-
-                        students.forEach(s => {
-                            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.nama || 'Siswa')}&background=random`;
-                            html += `
-                            <div class="bg-gray-800/40 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <div class="h-12 w-12 rounded-full bg-center bg-cover border-2 border-gray-700" 
-                                             style="background-image: url('${avatarUrl}');"></div>
-                                        <div>
-                                            <p class="font-semibold text-gray-100 line-clamp-1">${s.nama}</p>
-                                            <p class="text-xs text-gray-400">${s.nisn} • ${s.kelas}</p>
-                                        </div>
-                                    </div>
-                                    <button class="text-gray-400 p-1 hover:text-white"><span class="material-symbols-outlined">more_vert</span></button>
-                                </div>
-                                <div class="flex items-center justify-between pt-2 border-t border-gray-800/50">
-                                    <div class="flex gap-2">
-                                        <span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-orange-500/10 text-orange-500">Siswa</span>
-                                        <span class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-green-500/10 text-green-500">
-                                            Active
-                                        </span>
-                                    </div>
-                                    <div class="flex gap-3">
-                                        <button class="text-gray-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-                                    </div>
-                                </div>
-                            </div>`;
-                        });
                     }
+
+                    // 4. Render
+                    if (displayData.length === 0) {
+                        container.innerHTML = `<div class="text-center py-10 text-gray-500">Tidak ada data ${type} ditemukan.</div>`;
+                        return;
+                    }
+
+                    displayData.forEach(item => {
+                        const avatarUrl = item.avatar && item.avatar.startsWith('http') ? item.avatar : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.name || 'User')}&background=random&color=fff&bold=true`;
+                        const badgeColor = item.role === 'koordinator' ? 'blue' : (item.role === 'fasilitator' ? 'purple' : 'orange');
+
+                        html += `
+                        <div class="bg-gray-800/40 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 shadow-sm hover:border-gray-700 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-12 w-12 rounded-full bg-center bg-cover border-2 border-gray-700 shadow-sm" 
+                                         style="background-image: url('${avatarUrl}');"></div>
+                                    <div>
+                                        <p class="font-semibold text-gray-100">${item.name}</p>
+                                        <p class="text-xs text-gray-400 font-mono">${item.email}</p>
+                                    </div>
+                                </div>
+                                <button class="text-gray-400 p-1 hover:text-white rounded-full hover:bg-white/5"><span class="material-symbols-outlined">more_vert</span></button>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-gray-800/50">
+                                <div class="flex gap-2">
+                                    <span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-${badgeColor}-500/10 text-${badgeColor}-500 border border-${badgeColor}-500/20">${item.role}</span>
+                                    <span class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-green-500/10 text-green-500 border border-green-500/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> ${item.status}
+                                    </span>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="text-gray-400 hover:text-primary transition-colors p-1"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                                     <button class="text-gray-400 hover:text-red-500 transition-colors p-1"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
 
                     container.innerHTML = html;
 
@@ -639,19 +706,36 @@
 
             async function loadDashboardStats() {
                 try {
-                    // Fetch Users
+                    // Try fetch real stats first
                     const { data: { users }, error: userError } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
-                    if (userError) throw userError;
 
-                    const coordCount = users.filter(u => u.user_metadata.role === 'koordinator').length;
-                    const fasilCount = users.filter(u => u.user_metadata.role === 'fasilitator').length;
+                    let coordCount = 0;
+                    let fasilCount = 0;
+
+                    if (!userError) {
+                        coordCount = users.filter(u => u.user_metadata.role === 'koordinator').length;
+                        fasilCount = users.filter(u => u.user_metadata.role === 'fasilitator').length;
+                    }
+
+                    // Fallback to static counts if 0
+                    if (coordCount === 0) {
+                        const coords = new Set();
+                        staticDataRequest.forEach(i => coords.add(i.koordinator));
+                        coordCount = coords.size;
+                    }
+                    if (fasilCount === 0) {
+                        const fasils = new Set();
+                        staticDataRequest.forEach(i => i.fasilitator.forEach(f => fasils.add(f)));
+                        fasilCount = fasils.size;
+                    }
+
 
                     // Fetch Students
                     const { count: studentCount, error: studentError } = await adminClient.from('students')
                         .select('*', { count: 'exact', head: true })
                         .not('nisn', 'ilike', '%trial%');
 
-                    if (studentError) throw studentError;
+                    if (studentError) console.error(studentError);
 
                     // Update UI - Koordinator
                     document.getElementById('count-coord-card').textContent = `${coordCount} Orang`;
@@ -662,8 +746,8 @@
                     document.getElementById('badge-fasil').textContent = `${fasilCount}`;
 
                     // Update UI - Siswa
-                    document.getElementById('count-siswa-card').textContent = `${studentCount} Siswa`;
-                    document.getElementById('badge-siswa').textContent = `${studentCount}`;
+                    document.getElementById('count-siswa-card').textContent = `${studentCount || 0} Siswa`;
+                    document.getElementById('badge-siswa').textContent = `${studentCount || 0}`;
 
                 } catch (e) {
                     console.error("Failed to load stats:", e);
