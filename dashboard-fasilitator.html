@@ -724,6 +724,7 @@
                                 ${renderModuleItem(sid, snama, day, 'video', responses)}
                                 ${renderModuleItem(sid, snama, day, 'lkpd', responses)}
                                 ${renderModuleItem(sid, snama, day, 'kuis', responses)}
+                                ${renderModuleItem(sid, snama, day, 'dokumentasi', responses)}
                                 ${renderModuleItem(sid, snama, day, 'refleksi', responses)}
                             </div>
                         </div>`;
@@ -753,6 +754,7 @@
                         'video': { label: 'Video', icon: 'play_circle', color: 'red' },
                         'lkpd': { label: 'LKPD', icon: 'edit_note', color: 'emerald' },
                         'kuis': { label: 'Asesmen', icon: 'quiz', color: 'indigo' },
+                        'dokumentasi': { label: 'Dokumentasi', icon: 'photo_camera', color: 'indigo' },
                         'refleksi': { label: 'Refleksi', icon: 'self_improvement', color: 'rose' }
                     };
                     const c = config[type] || { label: type, icon: 'task', color: 'slate' };
@@ -859,7 +861,19 @@
 
                     const answers = Array.isArray(r.answers) ? r.answers : [];
 
-                    if (r.module_type === 'materi') {
+                    if (r.module_type === 'dokumentasi') {
+                        // Display Photo for Documentation
+                        const photoUrl = answers[0] || '';
+                        answerCont.innerHTML = `
+                        <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100 flex flex-col items-center">
+                            <p class="text-[8px] font-black text-indigo-400 uppercase tracking-wider mb-3">Foto Dokumentasi</p>
+                            <a href="${photoUrl}" target="_blank" class="w-full">
+                                <img src="${photoUrl}" class="w-full rounded-2xl shadow-lg border-4 border-white hover:scale-[1.02] transition-transform" alt="Dokumentasi">
+                            </a>
+                            <p class="text-[9px] text-indigo-300 mt-2 italic font-medium">Klik foto untuk memperbesar</p>
+                        </div>
+                        `;
+                    } else if (r.module_type === 'materi') {
                         // Special display for Material Summary
                         const summaryText = answers[0] || '';
                         const words = summaryText.trim() ? summaryText.trim().split(/\s+/).length : 0;

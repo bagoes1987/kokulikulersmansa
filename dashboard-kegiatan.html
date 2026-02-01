@@ -221,19 +221,19 @@
                 </div>
             </div>
 
-            <!-- Rangkuman -->
-            <div onclick="toggleModule('rangkuman')"
+            <!-- Dokumentasi Foto -->
+            <div onclick="toggleModule('dokumentasi')"
                 class="bg-indigo-50/50 p-4 rounded-[24px] ios-shadow border border-indigo-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                 <div
                     class="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-                    <span class="material-symbols-outlined !text-2xl">auto_stories</span>
+                    <span class="material-symbols-outlined !text-2xl">photo_camera</span>
                 </div>
                 <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">Rangkuman</h3>
+                    <h3 class="text-[15px] font-bold text-slate-800">Dokumentasi Foto</h3>
                     <div class="flex items-center gap-1 mt-1">
                         <span class="material-symbols-outlined !text-base text-slate-400"
-                            id="status-rangkuman">radio_button_unchecked</span>
-                        <span class="text-[13px] font-semibold text-slate-400" id="label-rangkuman">Belum
+                            id="status-dokumentasi">radio_button_unchecked</span>
+                        <span class="text-[13px] font-semibold text-slate-400" id="label-dokumentasi">Belum
                             Selesai</span>
                     </div>
                 </div>
@@ -315,9 +315,9 @@
 
         // Struktur data progress default (3 hari x 8 modul)
         const defaultProgress = {
-            day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, rangkuman: false, glosarium: false, refleksi: false },
-            day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, rangkuman: false, glosarium: false, refleksi: false },
-            day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, rangkuman: false, glosarium: false, refleksi: false }
+            day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
+            day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
+            day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false }
         };
 
         let studentProgress = JSON.parse(JSON.stringify(defaultProgress));
@@ -429,6 +429,7 @@
                 // Cek feedback Pertanyaan Pemantik
                 checkExistingPemantik();
                 checkExistingMateri();
+                checkExistingDokumentasi();
 
             } catch (error) {
                 console.error('Error loading student data:', error);
@@ -464,6 +465,16 @@
                     openMateriModal();
                     return;
                 }
+                if (moduleId === 'dokumentasi') {
+                    openDokumentasiModal();
+                    return;
+                }
+            }
+
+            // Override untuk Hari 2 & 3 agar dokumentasi tetap buka modal
+            if (moduleId === 'dokumentasi') {
+                openDokumentasiModal();
+                return;
             }
 
             const dayKey = `day${currentDay}`;
@@ -566,6 +577,7 @@
             // Re-fetch database statuses to ensure sync
             checkExistingPemantik();
             checkExistingMateri();
+            checkExistingDokumentasi();
         }
 
         // Logout function
@@ -816,6 +828,204 @@
                     }
                 }
             } catch (e) { console.error('Error checkExistingMateri:', e); }
+        }
+
+        // ==========================================
+        // FITUR DOKUMENTASI FOTO (REPLACEMENT RANGKUMAN)
+        // ==========================================
+
+        function openDokumentasiModal() {
+            document.getElementById('modalDokumentasi').classList.remove('hidden');
+            document.getElementById('modalDokumentasi').classList.add('flex');
+            checkExistingDokumentasi();
+        }
+
+        function closeDokumentasiModal() {
+            document.getElementById('modalDokumentasi').classList.add('hidden');
+            document.getElementById('modalDokumentasi').classList.remove('flex');
+        }
+
+        // Compress image function (Optimized for Documentation)
+        async function compressImage(file, maxWidth = 600, quality = 0.6) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = new Image();
+                    img.onload = function () {
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = (height * maxWidth) / width;
+                            width = maxWidth;
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleDocPhotoSelection(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const btn = document.getElementById('btnUploadDokumentasi');
+            const statusText = document.getElementById('docStatusMsg');
+            const preview = document.getElementById('docPreview');
+
+            statusText.classList.remove('hidden');
+            statusText.className = "mb-4 p-4 rounded-2xl text-[11px] font-bold border border-blue-100 bg-blue-50 text-blue-700 animate-pulse";
+            statusText.innerHTML = "⏳ Sedang mengoptimalkan foto...";
+            btn.disabled = true;
+
+            try {
+                const compressedBlob = await compressImage(file, 600, 0.6);
+                const compressedFile = new File([compressedBlob], `doc_${Date.now()}.jpg`, { type: 'image/jpeg' });
+
+                // Preview
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    preview.src = re.target.result;
+                    preview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(compressedFile);
+
+                statusText.className = "mb-4 p-4 rounded-2xl text-[11px] font-bold border border-emerald-100 bg-emerald-50 text-emerald-700";
+                statusText.innerHTML = "✅ Foto siap dikirim (~" + Math.round(compressedBlob.size / 1024) + " KB)";
+                btn.disabled = false;
+
+                // Simpan file sementara di window agar bisa diakses submit
+                window.selectedDocFile = compressedFile;
+
+            } catch (err) {
+                console.error(err);
+                statusText.className = "mb-4 p-4 rounded-2xl text-[11px] font-bold border border-red-100 bg-red-50 text-red-700";
+                statusText.innerHTML = "❌ Gagal memproses foto.";
+            }
+        }
+
+        async function submitDokumentasi() {
+            const btn = document.getElementById('btnUploadDokumentasi');
+            const file = window.selectedDocFile;
+            if (!file) {
+                alert('Silakan pilih foto terlebih dahulu.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = 'Mengirim...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error('Silakan login ulang.');
+
+                const fileName = `${user.id}/day${currentDay}_${Date.now()}.jpg`;
+
+                // 1. Upload ke Storage Bucket 'documentation'
+                // NOTE: Pastikan bucket ini sudah dibuat di dashboard Supabase
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('documentation')
+                    .upload(fileName, file);
+
+                if (uploadError) throw uploadError;
+
+                const { data: { publicUrl } } = supabaseClient.storage
+                    .from('documentation')
+                    .getPublicUrl(fileName);
+
+                // 2. Simpan ke module_responses
+                const { error: dbError } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: currentDay,
+                        module_type: 'dokumentasi',
+                        answers: [publicUrl],
+                        status: 'submitted'
+                    });
+
+                if (dbError) throw dbError;
+
+                alert('✅ Foto dokumentasi berhasil dikirim!');
+                closeDokumentasiModal();
+                checkExistingDokumentasi();
+
+            } catch (e) {
+                console.error(e);
+                alert('Gagal mengirim: ' + e.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Dokumentasi';
+            }
+        }
+
+        async function checkExistingDokumentasi() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data: responses } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', currentDay)
+                    .eq('module_type', 'dokumentasi')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                const container = document.getElementById('docUploadArea');
+                const btn = document.getElementById('btnUploadDokumentasi');
+                const statusMsg = document.getElementById('docStatusMsg');
+                const preview = document.getElementById('docPreview');
+
+                if (responses && responses.length > 0) {
+                    const r = responses[0];
+                    updateDokumentasiStatusUI(r.status);
+
+                    if (r.status === 'submitted' || r.status === 'reviewed') {
+                        forceCompleteModule('dokumentasi');
+                        if (container) container.classList.add('hidden');
+                        if (btn) btn.classList.add('hidden');
+                        if (statusMsg) {
+                            statusMsg.classList.remove('hidden');
+                            statusMsg.className = "mb-4 p-4 rounded-2xl text-[11px] font-bold border border-emerald-100 bg-emerald-50 text-emerald-700";
+                            statusMsg.innerHTML = "✅ Dokumentasi hari ini sudah terkirim.";
+                        }
+                        if (preview && r.answers[0]) {
+                            preview.src = r.answers[0];
+                            preview.classList.remove('hidden');
+                        }
+                    }
+                } else {
+                    if (container) container.classList.remove('hidden');
+                    if (btn) {
+                        btn.classList.remove('hidden');
+                        btn.disabled = true;
+                        btn.innerHTML = 'Kirim Dokumentasi';
+                    }
+                    if (statusMsg) statusMsg.classList.add('hidden');
+                    if (preview) {
+                        preview.src = '';
+                        preview.classList.add('hidden');
+                    }
+                }
+            } catch (e) { console.error('Error checkExistingDokumentasi:', e); }
+        }
+
+        function updateDokumentasiStatusUI(status) {
+            const icon = document.getElementById('status-dokumentasi');
+            const label = document.getElementById('label-dokumentasi');
+            if (status === 'submitted' || status === 'reviewed') {
+                icon.textContent = 'check_circle';
+                icon.className = "material-symbols-outlined !text-base text-emerald-custom";
+                label.textContent = "Selesai";
+                label.className = "text-[13px] font-bold text-emerald-custom";
+            }
         }
 
         function updateMateriStatusUI(status, score, feedback) {
@@ -1473,6 +1683,68 @@
         </div>
     </div>
 
+    <!-- MODAL DOKUMENTASI FOTO (REPLACEMENT RANGKUMAN) -->
+    <div id="modalDokumentasi"
+        class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-8 border-b flex justify-between items-center bg-slate-50/50">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="size-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-200">
+                        <span class="material-symbols-outlined !text-2xl">photo_camera</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800">Dokumentasi Foto</h3>
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Hanya 1 foto terbaik
+                            setiap hari</p>
+                    </div>
+                </div>
+                <button onclick="closeDokumentasiModal()"
+                    class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="p-8 overflow-y-auto no-scrollbar flex-1">
+                <div id="docStatusMsg" class="hidden"></div>
+
+                <div id="docUploadArea" class="space-y-6">
+                    <div
+                        class="p-8 border-2 border-dashed border-slate-200 rounded-[2rem] bg-slate-50 flex flex-col items-center justify-center text-center group hover:border-indigo-400 transition-all cursor-pointer relative">
+                        <input type="file" accept="image/*" capture="environment"
+                            onchange="handleDocPhotoSelection(event)" class="absolute inset-0 opacity-0 cursor-pointer"
+                            id="docInput">
+                        <div
+                            class="size-16 rounded-full bg-white shadow-sm flex items-center justify-center text-indigo-500 mb-4 group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined !text-3xl">add_a_photo</span>
+                        </div>
+                        <p class="text-sm font-bold text-slate-700">Ambil Foto Kegiatan</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Gunakan kamera HP untuk hasil terbaik</p>
+                    </div>
+
+                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100 flex gap-3">
+                        <span class="material-symbols-outlined text-amber-500 text-lg">info</span>
+                        <p class="text-[11px] text-amber-700 font-medium leading-relaxed">
+                            Foto akan dikompresi otomatis untuk menghemat kuota. Pastikan objek foto terlihat jelas.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-center">
+                    <img id="docPreview"
+                        class="hidden w-full max-h-64 object-cover rounded-2xl border-4 border-white shadow-xl" src=""
+                        alt="Preview">
+                </div>
+            </div>
+
+            <div class="p-8 bg-slate-50 border-t">
+                <button id="btnUploadDokumentasi" onclick="submitDokumentasi()"
+                    class="w-full py-5 bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-200 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100">
+                    Kirim Dokumentasi
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
