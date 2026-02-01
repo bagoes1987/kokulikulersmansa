@@ -384,12 +384,19 @@
 
             async function init() {
                 const { data: { session } } = await supabaseClient.auth.getSession();
-                if (!session || session.user.user_metadata.role !== 'fasilitator') {
+                if (!session) {
                     window.location.href = 'login.html';
                     return;
                 }
 
-                const userData = session.user.user_metadata;
+                // Fetch fresh user data from server
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user || user.user_metadata.role !== 'fasilitator') {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const userData = user.user_metadata;
                 // Trim and clean classes from metadata
                 myClasses = (Array.isArray(userData.kelas) ? userData.kelas : [userData.kelas])
                     .filter(c => c)
