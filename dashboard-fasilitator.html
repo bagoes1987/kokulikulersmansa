@@ -604,53 +604,48 @@
             }
 
             function openStudentDetailModal(elOrId, nameIfId = null) {
-                // Support both direct ID call and element call (data-attributes)
-                let sid, snama;
-                if (typeof elOrId === 'object' && elOrId.getAttribute) {
-                    sid = elOrId.getAttribute('data-sid');
-                    snama = elOrId.getAttribute('data-snama');
-                } else {
-                    sid = elOrId;
-                    snama = nameIfId;
-                }
-
-                console.log('🔍 [DetailModal] Click Detected:', snama, sid);
-                const modal = document.getElementById('modalDetailSiswa');
-                const title = document.getElementById('detailStudentName');
-                const container = document.getElementById('detailTaskContainer');
-
-                if (!modal || !container) {
-                    console.error('❌ Structural Error: Modal or Container not found!');
-                    alert('Error: Modal UI elements not found in DOM');
-                    return;
-                }
-
-                // Show modal and Loading State immediately (Synchronous)
-                modal.classList.remove('hidden');
-                title.innerHTML = `${snama || 'Detail Siswa'} <span class="text-[8px] font-black text-slate-300 ml-2">[v1.0.2]</span>`;
-
-                // Clear and show loading
-                container.innerHTML = `
-                    <div class="flex flex-col items-center justify-center py-24 text-slate-300">
-                        <div class="size-16 border-4 border-slate-100 border-t-primary rounded-full animate-spin mb-6 shadow-sm"></div>
-                        <p class="text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">Sinkronisasi Data...</p>
-                    </div>`;
-
                 try {
+                    let sid, snama;
+                    if (typeof elOrId === 'object' && elOrId !== null && elOrId.getAttribute) {
+                        sid = elOrId.getAttribute('data-sid');
+                        snama = elOrId.getAttribute('data-snama');
+                    } else {
+                        sid = elOrId;
+                        snama = nameIfId;
+                    }
+
+                    console.log('🔍 [DetailModal] v1.0.3 Triggered:', snama, sid);
+                    const modal = document.getElementById('modalDetailSiswa');
+                    const title = document.getElementById('detailStudentName');
+                    const container = document.getElementById('detailTaskContainer');
+
+                    if (!modal || !container) {
+                        console.error('❌ Modal/Container Missing!');
+                        alert('ERROR: Modal elements not found in DOM.');
+                        return;
+                    }
+
+                    // FORCE VISIBILITY (Override everything)
+                    modal.style.setProperty('display', 'flex', 'important');
+                    modal.classList.remove('hidden');
+                    modal.style.opacity = '1';
+
+                    title.innerHTML = `${snama || 'Siswa'} <span class="bg-red-500 text-white text-[8px] px-2 py-0.5 rounded ml-2">v1.0.3</span>`;
+                    container.innerHTML = '<div class="p-20 text-center font-black animate-pulse text-slate-300">SYNCHRONIZING...</div>';
+
+                    // Data processing
                     const responses = (allResponses || []);
                     const sRes = responses.filter(r => String(r.student_id) === String(sid));
-                    console.log('📊 [DetailModal] Filtering results:', sRes.length);
+                    console.log('📊 Records found:', sRes.length);
 
                     let html = '';
                     for (let day = 1; day <= 3; day++) {
                         html += `
-                        <div class="space-y-4 bg-slate-50/50 p-5 rounded-[2.2rem] border border-slate-100/80 mb-4 last:mb-0">
-                            <div class="flex items-center gap-3 px-1">
-                                <span class="size-2 rounded-full bg-primary/20 flex items-center justify-center">
-                                    <span class="size-1 rounded-full bg-primary"></span>
-                                </span>
-                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Hari ${day}</h4>
-                                <div class="flex-1 h-[1.5px] bg-slate-100/80"></div>
+                        <div class="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 mb-6 shadow-sm">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="size-2 rounded-full bg-primary"></div>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">HARI ${day}</h4>
+                                <div class="flex-1 h-px bg-slate-200/50"></div>
                             </div>
                             <div class="grid grid-cols-1 gap-2.5">
                                 ${renderModuleItem(sid, snama, day, 'pemantik', sRes)}
@@ -660,25 +655,15 @@
                                 ${renderModuleItem(sid, snama, day, 'kuis', sRes)}
                                 ${renderModuleItem(sid, snama, day, 'refleksi', sRes)}
                             </div>
-                        </div>
-                        `;
+                        </div>`;
                     }
 
-                    // Direct synchronous update of innerHTML
+                    // Final synchronous update
                     container.innerHTML = html;
-                    console.log('✅ [DetailModal] Rendered successfully');
 
                 } catch (err) {
-                    console.error('❌ [DetailModal] Runtime Error:', err);
-                    container.innerHTML = `
-                        <div class="p-10 text-center bg-white rounded-3xl border-2 border-red-50 shadow-xl">
-                            <div class="size-16 bg-red-50 text-red-400 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <span class="material-symbols-outlined text-4xl">bug_report</span>
-                            </div>
-                            <p class="text-red-500 font-extrabold text-sm uppercase tracking-wider mb-2">Internal Script Error</p>
-                            <p class="text-slate-400 text-[10px] font-bold bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left overflow-x-auto whitespace-pre-wrap">${err.stack || err.message}</p>
-                            <button onclick="closeDetailModal()" class="mt-8 w-full py-4 bg-slate-900 text-white text-[11px] font-black uppercase rounded-2xl shadow-lg active:scale-95 transition-transform">Tutup & Refresh Halaman</button>
-                        </div>`;
+                    console.error('❌ CRASH:', err);
+                    alert('MODAL CRASH: ' + err.message);
                 }
             }
 
@@ -1053,99 +1038,6 @@
 
             window.addEventListener('load', init);
         </script>
-        <!-- MODALS SECTION (At the very bottom for maximum z-index stability) -->
-        <!-- Modal Penilaian -->
-        <div id="modalPenilaian"
-            class="fixed inset-0 z-[9999] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-lg p-3">
-            <div
-                class="bg-white w-full max-w-lg min-h-[300px] rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col scale-in-center">
-                <!-- Header -->
-                <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                    <div class="flex-1 min-w-0">
-                        <h3 class="text-base font-black text-slate-800 truncate" id="gradingStudentName">Nama Siswa</h3>
-                        <p class="text-[9px] text-slate-400 font-black uppercase tracking-widest mt-0.5"
-                            id="gradingModuleTitle">Penilaian Modul</p>
-                    </div>
-                    <button onclick="closeGradingModal()"
-                        class="size-10 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
-                        <span class="material-symbols-outlined text-[20px]">close</span>
-                    </button>
-                </div>
-                <!-- Content -->
-                <div class="p-5 space-y-4 overflow-y-auto flex-1 bg-white" id="gradingContentArea">
-                    <div id="studentAnswers" class="space-y-3"></div>
-                    <div class="pt-5 border-t border-slate-100 space-y-4">
-                        <div>
-                            <label
-                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Skor
-                                Nilai (0-100)</label>
-                            <input type="number" id="gradeScore" min="0" max="100"
-                                class="w-full bg-slate-50 border-0 rounded-2xl py-4 px-6 text-primary font-black text-xl focus:ring-4 focus:ring-primary/10 transition-all shadow-inner"
-                                placeholder="0">
-                        </div>
-                        <div>
-                            <label
-                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Catatan
-                                Feedback</label>
-                            <textarea id="gradeFeedback" rows="3"
-                                class="w-full bg-slate-50 border-0 rounded-2xl py-4 px-6 text-sm text-slate-700 focus:ring-4 focus:ring-primary/10 transition-all shadow-inner resize-none"
-                                placeholder="Masukkan feedback..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                <!-- Footer -->
-                <div class="p-5 bg-slate-50/80 border-t border-slate-100 flex gap-3">
-                    <button onclick="closeGradingModal()"
-                        class="flex-1 bg-white text-slate-500 font-black py-4 rounded-2xl border border-slate-200 active:scale-95 transition-all uppercase text-[10px] tracking-widest">Batal</button>
-                    <button onclick="saveGrade()"
-                        class="flex-1 bg-gradient-to-r from-primary to-blue-600 text-white font-black py-4 rounded-2xl shadow-xl shadow-primary/30 active:scale-95 transition-all uppercase text-[10px] tracking-widest">Simpan</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Detail Siswa -->
-        <div id="modalDetailSiswa"
-            class="fixed inset-0 z-[9998] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-lg p-3">
-            <div
-                class="bg-white w-full max-w-lg min-w-[320px] min-h-[400px] rounded-[3rem] shadow-2xl overflow-hidden max-h-[92vh] flex flex-col scale-in-center border-t-4 border-primary">
-                <div class="p-7 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
-                    <div>
-                        <h3 class="text-xl font-black text-slate-800 pr-4" id="detailStudentName">Detail Siswa</h3>
-                        <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-[0.3em] mt-1">Timeline
-                            Progres Belajar</p>
-                    </div>
-                    <button onclick="closeDetailModal()"
-                        class="size-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors shrink-0">
-                        <span class="material-symbols-outlined text-2xl">close</span>
-                    </button>
-                </div>
-                <div class="p-7 overflow-y-auto space-y-6 flex-1 bg-white" id="detailTaskContainer">
-                    <!-- Sync loading indicator -->
-                    <div class="flex flex-col items-center justify-center py-20 text-slate-300">
-                        <div class="size-16 border-4 border-slate-100 border-t-primary rounded-full animate-spin mb-6">
-                        </div>
-                        <p class="text-[11px] font-black uppercase tracking-[0.3em] animate-pulse">Menghubungkan...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <style>
-            .scale-in-center {
-                animation: scale-in-center 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-            }
-
-            @keyframes scale-in-center {
-                0% {
-                    transform: scale(0.9);
-                    opacity: 0;
-                }
-
-                100% {
-                    transform: scale(1);
-                    opacity: 1;
-                }
-            }
         </style>
 
 </body>
