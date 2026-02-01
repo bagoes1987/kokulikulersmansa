@@ -612,17 +612,22 @@
                 }
 
                 container.innerHTML = list.map(s => {
-                    const sRes = allResponses.filter(r => r.student_id === s.id);
+                    const sRes = (allResponses || []).filter(r => String(r.student_id) === String(s.id));
                     const pending = sRes.some(r => r.status === 'submitted');
                     const comp = sRes.filter(r => r.status === 'reviewed').length;
                     const photo = s.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(s.nama)}&background=f0f9ff&color=0ea5e9&size=128&bold=true`;
+
+                    // Simple escape double quotes for data-attribute
+                    const escapedName = s.nama ? s.nama.replace(/"/g, '&quot;') : '';
 
                     // Vibrant status colors
                     const statusBorder = pending ? 'border-amber-200 shadow-amber-100/50' : 'border-slate-100';
                     const nameColor = pending ? 'text-slate-900 font-black' : 'text-slate-700 font-bold';
 
                     return `
-                    <div onclick="openStudentDetailModal('${s.id}', '${s.nama.replace(/'/g, "\\'")}')" 
+                    <div onclick="openStudentDetailModal(this)" 
+                        data-sid="${s.id}" 
+                        data-snama="${escapedName}"
                         class="relative bg-gradient-to-br from-white to-sky-50 p-5 rounded-[2.5rem] border ${statusBorder} shadow-lg shadow-sky-900/10 active:scale-[0.97] transition-all cursor-pointer group hover:shadow-2xl hover:shadow-primary/40 hover:border-primary/50 flex flex-col gap-4 overflow-hidden">
                         
                         <!-- Top Accent Line for Pending -->
@@ -672,67 +677,81 @@
                 }).join('');
             }
 
-            async function openStudentDetailModal(studentId, studentName) {
-                console.log('🔍 [DetailModal] Membuka untuk:', studentName);
+            function openStudentDetailModal(elOrId, nameIfId = null) {
+                // Support both direct ID call and element call (data-attributes)
+                let sid, snama;
+                if (typeof elOrId === 'object' && elOrId.getAttribute) {
+                    sid = elOrId.getAttribute('data-sid');
+                    snama = elOrId.getAttribute('data-snama');
+                } else {
+                    sid = elOrId;
+                    snama = nameIfId;
+                }
+
+                console.log('🔍 [DetailModal] Click Detected:', snama, sid);
                 const modal = document.getElementById('modalDetailSiswa');
                 const title = document.getElementById('detailStudentName');
                 const container = document.getElementById('detailTaskContainer');
 
                 if (!modal || !container) {
-                    console.error('❌ Elemen modal tidak ditemukan!');
+                    console.error('❌ Structural Error: Modal or Container not found!');
+                    alert('Error: Modal UI elements not found in DOM');
                     return;
                 }
 
-                // Sembunyikan content lama dan tampilkan loading
+                // Show modal and Loading State immediately (Synchronous)
                 modal.classList.remove('hidden');
-                title.textContent = studentName || 'Detail Siswa';
+                title.innerHTML = `${snama || 'Detail Siswa'} <span class="text-[8px] font-black text-slate-300 ml-2">[v1.0.1]</span>`;
+
+                // Clear and show loading
                 container.innerHTML = `
-                    <div class="flex flex-col items-center justify-center py-16 text-slate-400">
-                        <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin mb-4"></div>
-                        <p class="text-[10px] font-black uppercase tracking-widest animate-pulse">Memuat Progres...</p>
+                    <div class="flex flex-col items-center justify-center py-24 text-slate-300">
+                        <div class="size-16 border-4 border-slate-100 border-t-primary rounded-full animate-spin mb-6 shadow-sm"></div>
+                        <p class="text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">Sinkronisasi Data...</p>
                     </div>`;
 
                 try {
-                    // Robust data matching
                     const responses = (allResponses || []);
-                    const sRes = responses.filter(r => String(r.student_id) === String(studentId));
-                    console.log('📊 [DetailModal] Data ditemukan:', sRes.length);
+                    const sRes = responses.filter(r => String(r.student_id) === String(sid));
+                    console.log('📊 [DetailModal] Filtering results:', sRes.length);
 
                     let html = '';
                     for (let day = 1; day <= 3; day++) {
                         html += `
-                        <div class="space-y-4 bg-slate-50/50 p-5 rounded-[2rem] border border-slate-100">
+                        <div class="space-y-4 bg-slate-50/50 p-5 rounded-[2.2rem] border border-slate-100/80 mb-4 last:mb-0">
                             <div class="flex items-center gap-3 px-1">
-                                <span class="size-1.5 rounded-full bg-primary shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
-                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Hari ${day}</h4>
-                                <div class="flex-1 h-px bg-slate-100/60"></div>
+                                <span class="size-2 rounded-full bg-primary/20 flex items-center justify-center">
+                                    <span class="size-1 rounded-full bg-primary"></span>
+                                </span>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">Hari ${day}</h4>
+                                <div class="flex-1 h-[1.5px] bg-slate-100/80"></div>
                             </div>
                             <div class="grid grid-cols-1 gap-2.5">
-                                ${renderModuleItem(studentId, studentName, day, 'pemantik', sRes)}
-                                ${renderModuleItem(studentId, studentName, day, 'materi', sRes)}
-                                ${renderModuleItem(studentId, studentName, day, 'video', sRes)}
-                                ${renderModuleItem(studentId, studentName, day, 'lkpd', sRes)}
-                                ${renderModuleItem(studentId, studentName, day, 'kuis', sRes)}
-                                ${renderModuleItem(studentId, studentName, day, 'refleksi', sRes)}
+                                ${renderModuleItem(sid, snama, day, 'pemantik', sRes)}
+                                ${renderModuleItem(sid, snama, day, 'materi', sRes)}
+                                ${renderModuleItem(sid, snama, day, 'video', sRes)}
+                                ${renderModuleItem(sid, snama, day, 'lkpd', sRes)}
+                                ${renderModuleItem(sid, snama, day, 'kuis', sRes)}
+                                ${renderModuleItem(sid, snama, day, 'refleksi', sRes)}
                             </div>
                         </div>
                         `;
                     }
 
-                    // Gunakan setTimeout sebentar untuk memastikan DOM siap
-                    setTimeout(() => {
-                        container.innerHTML = html;
-                        console.log('✅ [DetailModal] Berhasil dirender');
-                    }, 50);
+                    // Direct synchronous update of innerHTML
+                    container.innerHTML = html;
+                    console.log('✅ [DetailModal] Rendered successfully');
 
                 } catch (err) {
-                    console.error('❌ [DetailModal] Error:', err);
+                    console.error('❌ [DetailModal] Runtime Error:', err);
                     container.innerHTML = `
-                        <div class="p-8 text-center bg-red-50 rounded-3xl border border-red-100">
-                            <span class="material-symbols-outlined text-red-400 text-4xl mb-4">error</span>
-                            <p class="text-red-500 font-black text-xs uppercase mb-2">Terjadi Kesalahan</p>
-                            <p class="text-red-400 text-[10px] font-medium leading-relaxed">${err.message}</p>
-                            <button onclick="closeDetailModal()" class="mt-6 px-6 py-2.5 bg-white text-red-500 text-[10px] font-black uppercase rounded-2xl border border-red-100 shadow-sm">Tutup</button>
+                        <div class="p-10 text-center bg-white rounded-3xl border-2 border-red-50 shadow-xl">
+                            <div class="size-16 bg-red-50 text-red-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <span class="material-symbols-outlined text-4xl">bug_report</span>
+                            </div>
+                            <p class="text-red-500 font-extrabold text-sm uppercase tracking-wider mb-2">Internal Script Error</p>
+                            <p class="text-slate-400 text-[10px] font-bold bg-slate-50 p-4 rounded-2xl border border-slate-100 text-left overflow-x-auto whitespace-pre-wrap">${err.stack || err.message}</p>
+                            <button onclick="closeDetailModal()" class="mt-8 w-full py-4 bg-slate-900 text-white text-[11px] font-black uppercase rounded-2xl shadow-lg active:scale-95 transition-transform">Tutup & Refresh Halaman</button>
                         </div>`;
                 }
             }
