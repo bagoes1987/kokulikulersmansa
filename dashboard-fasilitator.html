@@ -72,14 +72,18 @@
 <body class="min-h-screen pb-12">
     <!-- FINAL SALVATION MODAL v1.0.7 -->
     <div id="X_MODAL_STUDENT_DETAIL_X"
-        class="fixed inset-0 z-[200000] hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
-        style="opacity: 1 !important; visibility: visible !important;">
+        class="fixed inset-0 z-[200000] hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
         <div
-            class="bg-white w-full max-w-lg min-h-[550px] min-w-[320px] rounded-[3.5rem] shadow-2xl overflow-hidden max-h-[95vh] flex flex-col border-[10px] border-primary/20">
-            <div class="p-10 border-b flex justify-between items-center bg-white sticky top-0 z-10">
-                <h3 class="text-2xl font-black text-slate-800" id="detailStudentName">Detail Siswa</h3>
-                <button onclick="document.getElementById('X_MODAL_STUDENT_DETAIL_X').classList.add('hidden')"
-                    class="size-16 rounded-[2rem] bg-slate-100 flex items-center justify-center font-black text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all shadow-inner border border-slate-100 text-xl">X</button>
+            class="bg-white w-full max-w-lg min-h-[500px] rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col border border-slate-100">
+            <div class="p-8 border-b flex justify-between items-center bg-white sticky top-0 z-10">
+                <div class="flex flex-col">
+                    <p class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">DATA SISWA</p>
+                    <h3 class="text-xl font-bold text-slate-800" id="detailStudentName">Detail Siswa</h3>
+                </div>
+                <button onclick="closeDetailModal()"
+                    class="size-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all border border-slate-100">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
             <div class="p-10 overflow-y-auto flex-1 bg-white" id="detailTaskContainer">
                 <div class="flex flex-col items-center justify-center py-24">
@@ -687,7 +691,7 @@
                     modal.style.setProperty('visibility', 'visible', 'important');
                     modal.style.setProperty('z-index', '200000', 'important');
 
-                    title.innerHTML = `${snama || 'Siswa'} <span class="bg-red-600 text-white text-[10px] px-3 py-1 rounded-lg ml-2 font-black shadow-lg">v1.0.7 FIX</span>`;
+                    title.innerHTML = `${snama || 'Siswa'}`;
                     container.innerHTML = `
                         <div class="flex flex-col items-center justify-center py-28 text-slate-400">
                             <div class="size-16 border-4 border-slate-100 border-t-primary rounded-full animate-spin mb-6"></div>
@@ -709,11 +713,10 @@
                     const responses = sRes || [];
                     for (let day = 1; day <= 3; day++) {
                         html += `
-                        <div class="bg-slate-50 p-8 rounded-[3rem] border border-slate-100 mb-8 last:mb-0 shadow-sm border-l-[12px] border-l-primary/10">
-                            <div class="flex items-center gap-4 mb-6 px-1">
-                                <span class="size-3 rounded-full bg-primary shadow-[0_0_12px_rgba(14,165,233,0.6)]"></span>
-                                <h4 class="text-[12px] font-black text-slate-800 uppercase tracking-[0.3em]">HARI ${day}</h4>
-                                <div class="flex-1 h-px bg-slate-200/50"></div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 mb-6 last:mb-0 shadow-sm">
+                            <div class="flex items-center gap-3 mb-5">
+                                <span class="size-2 rounded-full bg-primary/40"></span>
+                                <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">HARI ${day}</h4>
                             </div>
                             <div class="grid grid-cols-1 gap-3.5">
                                 ${renderModuleItem(sid, snama, day, 'pemantik', responses)}
@@ -761,13 +764,13 @@
 
                     if (r) {
                         if (r.status === 'reviewed') {
-                            statusHtml = `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-[8px] font-black uppercase rounded-lg border border-emerald-200">Selesai</span>`;
+                            statusHtml = `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase rounded-lg border border-emerald-100">Selesai</span>`;
                         } else if (r.status === 'submitted') {
-                            statusHtml = `<span class="px-2 py-0.5 bg-amber-100 text-amber-600 text-[8px] font-black uppercase rounded-lg border border-amber-200 animate-pulse">Review</span>`;
+                            statusHtml = `<span class="px-2.5 py-1 bg-amber-50 text-amber-600 text-[9px] font-bold uppercase rounded-lg border border-amber-100 animate-pulse">Review</span>`;
                         }
                         clickAction = `onclick="openGradingModal('${studentId}', '${safeName}', ${dayId}, '${type}')"`;
                     } else {
-                        statusHtml = `<span class="px-2 py-0.5 bg-slate-100 text-slate-400 text-[8px] font-black uppercase rounded-lg border border-slate-200">Belum</span>`;
+                        statusHtml = `<span class="px-2.5 py-1 bg-slate-50 text-slate-400 text-[9px] font-bold uppercase rounded-lg border border-slate-100">Belum</span>`;
                     }
 
                     return `
