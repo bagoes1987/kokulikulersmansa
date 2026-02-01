@@ -374,30 +374,37 @@
                     let uploadError = uploadResult.error;
 
                     // Auto-fix: Create bucket if missing (using Service Key fallback)
-                    if (uploadError) {
-                        console.warn("Upload failed. Attempting with Service Role...", uploadError.message);
+                    if (uploadError && (uploadError.message.includes('Bucket not found') || uploadError.error === 'Bucket not found' || uploadError.statusCode === '404')) {
+                        console.warn("Bucket missing. Attempting to create...");
 
                         try {
                             const _repairKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTY2MDc0MiwiZXhwIjoyMDg1MjM2NzQyfQ.sJN3LkaB2nmykbItVxWWQPJExeiKBBbWZlgTLeuNo24';
                             const repairClient = supabase.createClient(supabaseUrl, _repairKey);
 
-                            // 1. Ensure Bucket Exists
-                            const { error: bucketError } = await repairClient.storage.createBucket('avatars', { public: true });
-                            if (bucketError && !bucketError.message.includes('already exists')) {
+                            // Create Bucket
+                            const { data: bucketData, error: bucketError } = await repairClient.storage.createBucket('avatars', { public: true });
+
+                            if (bucketError) {
                                 console.error("Auto-create bucket failed:", bucketError);
+                                // Ignore 'already exists' error, proceed to retry upload
+                                if (!bucketError.message.includes('already exists')) {
+                                    throw new Error("Gagal membuat bucket otomatis: " + bucketError.message);
+                                }
                             }
 
-                            // 2. Upload with Service Role (Bypasses RLS)
-                            const retry = await repairClient.storage.from('avatars').upload(fileName, selectedFile, {
-                                upsert: true
-                            });
-
+                            // Retry Upload with ORIGINAL client (User Session)
+                            // NOTE: Using supabaseClient (User) instead of repairClient (Admin) because this worked previously.
+                            const retry = await supabaseClient.storage.from('avatars').upload(fileName, selectedFile);
                             if (retry.error) throw retry.error;
-                            console.log("Upload success with Service Role!");
+
+                            // Success!
+                            uploadError = null; // Clear error
 
                         } catch (repairErr) {
-                            throw new Error("Gagal upload foto (RLS/Bucket): " + repairErr.message);
+                            throw new Error("Gagal memperbaiki bucket: " + repairErr.message);
                         }
+                    } else if (uploadError) {
+                        throw uploadError;
                     }
 
                     const { data: { publicUrl: newUrl } } = supabaseClient.storage
