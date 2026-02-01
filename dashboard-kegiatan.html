@@ -426,6 +426,9 @@
                 loadProgress();
                 updateDashboardUI();
 
+                // Cek feedback Pertanyaan Pemantik
+                checkExistingPemantik();
+
             } catch (error) {
                 console.error('Error loading student data:', error);
                 window.location.href = 'login-siswa.html';
@@ -766,12 +769,14 @@
                         updatePemantikStatusUI('submitted');
                     } else if (data.status === 'reviewed') {
                         statusMsg.className = "bg-emerald-50 text-emerald-700 p-4 rounded-xl border border-emerald-200 text-xs font-medium mb-4";
-                        statusMsg.innerHTML = `✅ <b>Sudah Direview</b><br>Feedback: "${data.feedback || '-'}"`;
+                        statusMsg.innerHTML = `✅ <b>Sudah Direview (Skor: ${data.score || 0})</b><br>Feedback: "${data.feedback || '-'}"`;
+
+                        // Update UI Dashboard Card
+                        updatePemantikStatusUI('reviewed');
 
                         // Jika sudah direview, barulah centang hijau (update progress)
-                        // Cek apakah progress lokal sudah true? Jika belum, update.
                         if (!studentProgress.day1.pemantik) {
-                            originalToggleModule('pemantik'); // Paksa centang hijau
+                            forceCompleteModule('pemantik');
                         }
                     }
 
@@ -801,6 +806,11 @@
                 statusIcon.className = 'material-symbols-outlined !text-[14px] text-yellow-500';
                 statusLabel.textContent = 'Menunggu Feedback';
                 statusLabel.className = 'text-[11px] font-semibold text-yellow-500';
+            } else if (status === 'reviewed') {
+                statusIcon.textContent = 'check_circle';
+                statusIcon.className = 'material-symbols-outlined !text-[14px] text-emerald-500';
+                statusLabel.textContent = 'Selesai (Dinilai)';
+                statusLabel.className = 'text-[11px] font-semibold text-emerald-500';
             }
         }
 
