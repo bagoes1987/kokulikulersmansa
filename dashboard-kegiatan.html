@@ -700,6 +700,12 @@
             counter.textContent = `${words} / 200 kata`;
 
             const btn = document.getElementById('btnFinishMateri');
+            if (textarea.disabled) {
+                // Jangan utak-atik tombol jika sudah dikunci (submitted/reviewed)
+                btn.classList.add('hidden');
+                return;
+            }
+
             if (words >= 200) {
                 counter.className = "text-[10px] font-bold text-emerald-500";
                 btn.disabled = false;
@@ -779,22 +785,34 @@
                     const msg = document.getElementById('materiStatusMsg');
                     if (area) {
                         area.value = r.answers[0] || '';
-                        updateWordCount(); // Sync tombol & counter berdasarkan isi
                         if (r.status === 'submitted' || r.status === 'reviewed') {
                             area.disabled = true;
                             area.classList.add('bg-slate-100', 'text-slate-500');
                         }
+                        updateWordCount(); // Sync tombol & counter berdasarkan isi
                     }
 
                     if (msg) {
                         msg.classList.remove('hidden');
+                        const btn = document.getElementById('btnFinishMateri');
                         if (r.status === 'submitted') {
                             msg.className = "mb-4 p-4 rounded-3xl text-[11px] font-bold border border-amber-100 bg-amber-50 text-amber-700 animate-pulse";
                             msg.innerHTML = `⏳ Ringkasanmu sedang menunggu review Fasilitator.`;
+                            if (btn) btn.classList.add('hidden');
                         } else if (r.status === 'reviewed') {
                             msg.className = "mb-4 p-4 rounded-3xl text-[11px] font-bold border border-emerald-100 bg-emerald-50 text-emerald-700";
                             msg.innerHTML = `✅ Dinilai: ${r.score}/100<br><span class="font-normal text-[10px] mt-1 block">"${r.feedback || 'Bagus sekali!'}"</span>`;
+                            if (btn) btn.classList.add('hidden');
                         }
+                    }
+                } else {
+                    // Jika tidak ada data, pastikan tombol muncul & textarea aktif
+                    const btn = document.getElementById('btnFinishMateri');
+                    const area = document.getElementById('summaryArea');
+                    if (btn) btn.classList.remove('hidden');
+                    if (area) {
+                        area.disabled = false;
+                        area.classList.remove('bg-slate-100', 'text-slate-500');
                     }
                 }
             } catch (e) { console.error('Error checkExistingMateri:', e); }
