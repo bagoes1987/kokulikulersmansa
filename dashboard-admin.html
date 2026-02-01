@@ -477,20 +477,20 @@
                     <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-gray-800 border border-gray-700 px-4 text-sm font-medium text-gray-300">Active</button>
                 `;
                 } else if (type === 'fasilitator') {
-                    titleEl.textContent = 'Monitoring Fasilitator';
-                    filters.innerHTML = `
-                    <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary text-white px-4 text-sm font-medium shadow-sm">All Fasilitator</button>
-                `;
                 } else if (type === 'siswa') {
                     titleEl.textContent = 'Monitoring Siswa';
                     // Add Class Filter
                     filters.innerHTML = `
                     <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary text-white px-4 text-sm font-medium shadow-sm">Semua Kelas</button>
-                     <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-gray-800 border border-gray-700 px-4 text-sm font-medium text-gray-300">X. 1</button>
-                     <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-gray-800 border border-gray-700 px-4 text-sm font-medium text-gray-300">XI. 1</button>
-                     <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-gray-800 border border-gray-700 px-4 text-sm font-medium text-gray-300">XII. 1</button>
+                    <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-gray-800 border border-gray-700 px-4 text-sm font-medium text-gray-300">X. 1</button>
                 `;
                 }
+
+                const container = document.getElementById('list-container');
+                container.innerHTML = `<div class="flex flex-col items-center justify-center py-20 text-gray-400">
+                    <span class="material-symbols-outlined animate-spin text-4xl mb-3">progress_activity</span>
+                    <p>Sedang memuat data... (v.StaticForce)</p>
+                </div>`;
 
                 await fetchAndRenderList(type);
             }
@@ -541,20 +541,21 @@
                     let displayData = [];
                     let hasRealData = false;
 
-                    // 1. Force Static Data for Koordinator & Fasilitator (Bypassing Supabase for now as per request)
+                    // 1. Force Static Data for Koordinator & Fasilitator
                     if (type === 'koordinator' || type === 'fasilitator') {
                         console.log("Using Static Data for", type);
+                        // alert("Debug: Memuat data static untuk " + type); // Uncomment if needed
 
-                        const processedNames = new Set(); // Avoid duplicates
+                        const processedNames = new Set();
 
                         staticDataRequest.forEach(item => {
                             if (type === 'koordinator') {
                                 if (!processedNames.has(item.koordinator)) {
                                     displayData.push({
                                         name: item.koordinator,
-                                        email: 'admin@sman1belitang.sch.id', // Placeholder email
+                                        email: 'admin@sman1belitang.sch.id',
                                         role: 'koordinator',
-                                        avatar: null, // Will use placeholder
+                                        avatar: null,
                                         status: 'Active',
                                         source: 'Static',
                                         kelas: item.kelas
@@ -563,10 +564,14 @@
                                 }
                             } else if (type === 'fasilitator') {
                                 item.fasilitator.forEach(fasilName => {
+                                    // Split names if they contain '&' but logically they are arrays in the source, 
+                                    // but here we iterate the arrays.
+                                    // Actually the staticDataRequest fasilitator is ALREADY an array of strings.
+                                    // But let's be safe.
                                     if (!processedNames.has(fasilName)) {
                                         displayData.push({
                                             name: fasilName,
-                                            email: 'admin@sman1belitang.sch.id', // Placeholder email
+                                            email: 'admin@sman1belitang.sch.id',
                                             role: 'fasilitator',
                                             avatar: null,
                                             status: 'Active',
