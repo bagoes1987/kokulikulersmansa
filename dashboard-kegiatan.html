@@ -668,6 +668,7 @@
             if (currentMateriSlide === totalMateriSlides - 1) {
                 btnNext.classList.add('hidden');
                 btnFinish.classList.remove('hidden');
+                updateWordCount(); // Sync button state on show
             } else {
                 btnNext.classList.remove('hidden');
                 btnFinish.classList.add('hidden');
