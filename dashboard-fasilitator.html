@@ -707,35 +707,41 @@
                 container.innerHTML = html;
             }
 
-            function renderModuleItem(studentId, studentName, day, type, tasks) {
-                const task = tasks.find(t => t.module_type === type);
-                const status = task ? task.status : 'empty';
+            function renderModuleItem(studentId, studentName, dayId, type, responses) {
+                const r = responses.find(res => (res.module_type === type || (type === 'materi' && res.module_type === 'summary')) && res.day_id == dayId);
+                const config = {
+                    'pemantik': { label: 'Pemantik', icon: 'lightbulb' },
+                    'materi': { label: 'Materi', icon: 'menu_book' },
+                    'video': { label: 'Video', icon: 'play_circle' },
+                    'lkpd': { label: 'LKPD', icon: 'edit_note' },
+                    'kuis': { label: 'Asesmen', icon: 'quiz' },
+                    'refleksi': { label: 'Refleksi', icon: 'self_improvement' }
+                };
+                const c = config[type] || { label: type, icon: 'task' };
 
-                let statusLabel = 'Belum Ada';
-                let statusClass = 'bg-slate-50 text-slate-400 border-slate-100';
-                let icon = 'radio_button_unchecked';
+                let statusHtml = '';
+                let clickAction = '';
 
-                if (status === 'submitted') {
-                    statusLabel = 'Perlu Nilai';
-                    statusClass = 'bg-amber-50 text-amber-600 border-amber-100 shadow-sm shadow-amber-500/10';
-                    icon = 'pending';
-                } else if (status === 'reviewed') {
-                    statusLabel = 'Selesai';
-                    statusClass = 'bg-emerald-50 text-emerald-600 border-emerald-100';
-                    icon = 'check_circle';
+                if (r) {
+                    if (r.status === 'reviewed') {
+                        statusHtml = `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-[8px] font-black uppercase rounded-lg border border-emerald-200">Selesai</span>`;
+                    } else if (r.status === 'submitted') {
+                        statusHtml = `<span class="px-2 py-0.5 bg-amber-100 text-amber-600 text-[8px] font-black uppercase rounded-lg border border-amber-200 animate-pulse">Review</span>`;
+                    }
+                    clickAction = `onclick="openGradingModal('${studentId}', '${studentName}', ${dayId}, '${type}')"`;
+                } else {
+                    statusHtml = `<span class="px-2 py-0.5 bg-slate-100 text-slate-400 text-[8px] font-black uppercase rounded-lg border border-slate-200">Belum</span>`;
                 }
 
                 return `
-                <div onclick="openGradingModal('${studentId}', '${studentName.replace(/'/g, "\\'")}', '${day}', '${type}')" 
-                    class="bg-white border border-slate-100 p-4 rounded-2xl flex items-center gap-3 active:scale-95 transition-all cursor-pointer hover:border-primary/20">
-                    <div class="size-9 rounded-xl ${statusClass} flex items-center justify-center border">
-                        <span class="material-symbols-outlined text-[18px]">${icon}</span>
+                <div ${clickAction} class="flex items-center justify-between p-3 bg-white border border-slate-100/60 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group">
+                    <div class="flex items-center gap-3">
+                        <div class="size-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">${c.icon}</span>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-700">${c.label}</p>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-xs font-black text-slate-800 uppercase tracking-wide">${type}</p>
-                        <p class="text-[9px] text-slate-400 font-bold mt-0.5">${statusLabel}</p>
-                    </div>
-                    <span class="material-symbols-outlined text-slate-300 text-[18px]">chevron_right</span>
+                    ${statusHtml}
                 </div>
                 `;
             }
