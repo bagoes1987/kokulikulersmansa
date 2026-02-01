@@ -130,8 +130,14 @@
                 <div class="space-y-1">
                     <h2 class="text-3xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
                     <p class="text-sm text-slate-500 font-medium">Fasilitator SMAN 1 Belitang</p>
-                    <div class="flex flex-wrap gap-2 mt-3" id="fasilClassPills">
-                        <!-- Pills -->
+                    <div class="flex flex-wrap items-center gap-2 mt-3">
+                        <div class="flex flex-wrap gap-2" id="fasilClassPills">
+                            <!-- Pills -->
+                        </div>
+                        <button onclick="loadStats()"
+                            class="size-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 active:scale-90 transition-all hover:bg-white">
+                            <span class="material-symbols-outlined text-sm">refresh</span>
+                        </button>
                     </div>
                 </div>
 
@@ -362,68 +368,59 @@
             let selectedResponseId = null;
 
             async function init() {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (!session) {
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    // Fetch fresh user data from server
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    if (!user || user.user_metadata.role !== 'fasilitator') {
+                        window.location.href = 'login.html';
+                        return;
+                    }
+
+                    const userData = user.user_metadata;
+                    // Trim and clean classes from metadata
+                    myClasses = (Array.isArray(userData.kelas) ? userData.kelas : [userData.kelas])
+                        .filter(c => c)
+                        .map(c => c.trim());
+
+                    // Update Header Info
+                    document.getElementById('fasilName').textContent = userData.full_name;
+
+                    if (document.getElementById('fasilNipHeader')) {
+                        document.getElementById('fasilNipHeader').textContent = userData.nip || '-';
+                    }
+                    if (document.getElementById('fasilNipBody')) {
+                        document.getElementById('fasilNipBody').textContent = userData.nip || '-';
+                    }
+                    if (document.getElementById('fasilSubjectBody')) {
+                        document.getElementById('fasilSubjectBody').textContent = userData.mapel || 'Fasilitator';
+                    }
+
+                    // Robust Mapel Display
+                    const mapelDisplay = document.getElementById('fasilSubjectDisplay');
+                    if (mapelDisplay) {
+                        const mapelValue = (userData.mapel && userData.mapel.trim().length > 0) ? userData.mapel : 'Fasilitator Kokulikuler';
+                        mapelDisplay.textContent = mapelValue;
+                        mapelDisplay.classList.remove('hidden');
+                        mapelDisplay.setAttribute('style', 'display: block !important; visibility: visible !important; opacity: 1 !important; color: #1e293b !important; font-size: 16px !important; font-weight: 700 !important; min-height: 24px !important;');
+                    }
+
+                    const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=13ec6d&color=fff&size=256`;
+                    document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
+
+                    renderClassPills();
+                    setupClassSelect();
+                    loadStats();
+                    loadRecentActivities();
+                } catch (error) {
+                    console.error("Initialization error:", error);
                     window.location.href = 'login.html';
-                    return;
                 }
-
-                // Fetch fresh user data from server
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user || user.user_metadata.role !== 'fasilitator') {
-                    window.location.href = 'login.html';
-                    return;
-                }
-
-                const userData = user.user_metadata;
-                // Trim and clean classes from metadata
-                myClasses = (Array.isArray(userData.kelas) ? userData.kelas : [userData.kelas])
-                    .filter(c => c)
-                    .map(c => c.trim());
-
-                document.getElementById('fasilName').textContent = userData.full_name;
-
-                // Update Header - NIP
-                if (document.getElementById('fasilNipHeader')) {
-                    const nipValue = userData.nip || '-';
-                    document.getElementById('fasilNipHeader').textContent = nipValue;
-                }
-
-                // Update Header - Mapel
-                if (document.getElementById('fasilMapelHeader')) {
-                    const mapelValue = userData.mapel || 'Fasilitator Kokulikuler';
-                    document.getElementById('fasilMapelHeader').textContent = mapelValue;
-                }
-
-                // DEBUG: Log entire user metadata
-                console.log("=== FACILITATOR USER METADATA ===");
-                console.log("Full userData:", userData);
-                console.log("userData.mapel:", userData.mapel);
-                console.log("typeof userData.mapel:", typeof userData.mapel);
-                console.log("userData.mapel exists?:", userData.mapel !== undefined && userData.mapel !== null);
-
-                // Robust Mapel Display
-                const mapelDisplay = document.getElementById('fasilSubjectDisplay');
-                console.log("mapelDisplay element found?:", mapelDisplay !== null);
-
-                if (mapelDisplay) {
-                    const mapelValue = (userData.mapel && userData.mapel.trim().length > 0) ? userData.mapel : 'Fasilitator Kokulikuler';
-                    console.log("Final Mapel Value:", mapelValue);
-                    mapelDisplay.textContent = mapelValue;
-                    mapelDisplay.classList.remove('hidden'); // Ensure visible
-                    // NUCLEAR OPTION: Force visibility with !important
-                    mapelDisplay.setAttribute('style', 'display: block !important; visibility: visible !important; opacity: 1 !important; color: #1e293b !important; font-size: 16px !important; font-weight: 700 !important; min-height: 24px !important;');
-                    console.log("Mapel display updated. Current textContent:", mapelDisplay.textContent);
-                    console.log("Mapel display computed style:", window.getComputedStyle(mapelDisplay).display, window.getComputedStyle(mapelDisplay).visibility, window.getComputedStyle(mapelDisplay).opacity);
-                }
-
-                const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=0ea5e9&color=fff&size=256`;
-                document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
-
-                renderClassPills();
-                setupClassSelect();
-                loadStats();
-                loadRecentActivities();
             }
 
             function renderHeaderClasses() {
@@ -492,7 +489,11 @@
 
                     if (sCount > 0) {
                         const ids = students.map(s => s.id);
-                        const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', ids);
+                        const { count: rCount } = await supabaseClient.from('module_responses')
+                            .select('*', { count: 'exact', head: true })
+                            .in('student_id', ids)
+                            .eq('status', 'reviewed');
+
                         const progress = Math.round(((rCount || 0) / (sCount * 24)) * 100);
                         updateProgressUI(progress);
                     } else {
@@ -549,7 +550,7 @@
                     container.innerHTML = students.map(s => {
                         const sRes = (responses || []).filter(r => r.student_id === s.id);
                         const pending = sRes.some(r => r.status === 'submitted');
-                        const comp = sRes.length;
+                        const comp = sRes.filter(r => r.status === 'reviewed').length;
                         const initials = s.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                         return `
                         <div class="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm active:scale-[0.98] transition-all">

@@ -134,8 +134,14 @@
             <div class="space-y-1">
                 <h2 class="text-3xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
                 <p class="text-sm text-slate-500 font-medium">SMAN 1 Belitang</p>
-                <div class="flex flex-wrap gap-2 mt-3" id="coordClassPills">
-                    <!-- Pills -->
+                <div class="flex flex-wrap items-center gap-2 mt-3">
+                    <div class="flex flex-wrap gap-2" id="coordClassPills">
+                        <!-- Pills -->
+                    </div>
+                    <button onclick="loadStats()"
+                        class="size-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 active:scale-90 transition-all hover:bg-white">
+                        <span class="material-symbols-outlined text-sm">refresh</span>
+                    </button>
                 </div>
             </div>
 
@@ -521,7 +527,10 @@
 
                 const { data: students } = await supabaseClient.from('students').select('id').in('kelas', myClasses);
                 const ids = students.map(s => s.id);
-                const { count: responses } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', ids);
+                const { count: responses } = await supabaseClient.from('module_responses')
+                    .select('*', { count: 'exact', head: true })
+                    .in('student_id', ids)
+                    .eq('status', 'reviewed');
 
                 const progress = count > 0 ? Math.round((responses / (count * 24)) * 100) : 0;
                 updateProgressUI(progress);
@@ -545,7 +554,10 @@
                 const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).eq('kelas', cls);
                 const { data: students } = await supabaseClient.from('students').select('id').eq('kelas', cls);
                 const sIds = students.map(s => s.id);
-                const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', sIds);
+                const { count: rCount } = await supabaseClient.from('module_responses')
+                    .select('*', { count: 'exact', head: true })
+                    .in('student_id', sIds)
+                    .eq('status', 'reviewed');
                 const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
 
                 cont.innerHTML += `
