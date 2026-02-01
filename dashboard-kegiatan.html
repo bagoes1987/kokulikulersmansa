@@ -442,6 +442,19 @@
             const savedProgress = localStorage.getItem('student_progress');
             if (savedProgress) {
                 studentProgress = JSON.parse(savedProgress);
+                // Sanitize: Migrasi dari 'rangkuman' ke 'dokumentasi' jika ada data lama
+                ['day1', 'day2', 'day3'].forEach(d => {
+                    if (studentProgress[d] && studentProgress[d].rangkuman !== undefined) {
+                        if (studentProgress[d].dokumentasi === undefined) {
+                            studentProgress[d].dokumentasi = studentProgress[d].rangkuman;
+                        }
+                        delete studentProgress[d].rangkuman;
+                    }
+                    // Pastikan field dokumentasi ada
+                    if (studentProgress[d] && studentProgress[d].dokumentasi === undefined) {
+                        studentProgress[d].dokumentasi = false;
+                    }
+                });
             } else {
                 studentProgress = JSON.parse(JSON.stringify(defaultProgress));
             }
@@ -496,6 +509,9 @@
         function updateModuleUI(moduleId, isComplete) {
             const statusIcon = document.getElementById(`status-${moduleId}`);
             const statusLabel = document.getElementById(`label-${moduleId}`);
+
+            // Safety check: Avoid null errors if element is removed or mismatched
+            if (!statusIcon || !statusLabel) return;
 
             if (isComplete) {
                 statusIcon.textContent = 'check_circle';
