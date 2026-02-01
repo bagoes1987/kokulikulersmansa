@@ -81,8 +81,10 @@
 
                 <div class="text-left">
                     <h1 class="text-lg font-bold text-slate-900 leading-tight mb-1" id="fasilName">Memuat...</h1>
-                    <p class="text-xs text-slate-600 font-semibold" id="fasilNipHeader">NIP: -</p>
+                    <p class="text-xs text-slate-600 font-semibold" id="fasilNipHeader">-</p>
                     <p class="text-xs text-emerald-600 font-bold tracking-wide mt-0.5" id="fasilMapelHeader">-</p>
+                    <p class="text-xs text-slate-500 font-bold tracking-wide uppercase mt-0.5">Fasilitator Kokulikuler
+                    </p>
                     <p class="text-xs text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
                 </div>
             </div>
@@ -376,7 +378,7 @@
                 // Update Header - NIP
                 if (document.getElementById('fasilNipHeader')) {
                     const nipValue = userData.nip || '-';
-                    document.getElementById('fasilNipHeader').textContent = `NIP: ${nipValue}`;
+                    document.getElementById('fasilNipHeader').textContent = nipValue;
                 }
 
                 // Update Header - Mapel
