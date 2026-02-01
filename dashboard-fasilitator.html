@@ -596,7 +596,12 @@
                         return;
                     }
 
-                    const r = responses.find(res => res.status === 'submitted') || responses[0];
+                    // Priority: Picking 'submitted' response first, otherwise the most recent one
+                    let r = responses.find(res => res.status === 'submitted');
+                    if (!r) {
+                        // If no submitted, pick the one with no score yet, or just the first one
+                        r = responses.find(res => !res.score) || responses[0];
+                    }
                     selectedResponseId = r.id;
 
                     document.getElementById('gradingModuleTitle').textContent = `Hari ${r.day_id} • ${r.module_type.toUpperCase()}`;
