@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Admin Profile - SMAN 1 Belitang</title>
+    <title>Admin Settings Screen</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -15,9 +15,9 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#334155", // Adjusted to match dashboard slate theme
+                        "primary": "#137fec",
                         "background-light": "#f6f7f8",
-                        "background-dark": "#1e293b",
+                        "background-dark": "#101922",
                     },
                     fontFamily: {
                         "display": ["Inter", "sans-serif"]
@@ -39,229 +39,116 @@
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-white font-display antialiased">
-    <div
-        class="relative flex h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-white dark:bg-slate-900 shadow-2xl">
+<body class="bg-background-light dark:bg-background-dark text-white font-display antialiased">
+    <div class="relative flex h-screen w-full flex-col overflow-hidden">
         <!-- TopAppBar -->
-        <div
-            class="flex items-center bg-white dark:bg-slate-900 p-4 pb-2 justify-between safe-top border-b border-slate-100 dark:border-slate-800">
-            <a href="dashboard-admin.html" aria-label="Go back"
-                class="text-slate-500 flex size-12 shrink-0 items-center cursor-pointer hover:text-slate-800 transition-colors">
-                <span class="material-symbols-outlined">arrow_back_ios</span>
-            </a>
+        <div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between safe-top">
+            <div aria-label="Go back" class="text-white flex size-12 shrink-0 items-center cursor-pointer"
+                onclick="window.history.back()">
+                <span class="material-symbols-outlined text-gray-700 dark:text-white">arrow_back_ios</span>
+            </div>
             <h2
-                class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">
-                Profil Admin</h2>
+                class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">
+                Settings</h2>
         </div>
-
         <!-- Scrollable Content -->
         <div class="flex-1 overflow-y-auto pb-32">
             <!-- Tabs -->
-            <div class="pb-3 sticky top-0 bg-white dark:bg-slate-900 z-10">
+            <div class="pb-3 sticky top-0 bg-background-light dark:bg-background-dark z-10">
                 <div
-                    class="flex border-b border-slate-200 dark:border-slate-800 px-4 gap-8 overflow-x-auto no-scrollbar justify-center">
+                    class="flex border-b border-gray-200 dark:border-[#3b4754] px-4 gap-8 overflow-x-auto no-scrollbar">
                     <a class="flex flex-col items-center justify-center border-b-[3px] border-primary text-primary pb-[13px] pt-4 whitespace-nowrap"
                         href="#">
                         <p class="text-sm font-bold leading-normal tracking-[0.015em]">Profile</p>
                     </a>
+                    <a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-gray-500 dark:text-[#9dabb9] pb-[13px] pt-4 whitespace-nowrap"
+                        href="#">
+                        <p class="text-sm font-bold leading-normal tracking-[0.015em]">Security</p>
+                    </a>
+                    <a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-gray-500 dark:text-[#9dabb9] pb-[13px] pt-4 whitespace-nowrap"
+                        href="#">
+                        <p class="text-sm font-bold leading-normal tracking-[0.015em]">Notifications</p>
+                    </a>
+                    <a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-gray-500 dark:text-[#9dabb9] pb-[13px] pt-4 whitespace-nowrap"
+                        href="#">
+                        <p class="text-sm font-bold leading-normal tracking-[0.015em]">System</p>
+                    </a>
                 </div>
             </div>
-
             <!-- Profile Header -->
-            <div class="flex p-4 w-full flex-col gap-4 items-center">
-                <div class="flex gap-4 flex-col items-center">
-                    <div class="relative group cursor-pointer" onclick="document.getElementById('fileInput').click()">
-                        <div id="profileImage"
-                            class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-slate-100 shadow-sm"
-                            style='background-image: url("https://ui-avatars.com/api/?name=Admin&background=334155&color=fff");'>
+            <div class="flex p-4 @container">
+                <div class="flex w-full flex-col gap-4 items-center">
+                    <div class="flex gap-4 flex-col items-center">
+                        <div class="relative group">
+                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-primary/20"
+                                data-alt="Professional headshot of a business administrator"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB68qvURNV9YXym-aklu-41tqUxPUeyNyrKifhFRKTMcHXrAdNoYCoPyf3w4dACxm5k3GWIsdGQNqehjVmEwlOG0k8m4_nWXXtjmaBX3srQtlhcYKdJGrzqGrMtFB5FTQ6n0HGceYSppJUPzDUFmY7wO-JfmZcc-iGkymskgRWN-jcxA7PyGXL4Fl8IWlWD_dLvn2jpx1ciBd2Gc6ReS0dCbPvGhiJebkh_iW_nDxL8VzIC39AFS2ZfQgwPKVhKBfKDFQOTaT8zkOw");'>
+                            </div>
+                            <div
+                                class="absolute bottom-0 right-0 bg-primary p-2 rounded-full border-2 border-background-dark shadow-lg">
+                                <span class="material-symbols-outlined text-white text-sm">edit</span>
+                            </div>
                         </div>
-                        <div
-                            class="absolute bottom-0 right-0 bg-primary p-2 rounded-full border-4 border-white dark:border-slate-900 shadow-lg text-white">
-                            <span class="material-symbols-outlined text-sm">edit</span>
+                        <div class="flex flex-col items-center justify-center">
+                            <p
+                                class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">
+                                Alex Thompson</p>
+                            <p
+                                class="text-gray-500 dark:text-[#9dabb9] text-base font-normal leading-normal text-center">
+                                Senior Operations Manager</p>
                         </div>
-                        <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="uploadAvatar(this)">
                     </div>
-                    <div class="flex flex-col items-center justify-center">
-                        <p id="display-name"
-                            class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">
-                            Administrator</p>
-                        <p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal text-center">
-                            Panel Administrator</p>
-                    </div>
+                    <button
+                        class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-[#283039] text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] hover:bg-primary/10 transition-colors">
+                        <span class="truncate">Change Photo</span>
+                    </button>
                 </div>
             </div>
-
             <!-- Form Fields -->
-            <div class="flex flex-col gap-2 max-w-[480px] mx-auto px-4">
+            <div class="flex flex-col gap-2 max-w-[480px] mx-auto">
                 <!-- TextField Name -->
-                <div class="flex flex-col gap-2 py-2">
-                    <label class="text-slate-700 dark:text-white text-sm font-medium">Nama Lengkap</label>
-                    <input id="input-fullname"
-                        class="w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 dark:border-slate-700 px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                        placeholder="Nama Administrator" value="Administrator" />
+                <div class="flex flex-wrap items-end gap-4 px-4 py-3">
+                    <label class="flex flex-col min-w-40 flex-1">
+                        <p class="text-gray-700 dark:text-white text-base font-medium leading-normal pb-2">Full Name</p>
+                        <input
+                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-gray-300 dark:border-[#3b4754] bg-white dark:bg-[#1c2127] h-14 placeholder:text-gray-400 dark:placeholder:text-[#9dabb9] p-[15px] text-base font-normal leading-normal"
+                            placeholder="Enter your full name" value="Alex Thompson" />
+                    </label>
                 </div>
-
                 <!-- TextField Email -->
-                <div class="flex flex-col gap-2 py-2">
-                    <label class="text-slate-700 dark:text-white text-sm font-medium">Email Address</label>
-                    <input id="input-email"
-                        class="w-full rounded-xl border border-slate-200 bg-slate-100 dark:bg-slate-800 dark:border-slate-700 px-4 py-3 text-slate-500 cursor-not-allowed"
-                        placeholder="email@example.com" value="" readonly />
-                    <p class="text-[10px] text-slate-400">Email tidak dapat diubah secara langsung.</p>
+                <div class="flex flex-wrap items-end gap-4 px-4 py-3">
+                    <label class="flex flex-col min-w-40 flex-1">
+                        <p class="text-gray-700 dark:text-white text-base font-medium leading-normal pb-2">Email Address
+                        </p>
+                        <input
+                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-gray-300 dark:border-[#3b4754] bg-white dark:bg-[#1c2127] h-14 placeholder:text-gray-400 dark:placeholder:text-[#9dabb9] p-[15px] text-base font-normal leading-normal"
+                            placeholder="email@example.com" value="a.thompson@business.corp" />
+                    </label>
                 </div>
-
-                <!-- TextField Username -->
-                <div class="flex flex-col gap-2 py-2">
-                    <label class="text-slate-700 dark:text-white text-sm font-medium">Username</label>
-                    <input id="input-username"
-                        class="w-full rounded-xl border border-slate-200 bg-slate-100 dark:bg-slate-800 dark:border-slate-700 px-4 py-3 text-slate-500 cursor-not-allowed"
-                        placeholder="Username" value="" readonly />
+                <!-- Bio Text Area (Custom Component) -->
+                <div class="flex flex-wrap items-end gap-4 px-4 py-3">
+                    <label class="flex flex-col min-w-40 flex-1">
+                        <p class="text-gray-700 dark:text-white text-base font-medium leading-normal pb-2">Bio</p>
+                        <textarea
+                            class="form-textarea flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-gray-300 dark:border-[#3b4754] bg-white dark:bg-[#1c2127] min-h-[120px] placeholder:text-gray-400 dark:placeholder:text-[#9dabb9] p-[15px] text-base font-normal leading-normal"
+                            placeholder="Tell us about yourself...">Managing core business operations and regional logistics since 2018. Passionate about efficiency and data-driven decision making.</textarea>
+                    </label>
                 </div>
             </div>
         </div>
-
         <!-- Fixed Footer Actions -->
         <div
-            class="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex gap-3 pb-8 safe-bottom shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
-            <a href="dashboard-admin.html"
-                class="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white text-sm font-bold hover:bg-slate-200 transition-colors">
-                Batal
-            </a>
-            <button onclick="saveProfile()" id="btn-save"
-                class="flex-[2] flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 hover:brightness-110 active:scale-95 transition-all">
-                Simpan Perubahan
+            class="fixed bottom-0 left-0 right-0 p-4 bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-[#3b4754] flex gap-3 pb-8 safe-bottom shadow-[0_-10px_20px_rgba(0,0,0,0.1)]">
+            <button
+                class="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-gray-200 dark:bg-[#283039] text-gray-900 dark:text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-gray-300 dark:hover:bg-[#343e4a] transition-colors">
+                <span class="truncate">Cancel</span>
+            </button>
+            <button
+                class="flex-[2] flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-primary/20">
+                <span class="truncate">Save Changes</span>
             </button>
         </div>
     </div>
-
-    <!-- Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // WARNING: SERVICE KEY INCLUDED FOR ADMIN DASHBOARD USE AS REQUESTED.
-        const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
-        const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTY2MDc0MiwiZXhwIjoyMDg1MjM2NzQyfQ.sJN3LkaB2nmykbItVxWWQPJExeiKBBbWZlgTLeuNo24';
-        const adminClient = supabase.createClient(supabaseUrl, supabaseServiceKey);
-
-        let currentUser = null;
-
-        async function init() {
-            const { data: { session } } = await adminClient.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html';
-                return;
-            }
-            currentUser = session.user;
-            loadProfileData();
-        }
-
-        async function loadProfileData() {
-            // Get latest user data including metadata
-            const { data: { user }, error } = await adminClient.auth.getUser();
-            if (error || !user) return;
-
-            currentUser = user;
-            const meta = user.user_metadata;
-
-            // Populate Fields
-            document.getElementById('input-fullname').value = meta.full_name || '';
-            document.getElementById('input-email').value = user.email || '';
-            document.getElementById('input-username').value = meta.username || '';
-
-            document.getElementById('display-name').textContent = meta.full_name || 'Administrator';
-
-            // Avatar
-            if (meta.avatar_url) {
-                document.getElementById('profileImage').style.backgroundImage = `url('${meta.avatar_url}')`;
-            } else {
-                document.getElementById('profileImage').style.backgroundImage = `url('https://ui-avatars.com/api/?name=${meta.full_name || 'Admin'}&background=334155&color=fff')`;
-            }
-        }
-
-        async function saveProfile() {
-            const btn = document.getElementById('btn-save');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span>';
-            btn.disabled = true;
-
-            const newName = document.getElementById('input-fullname').value;
-
-            try {
-                // Update User Metadata
-                const { data, error } = await adminClient.auth.updateUser({
-                    data: { full_name: newName }
-                });
-
-                if (error) throw error;
-
-                // Also update profiles table
-                const { error: profileError } = await adminClient
-                    .from('profiles')
-                    .update({ full_name: newName })
-                    .eq('id', currentUser.id);
-
-                if (profileError) throw profileError;
-
-                alert('✅ Profil berhasil diperbarui!');
-                loadProfileData(); // Reload UI
-
-            } catch (err) {
-                console.error(err);
-                alert('Gagal menyimpan: ' + err.message);
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        async function uploadAvatar(input) {
-            if (!input.files || !input.files[0]) return;
-
-            const file = input.files[0];
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${currentUser.id}-${Math.random()}.${fileExt}`;
-            const filePath = `avatars/${fileName}`;
-
-            // Show loading state
-            document.getElementById('display-name').textContent = 'Mengupload foto...';
-
-            try {
-                // Upload to Supabase Storage
-                const { error: uploadError } = await adminClient.storage
-                    .from('avatars')
-                    .upload(filePath, file);
-
-                if (uploadError) throw uploadError;
-
-                // Get Public URL
-                const { data: { publicUrl } } = adminClient.storage
-                    .from('avatars')
-                    .getPublicUrl(filePath);
-
-                // Update Metadata
-                const { error: updateError } = await adminClient.auth.updateUser({
-                    data: { avatar_url: publicUrl }
-                });
-
-                if (updateError) throw updateError;
-
-                // Also update profiles table
-                await adminClient
-                    .from('profiles')
-                    .update({ avatar_url: publicUrl }) // Assuming column exists, or ignored
-                    .eq('id', currentUser.id);
-
-                alert('✅ Foto profil berhasil diubah!');
-                loadProfileData();
-
-            } catch (error) {
-                console.error(error);
-                alert('Gagal upload: ' + error.message);
-                loadProfileData(); // Reset Text
-            }
-        }
-
-        window.addEventListener('load', init);
-    </script>
 </body>
 
 </html>
