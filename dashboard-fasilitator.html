@@ -802,7 +802,13 @@
             }
 
             function closeDetailModal() {
-                document.getElementById('X_MODAL_STUDENT_DETAIL_X').classList.add('hidden');
+                const modal = document.getElementById('X_MODAL_STUDENT_DETAIL_X');
+                modal.classList.add('hidden');
+                // Hapus style inline agar class .hidden bisa bekerja
+                modal.style.removeProperty('display');
+                modal.style.removeProperty('opacity');
+                modal.style.removeProperty('visibility');
+                modal.style.removeProperty('z-index');
             }
 
             async function openGradingModal(studentId, studentName, filterDay = null, filterModule = null) {
