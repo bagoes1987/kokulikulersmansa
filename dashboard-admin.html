@@ -499,53 +499,59 @@
                 const container = document.getElementById('list-container');
                 let html = '';
 
+                console.log("Fetching list for:", type); // DEBUG
+
                 try {
                     if (type === 'koordinator' || type === 'fasilitator') {
                         // Fetch Users
-                        const { data: { users }, error } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
-                        if (error) throw error;
+                        const response = await adminClient.auth.admin.listUsers({ perPage: 1000 });
+                        console.log("Supabase Response:", response); // DEBUG
 
-                        const filtered = users.filter(u => u.user_metadata.role === type); // 'koordinator' or 'fasilitator'
+                        if (response.error) throw response.error;
+
+                        const users = response.data.users || [];
+                        const filtered = users.filter(u => u.user_metadata.role === type);
 
                         if (filtered.length === 0) {
-                            container.innerHTML = `<div class="text-center py-10 text-gray-500">Tidak ada data ${type}</div>`;
+                            container.innerHTML = `<div class="text-center py-10 text-gray-500">Tidak ada data ${type} ditemukan.<br><small class="text-slate-400">Total Users: ${users.length}</small></div>`;
                             return;
                         }
 
                         filtered.forEach(u => {
                             const meta = u.user_metadata;
-                            const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${meta.full_name || 'User'}&background=random`;
-                            const statusColor = 'green';
+                            // Check if avatar url is valid, else use UI Avatars
+                            const avatarUrl = meta.avatar_url && meta.avatar_url.startsWith('http') ? meta.avatar_url : `https://ui-avatars.com/api/?name=${encodeURIComponent(meta.full_name || 'User')}&background=random`;
 
                             html += `
-                        <div class="bg-gray-800/40 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="h-12 w-12 rounded-full bg-center bg-cover border-2 border-gray-700" 
-                                         style="background-image: url('${avatarUrl}');"></div>
-                                    <div>
-                                        <p class="font-semibold text-gray-100">${meta.full_name || 'No Name'}</p>
-                                        <p class="text-xs text-gray-400">${u.email}</p>
+                            <div class="bg-gray-800/40 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-12 w-12 rounded-full bg-center bg-cover border-2 border-gray-700" 
+                                             style="background-image: url('${avatarUrl}');"></div>
+                                        <div>
+                                            <p class="font-semibold text-gray-100">${meta.full_name || 'No Name'}</p>
+                                            <p class="text-xs text-gray-400">${u.email}</p>
+                                        </div>
+                                    </div>
+                                    <!-- Options Menu Button (Future Use) -->
+                                    <button class="text-gray-400 p-1 hover:text-white"><span class="material-symbols-outlined">more_vert</span></button>
+                                </div>
+                                <div class="flex items-center justify-between pt-2 border-t border-gray-800/50">
+                                    <div class="flex gap-2">
+                                        <span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-primary/10 text-primary">${type}</span>
+                                        <span class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-green-500/10 text-green-500">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Active
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <button class="text-gray-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
                                     </div>
                                 </div>
-                                <button class="text-gray-400 p-1 hover:text-white"><span class="material-symbols-outlined">more_vert</span></button>
-                            </div>
-                            <div class="flex items-center justify-between pt-2 border-t border-gray-800/50">
-                                <div class="flex gap-2">
-                                    <span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-primary/10 text-primary">${type}</span>
-                                    <span class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-${statusColor}-500/10 text-${statusColor}-500">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-${statusColor}-500"></span> Active
-                                    </span>
-                                </div>
-                                <div class="flex gap-3">
-                                    <button class="text-gray-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-                                </div>
-                            </div>
-                        </div>`;
+                            </div>`;
                         });
 
                     } else if (type === 'siswa') {
-                        // Fetch Students (Limit for performance)
+                        // Fetch Students
                         const { data: students, error } = await adminClient.from('students')
                             .select('*')
                             .not('nisn', 'ilike', '%trial%')
@@ -553,46 +559,51 @@
 
                         if (error) throw error;
 
-                        if (students.length === 0) {
+                        if (!students || students.length === 0) {
                             container.innerHTML = `<div class="text-center py-10 text-gray-500">Tidak ada data siswa</div>`;
                             return;
                         }
 
                         students.forEach(s => {
-                            const avatarUrl = `https://ui-avatars.com/api/?name=${s.nama}&background=random`;
+                            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.nama || 'Siswa')}&background=random`;
                             html += `
-                        <div class="bg-gray-800/40 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="h-12 w-12 rounded-full bg-center bg-cover border-2 border-gray-700" 
-                                         style="background-image: url('${avatarUrl}');"></div>
-                                    <div>
-                                        <p class="font-semibold text-gray-100 line-clamp-1">${s.nama}</p>
-                                        <p class="text-xs text-gray-400">${s.nisn} • ${s.kelas}</p>
+                            <div class="bg-gray-800/40 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="h-12 w-12 rounded-full bg-center bg-cover border-2 border-gray-700" 
+                                             style="background-image: url('${avatarUrl}');"></div>
+                                        <div>
+                                            <p class="font-semibold text-gray-100 line-clamp-1">${s.nama}</p>
+                                            <p class="text-xs text-gray-400">${s.nisn} • ${s.kelas}</p>
+                                        </div>
+                                    </div>
+                                    <button class="text-gray-400 p-1 hover:text-white"><span class="material-symbols-outlined">more_vert</span></button>
+                                </div>
+                                <div class="flex items-center justify-between pt-2 border-t border-gray-800/50">
+                                    <div class="flex gap-2">
+                                        <span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-orange-500/10 text-orange-500">Siswa</span>
+                                        <span class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-green-500/10 text-green-500">
+                                            Active
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <button class="text-gray-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
                                     </div>
                                 </div>
-                                <button class="text-gray-400 p-1 hover:text-white"><span class="material-symbols-outlined">more_vert</span></button>
-                            </div>
-                            <div class="flex items-center justify-between pt-2 border-t border-gray-800/50">
-                                <div class="flex gap-2">
-                                    <span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-orange-500/10 text-orange-500">Siswa</span>
-                                    <span class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-green-500/10 text-green-500">
-                                        Active
-                                    </span>
-                                </div>
-                                <div class="flex gap-3">
-                                    <button class="text-gray-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-                                </div>
-                            </div>
-                        </div>`;
+                            </div>`;
                         });
                     }
 
                     container.innerHTML = html;
 
                 } catch (e) {
-                    console.error(e);
-                    container.innerHTML = `<div class="text-center text-red-500 py-10">Gagal memuat data: ${e.message}</div>`;
+                    console.error("List Fetch Error:", e);
+                    container.innerHTML = `
+                        <div class="text-center text-red-500 py-10 p-4 border border-red-500/20 rounded-xl bg-red-500/5 mx-4">
+                            <span class="material-symbols-outlined text-4xl mb-2">error</span>
+                            <p class="font-bold">Gagal memuat data</p>
+                            <p class="text-xs mt-1 text-red-400">${e.message || JSON.stringify(e)}</p>
+                        </div>`;
                 }
             }
             // Initialize Data
