@@ -60,184 +60,272 @@
                     <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">search</span>
                 </button>
                 <div class="size-10 rounded-full overflow-hidden border-2 border-primary cursor-pointer"
-                    onclick="window.location.href='profil-admin.html'">
-                    <img alt="User Profile Avatar" class="w-full h-full object-cover"
+                    onclick="showPage('profile')">
+                    <img alt="User Profile Avatar" class="w-full h-full object-cover" id="top-avatar"
                         data-alt="Professional user profile avatar"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2yD09rk1T9eKKFZM6OL-IZ9klGKTFk-tkHGNRzAFhTLIdd7rwA3WBlPJZo54-lI2qIEacwUiFCIU8VHaVyfaB6mEimMMNB6LiW9QaMVAlxSfubd8vpmW0SD21F_FxWcixCpus-TleoVhJWGVpSS2enTyM9gfR-gPXbQfIkJ_ytodnTY74JjeXXuDBdkN96s0vhs_AQLHkd6rjjeXJu2DwNTjIRNz8k_r8z3aHDx1tKpfszIpSokQS3khDY5jQDEvvvsZiPbXZlNY" />
                 </div>
             </div>
         </header>
-        <main class="flex-1 overflow-y-auto pb-24">
-            <!-- KPI Stats Section -->
-            <section class="grid grid-cols-2 gap-3 p-4">
-                <div
-                    class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
-                    <div class="flex items-center justify-between">
-                        <div class="p-2 rounded-lg bg-primary/20 text-primary">
-                            <span class="material-symbols-outlined text-xl">payments</span>
-                        </div>
-                        <span class="text-[#0bda5b] text-xs font-bold leading-normal">+12%</span>
-                    </div>
-                    <div>
-                        <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
-                            Revenue</p>
-                        <p class="text-xl font-bold leading-tight">$24.5k</p>
-                    </div>
-                </div>
-                <div
-                    class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
-                    <div class="flex items-center justify-between">
-                        <div class="p-2 rounded-lg bg-purple-500/20 text-purple-500">
-                            <span class="material-symbols-outlined text-xl">account_tree</span>
-                        </div>
-                        <span class="text-[#0bda5b] text-xs font-bold leading-normal">+2%</span>
-                    </div>
-                    <div>
-                        <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
-                            Projects</p>
-                        <p class="text-xl font-bold leading-tight">12</p>
-                    </div>
-                </div>
-                <div
-                    class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
-                    <div class="flex items-center justify-between">
-                        <div class="p-2 rounded-lg bg-orange-500/20 text-orange-500">
-                            <span class="material-symbols-outlined text-xl">group</span>
-                        </div>
-                        <span class="text-[#fa6238] text-xs font-bold leading-normal">-5%</span>
-                    </div>
-                    <div>
-                        <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Leads
-                        </p>
-                        <p class="text-xl font-bold leading-tight">86</p>
-                    </div>
-                </div>
-                <div
-                    class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
-                    <div class="flex items-center justify-between">
-                        <div class="p-2 rounded-lg bg-teal-500/20 text-teal-500">
-                            <span class="material-symbols-outlined text-xl">schedule</span>
-                        </div>
-                        <span class="text-slate-400 text-xs font-bold leading-normal">0%</span>
-                    </div>
-                    <div>
-                        <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
-                            Pending</p>
-                        <p class="text-xl font-bold leading-tight">5</p>
-                    </div>
-                </div>
-            </section>
-            <!-- Project Status Section -->
-            <section class="mt-2">
-                <div class="flex items-center justify-between px-4 pb-3 pt-5">
-                    <h2 class="text-lg font-bold leading-tight tracking-tight">Project Status</h2>
-                    <button class="text-sm font-semibold text-primary">View all</button>
-                </div>
-                <div
-                    class="mx-4 flex flex-col bg-white dark:bg-[#1e293b] rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
-                    <!-- Table-like List Item 1 -->
+        <main class="flex-1 overflow-y-auto pb-24 relative">
+            <!-- VIEW: DASHBOARD (HOME) -->
+            <div id="view-home" class="animate-in fade-in duration-300">
+                <!-- KPI Stats Section -->
+                <section class="grid grid-cols-2 gap-3 p-4">
                     <div
-                        class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-slate-100 dark:border-slate-800">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="size-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-                                <span class="material-symbols-outlined">description</span>
+                        class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center justify-between">
+                            <div class="p-2 rounded-lg bg-primary/20 text-primary">
+                                <span class="material-symbols-outlined text-xl">payments</span>
                             </div>
-                            <div class="flex flex-col justify-center">
-                                <p class="text-sm font-semibold leading-tight line-clamp-1">Project Alpha</p>
-                                <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Due Oct
-                                    12</p>
-                            </div>
+                            <span class="text-[#0bda5b] text-xs font-bold leading-normal">+12%</span>
                         </div>
-                        <div
-                            class="shrink-0 px-3 py-1 rounded-full bg-[#0bda5b]/10 text-[#0bda5b] text-[10px] font-bold uppercase tracking-wider">
-                            Done
+                        <div>
+                            <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
+                                Revenue</p>
+                            <p class="text-xl font-bold leading-tight">$24.5k</p>
                         </div>
                     </div>
-                    <!-- Table-like List Item 2 -->
                     <div
-                        class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-slate-100 dark:border-slate-800">
-                        <div class="flex items-center gap-3">
-                            <div
-                                class="size-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
-                                <span class="material-symbols-outlined">language</span>
+                        class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center justify-between">
+                            <div class="p-2 rounded-lg bg-purple-500/20 text-purple-500">
+                                <span class="material-symbols-outlined text-xl">account_tree</span>
                             </div>
-                            <div class="flex flex-col justify-center">
-                                <p class="text-sm font-semibold leading-tight line-clamp-1">Web Redesign</p>
-                                <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Due Oct
-                                    15</p>
-                            </div>
+                            <span class="text-[#0bda5b] text-xs font-bold leading-normal">+2%</span>
                         </div>
-                        <div
-                            class="shrink-0 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
-                            Active
+                        <div>
+                            <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
+                                Projects</p>
+                            <p class="text-xl font-bold leading-tight">12</p>
                         </div>
                     </div>
-                    <!-- Table-like List Item 3 -->
                     <div
-                        class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-slate-100 dark:border-slate-800">
-                        <div class="flex items-center gap-3">
+                        class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center justify-between">
+                            <div class="p-2 rounded-lg bg-orange-500/20 text-orange-500">
+                                <span class="material-symbols-outlined text-xl">group</span>
+                            </div>
+                            <span class="text-[#fa6238] text-xs font-bold leading-normal">-5%</span>
+                        </div>
+                        <div>
+                            <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
+                                Leads
+                            </p>
+                            <p class="text-xl font-bold leading-tight">86</p>
+                        </div>
+                    </div>
+                    <div
+                        class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
+                        <div class="flex items-center justify-between">
+                            <div class="p-2 rounded-lg bg-teal-500/20 text-teal-500">
+                                <span class="material-symbols-outlined text-xl">schedule</span>
+                            </div>
+                            <span class="text-slate-400 text-xs font-bold leading-normal">0%</span>
+                        </div>
+                        <div>
+                            <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
+                                Pending</p>
+                            <p class="text-xl font-bold leading-tight">5</p>
+                        </div>
+                    </div>
+                </section>
+                <!-- Project Status Section -->
+                <section class="mt-2">
+                    <div class="flex items-center justify-between px-4 pb-3 pt-5">
+                        <h2 class="text-lg font-bold leading-tight tracking-tight">Project Status</h2>
+                        <button class="text-sm font-semibold text-primary">View all</button>
+                    </div>
+                    <div
+                        class="mx-4 flex flex-col bg-white dark:bg-[#1e293b] rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
+                        <!-- Table-like List Item 1 -->
+                        <div
+                            class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                                    <span class="material-symbols-outlined">description</span>
+                                </div>
+                                <div class="flex flex-col justify-center">
+                                    <p class="text-sm font-semibold leading-tight line-clamp-1">Project Alpha</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Due
+                                        Oct
+                                        12</p>
+                                </div>
+                            </div>
                             <div
-                                class="size-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
-                                <span class="material-symbols-outlined">cloud</span>
-                            </div>
-                            <div class="flex flex-col justify-center">
-                                <p class="text-sm font-semibold leading-tight line-clamp-1">Cloud Migration</p>
-                                <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Due Oct
-                                    20</p>
+                                class="shrink-0 px-3 py-1 rounded-full bg-[#0bda5b]/10 text-[#0bda5b] text-[10px] font-bold uppercase tracking-wider">
+                                Done
                             </div>
                         </div>
+                        <!-- Table-like List Item 2 -->
                         <div
-                            class="shrink-0 px-3 py-1 rounded-full bg-orange-500/10 text-orange-500 text-[10px] font-bold uppercase tracking-wider">
-                            Paused
+                            class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+                                    <span class="material-symbols-outlined">language</span>
+                                </div>
+                                <div class="flex flex-col justify-center">
+                                    <p class="text-sm font-semibold leading-tight line-clamp-1">Web Redesign</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Due
+                                        Oct
+                                        15</p>
+                                </div>
+                            </div>
+                            <div
+                                class="shrink-0 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
+                                Active
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </section>
-            <!-- Demographics Section -->
-            <section class="mt-6 mb-8 px-4">
-                <div class="flex items-center justify-between pb-4">
-                    <h2 class="text-lg font-bold leading-tight tracking-tight">User Demographics</h2>
-                    <span class="material-symbols-outlined text-slate-400">info</span>
-                </div>
-                <div
-                    class="bg-white dark:bg-[#1e293b] rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center">
-                    <div class="relative size-40 flex items-center justify-center">
-                        <!-- Simulated Donut Chart using Gradients -->
+                        <!-- Table-like List Item 3 -->
                         <div
-                            class="size-full rounded-full border-[12px] border-slate-100 dark:border-slate-700 relative overflow-hidden">
-                            <div class="absolute inset-0 rounded-full border-[12px] border-primary"
-                                style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%);"></div>
-                            <div class="absolute inset-0 rounded-full border-[12px] border-purple-500"
-                                style="clip-path: polygon(50% 50%, 0% 50%, 0% 0%, 50% 0%);"></div>
-                        </div>
-                        <div class="absolute flex flex-col items-center justify-center">
-                            <span class="text-2xl font-bold">12.8k</span>
-                            <span class="text-[10px] uppercase font-bold text-slate-500">Total Users</span>
+                            class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
+                                    <span class="material-symbols-outlined">cloud</span>
+                                </div>
+                                <div class="flex flex-col justify-center">
+                                    <p class="text-sm font-semibold leading-tight line-clamp-1">Cloud Migration</p>
+                                    <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Due
+                                        Oct
+                                        20</p>
+                                </div>
+                            </div>
+                            <div
+                                class="shrink-0 px-3 py-1 rounded-full bg-orange-500/10 text-orange-500 text-[10px] font-bold uppercase tracking-wider">
+                                Paused
+                            </div>
                         </div>
                     </div>
-                    <!-- Legend -->
-                    <div class="grid grid-cols-2 w-full mt-6 gap-4">
-                        <div class="flex items-center gap-2">
-                            <div class="size-2 rounded-full bg-primary"></div>
-                            <span class="text-xs font-medium">North America (65%)</span>
+                </section>
+                <!-- Demographics Section -->
+                <section class="mt-6 mb-8 px-4">
+                    <div class="flex items-center justify-between pb-4">
+                        <h2 class="text-lg font-bold leading-tight tracking-tight">User Demographics</h2>
+                        <span class="material-symbols-outlined text-slate-400">info</span>
+                    </div>
+                    <div
+                        class="bg-white dark:bg-[#1e293b] rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center">
+                        <div class="relative size-40 flex items-center justify-center">
+                            <!-- Simulated Donut Chart using Gradients -->
+                            <div
+                                class="size-full rounded-full border-[12px] border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                                <div class="absolute inset-0 rounded-full border-[12px] border-primary"
+                                    style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%);">
+                                </div>
+                                <div class="absolute inset-0 rounded-full border-[12px] border-purple-500"
+                                    style="clip-path: polygon(50% 50%, 0% 50%, 0% 0%, 50% 0%);"></div>
+                            </div>
+                            <div class="absolute flex flex-col items-center justify-center">
+                                <span class="text-2xl font-bold">12.8k</span>
+                                <span class="text-[10px] uppercase font-bold text-slate-500">Total Users</span>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <div class="size-2 rounded-full bg-purple-500"></div>
-                            <span class="text-xs font-medium">Europe (25%)</span>
+                        <!-- Legend -->
+                        <div class="grid grid-cols-2 w-full mt-6 gap-4">
+                            <div class="flex items-center gap-2">
+                                <div class="size-2 rounded-full bg-primary"></div>
+                                <span class="text-xs font-medium">North America (65%)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="size-2 rounded-full bg-purple-500"></div>
+                                <span class="text-xs font-medium">Europe (25%)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="size-2 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+                                <span class="text-xs font-medium">Asia (10%)</span>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <div class="size-2 rounded-full bg-slate-300 dark:bg-slate-600"></div>
-                            <span class="text-xs font-medium">Asia (10%)</span>
-                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- VIEW: PROFILE (Hidden) -->
+            <div id="view-profile" class="hidden animate-in fade-in duration-300">
+                <!-- Tabs -->
+                <div class="pb-3 sticky top-0 bg-background-light dark:bg-background-dark z-10">
+                    <div
+                        class="flex border-b border-gray-200 dark:border-[#3b4754] px-4 gap-8 overflow-x-auto no-scrollbar">
+                        <a
+                            class="flex flex-col items-center justify-center border-b-[3px] border-primary text-primary pb-[13px] pt-4 whitespace-nowrap cursor-pointer">
+                            <p class="text-sm font-bold leading-normal tracking-[0.015em]">Profile</p>
+                        </a>
                     </div>
                 </div>
-            </section>
+                <!-- Profile Header -->
+                <div class="flex p-4 @container justify-center">
+                    <div class="flex w-full flex-col gap-4 items-center">
+                        <div class="flex gap-4 flex-col items-center">
+                            <div class="relative group cursor-pointer"
+                                onclick="document.getElementById('fileInput').click()">
+                                <div id="profileImageInputDisplay"
+                                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-primary/20"
+                                    style='background-image: url("https://ui-avatars.com/api/?name=Admin&background=137fec&color=fff");'>
+                                </div>
+                                <div
+                                    class="absolute bottom-0 right-0 bg-primary p-2 rounded-full border-2 border-background-dark shadow-lg">
+                                    <span class="material-symbols-outlined text-white text-sm">edit</span>
+                                </div>
+                                <!-- File Input -->
+                                <input type="file" id="fileInput" class="hidden" accept="image/*"
+                                    onchange="uploadAvatar(this)">
+                            </div>
+                            <div class="flex flex-col items-center justify-center">
+                                <p id="display-name"
+                                    class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] text-center">
+                                    Administrator</p>
+                                <p
+                                    class="text-gray-500 dark:text-[#9dabb9] text-base font-normal leading-normal text-center">
+                                    Admin Panel</p>
+                            </div>
+                        </div>
+                        <button
+                            class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-[#283039] text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] hover:bg-primary/10 transition-colors"
+                            onclick="document.getElementById('fileInput').click()">
+                            <span class="truncate">Change Photo</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Form Fields -->
+                <div class="flex flex-col gap-2 max-w-[480px] mx-auto">
+                    <div class="flex flex-wrap items-end gap-4 px-4 py-3">
+                        <label class="flex flex-col min-w-40 flex-1">
+                            <p class="text-gray-700 dark:text-white text-base font-medium leading-normal pb-2">Full Name
+                            </p>
+                            <input id="input-fullname"
+                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-gray-300 dark:border-[#3b4754] bg-white dark:bg-[#1c2127] h-14 placeholder:text-gray-400 dark:placeholder:text-[#9dabb9] p-[15px] text-base font-normal leading-normal"
+                                placeholder="Enter name" value="" />
+                        </label>
+                    </div>
+                    <div class="flex flex-wrap items-end gap-4 px-4 py-3">
+                        <label class="flex flex-col min-w-40 flex-1">
+                            <p class="text-gray-700 dark:text-white text-base font-medium leading-normal pb-2">Email
+                                Address</p>
+                            <input id="input-email"
+                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary border border-gray-300 dark:border-[#3b4754] bg-white dark:bg-[#1c2127] h-14 placeholder:text-gray-400 dark:placeholder:text-[#9dabb9] p-[15px] text-base font-normal leading-normal"
+                                placeholder="email@example.com" value="" readonly />
+                        </label>
+                    </div>
+                    <div class="px-4 py-3">
+                        <button onclick="saveProfile()" id="btn-save"
+                            class="w-full flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-primary/20">
+                            <span class="truncate">Save Changes</span>
+                        </button>
+                        <button onclick="showPage('home')"
+                            class="w-full mt-3 flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-4 bg-transparent text-gray-500 hover:bg-gray-100 transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
         </main>
+
         <!-- Bottom Navigation Bar -->
         <nav
-            class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/90 dark:bg-background-dark/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 h-20 flex items-center justify-around px-4 pb-safe">
-            <button class="flex flex-col items-center gap-1 text-primary">
+            class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/90 dark:bg-background-dark/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 h-20 flex items-center justify-around px-4 pb-safe z-50">
+            <button class="flex flex-col items-center gap-1 text-primary" onclick="showPage('home')">
                 <span class="material-symbols-outlined">dashboard</span>
                 <span class="text-[10px] font-bold">Home</span>
             </button>
@@ -249,17 +337,140 @@
                 class="flex items-center justify-center size-12 rounded-xl bg-primary text-white shadow-lg -translate-y-4">
                 <span class="material-symbols-outlined text-2xl">add</span>
             </button>
-            <button class="flex flex-col items-center gap-1 text-slate-400">
-                <span class="material-symbols-outlined">notifications</span>
-                <span class="text-[10px] font-medium">Alerts</span>
+            <!-- UPDATED: Alerts -> Profile -->
+            <button class="flex flex-col items-center gap-1 text-slate-400" onclick="showPage('profile')">
+                <span class="material-symbols-outlined">person</span> <!-- Changed Icon -->
+                <span class="text-[10px] font-medium">Profile</span>
             </button>
-            <button class="flex flex-col items-center gap-1 text-slate-400"
-                onclick="window.location.href='profil-admin.html'">
+            <button class="flex flex-col items-center gap-1 text-slate-400" onclick="showPage('profile')">
                 <span class="material-symbols-outlined">settings</span>
                 <span class="text-[10px] font-medium">Settings</span>
             </button>
         </nav>
-    </div>
+
+        <!-- Supabase Integration Script -->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script>
+            const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
+            // WARNING: Client-side only. Do not use service role here if possible, but keeping consistent with existing setup.
+            // Assuming user provided the same key as before.
+            const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTY2MDc0MiwiZXhwIjoyMDg1MjM2NzQyfQ.sJN3LkaB2nmykbItVxWWQPJExeiKBBbWZlgTLeuNo24';
+            const adminClient = supabase.createClient(supabaseUrl, supabaseServiceKey);
+            let currentUser = null;
+
+            // Navigation Logic
+            function showPage(pageId) {
+                document.getElementById('view-home').classList.add('hidden');
+                document.getElementById('view-profile').classList.add('hidden');
+                document.getElementById(`view-${pageId}`).classList.remove('hidden');
+            }
+
+            // Initialize Data
+            async function init() {
+                // Check Session
+                const { data: { session } } = await adminClient.auth.getSession();
+                if (!session) {
+                    // If no session, maybe redirect to login or show empty state?
+                    // For now, let's assume session exists or is handled elsewhere
+                    console.log("No session found");
+                    return;
+                }
+                currentUser = session.user;
+
+                // Initial Load for Top Avatar
+                updateAvatarDisplay(currentUser.user_metadata.avatar_url);
+
+                // Pre-fill Profile Form
+                document.getElementById('input-fullname').value = currentUser.user_metadata.full_name || '';
+                document.getElementById('input-email').value = currentUser.email || '';
+                document.getElementById('display-name').textContent = currentUser.user_metadata.full_name || 'Administrator';
+            }
+
+            function updateAvatarDisplay(url) {
+                const defaultUrl = `https://ui-avatars.com/api/?name=${currentUser?.user_metadata?.full_name || 'Admin'}&background=137fec&color=fff`;
+                const finalUrl = url || defaultUrl;
+
+                // Update Top Bar Avatar
+                const topAvatar = document.querySelector('header img');
+                if (topAvatar) topAvatar.src = finalUrl;
+
+                // Update Profile Page Avatar
+                const profileAvatar = document.getElementById('profileImageInputDisplay');
+                if (profileAvatar) profileAvatar.style.backgroundImage = `url('${finalUrl}')`;
+            }
+
+            // --- Profile Actions ---
+
+            async function saveProfile() {
+                const btn = document.getElementById('btn-save');
+                const originalText = btn.innerHTML;
+                btn.textContent = 'Saving...';
+                btn.disabled = true;
+
+                const newName = document.getElementById('input-fullname').value;
+
+                try {
+                    // Update Auth Metadata
+                    const { error } = await adminClient.auth.updateUser({
+                        data: { full_name: newName }
+                    });
+                    if (error) throw error;
+
+                    // Update UI
+                    currentUser.user_metadata.full_name = newName;
+                    document.getElementById('display-name').textContent = newName;
+                    alert('Profile updated successfully!');
+                } catch (err) {
+                    alert('Error: ' + err.message);
+                } finally {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            }
+
+            async function uploadAvatar(input) {
+                if (!input.files || !input.files[0]) return;
+                const file = input.files[0];
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${currentUser.id}-${Math.random()}.${fileExt}`;
+                const filePath = `avatars/${fileName}`;
+
+                // Optimistic UI update
+                document.getElementById('display-name').textContent = 'Uploading...';
+
+                try {
+                    // Upload
+                    const { error: uploadError } = await adminClient.storage
+                        .from('avatars')
+                        .upload(filePath, file);
+                    if (uploadError) throw uploadError;
+
+                    // Get URL
+                    const { data: { publicUrl } } = adminClient.storage
+                        .from('avatars')
+                        .getPublicUrl(filePath);
+
+                    // Update User
+                    const { error: updateError } = await adminClient.auth.updateUser({
+                        data: { avatar_url: publicUrl }
+                    });
+                    if (updateError) throw updateError;
+
+                    // Update Local State
+                    currentUser.user_metadata.avatar_url = publicUrl;
+                    updateAvatarDisplay(publicUrl);
+                    document.getElementById('display-name').textContent = currentUser.user_metadata.full_name;
+                    alert('Photo updated!');
+
+                } catch (err) {
+                    console.error(err);
+                    alert('Upload failed: ' + err.message);
+                    document.getElementById('display-name').textContent = currentUser.user_metadata.full_name; // Revert text
+                }
+            }
+
+            window.addEventListener('load', init);
+        </script>
 </body>
 
 </html>
