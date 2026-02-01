@@ -603,7 +603,7 @@
                 }).join('');
             }
 
-            function openStudentDetailModal(elOrId, nameIfId = null) {
+            async function openStudentDetailModal(elOrId, nameIfId = null) {
                 try {
                     let sid, snama;
                     if (typeof elOrId === 'object' && elOrId !== null && elOrId.getAttribute) {
@@ -614,40 +614,60 @@
                         snama = nameIfId;
                     }
 
-                    console.log('🔍 [DetailModal] v1.0.3 Triggered:', snama, sid);
+                    console.log('🚀 [v1.0.6] BOOTING MODAL:', snama, sid);
                     const modal = document.getElementById('modalDetailSiswa');
                     const title = document.getElementById('detailStudentName');
                     const container = document.getElementById('detailTaskContainer');
 
                     if (!modal || !container) {
-                        console.error('❌ Modal/Container Missing!');
-                        alert('ERROR: Modal elements not found in DOM.');
+                        console.error('❌ FATAL: Modal elements missing from DOM');
+                        alert('GALAT KRITIKAL: Elemen Modal hilang. Mohon tekan Ctrl + F5.');
                         return;
                     }
 
-                    // FORCE VISIBILITY (Override everything)
-                    modal.style.setProperty('display', 'flex', 'important');
+                    // FORCE VISIBILITY (Highest Priority)
                     modal.classList.remove('hidden');
-                    modal.style.opacity = '1';
+                    modal.style.setProperty('display', 'flex', 'important');
+                    modal.style.setProperty('opacity', '1', 'important');
+                    modal.style.setProperty('visibility', 'visible', 'important');
+                    modal.style.setProperty('z-index', '200000', 'important');
 
-                    title.innerHTML = `${snama || 'Siswa'} <span class="bg-red-500 text-white text-[8px] px-2 py-0.5 rounded ml-2">v1.0.4</span>`;
-                    container.innerHTML = '<div class="p-20 text-center font-black animate-pulse text-slate-300">SYNCHRONIZING...</div>';
+                    title.innerHTML = `${snama || 'Siswa'} <span class="bg-red-600 text-white text-[9px] px-2 py-1 rounded ml-2 font-black">v1.0.6 LIVE</span>`;
+                    container.innerHTML = `
+                        <div class="flex flex-col items-center justify-center p-20 text-slate-400">
+                            <div class="size-12 border-4 border-slate-200 border-t-primary rounded-full animate-spin mb-4"></div>
+                            <p class="text-[9px] font-black uppercase tracking-[0.4em]">Sinkronisasi Data...</p>
+                        </div>
+                    `;
 
-                    // Data processing
-                    const responses = (allResponses || []);
-                    const sRes = responses.filter(r => String(r.student_id) === String(sid));
-                    console.log('📊 Records found:', sRes.length);
+                    // Data Recovery Mechanism
+                    let sRes = (allResponses || []).filter(r => String(r.student_id) === String(sid));
+
+                    if (sRes.length === 0) {
+                        console.log('⚠️ [v1.0.6] Data not found in cache. Fetching from Supabase...');
+                        const { data: fresh, error } = await supabaseClient
+                            .from('module_responses')
+                            .select('id, student_id, module_type, status, day_id')
+                            .eq('student_id', sid);
+
+                        if (!error && fresh) {
+                            sRes = fresh;
+                            console.log('✅ [v1.0.6] Recovery Success:', fresh.length, 'records found.');
+                        } else {
+                            console.error('❌ [v1.0.6] Recovery Fail:', error);
+                        }
+                    }
 
                     let html = '';
                     for (let day = 1; day <= 3; day++) {
                         html += `
-                        <div class="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 mb-6 shadow-sm">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="size-2 rounded-full bg-primary"></div>
-                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">HARI ${day}</h4>
+                        <div class="bg-slate-50 p-6 rounded-[2.5rem] border border-slate-100 mb-6 last:mb-0 shadow-sm">
+                            <div class="flex items-center gap-3 mb-5 px-1">
+                                <span class="size-2 rounded-full bg-primary shadow-[0_0_8px_rgba(14,165,233,0.5)]"></span>
+                                <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">HARI ${day}</h4>
                                 <div class="flex-1 h-px bg-slate-200/50"></div>
                             </div>
-                            <div class="grid grid-cols-1 gap-2.5">
+                            <div class="grid grid-cols-1 gap-3">
                                 ${renderModuleItem(sid, snama, day, 'pemantik', sRes)}
                                 ${renderModuleItem(sid, snama, day, 'materi', sRes)}
                                 ${renderModuleItem(sid, snama, day, 'video', sRes)}
@@ -658,12 +678,12 @@
                         </div>`;
                     }
 
-                    // Final synchronous update
                     container.innerHTML = html;
+                    console.log('✨ [v1.0.6] Modal Ready.');
 
                 } catch (err) {
-                    console.error('❌ CRASH:', err);
-                    alert('MODAL CRASH: ' + err.message);
+                    console.error('❌ [v1.0.6] CRASH:', err);
+                    alert('MODAL CRITICAL ERROR: ' + err.message);
                 }
             }
 
@@ -1066,17 +1086,21 @@
         </div>
 
         <div id="modalDetailSiswa"
-            class="fixed inset-0 z-[99999] hidden flex items-center justify-center bg-black/80 p-4"
-            style="opacity: 1 !important; display: none;">
+            class="fixed inset-0 z-[200000] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            style="opacity: 1 !important; visibility: visible !important;">
             <div
-                class="bg-white w-full max-w-lg min-h-[400px] rounded-[3rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col border-4 border-primary">
-                <div class="p-8 border-b flex justify-between items-center bg-white">
+                class="bg-white w-full max-w-lg min-h-[500px] min-w-[320px] rounded-[3.5rem] shadow-2xl overflow-hidden max-h-[94vh] flex flex-col border-[8px] border-primary/10">
+                <div class="p-10 border-b flex justify-between items-center bg-white sticky top-0 z-10">
                     <h3 class="text-xl font-black text-slate-800" id="detailStudentName">Detail Siswa</h3>
                     <button onclick="closeDetailModal()"
-                        class="size-12 rounded-2xl bg-slate-100 flex items-center justify-center font-black">X</button>
+                        class="size-14 rounded-[1.8rem] bg-slate-50 flex items-center justify-center font-black text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all shadow-inner border border-slate-100">X</button>
                 </div>
-                <div class="p-8 overflow-y-auto flex-1 bg-white" id="detailTaskContainer">
-                    <p class="text-center p-10 font-black text-slate-300">MENGHUBUNGKAN...</p>
+                <div class="p-10 overflow-y-auto flex-1 bg-white" id="detailTaskContainer">
+                    <div class="flex flex-col items-center justify-center py-20">
+                        <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
+                        <p class="mt-6 text-[10px] font-black uppercase text-slate-300 tracking-[0.4em]">
+                            Menghubungkan...</p>
+                    </div>
                 </div>
             </div>
         </div>
