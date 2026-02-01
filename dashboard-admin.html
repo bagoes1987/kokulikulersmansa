@@ -63,8 +63,7 @@
                 <div class="size-10 rounded-full overflow-hidden border-2 border-primary cursor-pointer"
                     onclick="showPage('profile')">
                     <img alt="User Profile Avatar" class="w-full h-full object-cover" id="top-avatar"
-                        data-alt="Professional user profile avatar"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2yD09rk1T9eKKFZM6OL-IZ9klGKTFk-tkHGNRzAFhTLIdd7rwA3WBlPJZo54-lI2qIEacwUiFCIU8VHaVyfaB6mEimMMNB6LiW9QaMVAlxSfubd8vpmW0SD21F_FxWcixCpus-TleoVhJWGVpSS2enTyM9gfR-gPXbQfIkJ_ytodnTY74JjeXXuDBdkN96s0vhs_AQLHkd6rjjeXJu2DwNTjIRNz8k_r8z3aHDx1tKpfszIpSokQS3khDY5jQDEvvvsZiPbXZlNY" />
+                        data-alt="Professional user profile avatar" src="./logo-sekolah.png" />
                 </div>
             </div>
         </header>
@@ -263,10 +262,11 @@
                                 onclick="document.getElementById('fileInput').click()">
                                 <div id="profileImageInputDisplay"
                                     class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-primary/20"
-                                    style='background-image: url("https://ui-avatars.com/api/?name=Admin&background=137fec&color=fff");'>
+                                    style='background-image: url("./logo-sekolah.png");'>
                                 </div>
+                                <!-- Edit icon hidden since upload is problematic -->
                                 <div
-                                    class="absolute bottom-0 right-0 bg-primary p-2 rounded-full border-2 border-background-dark shadow-lg">
+                                    class="absolute bottom-0 right-0 bg-primary p-2 rounded-full border-2 border-background-dark shadow-lg hidden">
                                     <span class="material-symbols-outlined text-white text-sm">edit</span>
                                 </div>
                                 <!-- File Input -->
@@ -282,8 +282,9 @@
                                     Admin Panel</p>
                             </div>
                         </div>
+                        <!-- Button Hidden -->
                         <button
-                            class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-[#283039] text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] hover:bg-primary/10 transition-colors"
+                            class="hidden flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-[#283039] text-gray-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] w-full max-w-[480px] hover:bg-primary/10 transition-colors"
                             onclick="document.getElementById('fileInput').click()">
                             <span class="truncate">Change Photo</span>
                         </button>
@@ -395,7 +396,7 @@
             }
 
             function updateAvatarDisplay(url) {
-                const defaultUrl = `https://ui-avatars.com/api/?name=${currentUser?.user_metadata?.full_name || 'Admin'}&background=137fec&color=fff`;
+                const defaultUrl = `./logo-sekolah.png`;
                 const finalUrl = url || defaultUrl;
 
                 // Update Top Bar Avatar
