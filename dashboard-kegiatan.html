@@ -723,19 +723,12 @@
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) throw new Error('Silakan login ulang.');
 
-                const { data: studentData } = await supabaseClient
-                    .from('students')
-                    .select('id')
-                    .eq('email', user.email)
-                    .single();
-
-                const finalStudentId = studentData ? studentData.id : user.id;
-
+                // Gunakan user.id (Auth UID) secara konsisten
                 const { error } = await supabaseClient
                     .from('module_responses')
                     .insert({
-                        student_id: finalStudentId,
-                        day_id: 1,
+                        student_id: user.id,
+                        day_id: currentDay,
                         module_type: 'materi',
                         answers: [summary],
                         status: 'submitted'
@@ -760,18 +753,11 @@
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) return;
 
-                const { data: studentData } = await supabaseClient
-                    .from('students')
-                    .select('id')
-                    .eq('email', user.email)
-                    .single();
-
-                if (!studentData) return;
-
                 const { data: responses } = await supabaseClient
                     .from('module_responses')
                     .select('*')
-                    .eq('student_id', studentData.id)
+                    .eq('student_id', user.id) // Konsisten pakai user.id
+                    .eq('day_id', currentDay) // Dinamis sesuai hari aktif
                     .eq('module_type', 'materi')
                     .order('created_at', { ascending: false })
                     .limit(1);
@@ -784,6 +770,7 @@
                     const msg = document.getElementById('materiStatusMsg');
                     if (area) {
                         area.value = r.answers[0] || '';
+                        updateWordCount(); // Sync tombol & counter berdasarkan isi
                         if (r.status === 'submitted' || r.status === 'reviewed') {
                             area.disabled = true;
                             area.classList.add('bg-slate-100', 'text-slate-500');
@@ -814,14 +801,17 @@
                 icon.className = "material-symbols-outlined !text-base text-amber-500 animate-pulse";
                 label.textContent = "Menunggu Feedback";
                 label.className = "text-[13px] font-bold text-amber-500";
-                card.classList.replace('bg-blue-50/50', 'bg-amber-50/50');
+
+                // Nuclear class reset and apply amber
+                card.className = "bg-amber-50/50 p-4 rounded-[24px] ios-shadow border border-amber-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95";
             } else if (status === 'reviewed') {
                 icon.textContent = 'check_circle';
                 icon.className = "material-symbols-outlined !text-base text-emerald-custom";
                 label.textContent = `Selesai (${score || 0})`;
                 label.className = "text-[13px] font-bold text-emerald-custom";
-                card.classList.replace('bg-blue-50/50', 'bg-emerald-50/50');
-                card.classList.replace('bg-amber-50/50', 'bg-emerald-50/50');
+
+                // Nuclear class reset and apply emerald
+                card.className = "bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95";
             }
         }
 
