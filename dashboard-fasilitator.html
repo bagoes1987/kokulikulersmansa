@@ -81,8 +81,8 @@
                     <h3 class="text-xl font-bold text-slate-800" id="detailStudentName">Detail Siswa</h3>
                 </div>
                 <button onclick="closeDetailModal()"
-                    class="size-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all border border-slate-100">
-                    <span class="material-symbols-outlined">close</span>
+                    class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all border border-slate-100 cursor-pointer pointer-events-auto">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
                 </button>
             </div>
             <div class="p-10 overflow-y-auto flex-1 bg-white" id="detailTaskContainer">
@@ -748,14 +748,25 @@
                     });
 
                     const config = {
-                        'pemantik': { label: 'Pemantik', icon: 'lightbulb' },
-                        'materi': { label: 'Materi', icon: 'menu_book' },
-                        'video': { label: 'Video', icon: 'play_circle' },
-                        'lkpd': { label: 'LKPD', icon: 'edit_note' },
-                        'kuis': { label: 'Asesmen', icon: 'quiz' },
-                        'refleksi': { label: 'Refleksi', icon: 'self_improvement' }
+                        'pemantik': { label: 'Pemantik', icon: 'lightbulb', color: 'amber' },
+                        'materi': { label: 'Materi', icon: 'menu_book', color: 'blue' },
+                        'video': { label: 'Video', icon: 'play_circle', color: 'red' },
+                        'lkpd': { label: 'LKPD', icon: 'edit_note', color: 'emerald' },
+                        'kuis': { label: 'Asesmen', icon: 'quiz', color: 'indigo' },
+                        'refleksi': { label: 'Refleksi', icon: 'self_improvement', color: 'rose' }
                     };
-                    const c = config[type] || { label: type, icon: 'task' };
+                    const c = config[type] || { label: type, icon: 'task', color: 'slate' };
+
+                    const colorStyles = {
+                        amber: 'bg-amber-50 text-amber-600 border-amber-200',
+                        blue: 'bg-blue-50 text-blue-600 border-blue-200',
+                        red: 'bg-red-50 text-red-600 border-red-200',
+                        emerald: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+                        indigo: 'bg-indigo-50 text-indigo-600 border-indigo-200',
+                        rose: 'bg-rose-50 text-rose-600 border-rose-200',
+                        slate: 'bg-slate-50 text-slate-600 border-slate-200'
+                    };
+                    const activeColor = colorStyles[c.color];
                     // Escape single quotes for studentName to be safe in onclick
                     const safeName = studentName ? studentName.replace(/'/g, "\\'") : 'Siswa';
 
@@ -774,12 +785,12 @@
                     }
 
                     return `
-                    <div ${clickAction} class="flex items-center justify-between p-3.5 bg-white border border-slate-100 rounded-2xl hover:border-primary/40 hover:shadow-lg hover:shadow-slate-200/50 transition-all cursor-pointer group">
-                        <div class="flex items-center gap-3">
-                            <div class="size-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all">
-                                <span class="material-symbols-outlined text-[18px]">${c.icon}</span>
+                    <div ${clickAction} class="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl border-l-[6px] border-l-${c.color}-400 hover:border-${c.color}-200 hover:shadow-lg transition-all cursor-pointer group">
+                        <div class="flex items-center gap-4">
+                            <div class="size-10 rounded-xl ${activeColor} flex items-center justify-center transition-transform group-hover:scale-110">
+                                <span class="material-symbols-outlined text-[20px]">${c.icon}</span>
                             </div>
-                            <p class="text-[11px] font-black text-slate-700 uppercase tracking-tight">${c.label}</p>
+                            <p class="text-[12px] font-bold text-slate-800 uppercase tracking-tight">${c.label}</p>
                         </div>
                         ${statusHtml}
                     </div>
