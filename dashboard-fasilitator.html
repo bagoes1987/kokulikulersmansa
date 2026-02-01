@@ -428,12 +428,10 @@
                     console.log("Final Mapel Value:", mapelValue);
                     mapelDisplay.textContent = mapelValue;
                     mapelDisplay.classList.remove('hidden'); // Ensure visible
-                    // Force visibility with inline styles
-                    mapelDisplay.style.display = 'block';
-                    mapelDisplay.style.visibility = 'visible';
-                    mapelDisplay.style.opacity = '1';
-                    mapelDisplay.style.minHeight = '24px';
+                    // NUCLEAR OPTION: Force visibility with !important
+                    mapelDisplay.setAttribute('style', 'display: block !important; visibility: visible !important; opacity: 1 !important; color: #1e293b !important; font-size: 16px !important; font-weight: 700 !important; min-height: 24px !important;');
                     console.log("Mapel display updated. Current textContent:", mapelDisplay.textContent);
+                    console.log("Mapel display computed style:", window.getComputedStyle(mapelDisplay).display, window.getComputedStyle(mapelDisplay).visibility, window.getComputedStyle(mapelDisplay).opacity);
                 }
 
                 const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=0ea5e9&color=fff&size=256`;
