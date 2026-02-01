@@ -1,21 +1,265 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Admin Dashboard Overview Variant 2</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
 </head>
 
-<body class="bg-gray-50 flex items-center justify-center h-screen">
-
-    <div class="text-center text-gray-400">
-        <h1 class="text-2xl font-bold mb-2">Dashboard Reset</h1>
-        <p>Siap menerima instruksi selanjutnya...</p>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+    <div
+        class="relative flex min-h-screen w-full flex-col max-w-[480px] mx-auto bg-background-light dark:bg-background-dark shadow-2xl">
+        <!-- TopAppBar -->
+        <header
+            class="sticky top-0 z-50 flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md p-4 pb-2 justify-between border-b border-slate-200 dark:border-slate-800">
+            <div class="flex size-10 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800">
+                <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">menu</span>
+            </div>
+            <h2 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center">Dashboard</h2>
+            <div class="flex gap-2">
+                <button class="flex size-10 items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-800">
+                    <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">search</span>
+                </button>
+                <div class="size-10 rounded-full overflow-hidden border-2 border-primary cursor-pointer"
+                    onclick="window.location.href='profil-admin.html'">
+                    <img alt="User Profile Avatar" class="w-full h-full object-cover"
+                        data-alt="Professional user profile avatar"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2yD09rk1T9eKKFZM6OL-IZ9klGKTFk-tkHGNRzAFhTLIdd7rwA3WBlPJZo54-lI2qIEacwUiFCIU8VHaVyfaB6mEimMMNB6LiW9QaMVAlxSfubd8vpmW0SD21F_FxWcixCpus-TleoVhJWGVpSS2enTyM9gfR-gPXbQfIkJ_ytodnTY74JjeXXuDBdkN96s0vhs_AQLHkd6rjjeXJu2DwNTjIRNz8k_r8z3aHDx1tKpfszIpSokQS3khDY5jQDEvvvsZiPbXZlNY" />
+                </div>
+            </div>
+        </header>
+        <main class="flex-1 overflow-y-auto pb-24">
+            <!-- KPI Stats Section -->
+            <section class="grid grid-cols-2 gap-3 p-4">
+                <div
+                    class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <div class="p-2 rounded-lg bg-primary/20 text-primary">
+                            <span class="material-symbols-outlined text-xl">payments</span>
+                        </div>
+                        <span class="text-[#0bda5b] text-xs font-bold leading-normal">+12%</span>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
+                            Revenue</p>
+                        <p class="text-xl font-bold leading-tight">$24.5k</p>
+                    </div>
+                </div>
+                <div
+                    class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <div class="p-2 rounded-lg bg-purple-500/20 text-purple-500">
+                            <span class="material-symbols-outlined text-xl">account_tree</span>
+                        </div>
+                        <span class="text-[#0bda5b] text-xs font-bold leading-normal">+2%</span>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
+                            Projects</p>
+                        <p class="text-xl font-bold leading-tight">12</p>
+                    </div>
+                </div>
+                <div
+                    class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <div class="p-2 rounded-lg bg-orange-500/20 text-orange-500">
+                            <span class="material-symbols-outlined text-xl">group</span>
+                        </div>
+                        <span class="text-[#fa6238] text-xs font-bold leading-normal">-5%</span>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Leads
+                        </p>
+                        <p class="text-xl font-bold leading-tight">86</p>
+                    </div>
+                </div>
+                <div
+                    class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center justify-between">
+                        <div class="p-2 rounded-lg bg-teal-500/20 text-teal-500">
+                            <span class="material-symbols-outlined text-xl">schedule</span>
+                        </div>
+                        <span class="text-slate-400 text-xs font-bold leading-normal">0%</span>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
+                            Pending</p>
+                        <p class="text-xl font-bold leading-tight">5</p>
+                    </div>
+                </div>
+            </section>
+            <!-- Project Status Section -->
+            <section class="mt-2">
+                <div class="flex items-center justify-between px-4 pb-3 pt-5">
+                    <h2 class="text-lg font-bold leading-tight tracking-tight">Project Status</h2>
+                    <button class="text-sm font-semibold text-primary">View all</button>
+                </div>
+                <div
+                    class="mx-4 flex flex-col bg-white dark:bg-[#1e293b] rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
+                    <!-- Table-like List Item 1 -->
+                    <div
+                        class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+                                <span class="material-symbols-outlined">description</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-sm font-semibold leading-tight line-clamp-1">Project Alpha</p>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Due Oct
+                                    12</p>
+                            </div>
+                        </div>
+                        <div
+                            class="shrink-0 px-3 py-1 rounded-full bg-[#0bda5b]/10 text-[#0bda5b] text-[10px] font-bold uppercase tracking-wider">
+                            Done
+                        </div>
+                    </div>
+                    <!-- Table-like List Item 2 -->
+                    <div
+                        class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+                                <span class="material-symbols-outlined">language</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-sm font-semibold leading-tight line-clamp-1">Web Redesign</p>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Due Oct
+                                    15</p>
+                            </div>
+                        </div>
+                        <div
+                            class="shrink-0 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
+                            Active
+                        </div>
+                    </div>
+                    <!-- Table-like List Item 3 -->
+                    <div
+                        class="flex items-center gap-4 px-4 min-h-[72px] py-2 justify-between border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="size-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
+                                <span class="material-symbols-outlined">cloud</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-sm font-semibold leading-tight line-clamp-1">Cloud Migration</p>
+                                <p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal">Due Oct
+                                    20</p>
+                            </div>
+                        </div>
+                        <div
+                            class="shrink-0 px-3 py-1 rounded-full bg-orange-500/10 text-orange-500 text-[10px] font-bold uppercase tracking-wider">
+                            Paused
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Demographics Section -->
+            <section class="mt-6 mb-8 px-4">
+                <div class="flex items-center justify-between pb-4">
+                    <h2 class="text-lg font-bold leading-tight tracking-tight">User Demographics</h2>
+                    <span class="material-symbols-outlined text-slate-400">info</span>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1e293b] rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col items-center">
+                    <div class="relative size-40 flex items-center justify-center">
+                        <!-- Simulated Donut Chart using Gradients -->
+                        <div
+                            class="size-full rounded-full border-[12px] border-slate-100 dark:border-slate-700 relative overflow-hidden">
+                            <div class="absolute inset-0 rounded-full border-[12px] border-primary"
+                                style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%);"></div>
+                            <div class="absolute inset-0 rounded-full border-[12px] border-purple-500"
+                                style="clip-path: polygon(50% 50%, 0% 50%, 0% 0%, 50% 0%);"></div>
+                        </div>
+                        <div class="absolute flex flex-col items-center justify-center">
+                            <span class="text-2xl font-bold">12.8k</span>
+                            <span class="text-[10px] uppercase font-bold text-slate-500">Total Users</span>
+                        </div>
+                    </div>
+                    <!-- Legend -->
+                    <div class="grid grid-cols-2 w-full mt-6 gap-4">
+                        <div class="flex items-center gap-2">
+                            <div class="size-2 rounded-full bg-primary"></div>
+                            <span class="text-xs font-medium">North America (65%)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="size-2 rounded-full bg-purple-500"></div>
+                            <span class="text-xs font-medium">Europe (25%)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="size-2 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+                            <span class="text-xs font-medium">Asia (10%)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!-- Bottom Navigation Bar -->
+        <nav
+            class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/90 dark:bg-background-dark/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 h-20 flex items-center justify-around px-4 pb-safe">
+            <button class="flex flex-col items-center gap-1 text-primary">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="text-[10px] font-bold">Home</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-slate-400">
+                <span class="material-symbols-outlined">bar_chart</span>
+                <span class="text-[10px] font-medium">Reports</span>
+            </button>
+            <button
+                class="flex items-center justify-center size-12 rounded-xl bg-primary text-white shadow-lg -translate-y-4">
+                <span class="material-symbols-outlined text-2xl">add</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-slate-400">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="text-[10px] font-medium">Alerts</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-slate-400"
+                onclick="window.location.href='profil-admin.html'">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="text-[10px] font-medium">Settings</span>
+            </button>
+        </nav>
     </div>
-
 </body>
 
 </html>
