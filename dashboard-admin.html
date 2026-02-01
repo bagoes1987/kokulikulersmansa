@@ -82,8 +82,8 @@
                             <div class="bg-blue-500/10 p-3 rounded-xl">
                                 <span class="material-symbols-outlined text-blue-500">groups</span>
                             </div>
-                            <span
-                                class="bg-blue-500/10 text-blue-500 text-xs font-bold px-2 py-1 rounded-lg">+12%</span>
+                            <span id="badge-coord"
+                                class="bg-blue-500/10 text-blue-500 text-xs font-bold px-2 py-1 rounded-lg">...</span>
                         </div>
                         <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">MONITORING</p>
                         <h3 class="text-white text-xl font-bold">Koordinator</h3>
@@ -100,8 +100,8 @@
                             <div class="bg-purple-500/10 p-3 rounded-xl">
                                 <span class="material-symbols-outlined text-purple-500">school</span>
                             </div>
-                            <span
-                                class="bg-purple-500/10 text-purple-500 text-xs font-bold px-2 py-1 rounded-lg">+5%</span>
+                            <span id="badge-fasil"
+                                class="bg-purple-500/10 text-purple-500 text-xs font-bold px-2 py-1 rounded-lg">...</span>
                         </div>
                         <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">MONITORING</p>
                         <h3 class="text-white text-xl font-bold">Fasilitator</h3>
@@ -118,8 +118,8 @@
                             <div class="bg-orange-500/10 p-3 rounded-xl">
                                 <span class="material-symbols-outlined text-orange-500">person_outline</span>
                             </div>
-                            <span
-                                class="bg-orange-500/10 text-orange-500 text-xs font-bold px-2 py-1 rounded-lg">-2%</span>
+                            <span id="badge-siswa"
+                                class="bg-orange-500/10 text-orange-500 text-xs font-bold px-2 py-1 rounded-lg">...</span>
                         </div>
                         <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">MONITORING</p>
                         <h3 class="text-white text-xl font-bold">Siswa</h3>
@@ -621,6 +621,45 @@
                 document.getElementById('input-fullname').value = currentUser.user_metadata.full_name || '';
                 document.getElementById('input-email').value = currentUser.email || '';
                 document.getElementById('display-name').textContent = currentUser.user_metadata.full_name || 'Administrator';
+
+                // LOAD DASHBOARD STATS
+                loadDashboardStats();
+            }
+
+            async function loadDashboardStats() {
+                try {
+                    // Fetch Users
+                    const { data: { users }, error: userError } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
+                    if (userError) throw userError;
+
+                    const coordCount = users.filter(u => u.user_metadata.role === 'koordinator').length;
+                    const fasilCount = users.filter(u => u.user_metadata.role === 'fasilitator').length;
+
+                    // Fetch Students
+                    const { count: studentCount, error: studentError } = await adminClient.from('students')
+                        .select('*', { count: 'exact', head: true })
+                        .not('nisn', 'ilike', '%trial%');
+
+                    if (studentError) throw studentError;
+
+                    // Update UI - Koordinator
+                    document.getElementById('count-coord-card').textContent = `${coordCount} Orang`;
+                    document.getElementById('badge-coord').textContent = `${coordCount}`;
+
+                    // Update UI - Fasilitator
+                    document.getElementById('count-fasil-card').textContent = `${fasilCount} Orang`;
+                    document.getElementById('badge-fasil').textContent = `${fasilCount}`;
+
+                    // Update UI - Siswa
+                    document.getElementById('count-siswa-card').textContent = `${studentCount} Siswa`;
+                    document.getElementById('badge-siswa').textContent = `${studentCount}`;
+
+                } catch (e) {
+                    console.error("Failed to load stats:", e);
+                    document.getElementById('count-coord-card').textContent = "Error";
+                    document.getElementById('count-fasil-card').textContent = "Error";
+                    document.getElementById('count-siswa-card').textContent = "Error";
+                }
             }
 
             function updateAvatarDisplay(url) {
