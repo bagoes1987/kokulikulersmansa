@@ -72,62 +72,71 @@
             <div id="view-home" class="animate-in fade-in duration-300">
                 <!-- KPI Stats Section -->
                 <section class="grid grid-cols-2 gap-3 p-4">
-                    <div
-                        class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
-                        <div class="flex items-center justify-between">
-                            <div class="p-2 rounded-lg bg-primary/20 text-primary">
-                                <span class="material-symbols-outlined text-xl">payments</span>
+                    <!-- Card 1: Monitoring Koordinator -->
+                    <div class="cursor-pointer bg-[#151c24] p-5 rounded-2xl border border-[#232d38] hover:border-primary/50 transition-colors group relative overflow-hidden"
+                        onclick="showListView('koordinator')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="material-symbols-outlined text-4xl text-blue-500">groups</span>
+                        </div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-blue-500/10 p-3 rounded-xl">
+                                <span class="material-symbols-outlined text-blue-500">groups</span>
                             </div>
-                            <span class="text-[#0bda5b] text-xs font-bold leading-normal">+12%</span>
+                            <span
+                                class="bg-blue-500/10 text-blue-500 text-xs font-bold px-2 py-1 rounded-lg">+12%</span>
                         </div>
-                        <div>
-                            <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
-                                Revenue</p>
-                            <p class="text-xl font-bold leading-tight">$24.5k</p>
-                        </div>
+                        <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">MONITORING</p>
+                        <h3 class="text-white text-xl font-bold">Koordinator</h3>
+                        <p class="text-gray-500 text-xs mt-2" id="count-coord-card">Loading...</p>
                     </div>
-                    <div
-                        class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
-                        <div class="flex items-center justify-between">
-                            <div class="p-2 rounded-lg bg-purple-500/20 text-purple-500">
-                                <span class="material-symbols-outlined text-xl">account_tree</span>
+
+                    <!-- Card 2: Monitoring Fasilitator -->
+                    <div class="cursor-pointer bg-[#151c24] p-5 rounded-2xl border border-[#232d38] hover:border-purple-500/50 transition-colors group relative overflow-hidden"
+                        onclick="showListView('fasilitator')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="material-symbols-outlined text-4xl text-purple-500">school</span>
+                        </div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-purple-500/10 p-3 rounded-xl">
+                                <span class="material-symbols-outlined text-purple-500">school</span>
                             </div>
-                            <span class="text-[#0bda5b] text-xs font-bold leading-normal">+2%</span>
+                            <span
+                                class="bg-purple-500/10 text-purple-500 text-xs font-bold px-2 py-1 rounded-lg">+5%</span>
                         </div>
-                        <div>
-                            <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
-                                Projects</p>
-                            <p class="text-xl font-bold leading-tight">12</p>
-                        </div>
+                        <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">MONITORING</p>
+                        <h3 class="text-white text-xl font-bold">Fasilitator</h3>
+                        <p class="text-gray-500 text-xs mt-2" id="count-fasil-card">Loading...</p>
                     </div>
-                    <div
-                        class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
-                        <div class="flex items-center justify-between">
-                            <div class="p-2 rounded-lg bg-orange-500/20 text-orange-500">
-                                <span class="material-symbols-outlined text-xl">group</span>
+
+                    <!-- Card 3: Monitoring Siswa -->
+                    <div class="cursor-pointer bg-[#151c24] p-5 rounded-2xl border border-[#232d38] hover:border-orange-500/50 transition-colors group relative overflow-hidden"
+                        onclick="showListView('siswa')">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <span class="material-symbols-outlined text-4xl text-orange-500">person_outline</span>
+                        </div>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-orange-500/10 p-3 rounded-xl">
+                                <span class="material-symbols-outlined text-orange-500">person_outline</span>
                             </div>
-                            <span class="text-[#fa6238] text-xs font-bold leading-normal">-5%</span>
+                            <span
+                                class="bg-orange-500/10 text-orange-500 text-xs font-bold px-2 py-1 rounded-lg">-2%</span>
                         </div>
-                        <div>
-                            <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
-                                Leads
-                            </p>
-                            <p class="text-xl font-bold leading-tight">86</p>
-                        </div>
+                        <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">MONITORING</p>
+                        <h3 class="text-white text-xl font-bold">Siswa</h3>
+                        <p class="text-gray-500 text-xs mt-2" id="count-siswa-card">Loading...</p>
                     </div>
-                    <div
-                        class="flex flex-col gap-2 rounded-xl p-4 bg-white dark:bg-[#1e293b] shadow-sm border border-slate-200 dark:border-slate-800">
-                        <div class="flex items-center justify-between">
-                            <div class="p-2 rounded-lg bg-teal-500/20 text-teal-500">
-                                <span class="material-symbols-outlined text-xl">schedule</span>
+
+                    <!-- Card 4: Reports (Pending) -->
+                    <div class="bg-[#151c24] p-5 rounded-2xl border border-[#232d38]">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="bg-teal-500/10 p-3 rounded-xl">
+                                <span class="material-symbols-outlined text-teal-500">schedule</span>
                             </div>
-                            <span class="text-slate-400 text-xs font-bold leading-normal">0%</span>
+                            <span class="bg-gray-700/50 text-gray-400 text-xs font-bold px-2 py-1 rounded-lg">0%</span>
                         </div>
-                        <div>
-                            <p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">
-                                Pending</p>
-                            <p class="text-xl font-bold leading-tight">5</p>
-                        </div>
+                        <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">PENDING</p>
+                        <h3 class="text-white text-xl font-bold">Laporan</h3>
+                        <p class="text-gray-500 text-xs mt-2">5 Need Review</p>
                     </div>
                 </section>
                 <!-- Project Status Section -->
@@ -322,6 +331,50 @@
                     </div>
                 </div>
             </div>
+            <!-- View: List (New Design) -->
+            <div id="view-list" class="hidden min-h-screen bg-[#101922] pb-24">
+                <!-- Top Navigation Bar -->
+                <div class="sticky top-0 z-40 bg-[#101922]/80 backdrop-blur-md border-b border-gray-800">
+                    <div class="flex items-center p-4 justify-between max-w-lg mx-auto">
+                        <div class="flex items-center gap-3">
+                            <button onclick="showPage('home')" class="text-gray-400 hover:text-white">
+                                <span class="material-symbols-outlined">arrow_back</span>
+                            </button>
+                            <h1 id="list-title" class="text-xl font-bold leading-tight tracking-tight text-white">Users
+                            </h1>
+                        </div>
+                        <button onclick="openAddModal()"
+                            class="flex items-center justify-center rounded-full w-10 h-10 bg-primary text-white shadow-lg active:scale-95 transition-transform">
+                            <span class="material-symbols-outlined">person_add</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Bar Section -->
+                <div class="px-4 py-4 sticky top-[72px] z-30 bg-[#101922]">
+                    <div class="relative flex items-center">
+                        <div class="absolute left-4 text-gray-400">
+                            <span class="material-symbols-outlined">search</span>
+                        </div>
+                        <input id="list-search"
+                            class="w-full h-12 pl-12 pr-4 bg-gray-800/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-sm text-white placeholder-gray-500"
+                            placeholder="Search name, email, or role..." type="text" />
+                    </div>
+                </div>
+
+                <!-- Filter Chips Section -->
+                <div id="list-filters" class="flex gap-2 px-4 pb-4 overflow-x-auto no-scrollbar">
+                    <!-- Injected via JS -->
+                </div>
+
+                <!-- User List Section -->
+                <div id="list-container" class="px-4 space-y-3">
+                    <!-- Injected via JS -->
+                    <div class="text-center py-10 text-gray-500 animate-pulse">Loading data...</div>
+                </div>
+
+            </div>
+
         </main>
 
         <!-- Bottom Navigation Bar -->
@@ -360,13 +413,188 @@
             const adminClient = supabase.createClient(supabaseUrl, supabaseServiceKey);
             let currentUser = null;
 
-            // Navigation Logic
+            // Navigation
             function showPage(pageId) {
-                document.getElementById('view-home').classList.add('hidden');
-                document.getElementById('view-profile').classList.add('hidden');
-                document.getElementById(`view-${pageId}`).classList.remove('hidden');
+                const pages = ['home', 'profile', 'list'];
+
+                // Toggle Views
+                pages.forEach(p => {
+                    const el = document.getElementById(`view-${p}`);
+                    if (el) {
+                        if (p === pageId) {
+                            el.classList.remove('hidden');
+                        } else {
+                            el.classList.add('hidden');
+                        }
+                    }
+                });
+
+                // Update Bottom Nav Active State
+                const navItems = document.querySelectorAll('nav button'); // Corrected selector
+                navItems.forEach(btn => {
+                    // Reset simple state
+                    const icon = btn.querySelector('.material-symbols-outlined');
+                    const label = btn.querySelector('span:last-child');
+
+                    // Check if the button's onclick attribute contains the pageId and it's not the 'list' view
+                    // The 'list' view is not directly linked to a bottom nav button, so it shouldn't activate any.
+                    if (btn.onclick && btn.onclick.toString().includes(`showPage('${pageId}')`) && pageId !== 'list') {
+                        icon.classList.remove('text-slate-400');
+                        icon.classList.add('text-primary');
+                        label.classList.remove('text-slate-400');
+                        label.classList.add('text-primary', 'font-bold');
+                    } else {
+                        // Only reset if it's not the 'add' button (which has no showPage onclick)
+                        // and if it's not already the default primary button (Home)
+                        if (!btn.classList.contains('bg-primary') && !btn.onclick.toString().includes("showPage('home')")) {
+                            icon.classList.add('text-slate-400');
+                            icon.classList.remove('text-primary');
+                            label.classList.add('text-slate-400');
+                            label.classList.remove('text-primary', 'font-bold');
+                        }
+                    }
+                });
             }
 
+            let currentListType = '';
+
+            async function showListView(type) {
+                currentListType = type;
+                showPage('list');
+
+                const titleEl = document.getElementById('list-title');
+                const container = document.getElementById('list-container');
+                const filters = document.getElementById('list-filters');
+
+                container.innerHTML = '<div class="text-center py-10 text-gray-400 animate-pulse">Loading data...</div>';
+                filters.innerHTML = ''; // Reset filters
+
+                // Setup Header & Filters
+                if (type === 'koordinator') {
+                    titleEl.textContent = 'Monitoring Koordinator';
+                    filters.innerHTML = `
+                    <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary text-white px-4 text-sm font-medium shadow-sm">All Koordinator</button>
+                    <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-gray-800 border border-gray-700 px-4 text-sm font-medium text-gray-300">Active</button>
+                `;
+                } else if (type === 'fasilitator') {
+                    titleEl.textContent = 'Monitoring Fasilitator';
+                    filters.innerHTML = `
+                    <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary text-white px-4 text-sm font-medium shadow-sm">All Fasilitator</button>
+                `;
+                } else if (type === 'siswa') {
+                    titleEl.textContent = 'Monitoring Siswa';
+                    // Add Class Filter
+                    filters.innerHTML = `
+                    <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary text-white px-4 text-sm font-medium shadow-sm">Semua Kelas</button>
+                     <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-gray-800 border border-gray-700 px-4 text-sm font-medium text-gray-300">X. 1</button>
+                     <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-gray-800 border border-gray-700 px-4 text-sm font-medium text-gray-300">XI. 1</button>
+                     <button class="flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-gray-800 border border-gray-700 px-4 text-sm font-medium text-gray-300">XII. 1</button>
+                `;
+                }
+
+                await fetchAndRenderList(type);
+            }
+
+            async function fetchAndRenderList(type) {
+                const container = document.getElementById('list-container');
+                let html = '';
+
+                try {
+                    if (type === 'koordinator' || type === 'fasilitator') {
+                        // Fetch Users
+                        const { data: { users }, error } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
+                        if (error) throw error;
+
+                        const filtered = users.filter(u => u.user_metadata.role === type); // 'koordinator' or 'fasilitator'
+
+                        if (filtered.length === 0) {
+                            container.innerHTML = `<div class="text-center py-10 text-gray-500">Tidak ada data ${type}</div>`;
+                            return;
+                        }
+
+                        filtered.forEach(u => {
+                            const meta = u.user_metadata;
+                            const avatarUrl = meta.avatar_url || `https://ui-avatars.com/api/?name=${meta.full_name || 'User'}&background=random`;
+                            const statusColor = 'green';
+
+                            html += `
+                        <div class="bg-gray-800/40 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-12 w-12 rounded-full bg-center bg-cover border-2 border-gray-700" 
+                                         style="background-image: url('${avatarUrl}');"></div>
+                                    <div>
+                                        <p class="font-semibold text-gray-100">${meta.full_name || 'No Name'}</p>
+                                        <p class="text-xs text-gray-400">${u.email}</p>
+                                    </div>
+                                </div>
+                                <button class="text-gray-400 p-1 hover:text-white"><span class="material-symbols-outlined">more_vert</span></button>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-gray-800/50">
+                                <div class="flex gap-2">
+                                    <span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-primary/10 text-primary">${type}</span>
+                                    <span class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-${statusColor}-500/10 text-${statusColor}-500">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-${statusColor}-500"></span> Active
+                                    </span>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="text-gray-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                                </div>
+                            </div>
+                        </div>`;
+                        });
+
+                    } else if (type === 'siswa') {
+                        // Fetch Students (Limit for performance)
+                        const { data: students, error } = await adminClient.from('students')
+                            .select('*')
+                            .not('nisn', 'ilike', '%trial%')
+                            .limit(50);
+
+                        if (error) throw error;
+
+                        if (students.length === 0) {
+                            container.innerHTML = `<div class="text-center py-10 text-gray-500">Tidak ada data siswa</div>`;
+                            return;
+                        }
+
+                        students.forEach(s => {
+                            const avatarUrl = `https://ui-avatars.com/api/?name=${s.nama}&background=random`;
+                            html += `
+                        <div class="bg-gray-800/40 border border-gray-800 rounded-xl p-4 flex flex-col gap-3 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-12 w-12 rounded-full bg-center bg-cover border-2 border-gray-700" 
+                                         style="background-image: url('${avatarUrl}');"></div>
+                                    <div>
+                                        <p class="font-semibold text-gray-100 line-clamp-1">${s.nama}</p>
+                                        <p class="text-xs text-gray-400">${s.nisn} • ${s.kelas}</p>
+                                    </div>
+                                </div>
+                                <button class="text-gray-400 p-1 hover:text-white"><span class="material-symbols-outlined">more_vert</span></button>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-gray-800/50">
+                                <div class="flex gap-2">
+                                    <span class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-orange-500/10 text-orange-500">Siswa</span>
+                                    <span class="flex items-center gap-1 px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded bg-green-500/10 text-green-500">
+                                        Active
+                                    </span>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button class="text-gray-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                                </div>
+                            </div>
+                        </div>`;
+                        });
+                    }
+
+                    container.innerHTML = html;
+
+                } catch (e) {
+                    console.error(e);
+                    container.innerHTML = `<div class="text-center text-red-500 py-10">Gagal memuat data: ${e.message}</div>`;
+                }
+            }
             // Initialize Data
             async function init() {
                 // FIX: Ensure storage bucket exists (Aggressive)
