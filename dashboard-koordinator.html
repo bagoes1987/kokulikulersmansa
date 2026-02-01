@@ -89,10 +89,10 @@
                     <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="uploadAvatar(this)">
                 </div>
                 <div>
-                    <h1 class="text-sm font-bold text-slate-900 leading-none" id="coordName">Memuat...</h1>
-                    <p class="text-[9px] text-primary font-bold tracking-wide uppercase mt-1" id="coordRole">PANEL
+                    <h1 class="text-lg font-bold text-slate-900 leading-none" id="coordName">Memuat...</h1>
+                    <p class="text-xs text-primary font-bold tracking-wide uppercase mt-1" id="coordRole">PANEL
                         KOORDINATOR KOKULIKULER</p>
-                    <p class="text-[9px] text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
+                    <p class="text-xs text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
                 </div>
             </div>
             <div
@@ -109,13 +109,13 @@
             </div>
         </div>
         <div class="max-w-md mx-auto px-5 pb-3">
-            <div class="ios-segment-control flex text-[13px] font-semibold text-slate-400">
+            <div class="ios-segment-control flex text-sm font-semibold text-slate-400">
                 <button onclick="switchTab('ringkasan')" id="tab-ringkasan"
-                    class="ios-segment-btn active flex-1 py-1.5 rounded-lg transition-all">Ringkasan</button>
+                    class="ios-segment-btn active flex-1 py-2 rounded-lg transition-all">Ringkasan</button>
                 <button onclick="switchTab('progres')" id="tab-progres"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Progres Kelas</button>
+                    class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Progres Kelas</button>
                 <button onclick="switchTab('laporan')" id="tab-laporan"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Laporan</button>
+                    class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Laporan</button>
             </div>
         </div>
     </header>
@@ -124,8 +124,8 @@
         <!-- Tab 1: Ringkasan -->
         <div id="view-ringkasan" class="space-y-6 animate-in fade-in duration-300">
             <div class="space-y-1">
-                <h2 class="text-xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
-                <p class="text-xs text-slate-500 font-medium">SMAN 1 Belitang</p>
+                <h2 class="text-3xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
+                <p class="text-sm text-slate-500 font-medium">SMAN 1 Belitang</p>
                 <div class="flex flex-wrap gap-2 mt-3" id="coordClassPills">
                     <!-- Pills -->
                 </div>
@@ -140,8 +140,8 @@
                         class="size-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">monitoring</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Monitoring Kelas</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Pantau real-time kelas aktif.
+                    <h3 class="font-bold text-slate-800 text-base">Monitoring Kelas</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Pantau real-time kelas aktif.
                     </p>
                 </div>
                 <!-- 2. Monitoring Fasilitator (NEW) -->
@@ -151,8 +151,8 @@
                         class="size-10 bg-blue-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">group</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Monitoring Fasil</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Pantau kinerja tim
+                    <h3 class="font-bold text-slate-800 text-base">Monitoring Fasil</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Pantau kinerja tim
                         fasilitator.</p>
                 </div>
                 <!-- 3. Rekap Penilaian -->
@@ -162,8 +162,8 @@
                         class="size-10 bg-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-full">assignment_turned_in</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Rekap Penilaian</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Hasil asesmen siswa.</p>
+                    <h3 class="font-bold text-slate-800 text-base">Rekap Penilaian</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Hasil asesmen siswa.</p>
                 </div>
                 <!-- 4. Alur Kegiatan -->
                 <div onclick="alert('Timeline Alur Kegiatan sedang disiapkan...')"
@@ -172,8 +172,8 @@
                         class="size-10 bg-purple-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">route</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Alur Kegiatan</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Timeline & roadmap kerja.</p>
+                    <h3 class="font-bold text-slate-800 text-base">Alur Kegiatan</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Timeline & roadmap kerja.</p>
                 </div>
                 <!-- 5. Laporan Akhir -->
                 <div onclick="alert('Menu Laporan & Ekspor Sertifikat sedang disiapkan...')"
@@ -182,8 +182,8 @@
                         class="size-10 bg-emerald-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">description</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Laporan Akhir</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Ekspor dokumen & sertifikat.
+                    <h3 class="font-bold text-slate-800 text-base">Laporan Akhir</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Ekspor dokumen & sertifikat.
                     </p>
                 </div>
                 <!-- 6. Pengaturan -->
@@ -193,8 +193,8 @@
                         class="size-10 bg-orange-400 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">settings</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Pengaturan</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Konfigurasi jadwal & peran.
+                    <h3 class="font-bold text-slate-800 text-base">Pengaturan</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Konfigurasi jadwal & peran.
                     </p>
                 </div>
             </div>
@@ -204,7 +204,7 @@
                 <div class="flex items-center justify-between px-1">
                     <h2 class="text-lg font-bold text-slate-800">Aktivitas Fasilitator</h2>
                     <button onclick="loadFacilitatorActivities()"
-                        class="text-[10px] font-black uppercase text-primary tracking-widest hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">Lihat
+                        class="text-xs font-black uppercase text-primary tracking-widest hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">Lihat
                         Semua</button>
                 </div>
                 <div id="fasilActivityContainer" class="space-y-3">
@@ -220,7 +220,7 @@
                 class="bg-primary-dark rounded-3xl p-6 text-white shadow-xl overflow-hidden relative group cursor-pointer active:scale-95 transition-transform">
                 <div class="relative z-10 flex items-center justify-between">
                     <div>
-                        <p class="text-[10px] text-white/70 font-black uppercase tracking-[0.2em] mb-1">Target
+                        <p class="text-xs text-white/70 font-black uppercase tracking-[0.2em] mb-1">Target
                             Partisipasi</p>
                         <p class="text-3xl font-black mt-1" id="studentCount">0 <span
                                 class="text-sm font-medium text-white/60 ml-1">Siswa Terdaftar</span></p>

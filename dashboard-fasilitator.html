@@ -80,10 +80,10 @@
                     </div>
                 </div>
                 <div>
-                    <h1 class="text-sm font-bold text-slate-900 leading-none" id="fasilName">Memuat...</h1>
-                    <p class="text-[9px] text-primary font-bold tracking-wide uppercase mt-1" id="fasilRole">PANEL
+                    <h1 class="text-lg font-bold text-slate-900 leading-none" id="fasilName">Memuat...</h1>
+                    <p class="text-xs text-primary font-bold tracking-wide uppercase mt-1" id="fasilRole">PANEL
                         FASILITATOR KOKULIKULER</p>
-                    <p class="text-[9px] text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
+                    <p class="text-xs text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
                 </div>
             </div>
             <div
@@ -100,13 +100,13 @@
             </div>
         </div>
         <div class="max-w-md mx-auto px-5 pb-3">
-            <div class="ios-segment-control flex text-[13px] font-semibold text-slate-400">
+            <div class="ios-segment-control flex text-sm font-semibold text-slate-400">
                 <button onclick="switchTab('ringkasan')" id="tab-ringkasan"
-                    class="ios-segment-btn active flex-1 py-1.5 rounded-lg transition-all">Ringkasan</button>
+                    class="ios-segment-btn active flex-1 py-2 rounded-lg transition-all">Ringkasan</button>
                 <button onclick="switchTab('progres')" id="tab-progres"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Progres Kelas</button>
+                    class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Progres Kelas</button>
                 <button onclick="switchTab('laporan')" id="tab-laporan"
-                    class="ios-segment-btn flex-1 py-1.5 rounded-lg transition-all">Laporan</button>
+                    class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Laporan</button>
             </div>
         </div>
     </header>
@@ -115,8 +115,8 @@
         <!-- Tab 1: Ringkasan -->
         <div id="view-ringkasan" class="space-y-6 animate-in fade-in duration-300">
             <div class="space-y-1">
-                <h2 class="text-xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
-                <p class="text-xs text-slate-500 font-medium">Fasilitator SMAN 1 Belitang</p>
+                <h2 class="text-3xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
+                <p class="text-sm text-slate-500 font-medium">Fasilitator SMAN 1 Belitang</p>
                 <div class="flex flex-wrap gap-2 mt-3" id="fasilClassPills">
                     <!-- Pills -->
                 </div>
@@ -130,8 +130,8 @@
                         class="size-10 bg-primary rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">monitoring</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Monitoring Kelas</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Pantau real-time kelas
+                    <h3 class="font-bold text-slate-800 text-base">Monitoring Kelas</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Pantau real-time kelas
                         bimbingan.</p>
                 </div>
                 <div onclick="switchTab('progres')"
@@ -140,8 +140,8 @@
                         class="size-10 bg-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-full">assignment_turned_in</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Rekap Penilaian</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Nilai tugas & LKPD siswa.</p>
+                    <h3 class="font-bold text-slate-800 text-base">Rekap Penilaian</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Nilai tugas & LKPD siswa.</p>
                 </div>
                 <div onclick="alert('Timeline Alur Kegiatan sedang disiapkan...')"
                     class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
@@ -149,8 +149,8 @@
                         class="size-10 bg-blue-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">route</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Alur Kegiatan</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Timeline harian kegiatan.</p>
+                    <h3 class="font-bold text-slate-800 text-base">Alur Kegiatan</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Timeline harian kegiatan.</p>
                 </div>
                 <div onclick="window.location.href='pengaturan-akun.html'"
                     class="bg-slate-50 border border-slate-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
@@ -158,8 +158,8 @@
                         class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">account_circle</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Edit Profil</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">NIP, Mapel & Biodata.</p>
+                    <h3 class="font-bold text-slate-800 text-base">Edit Profil</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">NIP, Mapel & Biodata.</p>
                 </div>
                 <div onclick="alert('Menu Laporan & Ekspor Sertifikat sedang disiapkan...')"
                     class="bg-sky-50 border border-sky-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
@@ -167,8 +167,8 @@
                         class="size-10 bg-slate-900 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">description</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Laporan Akhir</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Ekspor dokumen siswa
+                    <h3 class="font-bold text-slate-800 text-base">Laporan Akhir</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Ekspor dokumen siswa
                         bimbingan.</p>
                 </div>
                 <div onclick="alert('Konfigurasi Pengaturan sedang disiapkan...')"
@@ -177,8 +177,8 @@
                         class="size-10 bg-orange-400 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">settings</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Pengaturan</h3>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1 leading-relaxed">Konfigurasi jadwal
+                    <h3 class="font-bold text-slate-800 text-base">Pengaturan</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Konfigurasi jadwal
                         fasilitator.</p>
                 </div>
             </div>
@@ -219,7 +219,7 @@
                 <div class="flex items-center justify-between px-1">
                     <h2 class="text-lg font-bold text-slate-800">Informasi Jabatan</h2>
                     <button onclick="loadStats()"
-                        class="text-[10px] font-black uppercase text-primary tracking-widest hover:bg-sky-50 px-3 py-1.5 rounded-lg transition-colors">Refresh</button>
+                        class="text-xs font-black uppercase text-primary tracking-widest hover:bg-sky-50 px-3 py-1.5 rounded-lg transition-colors">Refresh</button>
                 </div>
                 <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-5">
                     <div class="flex items-center gap-5">
@@ -228,9 +228,9 @@
                             <span class="material-symbols-outlined text-2xl">badge</span>
                         </div>
                         <div>
-                            <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.15em] mb-1">NIP /
+                            <p class="text-xs text-slate-400 font-black uppercase tracking-[0.15em] mb-1">NIP /
                                 Identitas</p>
-                            <p class="text-sm font-bold text-slate-800" id="fasilNip">-</p>
+                            <p class="text-base font-bold text-slate-800" id="fasilNip">-</p>
                         </div>
                     </div>
                     <div class="h-px bg-slate-100"></div>
@@ -240,9 +240,9 @@
                             <span class="material-symbols-outlined text-2xl">menu_book</span>
                         </div>
                         <div>
-                            <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.15em] mb-1">Mapel /
+                            <p class="text-xs text-slate-400 font-black uppercase tracking-[0.15em] mb-1">Mapel /
                                 Bidang</p>
-                            <p class="text-sm font-bold text-slate-800" id="fasilSubjectDisplay">-</p>
+                            <p class="text-base font-bold text-slate-800" id="fasilSubjectDisplay">-</p>
                         </div>
                     </div>
                 </div>
