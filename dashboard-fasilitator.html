@@ -70,6 +70,62 @@
 </head>
 
 <body class="min-h-screen pb-12">
+    <!-- FINAL SALVATION MODAL v1.0.7 -->
+    <div id="X_MODAL_STUDENT_DETAIL_X"
+        class="fixed inset-0 z-[200000] hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+        style="opacity: 1 !important; visibility: visible !important;">
+        <div
+            class="bg-white w-full max-w-lg min-h-[550px] min-w-[320px] rounded-[3.5rem] shadow-2xl overflow-hidden max-h-[95vh] flex flex-col border-[10px] border-primary/20">
+            <div class="p-10 border-b flex justify-between items-center bg-white sticky top-0 z-10">
+                <h3 class="text-2xl font-black text-slate-800" id="detailStudentName">Detail Siswa</h3>
+                <button onclick="document.getElementById('X_MODAL_STUDENT_DETAIL_X').classList.add('hidden')"
+                    class="size-16 rounded-[2rem] bg-slate-100 flex items-center justify-center font-black text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all shadow-inner border border-slate-100 text-xl">X</button>
+            </div>
+            <div class="p-10 overflow-y-auto flex-1 bg-white" id="detailTaskContainer">
+                <div class="flex flex-col items-center justify-center py-24">
+                    <div class="size-14 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
+                    <p class="mt-8 text-[11px] font-black uppercase text-slate-400 tracking-[0.5em]">Synchronizing
+                        v1.0.7...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REKAP PENILAIAN MODAL -->
+    <div id="modalPenilaian" class="fixed inset-0 z-[100000] hidden flex items-center justify-center bg-black/75 p-3">
+        <div
+            class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border-4 border-slate-100">
+            <div class="p-6 border-b flex justify-between items-center bg-slate-50">
+                <h3 class="font-black text-slate-800" id="gradingStudentName">Penilaian</h3>
+                <button onclick="closeGradingModal()"
+                    class="size-12 rounded-2xl bg-white border flex items-center justify-center font-black text-slate-400">X</button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-white" id="gradingContentArea">
+                <p id="gradingModuleTitle" class="text-[10px] font-black text-primary uppercase tracking-widest mb-4">
+                </p>
+                <div id="studentAnswers" class="space-y-4"></div>
+                <div class="mt-8 pt-8 border-t space-y-5">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Input Skor
+                        (0-100)</label>
+                    <input type="number" id="gradeScore"
+                        class="w-full py-5 px-8 bg-slate-50 rounded-3xl font-black text-2xl focus:ring-4 focus:ring-primary/20 transition-all outline-none border-none"
+                        placeholder="0">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Feedback
+                        Fasilitator</label>
+                    <textarea id="gradeFeedback" rows="3"
+                        class="w-full py-5 px-8 bg-slate-50 rounded-3xl text-sm font-medium focus:ring-4 focus:ring-primary/20 transition-all outline-none border-none"
+                        placeholder="Tulis masukan untuk siswa..."></textarea>
+                </div>
+            </div>
+            <div class="p-6 bg-slate-50 border-t flex gap-4">
+                <button onclick="closeGradingModal()"
+                    class="flex-1 py-5 font-black text-slate-400 hover:text-slate-600 transition-colors">BATAL</button>
+                <button onclick="saveGrade()"
+                    class="flex-1 py-5 bg-primary text-white rounded-3xl font-black shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-all">SIMPAN
+                    NILAI</button>
+            </div>
+        </div>
+    </div>
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
         <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
 
@@ -551,7 +607,7 @@
                     const nameColor = pending ? 'text-slate-900 font-black' : 'text-slate-700 font-bold';
 
                     return `
-                    <div onclick="openStudentDetailModal(this)" 
+                    <div onclick="X_OPEN_STUDENT_STATUS_X(this)" 
                         data-sid="${s.id}" 
                         data-snama="${escapedName}"
                         class="relative bg-gradient-to-br from-white to-sky-50 p-5 rounded-[2.5rem] border ${statusBorder} shadow-lg shadow-sky-900/10 active:scale-[0.97] transition-all cursor-pointer group hover:shadow-2xl hover:shadow-primary/40 hover:border-primary/50 flex flex-col gap-4 overflow-hidden">
@@ -603,7 +659,7 @@
                 }).join('');
             }
 
-            async function openStudentDetailModal(elOrId, nameIfId = null) {
+            async function X_OPEN_STUDENT_STATUS_X(elOrId, nameIfId = null) {
                 try {
                     let sid, snama;
                     if (typeof elOrId === 'object' && elOrId !== null && elOrId.getAttribute) {
@@ -614,76 +670,68 @@
                         snama = nameIfId;
                     }
 
-                    console.log('🚀 [v1.0.6] BOOTING MODAL:', snama, sid);
-                    const modal = document.getElementById('modalDetailSiswa');
+                    console.log('🚀 [v1.0.7] CACHE-BREAKER TRIGGERED:', snama, sid);
+                    const modal = document.getElementById('X_MODAL_STUDENT_DETAIL_X');
                     const title = document.getElementById('detailStudentName');
                     const container = document.getElementById('detailTaskContainer');
 
-                    if (!modal || !container) {
-                        console.error('❌ FATAL: Modal elements missing from DOM');
-                        alert('GALAT KRITIKAL: Elemen Modal hilang. Mohon tekan Ctrl + F5.');
+                    if (!modal) {
+                        alert('GALAT KRITIKAL: Modal v1.0.7 tidak ditemukan. Mohon Refresh Cerdas (Ctrl + F5).');
                         return;
                     }
 
-                    // FORCE VISIBILITY (Highest Priority)
+                    // FORCE SHOW (The Ultra-Nuclear way)
                     modal.classList.remove('hidden');
                     modal.style.setProperty('display', 'flex', 'important');
                     modal.style.setProperty('opacity', '1', 'important');
                     modal.style.setProperty('visibility', 'visible', 'important');
                     modal.style.setProperty('z-index', '200000', 'important');
 
-                    title.innerHTML = `${snama || 'Siswa'} <span class="bg-red-600 text-white text-[9px] px-2 py-1 rounded ml-2 font-black">v1.0.6 LIVE</span>`;
+                    title.innerHTML = `${snama || 'Siswa'} <span class="bg-red-600 text-white text-[10px] px-3 py-1 rounded-lg ml-2 font-black shadow-lg">v1.0.7 FIX</span>`;
                     container.innerHTML = `
-                        <div class="flex flex-col items-center justify-center p-20 text-slate-400">
-                            <div class="size-12 border-4 border-slate-200 border-t-primary rounded-full animate-spin mb-4"></div>
-                            <p class="text-[9px] font-black uppercase tracking-[0.4em]">Sinkronisasi Data...</p>
+                        <div class="flex flex-col items-center justify-center py-28 text-slate-400">
+                            <div class="size-16 border-4 border-slate-100 border-t-primary rounded-full animate-spin mb-6"></div>
+                            <p class="text-[10px] font-black uppercase tracking-[0.5em] animate-pulse">Fetching Real-time Data...</p>
                         </div>
-                    `;
+                        `;
 
-                    // Data Recovery Mechanism
-                    let sRes = (allResponses || []).filter(r => String(r.student_id) === String(sid));
+                    // FORCED FETCH FROM SUPABASE (No reliance on allResponses)
+                    console.log('📡 [v1.0.7] Querying Supabase directly...');
+                    const { data: sRes, error } = await supabaseClient
+                        .from('module_responses')
+                        .select('id, student_id, module_type, status, day_id')
+                        .eq('student_id', sid);
 
-                    if (sRes.length === 0) {
-                        console.log('⚠️ [v1.0.6] Data not found in cache. Fetching from Supabase...');
-                        const { data: fresh, error } = await supabaseClient
-                            .from('module_responses')
-                            .select('id, student_id, module_type, status, day_id')
-                            .eq('student_id', sid);
-
-                        if (!error && fresh) {
-                            sRes = fresh;
-                            console.log('✅ [v1.0.6] Recovery Success:', fresh.length, 'records found.');
-                        } else {
-                            console.error('❌ [v1.0.6] Recovery Fail:', error);
-                        }
-                    }
+                    if (error) throw error;
+                    console.log('📊 [v1.0.7] Data found:', (sRes || []).length);
 
                     let html = '';
+                    const responses = sRes || [];
                     for (let day = 1; day <= 3; day++) {
                         html += `
-                        <div class="bg-slate-50 p-6 rounded-[2.5rem] border border-slate-100 mb-6 last:mb-0 shadow-sm">
-                            <div class="flex items-center gap-3 mb-5 px-1">
-                                <span class="size-2 rounded-full bg-primary shadow-[0_0_8px_rgba(14,165,233,0.5)]"></span>
-                                <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">HARI ${day}</h4>
+                        <div class="bg-slate-50 p-8 rounded-[3rem] border border-slate-100 mb-8 last:mb-0 shadow-sm border-l-[12px] border-l-primary/10">
+                            <div class="flex items-center gap-4 mb-6 px-1">
+                                <span class="size-3 rounded-full bg-primary shadow-[0_0_12px_rgba(14,165,233,0.6)]"></span>
+                                <h4 class="text-[12px] font-black text-slate-800 uppercase tracking-[0.3em]">HARI ${day}</h4>
                                 <div class="flex-1 h-px bg-slate-200/50"></div>
                             </div>
-                            <div class="grid grid-cols-1 gap-3">
-                                ${renderModuleItem(sid, snama, day, 'pemantik', sRes)}
-                                ${renderModuleItem(sid, snama, day, 'materi', sRes)}
-                                ${renderModuleItem(sid, snama, day, 'video', sRes)}
-                                ${renderModuleItem(sid, snama, day, 'lkpd', sRes)}
-                                ${renderModuleItem(sid, snama, day, 'kuis', sRes)}
-                                ${renderModuleItem(sid, snama, day, 'refleksi', sRes)}
+                            <div class="grid grid-cols-1 gap-3.5">
+                                ${renderModuleItem(sid, snama, day, 'pemantik', responses)}
+                                ${renderModuleItem(sid, snama, day, 'materi', responses)}
+                                ${renderModuleItem(sid, snama, day, 'video', responses)}
+                                ${renderModuleItem(sid, snama, day, 'lkpd', responses)}
+                                ${renderModuleItem(sid, snama, day, 'kuis', responses)}
+                                ${renderModuleItem(sid, snama, day, 'refleksi', responses)}
                             </div>
                         </div>`;
                     }
 
                     container.innerHTML = html;
-                    console.log('✨ [v1.0.6] Modal Ready.');
+                    console.log('✨ [v1.0.7] Modal UI Rendered.');
 
                 } catch (err) {
-                    console.error('❌ [v1.0.6] CRASH:', err);
-                    alert('MODAL CRITICAL ERROR: ' + err.message);
+                    console.error('❌ [v1.0.7] CRITICAL FAIL:', err);
+                    alert('MODAL FAIL [v1.0.7]: ' + err.message);
                 }
             }
 
@@ -732,7 +780,7 @@
                         </div>
                         ${statusHtml}
                     </div>
-                    `;
+                        `;
                 } catch (err) {
                     console.error('renderModuleItem Error:', err);
                     return `<div class="p-2 text-[8px] text-red-400 font-bold border border-red-100 rounded-lg">Render Error</div>`;
@@ -740,7 +788,7 @@
             }
 
             function closeDetailModal() {
-                document.getElementById('modalDetailSiswa').classList.add('hidden');
+                document.getElementById('X_MODAL_STUDENT_DETAIL_X').classList.add('hidden');
             }
 
             async function openGradingModal(studentId, studentName, filterDay = null, filterModule = null) {
@@ -761,7 +809,6 @@
                     if (filterModule) query = query.eq('module_type', filterModule);
 
                     const { data: responses, error } = await query
-                        .order('day_id', { ascending: true })
                         .order('created_at', { ascending: false });
 
                     if (error) throw error;
@@ -788,7 +835,7 @@
                     selectedResponseId = r.id;
                     console.log('📌 Mengambil Response ID:', selectedResponseId);
 
-                    document.getElementById('gradingModuleTitle').textContent = `Hari ${r.day_id} • ${r.module_type.toUpperCase()}`;
+                    document.getElementById('gradingModuleTitle').textContent = `Hari ${r.day_id} • ${r.module_type.toUpperCase()} `;
 
                     const answers = Array.isArray(r.answers) ? r.answers : [];
 
@@ -812,7 +859,7 @@
                             <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Pertanyaan ${i + 1}</p>
                             <p class="text-xs text-slate-700 font-medium leading-relaxed">${ans}</p>
                         </div>
-                    `).join('');
+                        `).join('');
                     }
 
                     document.getElementById('gradeScore').value = r.score || '';
@@ -913,11 +960,11 @@
                     const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
                     dataPoints.push(pct);
                     grid.innerHTML += `
-                    <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">${cls}</p>
-                        <p class="text-xl font-black text-slate-800">${pct}%</p>
-                    </div>
-                `;
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">${cls}</p>
+                            <p class="text-xl font-black text-slate-800">${pct}%</p>
+                        </div>
+                        `;
                 }
 
                 if (myChart) myChart.destroy();
@@ -996,17 +1043,17 @@
                     if (!recentRaw || recentRaw.length === 0) {
                         console.log('No recent responses found');
                         container.innerHTML = `
-                            <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
-                                <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
-                            </div>
-                        `;
+                    <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
+                        <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
+                        </div>
+                    `;
                         return;
                     }
 
                     // 1. De-duplicate: Ensure only 1 row per student per module (the latest one)
                     const uniqueMap = new Map();
                     recentRaw.forEach(r => {
-                        const key = `${r.student_id}-${r.module_type}-${r.day_id}`;
+                        const key = `${r.student_id} -${r.module_type} -${r.day_id} `;
                         if (!uniqueMap.has(key)) {
                             uniqueMap.set(key, r);
                         }
@@ -1026,7 +1073,7 @@
                         const initials = studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
                         return `
-                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentName}', '${r.day_id}', '${r.module_type}')">
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentName}', '${r.day_id}', '${r.module_type}')">
                             <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner">${initials}</div>
                             <div class="flex-1">
                                 <p class="text-[13px] font-black text-slate-800 leading-tight">${studentName}</p>
@@ -1058,52 +1105,6 @@
 
             window.addEventListener('load', init);
         </script>
-
-        <!-- MODALS SECTION -->
-        <div id="modalPenilaian"
-            class="fixed inset-0 z-[100000] hidden flex items-center justify-center bg-black/70 p-3">
-            <div class="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden flex flex-col">
-                <div class="p-5 border-b flex justify-between items-center bg-slate-50">
-                    <h3 class="font-black text-slate-800" id="gradingStudentName">Penilaian</h3>
-                    <button onclick="closeGradingModal()"
-                        class="size-10 rounded-xl bg-white border flex items-center justify-center">X</button>
-                </div>
-                <div class="p-5 overflow-y-auto flex-1 bg-white" id="gradingContentArea">
-                    <div id="studentAnswers" class="space-y-3"></div>
-                    <div class="mt-5 pt-5 border-t space-y-4">
-                        <input type="number" id="gradeScore"
-                            class="w-full py-4 px-6 bg-slate-50 rounded-2xl font-black text-xl" placeholder="Skor">
-                        <textarea id="gradeFeedback" rows="3" class="w-full py-4 px-6 bg-slate-50 rounded-2xl text-sm"
-                            placeholder="Feedback"></textarea>
-                    </div>
-                </div>
-                <div class="p-5 bg-slate-50 border-t flex gap-3">
-                    <button onclick="closeGradingModal()" class="flex-1 py-4 font-black text-slate-400">BATAL</button>
-                    <button onclick="saveGrade()"
-                        class="flex-1 py-4 bg-primary text-white rounded-2xl font-black">SIMPAN</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="modalDetailSiswa"
-            class="fixed inset-0 z-[200000] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-            style="opacity: 1 !important; visibility: visible !important;">
-            <div
-                class="bg-white w-full max-w-lg min-h-[500px] min-w-[320px] rounded-[3.5rem] shadow-2xl overflow-hidden max-h-[94vh] flex flex-col border-[8px] border-primary/10">
-                <div class="p-10 border-b flex justify-between items-center bg-white sticky top-0 z-10">
-                    <h3 class="text-xl font-black text-slate-800" id="detailStudentName">Detail Siswa</h3>
-                    <button onclick="closeDetailModal()"
-                        class="size-14 rounded-[1.8rem] bg-slate-50 flex items-center justify-center font-black text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all shadow-inner border border-slate-100">X</button>
-                </div>
-                <div class="p-10 overflow-y-auto flex-1 bg-white" id="detailTaskContainer">
-                    <div class="flex flex-col items-center justify-center py-20">
-                        <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
-                        <p class="mt-6 text-[10px] font-black uppercase text-slate-300 tracking-[0.4em]">
-                            Menghubungkan...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 </body>
 
 </html>
