@@ -368,16 +368,11 @@
 
             // Initialize Data
             async function init() {
-                // FIX: Ensure storage bucket exists
+                // FIX: Ensure storage bucket exists (Aggressive)
                 try {
-                    const { data: buckets } = await adminClient.storage.listBuckets();
-                    const avatarBucket = buckets?.find(b => b.name === 'avatars');
-                    if (!avatarBucket) {
-                        await adminClient.storage.createBucket('avatars', { public: true });
-                        console.log("Bucket 'avatars' created automatically.");
-                    }
+                    await adminClient.storage.createBucket('avatars', { public: true });
                 } catch (e) {
-                    console.warn("Storage check failed:", e);
+                    // Ignore error if bucket already exists
                 }
 
                 // Check Session
@@ -452,10 +447,20 @@
                 document.getElementById('display-name').textContent = 'Uploading...';
 
                 try {
-                    // Upload
-                    const { error: uploadError } = await adminClient.storage
+                    // Try Upload
+                    let { error: uploadError } = await adminClient.storage
                         .from('avatars')
                         .upload(filePath, file);
+
+                    // RETRY LOGIC: If bucket missing, create it and retry
+                    if (uploadError && (uploadError.message.includes('Bucket not found') || uploadError.message.includes('bucket not found'))) {
+                        console.log("Bucket missing, creating 'avatars'...");
+                        await adminClient.storage.createBucket('avatars', { public: true });
+                        // Retry upload
+                        const retry = await adminClient.storage.from('avatars').upload(filePath, file);
+                        uploadError = retry.error;
+                    }
+
                     if (uploadError) throw uploadError;
 
                     // Get URL
