@@ -368,13 +368,13 @@
                     const fileName = `${currentUser.id}_${Date.now()}.${fileExt}`;
 
                     const { error: uploadError } = await supabaseClient.storage
-                        .from('profile-photos')
+                        .from('avatars')
                         .upload(fileName, selectedFile);
 
                     if (uploadError) throw uploadError;
 
                     const { data: { publicUrl: newUrl } } = supabaseClient.storage
-                        .from('profile-photos')
+                        .from('avatars')
                         .getPublicUrl(fileName);
 
                     publicUrl = newUrl;
