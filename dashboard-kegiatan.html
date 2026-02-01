@@ -562,6 +562,10 @@
 
             // Update modules display based on new day
             updateDashboardUI();
+
+            // Re-fetch database statuses to ensure sync
+            checkExistingPemantik();
+            checkExistingMateri();
         }
 
         // Logout function
@@ -766,6 +770,11 @@
                     const r = responses[0];
                     updateMateriStatusUI(r.status, r.score, r.feedback);
 
+                    // SINKRONKAN ke local progress bar
+                    if (r.status === 'reviewed') {
+                        forceCompleteModule('materi');
+                    }
+
                     const area = document.getElementById('summaryArea');
                     const msg = document.getElementById('materiStatusMsg');
                     if (area) {
@@ -877,9 +886,10 @@
                     .from('module_responses')
                     .select('*')
                     .eq('student_id', user.id)
-                    .eq('day_id', 1)
+                    .eq('day_id', currentDay) // Dinamis sesuai hari aktif
                     .eq('module_type', 'pemantik')
-                    .single();
+                    .limit(1)
+                    .maybeSingle();
 
                 if (data) {
                     // Isi form dengan jawaban lama
@@ -892,42 +902,52 @@
                     });
 
                     // Hide tombol kirim jika sudah submit
-                    document.getElementById('btnSubmitPemantik').classList.add('hidden');
+                    const btn = document.getElementById('btnSubmitPemantik');
+                    if (btn) btn.classList.add('hidden');
 
                     // Show status message
                     const statusMsg = document.getElementById('statusMessage');
-                    statusMsg.classList.remove('hidden');
+                    if (statusMsg) {
+                        statusMsg.classList.remove('hidden');
 
-                    if (data.status === 'submitted') {
-                        statusMsg.className = "bg-yellow-50 text-yellow-700 p-4 rounded-xl border border-yellow-200 text-xs font-medium mb-4";
-                        statusMsg.innerHTML = "⏳ <b>Jawaban Terkirim</b><br>Menunggu feedback dari fasilitator.";
-                        updatePemantikStatusUI('submitted');
-                    } else if (data.status === 'reviewed') {
-                        statusMsg.className = "bg-emerald-50 text-emerald-700 p-4 rounded-xl border border-emerald-200 text-xs font-medium mb-4";
-                        statusMsg.innerHTML = `✅ <b>Sudah Direview (Skor: ${data.score || 0})</b><br>Feedback: "${data.feedback || '-'}"`;
+                        if (data.status === 'submitted') {
+                            statusMsg.className = "bg-yellow-50 text-yellow-700 p-4 rounded-xl border border-yellow-200 text-xs font-medium mb-4";
+                            statusMsg.innerHTML = "⏳ <b>Jawaban Terkirim</b><br>Menunggu feedback dari fasilitator.";
+                            updatePemantikStatusUI('submitted');
+                        } else if (data.status === 'reviewed') {
+                            statusMsg.className = "bg-emerald-50 text-emerald-700 p-4 rounded-xl border border-emerald-200 text-xs font-medium mb-4";
+                            statusMsg.innerHTML = `✅ <b>Sudah Direview (Skor: ${data.score || 0})</b><br>Feedback: "${data.feedback || '-'}"`;
 
-                        // Update UI Dashboard Card
-                        updatePemantikStatusUI('reviewed');
+                            // Update UI Dashboard Card
+                            updatePemantikStatusUI('reviewed');
 
-                        // Jika sudah direview, barulah centang hijau (update progress)
-                        if (!studentProgress.day1.pemantik) {
+                            // SINKRONKAN ke local progress bar
                             forceCompleteModule('pemantik');
                         }
                     }
-
                 } else {
                     // Belum ada data
-                    document.getElementById('statusMessage').classList.add('hidden');
-                    document.getElementById('btnSubmitPemantik').classList.remove('hidden');
+                    const statusMsg = document.getElementById('statusMessage');
+                    if (statusMsg) statusMsg.classList.add('hidden');
+
+                    const btn = document.getElementById('btnSubmitPemantik');
+                    if (btn) {
+                        btn.classList.remove('hidden');
+                        btn.innerHTML = 'Kirim Jawaban';
+                        btn.disabled = false;
+                    }
+
                     // Enable inputs
                     for (let i = 1; i <= 5; i++) {
-                        document.getElementById(`tanya${i}`).disabled = false;
+                        const el = document.getElementById(`tanya${i}`);
+                        if (el) {
+                            el.disabled = false;
+                            el.value = '';
+                        }
                     }
                 }
-
             } catch (err) {
-                // No data found is okay (PGRST116)
-                // console.log("Belum ada jawaban");
+                console.error("Error checkExistingPemantik:", err);
             }
         }
 

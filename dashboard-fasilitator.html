@@ -577,8 +577,8 @@
                 }
             }
 
-            async function openGradingModal(studentId, studentName) {
-                console.log('🔍 Menyiapkan modal penilaian untuk:', studentName, '(' + studentId + ')');
+            async function openGradingModal(studentId, studentName, filterDay = null, filterModule = null) {
+                console.log('🔍 Menyiapkan modal penilaian untuk:', studentName, '(' + studentId + ')', 'Filter:', filterDay, filterModule);
                 const modal = document.getElementById('modalPenilaian');
                 modal.classList.remove('hidden');
                 document.getElementById('gradingStudentName').textContent = studentName;
@@ -587,26 +587,30 @@
                 answerCont.innerHTML = '<div class="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse">Memuat jawaban...</div>';
 
                 try {
-                    const { data: responses, error } = await supabaseClient.from('module_responses')
+                    let query = supabaseClient.from('module_responses')
                         .select('*')
-                        .eq('student_id', studentId)
+                        .eq('student_id', studentId);
+
+                    if (filterDay) query = query.eq('day_id', parseInt(filterDay));
+                    if (filterModule) query = query.eq('module_type', filterModule);
+
+                    const { data: responses, error } = await query
                         .order('day_id', { ascending: true })
-                        .order('module_type');
+                        .order('created_at', { ascending: false });
 
                     if (error) throw error;
 
                     if (!responses || !responses.length) {
-                        console.log('ℹ️ Belum ada respon untuk siswa ini.');
-                        answerCont.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase tracking-widest text-[10px]">Belum ada jawaban.</div>';
+                        console.log('ℹ️ Belum ada respon untuk kriteria ini.');
+                        answerCont.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase tracking-widest text-[10px]">Belum ada jawaban' + (filterModule ? ' ' + filterModule : '') + '.</div>';
                         return;
                     }
 
                     console.log('✅ Respon ditemukan:', responses.length, 'data');
 
-                    // Priority: Picking 'submitted' response first, otherwise the most recent one
+                    // Priority: Picking 'submitted' response first within the filtered set
                     let r = responses.find(res => res.status === 'submitted');
                     if (!r) {
-                        // If no submitted, pick the one with no score yet, or just the first one
                         r = responses.find(res => !res.score) || responses[0];
                     }
 
@@ -849,13 +853,14 @@
                     container.innerHTML = processed.map(r => {
                         const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                         const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
-                        const initials = (studentMap[r.student_id] || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                        const studentName = studentMap[r.student_id] || '?';
+                        const initials = studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
                         return `
-                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentMap[r.student_id]}')">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentName}', '${r.day_id}', '${r.module_type}')">
                             <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner">${initials}</div>
                             <div class="flex-1">
-                                <p class="text-[13px] font-black text-slate-800 leading-tight">${studentMap[r.student_id]}</p>
+                                <p class="text-[13px] font-black text-slate-800 leading-tight">${studentName}</p>
                                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Hari ${r.day_id} • ${r.module_type}</p>
                             </div>
                             <div class="text-right">
