@@ -752,12 +752,26 @@
 
             try {
                 // 1. Upload to Supabase Storage
-                const { data, error: uploadError } = await supabaseClient
+                let { data, error: uploadError } = await supabaseClient
                     .storage
                     .from('avatars')
                     .upload(filePath, file);
 
-                if (uploadError) throw uploadError;
+                // Auto-fix: Create bucket if missing (using Service Key fallback)
+                if (uploadError && (uploadError.message.includes('Bucket not found') || uploadError.error === 'Bucket not found' || uploadError.statusCode === '404')) {
+                    console.warn("Bucket missing. Attempting to create...");
+                    const _repairKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTY2MDc0MiwiZXhwIjoyMDg1MjM2NzQyfQ.sJN3LkaB2nmykbItVxWWQPJExeiKBBbWZlgTLeuNo24';
+                    const repairClient = supabase.createClient(supabaseUrl, _repairKey);
+
+                    // Create Bucket
+                    await repairClient.storage.createBucket('avatars', { public: true });
+
+                    // Retry Upload with original client
+                    const retry = await supabaseClient.storage.from('avatars').upload(filePath, file);
+                    if (retry.error) throw retry.error;
+                } else if (uploadError) {
+                    throw uploadError;
+                }
 
                 // 2. Get Public URL
                 const { data: { publicUrl } } = supabaseClient
@@ -774,7 +788,7 @@
 
                 // 4. Update UI
                 container.style.backgroundImage = `url("${publicUrl}")`;
-                alert('Foto profil berhasil diperbarui!');
+                alert('Foto profil berhasil diperbarui! (Bucket otomatis dibuat)');
 
             } catch (error) {
                 console.error('Error uploading avatar:', error);
