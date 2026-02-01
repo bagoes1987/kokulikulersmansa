@@ -240,17 +240,31 @@
 
             <!-- Tab 2: Progres Kelas -->
             <div id="view-progres" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-bold text-slate-800" id="monTitle">Monitoring Siswa</h2>
-                    <div class="relative w-40">
-                        <select id="classSelect" onchange="loadStudentsByClass(this.value)"
-                            class="w-full bg-white border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest py-3 focus:ring-primary focus:border-primary shadow-sm">
-                            <!-- Options -->
-                        </select>
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-bold text-slate-800" id="monTitle">Monitoring Siswa</h2>
+                        <div class="relative w-40">
+                            <select id="classSelect" onchange="loadStudentsByClass(this.value)"
+                                class="w-full bg-white border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest py-3 focus:ring-primary focus:border-primary shadow-sm transition-all">
+                                <!-- Options -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar iOS Style -->
+                    <div class="relative flex items-center">
+                        <div class="absolute left-5 text-slate-400">
+                            <span class="material-symbols-outlined text-[20px]">search</span>
+                        </div>
+                        <input id="studentSearchInput" oninput="filterStudents(this.value)"
+                            class="w-full h-14 pl-14 pr-6 bg-white dark:bg-slate-800/50 border border-slate-100 rounded-[1.5rem] focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sm font-medium shadow-sm placeholder:text-slate-400"
+                            placeholder="Cari nama, NISN, atau NIS siswa..." type="text" />
                     </div>
                 </div>
-                <div id="studentListContainer" class="space-y-4 min-h-[400px]">
-                    <!-- Student cards -->
+
+                <div id="studentListContainer"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 min-h-[400px]">
+                    <!-- Student cards rendered here -->
                 </div>
             </div>
 
@@ -322,6 +336,27 @@
             </div>
         </div>
 
+        <!-- NEW: Modal Detail Siswa (Per-Day View) -->
+        <div id="modalDetailSiswa"
+            class="fixed inset-0 z-[250] hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-3">
+            <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                    <div>
+                        <h3 class="text-xl font-black text-slate-800" id="detailStudentName">Detail Siswa</h3>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1">Progres Tugas
+                            Harian</p>
+                    </div>
+                    <button onclick="closeDetailModal()"
+                        class="size-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="p-6 overflow-y-auto space-y-6" id="detailTaskContainer">
+                    <!-- Daily tasks rendered here -->
+                </div>
+            </div>
+        </div>
+
         <!-- Bottom Navigation -->
         <nav
             class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 z-[100] safe-area-bottom">
@@ -366,6 +401,8 @@
             let currentClass = '';
             let myChart = null;
             let selectedResponseId = null;
+            let allStudents = []; // State global untuk pencarian
+            let allResponses = []; // State global untuk progres
 
             async function init() {
                 try {
@@ -521,7 +558,7 @@
                 currentClass = cls;
                 document.getElementById('monTitle').textContent = 'Monitoring ' + cls;
                 const container = document.getElementById('studentListContainer');
-                container.innerHTML = '<div class="text-center py-12 text-slate-400 text-[10px] font-black uppercase tracking-widest animate-pulse">Menghubungkan ke database...</div>';
+                container.innerHTML = '<div class="text-center py-12 text-slate-400 text-[10px] font-black uppercase tracking-widest animate-pulse col-span-full">Menghubungkan ke database...</div>';
 
                 try {
                     const clsTrimmed = cls.trim();
@@ -540,41 +577,139 @@
                     if (sError) throw sError;
 
                     if (!students || students.length === 0) {
-                        container.innerHTML = `<div class="text-center py-12 text-slate-400 text-[10px] font-bold">Tidak ada siswa di Kelas ${cls}.</div>`;
-                        console.log('No students found for alternatives:', alternatives);
+                        container.innerHTML = `<div class="text-center py-12 text-slate-400 text-[10px] font-bold col-span-full">Tidak ada siswa di Kelas ${cls}.</div>`;
                         return;
                     }
 
-                    const { data: responses } = await supabaseClient.from('module_responses').select('id, student_id, module_type, status').in('student_id', students.map(s => s.id));
+                    const { data: responses } = await supabaseClient.from('module_responses')
+                        .select('id, student_id, module_type, status, day_id')
+                        .in('student_id', students.map(s => s.id));
 
-                    container.innerHTML = students.map(s => {
-                        const sRes = (responses || []).filter(r => r.student_id === s.id);
-                        const pending = sRes.some(r => r.status === 'submitted');
-                        const comp = sRes.filter(r => r.status === 'reviewed').length;
-                        const initials = s.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                        return `
-                        <div class="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm active:scale-[0.98] transition-all">
-                            <div class="flex items-center gap-4 mb-5">
-                                <div class="size-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 shadow-inner">${initials}</div>
-                                <div class="flex-1">
-                                    <div class="flex justify-between items-center mb-1">
-                                        <p class="text-sm font-black text-slate-800">${s.nama}</p>
-                                        ${pending ? '<span class="px-2 py-0.5 bg-amber-100 text-amber-600 text-[8px] font-black uppercase rounded-lg">Perlu Nilai</span>' : ''}
-                                    </div>
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${comp}/24 Modul Selesai</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-2.5">
-                                <button onclick="openGradingModal('${s.id}', '${s.nama}')" class="flex-1 py-3.5 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest active:scale-95 transition-all">Nilai & Review</button>
-                                <button class="size-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-400 active:scale-95 transition-all"><span class="material-symbols-outlined text-xl">chat_bubble</span></button>
-                            </div>
-                        </div>
-                    `;
-                    }).join('');
+                    allStudents = students;
+                    allResponses = responses || [];
+
+                    renderStudentCards(allStudents);
                 } catch (e) {
                     console.error(e);
-                    container.innerHTML = `<div class="text-center py-12 text-red-100 bg-red-500 rounded-3xl text-[10px] font-bold">Error: ${e.message}</div>`;
+                    container.innerHTML = `<div class="text-center py-12 text-red-100 bg-red-500 rounded-3xl text-[10px] font-bold col-span-full">Error: ${e.message}</div>`;
                 }
+            }
+
+            function filterStudents(query) {
+                const q = query.toLowerCase().trim();
+                const filtered = allStudents.filter(s =>
+                    s.nama.toLowerCase().includes(q) ||
+                    (s.nisn && s.nisn.includes(q)) ||
+                    (s.nis && s.nis.includes(q))
+                );
+                renderStudentCards(filtered);
+            }
+
+            function renderStudentCards(list) {
+                const container = document.getElementById('studentListContainer');
+                if (!list || list.length === 0) {
+                    container.innerHTML = `<div class="text-center py-12 text-slate-400 text-[10px] font-bold col-span-full">Tidak ada siswa yang cocok.</div>`;
+                    return;
+                }
+
+                container.innerHTML = list.map(s => {
+                    const sRes = allResponses.filter(r => r.student_id === s.id);
+                    const pending = sRes.some(r => r.status === 'submitted');
+                    const comp = sRes.filter(r => r.status === 'reviewed').length;
+                    const photo = s.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(s.nama)}&background=f8fafc&color=cbd5e1&size=128&bold=true`;
+
+                    return `
+                    <div onclick="openStudentDetailModal('${s.id}', '${s.nama.replace(/'/g, "\\'")}')" 
+                        class="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm active:scale-[0.98] transition-all cursor-pointer group hover:border-primary/30">
+                        <div class="flex items-center gap-4 mb-5">
+                            <div class="size-14 rounded-2xl overflow-hidden bg-slate-50 border-2 border-slate-50 shadow-inner shrink-0">
+                                <img src="${photo}" class="w-full h-full object-cover" alt="${s.nama}">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-start gap-2">
+                                    <p class="text-[13px] font-black text-slate-800 leading-tight truncate">${s.nama}</p>
+                                    ${pending ? '<span class="flex-shrink-0 size-2.5 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)] animate-pulse"></span>' : ''}
+                                </div>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">${comp}/24 Modul Selesai</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Badges NISN/NIS -->
+                        <div class="flex flex-wrap gap-2 pt-4 border-t border-slate-50">
+                            <span class="px-2 py-1 bg-slate-50 text-slate-500 text-[9px] font-black uppercase tracking-wider rounded-lg border border-slate-100">${s.kelas}</span>
+                            <span class="px-2 py-1 bg-sky-50 text-sky-600 text-[9px] font-black uppercase tracking-wider rounded-lg border border-sky-100">NISN: ${s.nisn || '-'}</span>
+                            <span class="px-2 py-1 bg-purple-50 text-purple-600 text-[9px] font-black uppercase tracking-wider rounded-lg border border-purple-100">NIS: ${s.nis || '-'}</span>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+
+            async function openStudentDetailModal(studentId, studentName) {
+                const modal = document.getElementById('modalDetailSiswa');
+                document.getElementById('detailStudentName').textContent = studentName;
+                const container = document.getElementById('detailTaskContainer');
+                modal.classList.remove('hidden');
+                container.innerHTML = '<div class="text-center py-8 text-slate-400 text-[10px] font-black uppercase animate-pulse">Memuat progres...</div>';
+
+                const sRes = allResponses.filter(r => r.student_id === studentId);
+
+                let html = '';
+                for (let day = 1; day <= 3; day++) {
+                    const dayTasks = sRes.filter(r => r.day_id === day);
+
+                    html += `
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3">
+                            <span class="size-1 w-8 bg-slate-100 rounded-full"></span>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Hari ${day}</p>
+                            <span class="flex-1 h-px bg-slate-50"></span>
+                        </div>
+                        <div class="grid grid-cols-1 gap-2">
+                            ${renderModuleItem(studentId, studentName, day, 'pemantik', dayTasks)}
+                            ${renderModuleItem(studentId, studentName, day, 'materi', dayTasks)}
+                        </div>
+                    </div>
+                    `;
+                }
+                container.innerHTML = html;
+            }
+
+            function renderModuleItem(studentId, studentName, day, type, tasks) {
+                const task = tasks.find(t => t.module_type === type);
+                const status = task ? task.status : 'empty';
+
+                let statusLabel = 'Belum Ada';
+                let statusClass = 'bg-slate-50 text-slate-400 border-slate-100';
+                let icon = 'radio_button_unchecked';
+
+                if (status === 'submitted') {
+                    statusLabel = 'Perlu Nilai';
+                    statusClass = 'bg-amber-50 text-amber-600 border-amber-100 shadow-sm shadow-amber-500/10';
+                    icon = 'pending';
+                } else if (status === 'reviewed') {
+                    statusLabel = 'Selesai';
+                    statusClass = 'bg-emerald-50 text-emerald-600 border-emerald-100';
+                    icon = 'check_circle';
+                }
+
+                return `
+                <div onclick="openGradingModal('${studentId}', '${studentName.replace(/'/g, "\\'")}', '${day}', '${type}')" 
+                    class="bg-white border border-slate-100 p-4 rounded-2xl flex items-center gap-3 active:scale-95 transition-all cursor-pointer hover:border-primary/20">
+                    <div class="size-9 rounded-xl ${statusClass} flex items-center justify-center border">
+                        <span class="material-symbols-outlined text-[18px]">${icon}</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs font-black text-slate-800 uppercase tracking-wide">${type}</p>
+                        <p class="text-[9px] text-slate-400 font-bold mt-0.5">${statusLabel}</p>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-300 text-[18px]">chevron_right</span>
+                </div>
+                `;
+            }
+
+            function closeDetailModal() {
+                document.getElementById('modalDetailSiswa').classList.add('hidden');
             }
 
             async function openGradingModal(studentId, studentName, filterDay = null, filterModule = null) {
