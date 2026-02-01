@@ -368,6 +368,18 @@
 
             // Initialize Data
             async function init() {
+                // FIX: Ensure storage bucket exists
+                try {
+                    const { data: buckets } = await adminClient.storage.listBuckets();
+                    const avatarBucket = buckets?.find(b => b.name === 'avatars');
+                    if (!avatarBucket) {
+                        await adminClient.storage.createBucket('avatars', { public: true });
+                        console.log("Bucket 'avatars' created automatically.");
+                    }
+                } catch (e) {
+                    console.warn("Storage check failed:", e);
+                }
+
                 // Check Session
                 const { data: { session } } = await adminClient.auth.getSession();
                 if (!session) {
