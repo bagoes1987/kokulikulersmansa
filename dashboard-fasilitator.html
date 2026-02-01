@@ -615,31 +615,55 @@
                     const sRes = allResponses.filter(r => r.student_id === s.id);
                     const pending = sRes.some(r => r.status === 'submitted');
                     const comp = sRes.filter(r => r.status === 'reviewed').length;
-                    const photo = s.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(s.nama)}&background=f8fafc&color=94a3b8&size=128&bold=true`;
+                    const photo = s.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(s.nama)}&background=f0f9ff&color=0ea5e9&size=128&bold=true`;
+
+                    // Vibrant status colors
+                    const statusBorder = pending ? 'border-amber-200 shadow-amber-100/50' : 'border-slate-100';
+                    const nameColor = pending ? 'text-slate-900 font-black' : 'text-slate-700 font-bold';
 
                     return `
                     <div onclick="openStudentDetailModal('${s.id}', '${s.nama.replace(/'/g, "\\'")}')" 
-                        class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm active:scale-[0.98] transition-all cursor-pointer group hover:border-primary/20 flex flex-col gap-3">
+                        class="relative bg-gradient-to-b from-white to-slate-50/50 p-4 rounded-[2rem] border ${statusBorder} shadow-xl shadow-slate-200/40 active:scale-[0.97] transition-all cursor-pointer group hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/30 flex flex-col gap-3 overflow-hidden">
+                        
+                        <!-- Top Accent Line for Pending -->
+                        ${pending ? '<div class="absolute top-0 left-0 right-0 h-1 bg-amber-400"></div>' : ''}
+
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3 min-w-0">
-                                <div class="size-12 rounded-full overflow-hidden bg-slate-50 border-2 border-slate-100 shrink-0">
-                                    <img src="${photo}" class="w-full h-full object-cover" alt="${s.nama}">
+                                <div class="relative">
+                                    <div class="size-14 rounded-full overflow-hidden bg-white border-2 border-white shadow-md shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                        <img src="${photo}" class="w-full h-full object-cover" alt="${s.nama}">
+                                    </div>
+                                    ${pending ? '<div class="absolute -top-1 -right-1 size-4 bg-amber-500 rounded-full border-2 border-white shadow-[0_0_8px_rgba(245,158,11,0.8)] animate-bounce"></div>' : ''}
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-[14px] font-bold text-slate-800 leading-tight truncate">${s.nama}</p>
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">${comp}/24 Modul Selesai</p>
+                                    <p class="text-[15px] ${nameColor} leading-tight truncate group-hover:text-primary transition-colors">${s.nama}</p>
+                                    <div class="flex items-center gap-1.5 mt-1">
+                                        <div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full shadow-[0_0_6px_rgba(16,185,129,0.3)]" style="width: ${Math.round((comp / 24) * 100)}%"></div>
+                                        </div>
+                                        <p class="text-[9px] text-slate-400 font-black uppercase tracking-wider whitespace-nowrap">${comp}/24</p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">
-                                ${pending ? '<span class="size-2.5 rounded-full bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.6)] animate-pulse"></span>' : ''}
-                                <span class="material-symbols-outlined text-slate-300 text-[20px] group-hover:text-primary transition-colors">chevron_right</span>
+                                <div class="size-9 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-primary/10 group-hover:text-primary transition-all">
+                                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="flex flex-wrap gap-2 pt-3 border-t border-slate-50">
-                            <span class="px-2 py-1 bg-slate-50 text-slate-500 text-[9px] font-black uppercase tracking-wider rounded-lg border border-slate-100">${s.kelas}</span>
-                            <span class="px-2 py-1 bg-sky-50 text-sky-600 text-[9px] font-black uppercase tracking-wider rounded-lg border border-sky-100">NISN: ${s.nisn || '-'}</span>
-                            <span class="px-2 py-1 bg-purple-50 text-purple-600 text-[9px] font-black uppercase tracking-wider rounded-lg border border-purple-100">NIS: ${s.nis || '-'}</span>
+                        <!-- Badges with Rich Colors -->
+                        <div class="flex flex-wrap gap-2 pt-3 border-t border-slate-100/60">
+                            <span class="flex items-center gap-1 px-2.5 py-1.5 bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase tracking-wider rounded-xl border border-indigo-100/50 shadow-sm">
+                                <span class="material-symbols-outlined text-[12px]">meeting_room</span> ${s.kelas}
+                            </span>
+                            <span class="flex items-center gap-1 px-2.5 py-1.5 bg-sky-50 text-sky-600 text-[9px] font-black uppercase tracking-wider rounded-xl border border-sky-100/50 shadow-sm">
+                                <span class="material-symbols-outlined text-[12px]">badge</span> ${s.nisn || '-'}
+                            </span>
+                            <span class="flex items-center gap-1 px-2.5 py-1.5 bg-fuchsia-50 text-fuchsia-600 text-[9px] font-black uppercase tracking-wider rounded-xl border border-fuchsia-100/50 shadow-sm">
+                                <span class="material-symbols-outlined text-[12px]">tag</span> ${s.nis || '-'}
+                            </span>
                         </div>
                     </div>
                     `;
