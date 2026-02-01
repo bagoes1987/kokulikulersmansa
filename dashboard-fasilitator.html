@@ -690,7 +690,10 @@
                     console.log('✅ Update Berhasil:', data);
                     alert('Pesan: Penilaian berhasil disimpan!');
                     closeGradingModal();
-                    loadStudentsByClass(currentClass);
+
+                    // Refresh ALL UI components
+                    loadStats(); // Updates progress circle and "Status Terbaru"
+                    loadStudentsByClass(currentClass); // Updates detailed student list
                 } catch (e) {
                     console.error('❌ Error saveGrade:', e);
                     alert('Gagal menyimpan: ' + e.message);
