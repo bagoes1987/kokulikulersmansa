@@ -439,6 +439,11 @@
                     console.log("Final Mapel Value:", mapelValue);
                     mapelDisplay.textContent = mapelValue;
                     mapelDisplay.classList.remove('hidden'); // Ensure visible
+                    // Force visibility with inline styles
+                    mapelDisplay.style.display = 'block';
+                    mapelDisplay.style.visibility = 'visible';
+                    mapelDisplay.style.opacity = '1';
+                    mapelDisplay.style.minHeight = '24px';
                     console.log("Mapel display updated. Current textContent:", mapelDisplay.textContent);
                 }
 
