@@ -704,6 +704,9 @@
             async function loadRecentActivities() {
                 const container = document.getElementById('activityHistoryContainer');
                 try {
+                    console.log('=== LOAD RECENT ACTIVITIES ===');
+                    console.log('My Classes:', myClasses);
+
                     // Fetch latest 5 responses for the facilitator's classes
                     const allFormats = [];
                     myClasses.forEach(c => {
@@ -716,17 +719,29 @@
                         }
                     });
 
-                    // Get student IDs first
+                    console.log('All class formats to search:', allFormats);
+
+                    // Get student IDs first - NO LIMIT to get ALL students
                     const { data: students, error: sError } = await supabaseClient
                         .from('students')
-                        .select('id, nama')
+                        .select('id, nama, kelas')
                         .in('kelas', allFormats);
 
+                    console.log('Students found:', students ? students.length : 0);
+                    if (students) {
+                        console.log('First 5 students:', students.slice(0, 5).map(s => `${s.nama} (${s.kelas})`));
+                    }
+
                     if (sError) throw sError;
-                    if (!students || students.length === 0) return;
+                    if (!students || students.length === 0) {
+                        console.log('No students found for classes:', allFormats);
+                        return;
+                    }
 
                     const studentIds = students.map(s => s.id);
                     const studentMap = Object.fromEntries(students.map(s => [s.id, s.nama]));
+
+                    console.log('Total student IDs:', studentIds.length);
 
                     // Get latest 5 responses
                     const { data: recent, error: rError } = await supabaseClient
@@ -736,9 +751,15 @@
                         .order('created_at', { ascending: false })
                         .limit(5);
 
+                    console.log('Recent responses found:', recent ? recent.length : 0);
+                    if (recent && recent.length > 0) {
+                        console.log('Responses:', recent.map(r => `${studentMap[r.student_id]} - Day ${r.day_id} ${r.module_type}`));
+                    }
+
                     if (rError) throw rError;
 
                     if (!recent || recent.length === 0) {
+                        console.log('No recent responses found');
                         container.innerHTML = `
                         <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
                             <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
