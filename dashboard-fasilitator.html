@@ -72,469 +72,470 @@
 <body class="min-h-screen pb-12">
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
         <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
-            <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <!-- Profile Photo -->
-                    <div id="profilePhoto"
-                        class="size-16 rounded-full bg-slate-200 bg-center bg-cover border-2 border-white shadow-md relative group shrink-0">
-                    </div>
 
-                    <div class="text-left">
-                        <h1 class="text-sm font-bold text-slate-900 leading-tight" id="fasilName">Memuat...</h1>
-                        <p class="text-[10px] text-emerald-600 font-bold tracking-wide uppercase mt-0.5" id="fasilRole">
-                            FASILITATOR KOKULIKULER</p>
-                        <p class="text-[10px] text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG
-                        </p>
-                        <p id="fasilNip" class="hidden">-</p>
-                    </div>
+            <div class="flex items-center gap-4">
+                <!-- Profile Photo -->
+                <div id="profilePhoto"
+                    class="size-16 rounded-full bg-slate-200 bg-center bg-cover border-2 border-white shadow-md relative group shrink-0">
                 </div>
 
-                <!-- Progress Circle (Right aligned) -->
-                <div
-                    class="relative flex items-center justify-center size-12 shadow-sm rounded-full bg-white border border-slate-100 shrink-0">
-                    <svg class="size-12 -rotate-90">
-                        <circle cx="24" cy="24" fill="transparent" r="18" stroke="#f1f5f9" stroke-width="4"></circle>
-                        <circle id="headerProgressCircle" cx="24" cy="24" fill="transparent" r="18" stroke="#0ea5e9"
-                            stroke-dasharray="113" stroke-dashoffset="113" stroke-linecap="round" stroke-width="4"
-                            class="transition-all duration-1000"></circle>
-                    </svg>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <span class="text-[10px] font-bold text-slate-800" id="headerProgressText">0%</span>
-                    </div>
+                <div class="text-left">
+                    <h1 class="text-sm font-bold text-slate-900 leading-tight" id="fasilName">Memuat...</h1>
+                    <p class="text-[10px] text-emerald-600 font-bold tracking-wide uppercase mt-0.5" id="fasilRole">
+                        FASILITATOR KOKULIKULER</p>
+                    <p class="text-[10px] text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG
+                    </p>
+                    <p id="fasilNip" class="hidden">-</p>
                 </div>
             </div>
 
-            <!-- Class List Area (Separate Row, 2 Columns) -->
-            <div class="max-w-md mx-auto px-5 pb-2">
-                <div id="classListArea"
-                    class="text-[10px] text-slate-600 bg-slate-50/80 p-3 rounded-xl border border-slate-100 hidden">
-                    <p class="font-bold text-slate-400 text-[9px] uppercase tracking-wider mb-2">KELAS BINAAN:</p>
-                    <div id="classListContent" class="grid grid-cols-2 gap-x-4 gap-y-1"></div>
-                </div>
-            </div>
-            <div class="max-w-md mx-auto px-5 pb-3">
-                <div class="ios-segment-control flex text-sm font-semibold text-slate-400">
-                    <button onclick="switchTab('ringkasan')" id="tab-ringkasan"
-                        class="ios-segment-btn active flex-1 py-2 rounded-lg transition-all">Ringkasan</button>
-                    <button onclick="switchTab('progres')" id="tab-progres"
-                        class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Progres Kelas</button>
-                    <button onclick="switchTab('laporan')" id="tab-laporan"
-                        class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Laporan</button>
-                </div>
-            </div>
-    </header>
-
-    <main class="max-w-md mx-auto px-5 py-6 space-y-6">
-        <!-- Tab 1: Ringkasan -->
-        <div id="view-ringkasan" class="space-y-6 animate-in fade-in duration-300">
-            <div class="space-y-1">
-                <h2 class="text-3xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
-                <p class="text-sm text-slate-500 font-medium">Fasilitator SMAN 1 Belitang</p>
-                <div class="flex flex-wrap gap-2 mt-3" id="fasilClassPills">
-                    <!-- Pills -->
-                </div>
-            </div>
-
-            <!-- Grid 6 Menu -->
-            <div class="grid grid-cols-2 gap-4">
-                <div onclick="switchTab('progres')"
-                    class="bg-sky-50/50 border border-sky-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-primary rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">monitoring</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-base">Monitoring Kelas</h3>
-                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Pantau real-time kelas
-                        bimbingan.</p>
-                </div>
-                <div onclick="switchTab('progres')"
-                    class="bg-amber-50/50 border border-amber-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-full">assignment_turned_in</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-base">Rekap Penilaian</h3>
-                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Nilai tugas & LKPD siswa.</p>
-                </div>
-                <div onclick="alert('Timeline Alur Kegiatan sedang disiapkan...')"
-                    class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-blue-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">route</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-base">Alur Kegiatan</h3>
-                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Timeline harian kegiatan.</p>
-                </div>
-                <div onclick="window.location.href='pengaturan-akun.html'"
-                    class="bg-slate-50 border border-slate-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">account_circle</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-base">Edit Profil</h3>
-                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">NIP, Mapel & Biodata.</p>
-                </div>
-                <div onclick="alert('Menu Laporan & Ekspor Sertifikat sedang disiapkan...')"
-                    class="bg-sky-50 border border-sky-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-slate-900 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">description</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-base">Laporan Akhir</h3>
-                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Ekspor dokumen siswa
-                        bimbingan.</p>
-                </div>
-                <div onclick="alert('Konfigurasi Pengaturan sedang disiapkan...')"
-                    class="bg-amber-50/30 border border-amber-100/30 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
-                    <div
-                        class="size-10 bg-orange-400 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">settings</span>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-base">Pengaturan</h3>
-                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Konfigurasi jadwal
-                        fasilitator.</p>
-                </div>
-            </div>
-
-            <!-- Status Terbaru Card -->
-            <section class="space-y-4">
-                <div class="flex items-center justify-between px-1">
-                    <h2 class="text-lg font-bold text-slate-800">Status Terbaru</h2>
-                    <button onclick="loadRecentActivities()"
-                        class="text-[10px] font-black uppercase text-primary tracking-widest hover:bg-sky-50 px-3 py-1.5 rounded-lg transition-colors">Lihat
-                        Semua</button>
-                </div>
-                <div id="activityHistoryContainer" class="space-y-3">
-                    <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
-                        <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa
-                            bapak/ibu.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Target Partisipasi Card -->
+            <!-- Progress Circle (Right aligned) -->
             <div
-                class="bg-primary-dark rounded-3xl p-6 text-white shadow-xl overflow-hidden relative group cursor-pointer active:scale-95 transition-transform">
-                <div class="relative z-10 flex items-center justify-between">
+                class="relative flex items-center justify-center size-12 shadow-sm rounded-full bg-white border border-slate-100 shrink-0">
+                <svg class="size-12 -rotate-90">
+                    <circle cx="24" cy="24" fill="transparent" r="18" stroke="#f1f5f9" stroke-width="4"></circle>
+                    <circle id="headerProgressCircle" cx="24" cy="24" fill="transparent" r="18" stroke="#0ea5e9"
+                        stroke-dasharray="113" stroke-dashoffset="113" stroke-linecap="round" stroke-width="4"
+                        class="transition-all duration-1000"></circle>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="text-[10px] font-bold text-slate-800" id="headerProgressText">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Class List Area (Separate Row, 2 Columns) -->
+        <div class="max-w-md mx-auto px-5 pb-2">
+            <div id="classListArea"
+                class="text-[10px] text-slate-600 bg-slate-50/80 p-3 rounded-xl border border-slate-100 hidden">
+                <p class="font-bold text-slate-400 text-[9px] uppercase tracking-wider mb-2">KELAS BINAAN:</p>
+                <div id="classListContent" class="grid grid-cols-2 gap-x-4 gap-y-1"></div>
+            </div>
+        </div>
+        <div class="max-w-md mx-auto px-5 pb-3">
+            <div class="ios-segment-control flex text-sm font-semibold text-slate-400">
+                <button onclick="switchTab('ringkasan')" id="tab-ringkasan"
+                    class="ios-segment-btn active flex-1 py-2 rounded-lg transition-all">Ringkasan</button>
+                <button onclick="switchTab('progres')" id="tab-progres"
+                    class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Progres Kelas</button>
+                <button onclick="switchTab('laporan')" id="tab-laporan"
+                    class="ios-segment-btn flex-1 py-2 rounded-lg transition-all">Laporan</button>
+            </div>
+        </div>
+
+
+        <main class="max-w-md mx-auto px-5 py-6 space-y-6">
+            <!-- Tab 1: Ringkasan -->
+            <div id="view-ringkasan" class="space-y-6 animate-in fade-in duration-300">
+                <div class="space-y-1">
+                    <h2 class="text-3xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
+                    <p class="text-sm text-slate-500 font-medium">Fasilitator SMAN 1 Belitang</p>
+                    <div class="flex flex-wrap gap-2 mt-3" id="fasilClassPills">
+                        <!-- Pills -->
+                    </div>
+                </div>
+
+                <!-- Grid 6 Menu -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div onclick="switchTab('progres')"
+                        class="bg-sky-50/50 border border-sky-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                        <div
+                            class="size-10 bg-primary rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                            <span class="material-symbols-outlined text-2xl">monitoring</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base">Monitoring Kelas</h3>
+                        <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Pantau real-time kelas
+                            bimbingan.</p>
+                    </div>
+                    <div onclick="switchTab('progres')"
+                        class="bg-amber-50/50 border border-amber-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                        <div
+                            class="size-10 bg-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                            <span class="material-symbols-outlined text-full">assignment_turned_in</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base">Rekap Penilaian</h3>
+                        <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Nilai tugas & LKPD siswa.</p>
+                    </div>
+                    <div onclick="alert('Timeline Alur Kegiatan sedang disiapkan...')"
+                        class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                        <div
+                            class="size-10 bg-blue-accent rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                            <span class="material-symbols-outlined text-2xl">route</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base">Alur Kegiatan</h3>
+                        <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Timeline harian kegiatan.</p>
+                    </div>
+                    <div onclick="window.location.href='pengaturan-akun.html'"
+                        class="bg-slate-50 border border-slate-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                        <div
+                            class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                            <span class="material-symbols-outlined text-2xl">account_circle</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base">Edit Profil</h3>
+                        <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">NIP, Mapel & Biodata.</p>
+                    </div>
+                    <div onclick="alert('Menu Laporan & Ekspor Sertifikat sedang disiapkan...')"
+                        class="bg-sky-50 border border-sky-100 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                        <div
+                            class="size-10 bg-slate-900 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                            <span class="material-symbols-outlined text-2xl">description</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base">Laporan Akhir</h3>
+                        <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Ekspor dokumen siswa
+                            bimbingan.</p>
+                    </div>
+                    <div onclick="alert('Konfigurasi Pengaturan sedang disiapkan...')"
+                        class="bg-amber-50/30 border border-amber-100/30 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
+                        <div
+                            class="size-10 bg-orange-400 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
+                            <span class="material-symbols-outlined text-2xl">settings</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-base">Pengaturan</h3>
+                        <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Konfigurasi jadwal
+                            fasilitator.</p>
+                    </div>
+                </div>
+
+                <!-- Status Terbaru Card -->
+                <section class="space-y-4">
+                    <div class="flex items-center justify-between px-1">
+                        <h2 class="text-lg font-bold text-slate-800">Status Terbaru</h2>
+                        <button onclick="loadRecentActivities()"
+                            class="text-[10px] font-black uppercase text-primary tracking-widest hover:bg-sky-50 px-3 py-1.5 rounded-lg transition-colors">Lihat
+                            Semua</button>
+                    </div>
+                    <div id="activityHistoryContainer" class="space-y-3">
+                        <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
+                            <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa
+                                bapak/ibu.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Target Partisipasi Card -->
+                <div
+                    class="bg-primary-dark rounded-3xl p-6 text-white shadow-xl overflow-hidden relative group cursor-pointer active:scale-95 transition-transform">
+                    <div class="relative z-10 flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] text-white/70 font-black uppercase tracking-[0.2em] mb-1">Target
+                                Partisipasi</p>
+                            <p class="text-3xl font-black mt-1" id="studentCount">0 <span
+                                    class="text-sm font-medium text-white/60 ml-1">Siswa Terdaftar</span></p>
+                        </div>
+                        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md">
+                            <span class="material-symbols-outlined text-3xl">school</span>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="space-y-4">
+                    <div class="flex items-center justify-between px-1">
+                        <h2 class="text-lg font-bold text-slate-800">Informasi Jabatan</h2>
+                        <button onclick="loadStats()"
+                            class="text-xs font-black uppercase text-primary tracking-widest hover:bg-sky-50 px-3 py-1.5 rounded-lg transition-colors">Refresh</button>
+                    </div>
+                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-5">
+                        <div class="flex items-center gap-5">
+                            <div
+                                class="size-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 shadow-inner">
+                                <span class="material-symbols-outlined text-2xl">badge</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-black uppercase tracking-[0.15em] mb-1">NIP /
+                                    Identitas</p>
+                                <p class="text-base font-bold text-slate-800" id="fasilNip">-</p>
+                            </div>
+                        </div>
+                        <div class="h-px bg-slate-100"></div>
+                        <div class="flex items-center gap-5">
+                            <div
+                                class="size-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 shadow-inner">
+                                <span class="material-symbols-outlined text-2xl">menu_book</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-black uppercase tracking-[0.15em] mb-1">Mapel /
+                                    Bidang</p>
+                                <p class="text-base font-bold text-slate-800" id="fasilSubjectDisplay">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab 2: Progres Kelas -->
+            <div id="view-progres" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-slate-800" id="monTitle">Monitoring Siswa</h2>
+                    <div class="relative w-40">
+                        <select id="classSelect" onchange="loadStudentsByClass(this.value)"
+                            class="w-full bg-white border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest py-3 focus:ring-primary focus:border-primary shadow-sm">
+                            <!-- Options -->
+                        </select>
+                    </div>
+                </div>
+                <div id="studentListContainer" class="space-y-4 min-h-[400px]">
+                    <!-- Student cards -->
+                </div>
+            </div>
+
+            <!-- Tab 3: Laporan -->
+            <div id="view-laporan" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-800 mb-6">Grafik Penyelesaian Modul</h2>
+                    <div class="h-64 mb-6">
+                        <canvas id="analysisChart"></canvas>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4" id="statsGrid">
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal Penilaian -->
+        <div id="modalPenilaian"
+            class="fixed inset-0 z-[300] hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
+            <div
+                class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
                     <div>
-                        <p class="text-[10px] text-white/70 font-black uppercase tracking-[0.2em] mb-1">Target
-                            Partisipasi</p>
-                        <p class="text-3xl font-black mt-1" id="studentCount">0 <span
-                                class="text-sm font-medium text-white/60 ml-1">Siswa Terdaftar</span></p>
+                        <h3 class="text-xl font-black text-slate-800" id="gradingStudentName">Nama Siswa</h3>
+                        <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1"
+                            id="gradingModuleTitle">Penilaian Modul</p>
                     </div>
-                    <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md">
-                        <span class="material-symbols-outlined text-3xl">school</span>
-                    </div>
+                    <button onclick="closeGradingModal()"
+                        class="size-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
                 </div>
-            </div>
 
-            <section class="space-y-4">
-                <div class="flex items-center justify-between px-1">
-                    <h2 class="text-lg font-bold text-slate-800">Informasi Jabatan</h2>
-                    <button onclick="loadStats()"
-                        class="text-xs font-black uppercase text-primary tracking-widest hover:bg-sky-50 px-3 py-1.5 rounded-lg transition-colors">Refresh</button>
-                </div>
-                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-5">
-                    <div class="flex items-center gap-5">
-                        <div
-                            class="size-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 shadow-inner">
-                            <span class="material-symbols-outlined text-2xl">badge</span>
+                <div class="p-8 space-y-5 max-h-[50vh] overflow-y-auto no-scrollbar">
+                    <div id="studentAnswers" class="space-y-4"></div>
+                    <div class="pt-6 border-t border-slate-100 space-y-5">
+                        <div>
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5">Skor
+                                Nilai (0-100)</label>
+                            <input type="number" id="gradeScore"
+                                class="w-full bg-slate-50 border-slate-200 rounded-2xl py-4 px-6 text-primary font-black text-lg focus:ring-primary shadow-inner"
+                                placeholder="0">
                         </div>
                         <div>
-                            <p class="text-xs text-slate-400 font-black uppercase tracking-[0.15em] mb-1">NIP /
-                                Identitas</p>
-                            <p class="text-base font-bold text-slate-800" id="fasilNip">-</p>
-                        </div>
-                    </div>
-                    <div class="h-px bg-slate-100"></div>
-                    <div class="flex items-center gap-5">
-                        <div
-                            class="size-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 shadow-inner">
-                            <span class="material-symbols-outlined text-2xl">menu_book</span>
-                        </div>
-                        <div>
-                            <p class="text-xs text-slate-400 font-black uppercase tracking-[0.15em] mb-1">Mapel /
-                                Bidang</p>
-                            <p class="text-base font-bold text-slate-800" id="fasilSubjectDisplay">-</p>
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5">Catatan
+                                / Feedback</label>
+                            <textarea id="gradeFeedback" rows="3"
+                                class="w-full bg-slate-50 border-slate-200 rounded-2xl py-4 px-6 text-sm focus:ring-primary shadow-inner"
+                                placeholder="Tulis masukan di sini..."></textarea>
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
 
-        <!-- Tab 2: Progres Kelas -->
-        <div id="view-progres" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div class="flex items-center justify-between">
-                <h2 class="text-xl font-bold text-slate-800" id="monTitle">Monitoring Siswa</h2>
-                <div class="relative w-40">
-                    <select id="classSelect" onchange="loadStudentsByClass(this.value)"
-                        class="w-full bg-white border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest py-3 focus:ring-primary focus:border-primary shadow-sm">
-                        <!-- Options -->
-                    </select>
+                <div class="p-8 bg-slate-50 border-t border-slate-100 flex gap-4">
+                    <button onclick="saveGrade()"
+                        class="flex-1 bg-primary text-white font-black py-4 rounded-3xl shadow-xl shadow-sky-500/20 active:scale-95 transition-transform tracking-widest uppercase text-xs">Simpan
+                        Nilai</button>
                 </div>
-            </div>
-            <div id="studentListContainer" class="space-y-4 min-h-[400px]">
-                <!-- Student cards -->
             </div>
         </div>
 
-        <!-- Tab 3: Laporan -->
-        <div id="view-laporan" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
-                <h2 class="text-lg font-bold text-slate-800 mb-6">Grafik Penyelesaian Modul</h2>
-                <div class="h-64 mb-6">
-                    <canvas id="analysisChart"></canvas>
-                </div>
-                <div class="grid grid-cols-2 gap-4" id="statsGrid">
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Modal Penilaian -->
-    <div id="modalPenilaian"
-        class="fixed inset-0 z-[300] hidden flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4">
-        <div
-            class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-            <div class="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
-                <div>
-                    <h3 class="text-xl font-black text-slate-800" id="gradingStudentName">Nama Siswa</h3>
-                    <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1"
-                        id="gradingModuleTitle">Penilaian Modul</p>
-                </div>
-                <button onclick="closeGradingModal()"
-                    class="size-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400">
-                    <span class="material-symbols-outlined">close</span>
+        <!-- Bottom Navigation -->
+        <nav
+            class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 z-[100] safe-area-bottom">
+            <div class="max-w-md mx-auto flex justify-around items-center pt-3 pb-8 px-4">
+                <button onclick="window.location.href='index.html'"
+                    class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all">
+                    <span class="material-symbols-outlined text-[26px]">home</span>
+                    <span class="text-[10px] font-bold">Beranda</span>
+                </button>
+                <button onclick="switchTab('ringkasan')" id="nav-dasbor"
+                    class="flex flex-col items-center gap-1.5 text-primary group transition-all">
+                    <span class="material-symbols-outlined text-[26px]"
+                        style="font-variation-settings: 'FILL' 1;">grid_view</span>
+                    <span class="text-[10px] font-black">Dasbor</span>
+                </button>
+                <button onclick="switchTab('laporan')" id="nav-analisis"
+                    class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all">
+                    <span class="material-symbols-outlined text-[26px]">analytics</span>
+                    <span class="text-[10px] font-bold">Analisis</span>
+                </button>
+                <button onclick="window.location.href='pengaturan-akun.html'"
+                    class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all">
+                    <span class="material-symbols-outlined text-[26px]">person</span>
+                    <span class="text-[10px] font-bold">Profil</span>
+                </button>
+                <button onclick="logout()"
+                    class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all hover:text-red-500">
+                    <span class="material-symbols-outlined text-[26px]">logout</span>
+                    <span class="text-[10px] font-bold">Keluar</span>
                 </button>
             </div>
+        </nav>
 
-            <div class="p-8 space-y-5 max-h-[50vh] overflow-y-auto no-scrollbar">
-                <div id="studentAnswers" class="space-y-4"></div>
-                <div class="pt-6 border-t border-slate-100 space-y-5">
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5">Skor
-                            Nilai (0-100)</label>
-                        <input type="number" id="gradeScore"
-                            class="w-full bg-slate-50 border-slate-200 rounded-2xl py-4 px-6 text-primary font-black text-lg focus:ring-primary shadow-inner"
-                            placeholder="0">
-                    </div>
-                    <div>
-                        <label
-                            class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2.5">Catatan
-                            / Feedback</label>
-                        <textarea id="gradeFeedback" rows="3"
-                            class="w-full bg-slate-50 border-slate-200 rounded-2xl py-4 px-6 text-sm focus:ring-primary shadow-inner"
-                            placeholder="Tulis masukan di sini..."></textarea>
-                    </div>
-                </div>
-            </div>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
+            const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-            <div class="p-8 bg-slate-50 border-t border-slate-100 flex gap-4">
-                <button onclick="saveGrade()"
-                    class="flex-1 bg-primary text-white font-black py-4 rounded-3xl shadow-xl shadow-sky-500/20 active:scale-95 transition-transform tracking-widest uppercase text-xs">Simpan
-                    Nilai</button>
-            </div>
-        </div>
-    </div>
+            let myClasses = [];
+            let currentClass = '';
+            let myChart = null;
+            let selectedResponseId = null;
 
-    <!-- Bottom Navigation -->
-    <nav
-        class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-xl border-t border-slate-200 z-[100] safe-area-bottom">
-        <div class="max-w-md mx-auto flex justify-around items-center pt-3 pb-8 px-4">
-            <button onclick="window.location.href='index.html'"
-                class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all">
-                <span class="material-symbols-outlined text-[26px]">home</span>
-                <span class="text-[10px] font-bold">Beranda</span>
-            </button>
-            <button onclick="switchTab('ringkasan')" id="nav-dasbor"
-                class="flex flex-col items-center gap-1.5 text-primary group transition-all">
-                <span class="material-symbols-outlined text-[26px]"
-                    style="font-variation-settings: 'FILL' 1;">grid_view</span>
-                <span class="text-[10px] font-black">Dasbor</span>
-            </button>
-            <button onclick="switchTab('laporan')" id="nav-analisis"
-                class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all">
-                <span class="material-symbols-outlined text-[26px]">analytics</span>
-                <span class="text-[10px] font-bold">Analisis</span>
-            </button>
-            <button onclick="window.location.href='pengaturan-akun.html'"
-                class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all">
-                <span class="material-symbols-outlined text-[26px]">person</span>
-                <span class="text-[10px] font-bold">Profil</span>
-            </button>
-            <button onclick="logout()"
-                class="flex flex-col items-center gap-1.5 text-slate-400 group transition-all hover:text-red-500">
-                <span class="material-symbols-outlined text-[26px]">logout</span>
-                <span class="text-[10px] font-bold">Keluar</span>
-            </button>
-        </div>
-    </nav>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-
-        let myClasses = [];
-        let currentClass = '';
-        let myChart = null;
-        let selectedResponseId = null;
-
-        async function init() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session || session.user.user_metadata.role !== 'fasilitator') {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            const userData = session.user.user_metadata;
-            // Trim and clean classes from metadata
-            myClasses = (Array.isArray(userData.kelas) ? userData.kelas : [userData.kelas])
-                .filter(c => c)
-                .map(c => c.trim());
-
-            document.getElementById('fasilName').textContent = userData.full_name;
-            document.getElementById('fasilNip').textContent = userData.nip || '-';
-            document.getElementById('fasilSubjectDisplay').textContent = userData.mapel || 'Fasilitator Kokulikuler';
-
-            const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=0ea5e9&color=fff&size=256`;
-            document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
-
-            renderClassPills();
-            renderHeaderClasses(); // New function
-            setupClassSelect();
-            loadStats();
-            loadRecentActivities();
-        }
-
-        function renderHeaderClasses() {
-            const container = document.getElementById('classListArea');
-            const content = document.getElementById('classListContent');
-
-            if (myClasses.length > 0) {
-                container.classList.remove('hidden');
-                if (myClasses.length === 1) {
-                    content.innerHTML = `<div class="font-bold text-slate-700">Kelas ${myClasses[0]}</div>`;
-                } else {
-                    let i = 1;
-                    let html = '';
-                    myClasses.forEach(c => {
-                        html += `<div class="flex items-start gap-1.5"><span class="font-bold text-slate-400 w-3">${i}.</span><span class="font-bold text-slate-700">Kelas ${c}</span></div>`;
-                        i++;
-                    });
-                    content.innerHTML = html;
-                }
-            }
-        }
-
-        function renderClassPills() {
-            const cont = document.getElementById('fasilClassPills');
-            cont.innerHTML = myClasses.map(c => `<span class="px-4 py-1.5 bg-sky-100/50 text-sky-700 rounded-full text-[11px] font-black border border-sky-200/50 uppercase tracking-wider">${c}</span>`).join('');
-        }
-
-        function setupClassSelect() {
-            const select = document.getElementById('classSelect');
-            select.innerHTML = myClasses.map(c => `<option value="${c}">Kelas ${c}</option>`).join('');
-            if (myClasses.length > 0) {
-                currentClass = myClasses[0];
-                loadStudentsByClass(currentClass);
-            }
-        }
-
-        async function loadStats() {
-            try {
-                if (!myClasses.length) {
-                    document.getElementById('studentCount').innerHTML = `0 <span class="text-sm font-medium text-white/60 ml-1">Siswa Terdaftar</span>`;
+            async function init() {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                if (!session || session.user.user_metadata.role !== 'fasilitator') {
+                    window.location.href = 'login.html';
                     return;
                 }
 
-                // Fetch student count for assigned classes with flexible formatting
-                // Generate alternative formats to ensure matching (e.g., "X. 11" and "X.11")
-                const allFormats = [];
-                myClasses.forEach(c => {
-                    const trimmed = c.trim();
-                    allFormats.push(trimmed);
-                    if (trimmed.includes('. ')) {
-                        allFormats.push(trimmed.replace('. ', '.'));
-                    } else if (trimmed.includes('.') && !trimmed.includes('. ')) {
-                        allFormats.push(trimmed.replace('.', '. '));
-                    }
-                });
+                const userData = session.user.user_metadata;
+                // Trim and clean classes from metadata
+                myClasses = (Array.isArray(userData.kelas) ? userData.kelas : [userData.kelas])
+                    .filter(c => c)
+                    .map(c => c.trim());
 
-                const { data: students, count, error } = await supabaseClient
-                    .from('students')
-                    .select('*', { count: 'exact' })
-                    .in('kelas', allFormats);
+                document.getElementById('fasilName').textContent = userData.full_name;
+                document.getElementById('fasilNip').textContent = userData.nip || '-';
+                document.getElementById('fasilSubjectDisplay').textContent = userData.mapel || 'Fasilitator Kokulikuler';
 
-                if (error) throw error;
+                const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=0ea5e9&color=fff&size=256`;
+                document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
 
-                const sCount = count || (students ? students.length : 0);
-                document.getElementById('studentCount').innerHTML = `${sCount} <span class="text-sm font-medium text-white/60 ml-1">Siswa Terdaftar</span>`;
-
-                if (sCount > 0) {
-                    const ids = students.map(s => s.id);
-                    const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', ids);
-                    const progress = Math.round(((rCount || 0) / (sCount * 24)) * 100);
-                    updateProgressUI(progress);
-                } else {
-                    updateProgressUI(0);
-                    // For debugging: try to fetch ANY student count to see if table is empty
-                    const { count: totalTableCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true });
-                    console.log('Total students in entire table:', totalTableCount);
-                }
-
-                renderAnalysisChart();
+                renderClassPills();
+                renderHeaderClasses(); // New function
+                setupClassSelect();
+                loadStats();
                 loadRecentActivities();
-            } catch (e) {
-                console.error('Stats Error:', e);
-                document.getElementById('studentCount').innerHTML = `Error <span class="text-sm font-medium text-white/60 ml-1">Koneksi</span>`;
             }
-        }
 
-        function updateProgressUI(pct) {
-            document.getElementById('headerProgressText').textContent = pct + '%';
-            const offset = 113 - (113 * pct / 100);
-            document.getElementById('headerProgressCircle').style.strokeDashoffset = offset;
-        }
+            function renderHeaderClasses() {
+                const container = document.getElementById('classListArea');
+                const content = document.getElementById('classListContent');
 
-        async function loadStudentsByClass(cls) {
-            currentClass = cls;
-            document.getElementById('monTitle').textContent = 'Monitoring ' + cls;
-            const container = document.getElementById('studentListContainer');
-            container.innerHTML = '<div class="text-center py-12 text-slate-400 text-[10px] font-black uppercase tracking-widest animate-pulse">Menghubungkan ke database...</div>';
-
-            try {
-                const clsTrimmed = cls.trim();
-                const alternatives = [clsTrimmed];
-                if (clsTrimmed.includes('. ')) {
-                    alternatives.push(clsTrimmed.replace('. ', '.'));
-                } else if (clsTrimmed.includes('.') && !clsTrimmed.includes('. ')) {
-                    alternatives.push(clsTrimmed.replace('.', '. '));
+                if (myClasses.length > 0) {
+                    container.classList.remove('hidden');
+                    if (myClasses.length === 1) {
+                        content.innerHTML = `<div class="font-bold text-slate-700">Kelas ${myClasses[0]}</div>`;
+                    } else {
+                        let i = 1;
+                        let html = '';
+                        myClasses.forEach(c => {
+                            html += `<div class="flex items-start gap-1.5"><span class="font-bold text-slate-400 w-3">${i}.</span><span class="font-bold text-slate-700">Kelas ${c}</span></div>`;
+                            i++;
+                        });
+                        content.innerHTML = html;
+                    }
                 }
+            }
 
-                const { data: students, error: sError } = await supabaseClient
-                    .from('students')
-                    .select('*')
-                    .in('kelas', alternatives)
-                    .order('nama');
-                if (sError) throw sError;
+            function renderClassPills() {
+                const cont = document.getElementById('fasilClassPills');
+                cont.innerHTML = myClasses.map(c => `<span class="px-4 py-1.5 bg-sky-100/50 text-sky-700 rounded-full text-[11px] font-black border border-sky-200/50 uppercase tracking-wider">${c}</span>`).join('');
+            }
 
-                if (!students || students.length === 0) {
-                    container.innerHTML = `<div class="text-center py-12 text-slate-400 text-[10px] font-bold">Tidak ada siswa di Kelas ${cls}.</div>`;
-                    console.log('No students found for alternatives:', alternatives);
-                    return;
+            function setupClassSelect() {
+                const select = document.getElementById('classSelect');
+                select.innerHTML = myClasses.map(c => `<option value="${c}">Kelas ${c}</option>`).join('');
+                if (myClasses.length > 0) {
+                    currentClass = myClasses[0];
+                    loadStudentsByClass(currentClass);
                 }
+            }
 
-                const { data: responses } = await supabaseClient.from('module_responses').select('id, student_id, module_type, status').in('student_id', students.map(s => s.id));
+            async function loadStats() {
+                try {
+                    if (!myClasses.length) {
+                        document.getElementById('studentCount').innerHTML = `0 <span class="text-sm font-medium text-white/60 ml-1">Siswa Terdaftar</span>`;
+                        return;
+                    }
 
-                container.innerHTML = students.map(s => {
-                    const sRes = (responses || []).filter(r => r.student_id === s.id);
-                    const pending = sRes.some(r => r.status === 'submitted');
-                    const comp = sRes.length;
-                    const initials = s.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                    return `
+                    // Fetch student count for assigned classes with flexible formatting
+                    // Generate alternative formats to ensure matching (e.g., "X. 11" and "X.11")
+                    const allFormats = [];
+                    myClasses.forEach(c => {
+                        const trimmed = c.trim();
+                        allFormats.push(trimmed);
+                        if (trimmed.includes('. ')) {
+                            allFormats.push(trimmed.replace('. ', '.'));
+                        } else if (trimmed.includes('.') && !trimmed.includes('. ')) {
+                            allFormats.push(trimmed.replace('.', '. '));
+                        }
+                    });
+
+                    const { data: students, count, error } = await supabaseClient
+                        .from('students')
+                        .select('*', { count: 'exact' })
+                        .in('kelas', allFormats);
+
+                    if (error) throw error;
+
+                    const sCount = count || (students ? students.length : 0);
+                    document.getElementById('studentCount').innerHTML = `${sCount} <span class="text-sm font-medium text-white/60 ml-1">Siswa Terdaftar</span>`;
+
+                    if (sCount > 0) {
+                        const ids = students.map(s => s.id);
+                        const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', ids);
+                        const progress = Math.round(((rCount || 0) / (sCount * 24)) * 100);
+                        updateProgressUI(progress);
+                    } else {
+                        updateProgressUI(0);
+                        // For debugging: try to fetch ANY student count to see if table is empty
+                        const { count: totalTableCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true });
+                        console.log('Total students in entire table:', totalTableCount);
+                    }
+
+                    renderAnalysisChart();
+                    loadRecentActivities();
+                } catch (e) {
+                    console.error('Stats Error:', e);
+                    document.getElementById('studentCount').innerHTML = `Error <span class="text-sm font-medium text-white/60 ml-1">Koneksi</span>`;
+                }
+            }
+
+            function updateProgressUI(pct) {
+                document.getElementById('headerProgressText').textContent = pct + '%';
+                const offset = 113 - (113 * pct / 100);
+                document.getElementById('headerProgressCircle').style.strokeDashoffset = offset;
+            }
+
+            async function loadStudentsByClass(cls) {
+                currentClass = cls;
+                document.getElementById('monTitle').textContent = 'Monitoring ' + cls;
+                const container = document.getElementById('studentListContainer');
+                container.innerHTML = '<div class="text-center py-12 text-slate-400 text-[10px] font-black uppercase tracking-widest animate-pulse">Menghubungkan ke database...</div>';
+
+                try {
+                    const clsTrimmed = cls.trim();
+                    const alternatives = [clsTrimmed];
+                    if (clsTrimmed.includes('. ')) {
+                        alternatives.push(clsTrimmed.replace('. ', '.'));
+                    } else if (clsTrimmed.includes('.') && !clsTrimmed.includes('. ')) {
+                        alternatives.push(clsTrimmed.replace('.', '. '));
+                    }
+
+                    const { data: students, error: sError } = await supabaseClient
+                        .from('students')
+                        .select('*')
+                        .in('kelas', alternatives)
+                        .order('nama');
+                    if (sError) throw sError;
+
+                    if (!students || students.length === 0) {
+                        container.innerHTML = `<div class="text-center py-12 text-slate-400 text-[10px] font-bold">Tidak ada siswa di Kelas ${cls}.</div>`;
+                        console.log('No students found for alternatives:', alternatives);
+                        return;
+                    }
+
+                    const { data: responses } = await supabaseClient.from('module_responses').select('id, student_id, module_type, status').in('student_id', students.map(s => s.id));
+
+                    container.innerHTML = students.map(s => {
+                        const sRes = (responses || []).filter(r => r.student_id === s.id);
+                        const pending = sRes.some(r => r.status === 'submitted');
+                        const comp = sRes.length;
+                        const initials = s.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                        return `
                         <div class="bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm active:scale-[0.98] transition-all">
                             <div class="flex items-center gap-4 mb-5">
                                 <div class="size-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 shadow-inner">${initials}</div>
@@ -552,198 +553,198 @@
                             </div>
                         </div>
                     `;
-                }).join('');
-            } catch (e) {
-                console.error(e);
-                container.innerHTML = `<div class="text-center py-12 text-red-100 bg-red-500 rounded-3xl text-[10px] font-bold">Error: ${e.message}</div>`;
-            }
-        }
-
-        async function openGradingModal(studentId, studentName) {
-            const modal = document.getElementById('modalPenilaian');
-            modal.classList.remove('hidden');
-            document.getElementById('gradingStudentName').textContent = studentName;
-
-            const answerCont = document.getElementById('studentAnswers');
-            answerCont.innerHTML = '<div class="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse">Memuat jawaban...</div>';
-
-            try {
-                const { data: responses } = await supabaseClient.from('module_responses')
-                    .select('*')
-                    .eq('student_id', studentId)
-                    .order('day_id', { ascending: true })
-                    .order('module_type');
-
-                if (!responses || !responses.length) {
-                    answerCont.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase tracking-widest text-[10px]">Belum ada jawaban.</div>';
-                    return;
+                    }).join('');
+                } catch (e) {
+                    console.error(e);
+                    container.innerHTML = `<div class="text-center py-12 text-red-100 bg-red-500 rounded-3xl text-[10px] font-bold">Error: ${e.message}</div>`;
                 }
+            }
 
-                const r = responses.find(res => res.status === 'submitted') || responses[0];
-                selectedResponseId = r.id;
+            async function openGradingModal(studentId, studentName) {
+                const modal = document.getElementById('modalPenilaian');
+                modal.classList.remove('hidden');
+                document.getElementById('gradingStudentName').textContent = studentName;
 
-                document.getElementById('gradingModuleTitle').textContent = `Hari ${r.day_id} • ${r.module_type.toUpperCase()}`;
+                const answerCont = document.getElementById('studentAnswers');
+                answerCont.innerHTML = '<div class="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse">Memuat jawaban...</div>';
 
-                const answers = Array.isArray(r.answers) ? r.answers : [];
-                answerCont.innerHTML = answers.map((ans, i) => `
+                try {
+                    const { data: responses } = await supabaseClient.from('module_responses')
+                        .select('*')
+                        .eq('student_id', studentId)
+                        .order('day_id', { ascending: true })
+                        .order('module_type');
+
+                    if (!responses || !responses.length) {
+                        answerCont.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase tracking-widest text-[10px]">Belum ada jawaban.</div>';
+                        return;
+                    }
+
+                    const r = responses.find(res => res.status === 'submitted') || responses[0];
+                    selectedResponseId = r.id;
+
+                    document.getElementById('gradingModuleTitle').textContent = `Hari ${r.day_id} • ${r.module_type.toUpperCase()}`;
+
+                    const answers = Array.isArray(r.answers) ? r.answers : [];
+                    answerCont.innerHTML = answers.map((ans, i) => `
                     <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100/50">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Pertanyaan ${i + 1}</p>
                         <p class="text-[13px] text-slate-800 font-medium leading-relaxed">${ans}</p>
                     </div>
                 `).join('');
 
-                document.getElementById('gradeScore').value = r.score || '';
-                document.getElementById('gradeFeedback').value = r.feedback || '';
+                    document.getElementById('gradeScore').value = r.score || '';
+                    document.getElementById('gradeFeedback').value = r.feedback || '';
 
-            } catch (e) { console.error(e); }
-        }
-
-        async function saveGrade() {
-            if (!selectedResponseId) return;
-            const score = document.getElementById('gradeScore').value;
-            const feedback = document.getElementById('gradeFeedback').value;
-
-            try {
-                const { error } = await supabaseClient.from('module_responses')
-                    .update({ status: 'reviewed', feedback: feedback, score: score })
-                    .eq('id', selectedResponseId);
-
-                if (error) throw error;
-                alert('Pesan: Penilaian berhasil disimpan!');
-                closeGradingModal();
-                loadStudentsByClass(currentClass);
-            } catch (e) {
-                console.error(e);
-                alert('Gagal menyimpan: ' + e.message);
+                } catch (e) { console.error(e); }
             }
-        }
 
-        function closeGradingModal() {
-            document.getElementById('modalPenilaian').classList.add('hidden');
-            selectedResponseId = null;
-        }
+            async function saveGrade() {
+                if (!selectedResponseId) return;
+                const score = document.getElementById('gradeScore').value;
+                const feedback = document.getElementById('gradeFeedback').value;
 
-        function switchTab(tab) {
-            ['ringkasan', 'progres', 'laporan'].forEach(t => {
-                document.getElementById('view-' + t).classList.add('hidden');
-                document.getElementById('tab-' + t).classList.remove('active');
-            });
-            document.getElementById('view-' + tab).classList.remove('hidden');
-            document.getElementById('tab-' + tab).classList.add('active');
+                try {
+                    const { error } = await supabaseClient.from('module_responses')
+                        .update({ status: 'reviewed', feedback: feedback, score: score })
+                        .eq('id', selectedResponseId);
 
-            const navs = { 'ringkasan': 'nav-dasbor', 'laporan': 'nav-analisis' };
-            ['nav-dasbor', 'nav-analisis'].forEach(n => {
-                const el = document.getElementById(n);
-                el.classList.replace('text-primary', 'text-slate-400');
-                el.querySelector('span').style.fontVariationSettings = "'FILL' 0";
-            });
-            if (navs[tab]) {
-                const el = document.getElementById(navs[tab]);
-                el.classList.replace('text-slate-400', 'text-primary');
-                el.querySelector('span').style.fontVariationSettings = "'FILL' 1";
-            }
-        }
-
-        async function renderAnalysisChart() {
-            const ctx = document.getElementById('analysisChart').getContext('2d');
-            const grid = document.getElementById('statsGrid');
-            grid.innerHTML = '';
-
-            const dataPoints = [];
-            for (const cls of myClasses) {
-                const clsTrimmed = cls.trim();
-                const alternatives = [clsTrimmed];
-                if (clsTrimmed.includes('. ')) {
-                    alternatives.push(clsTrimmed.replace('. ', '.'));
-                } else if (clsTrimmed.includes('.') && !clsTrimmed.includes('. ')) {
-                    alternatives.push(clsTrimmed.replace('.', '. '));
+                    if (error) throw error;
+                    alert('Pesan: Penilaian berhasil disimpan!');
+                    closeGradingModal();
+                    loadStudentsByClass(currentClass);
+                } catch (e) {
+                    console.error(e);
+                    alert('Gagal menyimpan: ' + e.message);
                 }
+            }
 
-                const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).in('kelas', alternatives);
-                const { data: students } = await supabaseClient.from('students').select('id').in('kelas', alternatives);
-                const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', students ? students.map(s => s.id) : []);
-                const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
-                dataPoints.push(pct);
-                grid.innerHTML += `
+            function closeGradingModal() {
+                document.getElementById('modalPenilaian').classList.add('hidden');
+                selectedResponseId = null;
+            }
+
+            function switchTab(tab) {
+                ['ringkasan', 'progres', 'laporan'].forEach(t => {
+                    document.getElementById('view-' + t).classList.add('hidden');
+                    document.getElementById('tab-' + t).classList.remove('active');
+                });
+                document.getElementById('view-' + tab).classList.remove('hidden');
+                document.getElementById('tab-' + tab).classList.add('active');
+
+                const navs = { 'ringkasan': 'nav-dasbor', 'laporan': 'nav-analisis' };
+                ['nav-dasbor', 'nav-analisis'].forEach(n => {
+                    const el = document.getElementById(n);
+                    el.classList.replace('text-primary', 'text-slate-400');
+                    el.querySelector('span').style.fontVariationSettings = "'FILL' 0";
+                });
+                if (navs[tab]) {
+                    const el = document.getElementById(navs[tab]);
+                    el.classList.replace('text-slate-400', 'text-primary');
+                    el.querySelector('span').style.fontVariationSettings = "'FILL' 1";
+                }
+            }
+
+            async function renderAnalysisChart() {
+                const ctx = document.getElementById('analysisChart').getContext('2d');
+                const grid = document.getElementById('statsGrid');
+                grid.innerHTML = '';
+
+                const dataPoints = [];
+                for (const cls of myClasses) {
+                    const clsTrimmed = cls.trim();
+                    const alternatives = [clsTrimmed];
+                    if (clsTrimmed.includes('. ')) {
+                        alternatives.push(clsTrimmed.replace('. ', '.'));
+                    } else if (clsTrimmed.includes('.') && !clsTrimmed.includes('. ')) {
+                        alternatives.push(clsTrimmed.replace('.', '. '));
+                    }
+
+                    const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).in('kelas', alternatives);
+                    const { data: students } = await supabaseClient.from('students').select('id').in('kelas', alternatives);
+                    const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', students ? students.map(s => s.id) : []);
+                    const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
+                    dataPoints.push(pct);
+                    grid.innerHTML += `
                     <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">${cls}</p>
                         <p class="text-xl font-black text-slate-800">${pct}%</p>
                     </div>
                 `;
-            }
-
-            if (myChart) myChart.destroy();
-            myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: myClasses,
-                    datasets: [{
-                        data: dataPoints,
-                        backgroundColor: '#0ea5e9',
-                        borderRadius: 12,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, max: 100 } }
                 }
-            });
-        }
 
-        async function loadRecentActivities() {
-            const container = document.getElementById('activityHistoryContainer');
-            try {
-                // Fetch latest 5 responses for the facilitator's classes
-                const allFormats = [];
-                myClasses.forEach(c => {
-                    const trimmed = c.trim();
-                    allFormats.push(trimmed);
-                    if (trimmed.includes('. ')) {
-                        allFormats.push(trimmed.replace('. ', '.'));
-                    } else if (trimmed.includes('.') && !trimmed.includes('. ')) {
-                        allFormats.push(trimmed.replace('.', '. '));
+                if (myChart) myChart.destroy();
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: myClasses,
+                        datasets: [{
+                            data: dataPoints,
+                            backgroundColor: '#0ea5e9',
+                            borderRadius: 12,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, max: 100 } }
                     }
                 });
+            }
 
-                // Get student IDs first
-                const { data: students, error: sError } = await supabaseClient
-                    .from('students')
-                    .select('id, nama')
-                    .in('kelas', allFormats);
+            async function loadRecentActivities() {
+                const container = document.getElementById('activityHistoryContainer');
+                try {
+                    // Fetch latest 5 responses for the facilitator's classes
+                    const allFormats = [];
+                    myClasses.forEach(c => {
+                        const trimmed = c.trim();
+                        allFormats.push(trimmed);
+                        if (trimmed.includes('. ')) {
+                            allFormats.push(trimmed.replace('. ', '.'));
+                        } else if (trimmed.includes('.') && !trimmed.includes('. ')) {
+                            allFormats.push(trimmed.replace('.', '. '));
+                        }
+                    });
 
-                if (sError) throw sError;
-                if (!students || students.length === 0) return;
+                    // Get student IDs first
+                    const { data: students, error: sError } = await supabaseClient
+                        .from('students')
+                        .select('id, nama')
+                        .in('kelas', allFormats);
 
-                const studentIds = students.map(s => s.id);
-                const studentMap = Object.fromEntries(students.map(s => [s.id, s.nama]));
+                    if (sError) throw sError;
+                    if (!students || students.length === 0) return;
 
-                // Get latest 5 responses
-                const { data: recent, error: rError } = await supabaseClient
-                    .from('module_responses')
-                    .select('*')
-                    .in('student_id', studentIds)
-                    .order('created_at', { ascending: false })
-                    .limit(5);
+                    const studentIds = students.map(s => s.id);
+                    const studentMap = Object.fromEntries(students.map(s => [s.id, s.nama]));
 
-                if (rError) throw rError;
+                    // Get latest 5 responses
+                    const { data: recent, error: rError } = await supabaseClient
+                        .from('module_responses')
+                        .select('*')
+                        .in('student_id', studentIds)
+                        .order('created_at', { ascending: false })
+                        .limit(5);
 
-                if (!recent || recent.length === 0) {
-                    container.innerHTML = `
+                    if (rError) throw rError;
+
+                    if (!recent || recent.length === 0) {
+                        container.innerHTML = `
                         <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
                             <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
                         </div>
                     `;
-                    return;
-                }
+                        return;
+                    }
 
-                container.innerHTML = recent.map(r => {
-                    const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                    const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
-                    const initials = (studentMap[r.student_id] || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    container.innerHTML = recent.map(r => {
+                        const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                        const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
+                        const initials = (studentMap[r.student_id] || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
-                    return `
+                        return `
                         <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentMap[r.student_id]}')">
                             <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner">${initials}</div>
                             <div class="flex-1">
@@ -759,23 +760,23 @@
                             </div>
                         </div>
                     `;
-                }).join('');
+                    }).join('');
 
-            } catch (e) {
-                console.error('Recent Activity Error:', e);
+                } catch (e) {
+                    console.error('Recent Activity Error:', e);
+                }
             }
-        }
 
-        async function logout() {
-            if (confirm('Yakin ingin keluar?')) {
-                await supabaseClient.auth.signOut();
-                localStorage.clear();
-                window.location.href = 'login.html';
+            async function logout() {
+                if (confirm('Yakin ingin keluar?')) {
+                    await supabaseClient.auth.signOut();
+                    localStorage.clear();
+                    window.location.href = 'login.html';
+                }
             }
-        }
 
-        window.addEventListener('load', init);
-    </script>
+            window.addEventListener('load', init);
+        </script>
 </body>
 
 </html>
