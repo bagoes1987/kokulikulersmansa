@@ -532,7 +532,7 @@
                     .in('student_id', ids)
                     .eq('status', 'reviewed');
 
-                const progress = count > 0 ? Math.round((responses / (count * 24)) * 100) : 0;
+                const progress = count > 0 ? Math.round((responses / (count * 27)) * 100) : 0;
                 updateProgressUI(progress);
                 loadClassList();
                 renderAnalysisChart();
@@ -558,7 +558,7 @@
                     .select('*', { count: 'exact', head: true })
                     .in('student_id', sIds)
                     .eq('status', 'reviewed');
-                const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
+                const pct = sCount > 0 ? Math.round((rCount / (sCount * 27)) * 100) : 0;
 
                 cont.innerHTML += `
                     <div onclick="openClassDetail('${cls}')" class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-50 flex items-center gap-5 cursor-pointer active:scale-95 transition-all">
@@ -617,7 +617,7 @@
 
                 studentCont.innerHTML = students.map(s => {
                     const sRes = responses.filter(r => r.student_id === s.id);
-                    const pct = Math.round((sRes.length / 24) * 100);
+                    const pct = Math.round((sRes.length / 27) * 100);
                     const pending = sRes.some(r => r.status === 'submitted');
                     const initials = s.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                     return `
@@ -673,7 +673,7 @@
                 const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).eq('kelas', cls);
                 const { data: students } = await supabaseClient.from('students').select('id').eq('kelas', cls);
                 const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', students.map(s => s.id));
-                const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
+                const pct = sCount > 0 ? Math.round((rCount / (sCount * 27)) * 100) : 0;
                 dataPoints.push(pct);
                 grid.innerHTML += `
                     <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
