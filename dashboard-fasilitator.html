@@ -84,7 +84,8 @@
                     <p class="text-xs text-emerald-600 font-bold tracking-wide uppercase mt-1" id="fasilRole">
                         FASILITATOR KOKULIKULER</p>
                     <p class="text-xs text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
-                    <p class="text-xs text-slate-500 font-medium tracking-wide uppercase mt-0.5" id="fasilNip">-</p>
+                    <p class="text-xs text-slate-500 font-medium tracking-wide uppercase mt-0.5" id="fasilNipHeader">-
+                    </p>
                 </div>
             </div>
 
@@ -242,7 +243,7 @@
                             <div>
                                 <p class="text-xs text-slate-400 font-black uppercase tracking-[0.15em] mb-1">NIP /
                                     Identitas</p>
-                                <p class="text-base font-bold text-slate-800" id="fasilNip">-</p>
+                                <p class="text-base font-bold text-slate-800" id="fasilNipBody">-</p>
                             </div>
                         </div>
                         <div class="h-px bg-slate-100"></div>
@@ -403,8 +404,13 @@
                     .map(c => c.trim());
 
                 document.getElementById('fasilName').textContent = userData.full_name;
-                document.getElementById('fasilNip').textContent = userData.nip || '-';
-                document.getElementById('fasilSubjectDisplay').textContent = userData.mapel || 'Fasilitator Kokulikuler';
+
+                // Update Header
+                if (document.getElementById('fasilNipHeader')) document.getElementById('fasilNipHeader').textContent = userData.nip || '-';
+
+                // Update Body Info
+                if (document.getElementById('fasilNipBody')) document.getElementById('fasilNipBody').textContent = userData.nip || '-';
+                if (document.getElementById('fasilSubjectDisplay')) document.getElementById('fasilSubjectDisplay').textContent = userData.mapel || 'Fasilitator Kokulikuler';
 
                 const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=0ea5e9&color=fff&size=256`;
                 document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;

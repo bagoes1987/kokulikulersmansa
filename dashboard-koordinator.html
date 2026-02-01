@@ -87,7 +87,8 @@
                     <p class="text-[10px] text-emerald-600 font-bold tracking-wide uppercase mt-0.5" id="coordRole">
                         KOORDINATOR KOKULIKULER</p>
                     <p class="text-[10px] text-slate-400 font-bold tracking-wide uppercase mt-0.5">SMAN 1 BELITANG</p>
-                    <p class="text-[10px] text-slate-500 font-medium tracking-wide uppercase mt-0.5" id="coordNip">-</p>
+                    <p class="text-[10px] text-slate-500 font-medium tracking-wide uppercase mt-0.5"
+                        id="coordNipHeader">-</p>
                     <span id="coordSubject" class="hidden"></span>
                 </div>
             </div>
@@ -256,7 +257,7 @@
                         <div>
                             <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.15em] mb-1">NIP /
                                 Identitas</p>
-                            <p class="text-sm font-bold text-slate-800" id="coordNip">-</p>
+                            <p class="text-sm font-bold text-slate-800" id="coordNipBody">-</p>
                         </div>
                     </div>
                     <div class="h-px bg-slate-50"></div>
@@ -268,7 +269,7 @@
                         <div>
                             <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.15em] mb-1">Mapel /
                                 Bidang</p>
-                            <p class="text-sm font-bold text-slate-800" id="coordSubject">-</p>
+                            <p class="text-sm font-bold text-slate-800" id="coordSubjectBody">-</p>
                         </div>
                     </div>
                 </div>
@@ -417,8 +418,11 @@
             if (myClasses.length === 0) myClasses = ['X.1']; // Fallback default
 
             document.getElementById('coordName').textContent = userData.full_name;
-            document.getElementById('coordNip').textContent = userData.nip || '-';
-            document.getElementById('coordSubject').textContent = userData.mapel || 'Koordinator Kokulikuler';
+            // Update Header
+            if (document.getElementById('coordNipHeader')) document.getElementById('coordNipHeader').textContent = userData.nip || '-';
+            // Update Body Info
+            if (document.getElementById('coordNipBody')) document.getElementById('coordNipBody').textContent = userData.nip || '-';
+            if (document.getElementById('coordSubjectBody')) document.getElementById('coordSubjectBody').textContent = userData.mapel || 'Koordinator Kokulikuler';
 
             const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=10b981&color=fff&size=256`;
             document.getElementById('profilePhoto').style.backgroundImage = `url("${photoUrl}")`;
