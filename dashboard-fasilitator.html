@@ -809,32 +809,44 @@
 
                     console.log('Total student IDs:', studentIds.length);
 
-                    // Get latest 5 responses
-                    const { data: recent, error: rError } = await supabaseClient
+                    // Get latest 50 responses to allow for de-duplication and sorting
+                    const { data: recentRaw, error: rError } = await supabaseClient
                         .from('module_responses')
                         .select('*')
                         .in('student_id', studentIds)
                         .order('created_at', { ascending: false })
-                        .limit(5);
+                        .limit(50);
 
-                    console.log('Recent responses found:', recent ? recent.length : 0);
-                    if (recent && recent.length > 0) {
-                        console.log('Responses:', recent.map(r => `${studentMap[r.student_id]} - Day ${r.day_id} ${r.module_type}`));
-                    }
-
+                    console.log('Raw recent responses:', recentRaw ? recentRaw.length : 0);
                     if (rError) throw rError;
 
-                    if (!recent || recent.length === 0) {
+                    if (!recentRaw || recentRaw.length === 0) {
                         console.log('No recent responses found');
                         container.innerHTML = `
-                        <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
-                            <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
-                        </div>
-                    `;
+                            <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
+                                <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
+                            </div>
+                        `;
                         return;
                     }
 
-                    container.innerHTML = recent.map(r => {
+                    // 1. De-duplicate: Ensure only 1 row per student per module (the latest one)
+                    const uniqueMap = new Map();
+                    recentRaw.forEach(r => {
+                        const key = `${r.student_id}-${r.module_type}-${r.day_id}`;
+                        if (!uniqueMap.has(key)) {
+                            uniqueMap.set(key, r);
+                        }
+                    });
+
+                    // 2. Prioritize: Submitted (Amber) first, then Reviewed (Emerald)
+                    const processed = Array.from(uniqueMap.values()).sort((a, b) => {
+                        if (a.status === 'submitted' && b.status !== 'submitted') return -1;
+                        if (a.status !== 'submitted' && b.status === 'submitted') return 1;
+                        return 0; // Maintain chronological order if same status
+                    }).slice(0, 5); // Take top 5 after sorting
+
+                    container.innerHTML = processed.map(r => {
                         const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                         const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
                         const initials = (studentMap[r.student_id] || '?').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
