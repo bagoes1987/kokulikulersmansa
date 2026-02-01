@@ -423,13 +423,23 @@
                 // Update Body Info
                 if (document.getElementById('fasilNipBody')) document.getElementById('fasilNipBody').textContent = userData.nip || '-';
 
+                // DEBUG: Log entire user metadata
+                console.log("=== FACILITATOR USER METADATA ===");
+                console.log("Full userData:", userData);
+                console.log("userData.mapel:", userData.mapel);
+                console.log("typeof userData.mapel:", typeof userData.mapel);
+                console.log("userData.mapel exists?:", userData.mapel !== undefined && userData.mapel !== null);
+
                 // Robust Mapel Display
                 const mapelDisplay = document.getElementById('fasilSubjectDisplay');
+                console.log("mapelDisplay element found?:", mapelDisplay !== null);
+
                 if (mapelDisplay) {
                     const mapelValue = (userData.mapel && userData.mapel.trim().length > 0) ? userData.mapel : 'Fasilitator Kokulikuler';
-                    console.log("Setting Mapel to:", mapelValue, "Source:", userData.mapel); // Debug log
+                    console.log("Final Mapel Value:", mapelValue);
                     mapelDisplay.textContent = mapelValue;
                     mapelDisplay.classList.remove('hidden'); // Ensure visible
+                    console.log("Mapel display updated. Current textContent:", mapelDisplay.textContent);
                 }
 
                 const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=0ea5e9&color=fff&size=256`;
