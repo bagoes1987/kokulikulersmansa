@@ -355,8 +355,11 @@
             const saveText = document.getElementById('saveText');
 
             const newNip = document.getElementById('field2Input').value.trim();
+            const newMapel = document.getElementById('field1Input').value.trim();
 
-            if (!selectedFile && (userRole !== 'fasilitator' || newNip === (currentUser.nip || '-'))) {
+            // Validation: Only block if 'siswa' has no photo selected.
+            // For Staff (Fasil/Coord), we allow saving even if "no apparent change" to ensure updates are forced if needed.
+            if (userRole === 'siswa' && !selectedFile) {
                 alert('ℹ️ Tidak ada perubahan untuk disimpan.');
                 return;
             }
