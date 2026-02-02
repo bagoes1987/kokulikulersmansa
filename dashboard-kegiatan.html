@@ -2179,8 +2179,71 @@
                 </div>
 
                 <!-- Sections for LKPD 2, 3, 4, 5 (Placeholders) -->
-                <div id="lkpd-section-2" class="lkpd-section hidden py-10 text-center">
-                    <p class="text-xs text-slate-400 italic">LKPD 2 Sedang Dalam Perancangan...</p>
+                <!-- LKPD 2: Analisis Atlas Kuliner -->
+                <div id="lkpd-section-2" class="lkpd-section hidden animate-slide-up pb-8">
+                    <div class="mb-6">
+                        <h4 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-2">LKPD 2: Analisis
+                            Atlas Kuliner</h4>
+                        <p class="text-[10px] text-slate-500 font-medium leading-relaxed">Perhatikan materi Atlas
+                            Kuliner, kemudian lengkapi data berikut sesuai pemahaman kelompokmu!</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Card Region Helper Function Context -->
+                        <script>
+                            function generateRegionCard(id, name, icon, colorClass, iconColor) {
+                                return `
+                                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden group">
+                                    <div class="px-5 py-3 ${colorClass} flex items-center gap-3 border-b border-white/50">
+                                        <div class="size-8 rounded-full bg-white flex items-center justify-center ${iconColor} shadow-sm">
+                                            <span class="material-symbols-outlined text-[18px]">${icon}</span>
+                                        </div>
+                                        <span class="text-xs font-black uppercase tracking-widest text-slate-700">${name}</span>
+                                    </div>
+                                    <div class="p-5 space-y-4 bg-slate-50/30">
+                                        <div>
+                                            <label class="block text-[9px] font-bold text-slate-400 mb-1.5 uppercase tracking-tighter">Contoh Jajanan:</label>
+                                            <input type="text" id="lkpd2_${id}_contoh" oninput="saveLKPDDraft()" placeholder="Misal: Timphan, Rendang..."
+                                                class="w-full p-3 bg-white border border-slate-100 rounded-2xl text-[11px] font-medium focus:border-terracotta outline-none transition-all placeholder:text-slate-300">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-[9px] font-bold text-slate-400 mb-1.5 uppercase tracking-tighter">Bahan Utama:</label>
+                                                <input type="text" id="lkpd2_${id}_bahan" oninput="saveLKPDDraft()" placeholder="Beras, ikan..."
+                                                    class="w-full p-3 bg-white border border-slate-100 rounded-2xl text-[11px] font-medium focus:border-terracotta outline-none transition-all placeholder:text-slate-300">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[9px] font-bold text-slate-400 mb-1.5 uppercase tracking-tighter">Cita Rasa:</label>
+                                                <input type="text" id="lkpd2_${id}_rasa" oninput="saveLKPDDraft()" placeholder="Manis, pedas..."
+                                                    class="w-full p-3 bg-white border border-slate-100 rounded-2xl text-[11px] font-medium focus:border-terracotta outline-none transition-all placeholder:text-slate-300">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+                            }
+                        </script>
+
+                        <!-- Region Sumatra -->
+                        <div id="card-sumatra"></div>
+                        <script>document.getElementById('card-sumatra').outerHTML = generateRegionCard('sumatra', 'Sumatra', 'landscape', 'bg-emerald-50', 'text-emerald-500');</script>
+
+                        <!-- Region Jawa -->
+                        <div id="card-jawa"></div>
+                        <script>document.getElementById('card-jawa').outerHTML = generateRegionCard('jawa', 'Jawa', 'temple_hindu', 'bg-blue-50', 'text-blue-500');</script>
+
+                        <!-- Region Sulawesi -->
+                        <div id="card-sulawesi"></div>
+                        <script>document.getElementById('card-sulawesi').outerHTML = generateRegionCard('sulawesi', 'Sulawesi', 'waves', 'bg-red-50', 'text-red-500');</script>
+
+                        <!-- Region Bali -->
+                        <div id="card-bali"></div>
+                        <script>document.getElementById('card-bali').outerHTML = generateRegionCard('bali', 'Bali', 'surfing', 'bg-indigo-50', 'text-indigo-500');</script>
+
+                        <!-- Region Papua -->
+                        <div id="card-papua"></div>
+                        <script>document.getElementById('card-papua').outerHTML = generateRegionCard('papua', 'Papua', 'forest', 'bg-orange-50', 'text-orange-500');</script>
+                    </div>
                 </div>
                 <!-- ... repeat for 3, 4, 5 ... -->
                 <div id="lkpd-section-3" class="lkpd-section hidden py-10 text-center">
@@ -2500,17 +2563,43 @@
                         contoh: document.getElementById('lkpd1_q2b_contoh').value,
                         bahan: document.getElementById('lkpd1_q2b_bahan').value
                     }
+                },
+                lkpd2: {
+                    sumatra: {
+                        contoh: document.getElementById('lkpd2_sumatra_contoh').value,
+                        bahan: document.getElementById('lkpd2_sumatra_bahan').value,
+                        rasa: document.getElementById('lkpd2_sumatra_rasa').value
+                    },
+                    jawa: {
+                        contoh: document.getElementById('lkpd2_jawa_contoh').value,
+                        bahan: document.getElementById('lkpd2_jawa_bahan').value,
+                        rasa: document.getElementById('lkpd2_jawa_rasa').value
+                    },
+                    sulawesi: {
+                        contoh: document.getElementById('lkpd2_sulawesi_contoh').value,
+                        bahan: document.getElementById('lkpd2_sulawesi_bahan').value,
+                        rasa: document.getElementById('lkpd2_sulawesi_rasa').value
+                    },
+                    bali: {
+                        contoh: document.getElementById('lkpd2_bali_contoh').value,
+                        bahan: document.getElementById('lkpd2_bali_bahan').value,
+                        rasa: document.getElementById('lkpd2_bali_rasa').value
+                    },
+                    papua: {
+                        contoh: document.getElementById('lkpd2_papua_contoh').value,
+                        bahan: document.getElementById('lkpd2_papua_bahan').value,
+                        rasa: document.getElementById('lkpd2_papua_rasa').value
+                    }
                 }
-                // Add LKPD 2-5 here as they are implemented
+                // Add LKPD 3-5 here as they are implemented
             };
             localStorage.setItem(`lkpd_draft_day${currentDay}`, JSON.stringify(lkpdData));
         }
 
-        function loadLKPDDraft() {
-            const dataStr = localStorage.getItem(`lkpd_draft_day${currentDay}`);
-            if (!dataStr) return;
-            const data = JSON.parse(dataStr);
+        function fillLKPDFields(data) {
+            if (!data) return;
 
+            // LKPD 1
             if (data.lkpd1) {
                 if (document.getElementById('lkpd1_q1')) document.getElementById('lkpd1_q1').value = data.lkpd1.q1 || '';
                 if (document.getElementById('lkpd1_q2a_bentuk')) document.getElementById('lkpd1_q2a_bentuk').value = data.lkpd1.q2a?.bentuk || '';
@@ -2521,6 +2610,24 @@
                 if (document.getElementById('lkpd1_q2b_contoh')) document.getElementById('lkpd1_q2b_contoh').value = data.lkpd1.q2b?.contoh || '';
                 if (document.getElementById('lkpd1_q2b_bahan')) document.getElementById('lkpd1_q2b_bahan').value = data.lkpd1.q2b?.bahan || '';
             }
+
+            // LKPD 2
+            if (data.lkpd2) {
+                const regions = ['sumatra', 'jawa', 'sulawesi', 'bali', 'papua'];
+                regions.forEach(reg => {
+                    const r = data.lkpd2[reg];
+                    if (!r) return;
+                    if (document.getElementById(`lkpd2_${reg}_contoh`)) document.getElementById(`lkpd2_${reg}_contoh`).value = r.contoh || '';
+                    if (document.getElementById(`lkpd2_${reg}_bahan`)) document.getElementById(`lkpd2_${reg}_bahan`).value = r.bahan || '';
+                    if (document.getElementById(`lkpd2_${reg}_rasa`)) document.getElementById(`lkpd2_${reg}_rasa`).value = r.rasa || '';
+                });
+            }
+        }
+
+        function loadLKPDDraft() {
+            const dataStr = localStorage.getItem(`lkpd_draft_day${currentDay}`);
+            if (!dataStr) return;
+            fillLKPDFields(JSON.parse(dataStr));
         }
 
         async function submitLKPDTotal() {
@@ -2588,6 +2695,14 @@
                 if (data) {
                     const statusSection = document.getElementById('lkpdStatusSection');
                     const btnSubmit = document.getElementById('btnSubmitLKPDAll');
+
+                    // Populate fields from server data
+                    try {
+                        const lkpdData = JSON.parse(data.answers[0]);
+                        fillLKPDFields(lkpdData);
+                    } catch (e) {
+                        console.error('Error parsing server LKPD data', e);
+                    }
 
                     // Lock all inputs
                     const inputs = document.querySelectorAll('#modalLKPD input, #modalLKPD textarea');
