@@ -176,6 +176,31 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL LIHAT SEMUA AKTIVITAS -->
+    <div id="modalAllActivities"
+        class="fixed inset-0 z-[150000] hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+        <div
+            class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col border border-slate-100">
+            <div class="p-8 border-b flex justify-between items-center bg-slate-50/50">
+                <div class="flex flex-col">
+                    <p class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">Status Aktivitas</p>
+                    <h3 class="text-xl font-bold text-slate-800">Semua Aktivitas</h3>
+                </div>
+                <button onclick="closeAllActivitiesModal()"
+                    class="size-12 rounded-2xl bg-white border flex items-center justify-center font-black text-slate-400 hover:text-slate-600 transition-all shadow-sm">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-1 bg-white no-scrollbar" id="allActivitiesList">
+                <div class="flex flex-col items-center justify-center py-24">
+                    <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
+                    <p class="mt-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Memuat Aktivitas...
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
     <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-slate-200">
         <div class="max-w-md mx-auto px-5 py-4 flex items-center justify-between">
 
@@ -312,7 +337,7 @@
                 <section class="space-y-4">
                     <div class="flex items-center justify-between px-1">
                         <h2 class="text-lg font-bold text-slate-800">Status Terbaru</h2>
-                        <button onclick="loadRecentActivities()"
+                        <button onclick="openAllActivitiesModal()"
                             class="text-[10px] font-black uppercase text-primary tracking-widest hover:bg-sky-50 px-3 py-1.5 rounded-lg transition-colors">Lihat
                             Semua</button>
                     </div>
@@ -1085,108 +1110,155 @@
                 const container = document.getElementById('activityHistoryContainer');
                 try {
                     console.log('=== LOAD RECENT ACTIVITIES ===');
-                    console.log('My Classes:', myClasses);
 
-                    // Fetch latest 5 responses for the facilitator's classes
-                    const allFormats = [];
-                    myClasses.forEach(c => {
-                        const trimmed = c.trim();
-                        allFormats.push(trimmed);
-                        if (trimmed.includes('. ')) {
-                            allFormats.push(trimmed.replace('. ', '.'));
-                        } else if (trimmed.includes('.') && !trimmed.includes('. ')) {
-                            allFormats.push(trimmed.replace('.', '. '));
-                        }
-                    });
-
-                    console.log('All class formats to search:', allFormats);
-
-                    // Get student IDs first - NO LIMIT to get ALL students
-                    const { data: students, error: sError } = await supabaseClient
-                        .from('students')
-                        .select('id, nama, kelas')
-                        .in('kelas', allFormats);
-
-                    console.log('Students found:', students ? students.length : 0);
-                    if (students) {
-                        console.log('First 5 students:', students.slice(0, 5).map(s => `${s.nama} (${s.kelas})`));
-                    }
-
-                    if (sError) throw sError;
-                    if (!students || students.length === 0) {
-                        console.log('No students found for classes:', allFormats);
+                    const studentIds = await getMyStudentIds();
+                    if (!studentIds || studentIds.length === 0) {
+                        container.innerHTML = `
+                            <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
+                                <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
+                            </div>`;
                         return;
                     }
 
-                    const studentIds = students.map(s => s.id);
-                    const studentMap = Object.fromEntries(students.map(s => [s.id, s.nama]));
-
-                    console.log('Total student IDs:', studentIds.length);
-
-                    // Get latest 50 responses to allow for de-duplication and sorting
                     const { data: recentRaw, error: rError } = await supabaseClient
                         .from('module_responses')
-                        .select('*')
+                        .select('*, students(nama)')
                         .in('student_id', studentIds)
                         .order('created_at', { ascending: false })
                         .limit(50);
 
-                    console.log('Raw recent responses:', recentRaw ? recentRaw.length : 0);
                     if (rError) throw rError;
 
                     if (!recentRaw || recentRaw.length === 0) {
-                        console.log('No recent responses found');
                         container.innerHTML = `
-                    <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
-                        <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
-                        </div>
-                    `;
+                            <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
+                                <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
+                            </div>`;
                         return;
                     }
 
-                    // 1. De-duplicate: Ensure only 1 row per student per module (the latest one)
                     const uniqueMap = new Map();
                     recentRaw.forEach(r => {
-                        const key = `${r.student_id} -${r.module_type} -${r.day_id} `;
-                        if (!uniqueMap.has(key)) {
-                            uniqueMap.set(key, r);
-                        }
+                        const key = `${r.student_id}-${r.module_type}-${r.day_id}`;
+                        if (!uniqueMap.has(key)) uniqueMap.set(key, r);
                     });
 
-                    // 2. Prioritize: Submitted (Amber) first, then Reviewed (Emerald)
                     const processed = Array.from(uniqueMap.values()).sort((a, b) => {
                         if (a.status === 'submitted' && b.status !== 'submitted') return -1;
                         if (a.status !== 'submitted' && b.status === 'submitted') return 1;
-                        return 0; // Maintain chronological order if same status
-                    }).slice(0, 5); // Take top 5 after sorting
+                        return 0;
+                    }).slice(0, 5);
 
-                    container.innerHTML = processed.map(r => {
-                        const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                        const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
-                        const studentName = studentMap[r.student_id] || '?';
-                        const initials = studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-
-                        return `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentName}', '${r.day_id}', '${r.module_type}')">
-                            <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner">${initials}</div>
-                            <div class="flex-1">
-                                <p class="text-[13px] font-black text-slate-800 leading-tight">${studentName}</p>
-                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Hari ${r.day_id} • ${r.module_type}</p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-[10px] font-black text-slate-800">${time}</p>
-                                <div class="flex items-center gap-1 justify-end mt-1">
-                                    <span class="size-1.5 rounded-full ${statusColor}"></span>
-                                    <span class="text-[8px] font-black uppercase text-slate-400 tracking-tighter">${r.status === 'reviewed' ? 'Dinilai' : 'Masuk'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    }).join('');
-
+                    container.innerHTML = renderActivityItems(processed);
                 } catch (e) {
                     console.error('Recent Activity Error:', e);
                 }
+            }
+
+            async function getMyStudentIds() {
+                const allFormats = [];
+                myClasses.forEach(c => {
+                    const trimmed = c.trim();
+                    allFormats.push(trimmed);
+                    if (trimmed.includes('. ')) allFormats.push(trimmed.replace('. ', '.'));
+                    else if (trimmed.includes('.') && !trimmed.includes('. ')) allFormats.push(trimmed.replace('.', '. '));
+                });
+
+                const { data: students, error } = await supabaseClient
+                    .from('students')
+                    .select('id')
+                    .in('kelas', allFormats);
+
+                if (error) return [];
+                return students ? students.map(s => s.id) : [];
+            }
+
+            function renderActivityItems(processed) {
+                return processed.map(r => {
+                    const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    const date = new Date(r.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+                    const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
+                    const studentName = (r.students && r.students.nama) || '?';
+                    const initials = studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    const moduleLabel = {
+                        'pemantik': 'Pemantik',
+                        'materi': 'Materi',
+                        'video': 'Video',
+                        'lkpd': 'LKPD',
+                        'kuis': 'Asesmen',
+                        'dokumentasi': 'Dokumentasi',
+                        'refleksi': 'Refleksi'
+                    }[r.module_type] || r.module_type.toUpperCase();
+
+                    return `
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentName.replace(/'/g, "\\'")}', '${r.day_id}', '${r.module_type}')">
+                            <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner">${initials}</div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[13px] font-black text-slate-800 leading-tight truncate">${studentName}</p>
+                                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Hari ${r.day_id} • ${moduleLabel}</p>
+                            </div>
+                            <div class="text-right shrink-0">
+                                <p class="text-[10px] font-black text-slate-800">${time}</p>
+                                <div class="flex items-center gap-1 justify-end mt-1">
+                                    <span class="size-1.5 rounded-full ${statusColor}"></span>
+                                    <span class="text-[8px] font-black uppercase text-slate-400 tracking-tighter">${r.status === 'reviewed' ? 'Dinilai' : 'Review'}</span>
+                                </div>
+                            </div>
+                        </div>`;
+                }).join('');
+            }
+
+            async function openAllActivitiesModal() {
+                const modal = document.getElementById('modalAllActivities');
+                const listContainer = document.getElementById('allActivitiesList');
+                modal.classList.remove('hidden');
+                listContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-24">
+                        <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
+                        <p class="mt-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Memuat Semua Aktivitas...</p>
+                    </div>`;
+
+                try {
+                    const studentIds = await getMyStudentIds();
+                    if (!studentIds || studentIds.length === 0) {
+                        listContainer.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold">Tidak ada aktivitas ditemukan.</div>';
+                        return;
+                    }
+
+                    const { data: allRecent, error } = await supabaseClient
+                        .from('module_responses')
+                        .select('*, students(nama, kelas)')
+                        .in('student_id', studentIds)
+                        .order('created_at', { ascending: false })
+                        .limit(100);
+
+                    if (error) throw error;
+
+                    if (!allRecent || allRecent.length === 0) {
+                        listContainer.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold">Tidak ada aktivitas ditemukan.</div>';
+                        return;
+                    }
+
+                    // Group by status (Submitted first) then by class
+                    const sorted = allRecent.sort((a, b) => {
+                        if (a.status === 'submitted' && b.status !== 'submitted') return -1;
+                        if (a.status !== 'submitted' && b.status === 'submitted') return 1;
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    });
+
+                    listContainer.innerHTML = `
+                        <div class="space-y-3">
+                            ${renderActivityItems(sorted)}
+                        </div>`;
+
+                } catch (e) {
+                    console.error('Error openAllActivitiesModal:', e);
+                    listContainer.innerHTML = '<div class="text-center py-20 text-red-500 font-bold">Gagal memuat data.</div>';
+                }
+            }
+
+            function closeAllActivitiesModal() {
+                document.getElementById('modalAllActivities').classList.add('hidden');
             }
 
             async function logout() {
