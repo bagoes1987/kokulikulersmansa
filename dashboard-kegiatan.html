@@ -212,7 +212,7 @@
                     <span class="material-symbols-outlined !text-2xl">task_alt</span>
                 </div>
                 <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">Asesmen</h3>
+                    <h3 class="text-[15px] font-bold text-slate-800">Assessment</h3>
                     <div class="flex items-center gap-1 mt-1">
                         <span class="material-symbols-outlined !text-base text-slate-400"
                             id="status-asesmen">radio_button_unchecked</span>
@@ -483,6 +483,10 @@
                 }
                 if (moduleId === 'video') {
                     openVideoModal();
+                    return;
+                }
+                if (moduleId === 'asesmen' || moduleId === 'assessment') {
+                    openAssessmentModal();
                     return;
                 }
             }
@@ -2001,6 +2005,75 @@
         </div>
     </div>
 
+    <!-- MODAL ASSESSMENT (REPLACEMENT) -->
+    <div id="modalAssessment"
+        class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="p-6 border-b flex justify-between items-center bg-indigo-50/50">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="size-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-200">
+                        <span class="material-symbols-outlined !text-2xl">quiz</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800">Assessment</h3>
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Uji Pemahamanmu</p>
+                    </div>
+                </div>
+                <button onclick="closeAssessmentModal()"
+                    class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 flex-1 overflow-y-auto no-scrollbar relative">
+                <!-- Progress -->
+                <div class="w-full bg-slate-100 h-2 rounded-full mb-2 overflow-hidden">
+                    <div id="assessmentProgressBar" class="h-full bg-indigo-500 w-0 transition-all duration-300"></div>
+                </div>
+                <p id="assessmentProgressText" class="text-[10px] text-slate-400 font-bold mb-6 text-right">Soal 1 dari
+                    50</p>
+
+                <!-- Question Container -->
+                <div id="assessmentQuestionContainer" class="animate-slide-up">
+                    <!-- Dynamic Question Content Here -->
+                </div>
+
+                <!-- Result Container (Hidden initially) -->
+                <div id="assessmentResultContainer"
+                    class="hidden flex-col items-center justify-center text-center space-y-6 py-10 animate-scale-up">
+                    <div class="size-24 bg-amber-100 rounded-full flex items-center justify-center mb-2 mx-auto">
+                        <span class="text-6xl">🏆</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 mb-2">Luar Biasa!</h2>
+                        <p class="text-xs text-slate-500">Kamu telah menyelesaikan assessment.</p>
+                    </div>
+
+                    <div id="resultStars" class="flex gap-2 justify-center">
+                        <!-- Stars injected here -->
+                    </div>
+
+                    <p id="resultScoreText"
+                        class="text-lg font-bold text-indigo-600 bg-indigo-50 px-6 py-2 rounded-2xl"></p>
+
+                    <button onclick="closeAssessmentModal()"
+                        class="w-full py-4 bg-slate-800 text-white rounded-2xl font-bold shadow-lg active:scale-95 transition-all">
+                        Tutup & Simpan
+                    </button>
+                </div>
+
+                <!-- Navigation Button (Outside result) -->
+                <button id="btnNextAssessment"
+                    class="px-6 py-3 bg-indigo-500 text-white rounded-xl font-bold text-xs shadow-lg shadow-indigo-200 active:scale-95 transition-all w-full mt-6">
+                    Selanjutnya
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DOKUMENTASI FOTO (REPLACEMENT RANGKUMAN) -->
     <div id="modalDokumentasi"
         class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
@@ -2143,6 +2216,170 @@
 
             alert('Hebat! Ringkasan 100 kata berhasil disimpan. Progress tercatat.');
             closeVideoModal();
+        }
+
+        // ASSESSMENT LOGIC
+        let currentQuestionIndex = 0;
+        let userAnswers = {}; // { quesID: correctIndex }
+        let assessmentScore = 0;
+
+        function openAssessmentModal() {
+            // Load script dynamically if not present, then open
+            if (typeof assessmentQuestions === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'data/assessment_data.js';
+                script.onload = () => {
+                    setupAssessment();
+                };
+                document.body.appendChild(script);
+            } else {
+                setupAssessment();
+            }
+        }
+
+        function setupAssessment() {
+            const modal = document.getElementById('modalAssessment');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                currentQuestionIndex = 0;
+                userAnswers = {};
+                renderQuestion(0);
+            }
+        }
+
+        function closeAssessmentModal() {
+            const modal = document.getElementById('modalAssessment');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function renderQuestion(index) {
+            if (!assessmentQuestions || !assessmentQuestions[index]) return;
+
+            const q = assessmentQuestions[index];
+            const container = document.getElementById('assessmentQuestionContainer');
+
+            // Progress Bar
+            const progressPercent = ((index + 1) / assessmentQuestions.length) * 100;
+            document.getElementById('assessmentProgressBar').style.width = `${progressPercent}%`;
+            document.getElementById('assessmentProgressText').innerText = `Soal ${index + 1} dari ${assessmentQuestions.length}`;
+
+            // Render
+            let html = `
+                <h4 class="text-sm font-bold text-slate-800 mb-4">${q.id}. ${q.question}</h4>
+                <div class="space-y-3">
+            `;
+
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[q.id] === idx;
+                const activeClass = isSelected ? 'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50';
+
+                html += `
+                    <div onclick="selectOption(${q.id}, ${idx})" 
+                        class="p-4 rounded-xl border-2 ${activeClass} cursor-pointer transition-all flex items-center gap-3 group">
+                        <div class="size-6 rounded-full border-2 ${isSelected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300 group-hover:border-indigo-400'} flex items-center justify-center shrink-0">
+                            ${isSelected ? '<span class="material-symbols-outlined text-white text-xs">check</span>' : ''}
+                        </div>
+                        <p class="text-xs font-medium text-slate-700">${opt}</p>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+
+            // Button Control
+            const btnNext = document.getElementById('btnNextAssessment');
+            if (index === assessmentQuestions.length - 1) {
+                btnNext.innerText = 'Bintang Saya ?';
+                btnNext.onclick = finishAssessment;
+                btnNext.className = "px-6 py-3 bg-emerald-500 text-white rounded-xl font-bold text-xs shadow-lg shadow-emerald-200 active:scale-95 transition-all w-full mt-6";
+            } else {
+                btnNext.innerText = 'Selanjutnya';
+                btnNext.className = "px-6 py-3 bg-indigo-500 text-white rounded-xl font-bold text-xs shadow-lg shadow-indigo-200 active:scale-95 transition-all w-full mt-6";
+                btnNext.onclick = () => {
+                    if (userAnswers[q.id] === undefined) {
+                        alert('Pilih jawaban dulu ya!');
+                        return;
+                    }
+                    currentQuestionIndex++;
+                    renderQuestion(currentQuestionIndex);
+                };
+            }
+        }
+
+        function selectOption(qId, optIdx) {
+            userAnswers[qId] = optIdx;
+            // Rerender current to show selection
+            renderQuestion(currentQuestionIndex);
+        }
+
+        async function finishAssessment() {
+            const q = assessmentQuestions[currentQuestionIndex];
+            if (userAnswers[q.id] === undefined) {
+                alert('Pilih jawaban dulu ya!');
+                return;
+            }
+
+            // Calculate Score
+            let correctCount = 0;
+            assessmentQuestions.forEach(ques => {
+                if (userAnswers[ques.id] === ques.correctIndex) {
+                    correctCount++;
+                }
+            });
+
+            const score = correctCount * 2; // 50 soal x 2 = 100
+            const stars = Math.ceil(score / 20); // 0-100 -> 0-5 stars
+
+            // Show Result
+            document.getElementById('assessmentQuestionContainer').classList.add('hidden');
+            document.getElementById('assessmentResultContainer').classList.remove('hidden');
+            document.getElementById('assessmentResultContainer').classList.add('flex');
+            document.getElementById('btnNextAssessment').classList.add('hidden');
+
+            // Render Stars
+            let starsHtml = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < stars) {
+                    starsHtml += '<span class="material-symbols-outlined text-4xl text-amber-400 fill-current animate-bounce" style="animation-delay: ' + (i * 100) + 'ms">star</span>';
+                } else {
+                    starsHtml += '<span class="material-symbols-outlined text-4xl text-slate-200">star</span>';
+                }
+            }
+            document.getElementById('resultStars').innerHTML = starsHtml;
+            document.getElementById('resultScoreText').innerText = `Skor Kamu: ${score} / 100`;
+
+            // Save Status Local
+            localStorage.setItem('assessment_video_day1_stars', stars);
+            localStorage.setItem('assessment_video_day1_score', score);
+            forceCompleteModule('assessment', score);
+
+            // SAVE TO SUPABASE
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (user) {
+                    // Storing plain JSON of user answers
+                    const answerData = JSON.stringify(userAnswers);
+
+                    await supabaseClient
+                        .from('module_responses')
+                        .insert({
+                            student_id: user.id,
+                            day_id: currentDay,
+                            module_type: 'kuis', // 'kuis' maps to 'Asesmen' in facilitator view
+                            answers: [answerData],
+                            status: 'reviewed',
+                            score: score
+                        });
+                }
+            } catch (err) {
+                console.error('Failed to save assessment to cloud:', err);
+            }
+
         }
     </script>
 </body>

@@ -956,6 +956,59 @@
                             <p class="text-xs text-slate-700 font-medium leading-relaxed whitespace-pre-wrap">${summaryText}</p>
                         </div>
                         `;
+                    } else if (r.module_type === 'kuis' || r.module_type === 'assessment') {
+                        // Display Assessment Results
+                        let userAnswers = {};
+                        try {
+                            userAnswers = JSON.parse(answers[0]);
+                        } catch (e) { console.error('Error parsing answers JSON', e); }
+
+                        if (typeof assessmentQuestions !== 'undefined') {
+                            answerCont.innerHTML = assessmentQuestions.map((q, idx) => {
+                                const userIdx = userAnswers[q.id];
+                                const isCorrect = userIdx === q.correctIndex;
+                                const userOpt = q.options[userIdx];
+                                const correctOpt = q.options[q.correctIndex];
+
+                                let statusBadge = '';
+                                let bgClass = 'bg-slate-50 border-slate-100';
+
+                                if (userIdx !== undefined) {
+                                    if (isCorrect) {
+                                        bgClass = 'bg-emerald-50 border-emerald-100';
+                                        statusBadge = '<span class="text-[9px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-lg">Benar</span>';
+                                    } else {
+                                        bgClass = 'bg-red-50 border-red-100';
+                                        statusBadge = '<span class="text-[9px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-lg">Salah</span>';
+                                    }
+                                } else {
+                                    statusBadge = '<span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-lg">Tidak Dijawab</span>';
+                                }
+
+                                return `
+                                <div class="${bgClass} p-4 rounded-2xl border mb-3">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <p class="text-[10px] font-bold text-slate-500">Soal ${q.id}</p>
+                                        ${statusBadge}
+                                    </div>
+                                    <p class="text-xs font-bold text-slate-800 mb-3">${q.question}</p>
+                                    
+                                    <div class="space-y-1">
+                                        <p class="text-[10px] text-slate-500">Jawaban Siswa:</p>
+                                        <p class="text-xs font-medium ${isCorrect ? 'text-emerald-600' : 'text-red-500'}">
+                                            ${userIdx !== undefined ? userOpt : '-'}
+                                        </p>
+                                    </div>
+                                    ${!isCorrect ? `
+                                    <div class="mt-2 pt-2 border-t border-slate-200/50">
+                                        <p class="text-[10px] text-emerald-600 font-bold">Kunci Jawaban: ${correctOpt}</p>
+                                    </div>` : ''}
+                                </div>
+                                `;
+                            }).join('');
+                        } else {
+                            answerCont.innerHTML = '<div class="text-center text-red-400 text-xs">Gagal memuat bank soal.</div>';
+                        }
                     } else {
                         // Standard display for other modules (e.g., Pemantik)
                         answerCont.innerHTML = answers.map((ans, i) => `
@@ -1318,6 +1371,7 @@
 
             window.addEventListener('load', init);
         </script>
+        <script src="data/assessment_data.js"></script>
 </body>
 
 </html>

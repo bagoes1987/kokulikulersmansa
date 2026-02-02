@@ -180,14 +180,15 @@
                     <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Hasil asesmen siswa.</p>
                 </div>
                 <!-- 4. Alur Kegiatan -->
-                <div onclick="alert('Timeline Alur Kegiatan sedang disiapkan...')"
+                <!-- 4. Bank Soal & Kunci -->
+                <div onclick="openAssessmentKeys()"
                     class="bg-purple-50/50 border border-purple-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
                     <div
                         class="size-10 bg-purple-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
-                        <span class="material-symbols-outlined text-2xl">route</span>
+                        <span class="material-symbols-outlined text-2xl">quiz</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-base">Alur Kegiatan</h3>
-                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Timeline & roadmap kerja.</p>
+                    <h3 class="font-bold text-slate-800 text-base">Bank Soal</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Cek soal & kunci jawaban.</p>
                 </div>
                 <!-- 5. Laporan Akhir -->
                 <div onclick="alert('Menu Laporan & Ekspor Sertifikat sedang disiapkan...')"
@@ -354,6 +355,28 @@
                 <div id="facilitatorListContainer" class="space-y-4">
                     <!-- Facilitator Cards -->
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Bank Soal -->
+    <div id="modalAssessmentKeys"
+        class="fixed inset-0 z-[3000] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
+        <div
+            class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col border border-slate-100">
+            <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-white">
+                <div>
+                    <h3 class="text-lg font-black text-slate-800">Bank Soal & Kunci</h3>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Asesmen Hari 1 (50
+                        Soal)</p>
+                </div>
+                <button onclick="document.getElementById('modalAssessmentKeys').classList.add('hidden')"
+                    class="size-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div id="keysContainer" class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50/50">
+                <!-- Content injected here -->
             </div>
         </div>
     </div>
@@ -852,6 +875,51 @@
             document.getElementById('modalFacilitatorMonitoring').classList.add('hidden');
         }
 
+        function openAssessmentKeys() {
+            const modal = document.getElementById('modalAssessmentKeys');
+            const container = document.getElementById('keysContainer');
+
+            modal.classList.remove('hidden');
+            container.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase text-[10px] animate-pulse">Memuat soal...</div>';
+
+            if (typeof assessmentQuestions === 'undefined') {
+                container.innerHTML = '<div class="text-center py-10 text-red-400 font-bold text-xs">Error: Data soal tidak dimuat.</div>';
+                return;
+            }
+
+            container.innerHTML = assessmentQuestions.map((q, i) => {
+                let optionsHtml = q.options.map((opt, idx) => {
+                    const isCorrect = idx === q.correctIndex;
+                    const style = isCorrect
+                        ? 'bg-emerald-50 border-emerald-200 text-emerald-700 font-bold'
+                        : 'bg-white border-slate-100 text-slate-600';
+                    const icon = isCorrect
+                        ? '<span class="material-symbols-outlined text-sm text-emerald-500">check_circle</span>'
+                        : '<span class="size-4 block"></span>'; // spacer
+
+                    return `
+                        <div class="flex items-start gap-3 p-3 rounded-xl border ${style} text-xs">
+                             <div class="mt-0.5 shrink-0">${icon}</div>
+                             <span>${opt}</span>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="size-6 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black flex items-center justify-center uppercase">No. ${q.id}</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kunci: ${String.fromCharCode(65 + q.correctIndex)}</span>
+                        </div>
+                        <p class="text-sm font-bold text-slate-800 mb-4 leading-relaxed">${q.question}</p>
+                        <div class="space-y-2">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         async function logout() {
             if (confirm('Yakin ingin keluar?')) {
                 await supabaseClient.auth.signOut();
@@ -864,6 +932,7 @@
 
         window.addEventListener('load', init);
     </script>
+    <script src="data/assessment_data.js"></script>
 </body>
 
 </html>
