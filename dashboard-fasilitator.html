@@ -1189,9 +1189,6 @@
                                 </div>`;
                         }
 
-                                </div > `;
-                        }
-
                         if (lkpdData.lkpd3) {
                             const lkpd3Questions = [
                                 "Sebutkan 3 jenis bahan lokal yang menjadi sumber karbohidrat utama dalam jajanan Nusantara!",
@@ -1487,7 +1484,7 @@
 
                     const uniqueMap = new Map();
                     recentRaw.forEach(r => {
-                        const key = `${ r.student_id } -${ r.module_type } -${ r.day_id } `;
+                        const key = `${r.student_id} -${r.module_type} -${r.day_id} `;
                         if (!uniqueMap.has(key)) uniqueMap.set(key, r);
                     });
 
@@ -1541,7 +1538,7 @@
 
                     return `
                             < div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick = "openGradingModal('${r.student_id}', '${studentName.replace(/'/g, "\\'")}', '${r.day_id}', '${r.module_type}') ">
-                                < div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner" > ${ initials }</div >
+                                < div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner" > ${initials}</div >
                             <div class="flex-1 min-w-0">
                                 <p class="text-[13px] font-black text-slate-800 leading-tight truncate">${studentName}</p>
                                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Hari ${r.day_id} • ${moduleLabel}</p>
@@ -1597,7 +1594,7 @@
 
                     listContainer.innerHTML = `
                             < div class="space-y-3" >
-                                ${ renderActivityItems(sorted, studentMap) }
+                                ${renderActivityItems(sorted, studentMap)}
                             </div > `;
 
                 } catch (e) {
