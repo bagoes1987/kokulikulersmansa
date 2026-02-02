@@ -2246,8 +2246,70 @@
                     </div>
                 </div>
                 <!-- ... repeat for 3, 4, 5 ... -->
-                <div id="lkpd-section-3" class="lkpd-section hidden py-10 text-center">
-                    <p class="text-xs text-slate-400 italic">LKPD 3 Sedang Dalam Perancangan...</p>
+                <!-- LKPD 3: Analisis Gizi & Bahan Utama -->
+                <div id="lkpd-section-3" class="lkpd-section hidden animate-slide-up pb-8">
+                    <div class="mb-6">
+                        <h4 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-2">LKPD 3: Analisis
+                            Gizi & Bahan Utama</h4>
+                        <p class="text-[10px] text-slate-500 font-medium leading-relaxed">Analisis kandungan gizi dan
+                            manfaat bahan tradisional berikut berdasarkan materi yang telah dipelajari.</p>
+                    </div>
+
+                    <div class="space-y-5">
+                        <!-- Q1: Sumber Energi -->
+                        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3 bg-amber-50 flex items-center gap-3 border-b border-white/50">
+                                <div
+                                    class="size-8 rounded-full bg-white flex items-center justify-center text-amber-500 shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">bolt</span>
+                                </div>
+                                <span class="text-[11px] font-black uppercase tracking-widest text-slate-700">1. Sumber
+                                    Energi Utama</span>
+                            </div>
+                            <div class="p-5 bg-slate-50/30">
+                                <label class="block text-[10px] font-bold text-slate-500 mb-2 leading-relaxed">Mengapa
+                                    jajanan berbahan dasar beras, singkong, atau sagu menjadi sumber energi?</label>
+                                <textarea id="lkpd3_q1" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                    class="w-full min-h-[80px] p-4 bg-white border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-terracotta outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Q2: Serat Pangan -->
+                        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3 bg-emerald-50 flex items-center gap-3 border-b border-white/50">
+                                <div
+                                    class="size-8 rounded-full bg-white flex items-center justify-center text-emerald-500 shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">grass</span>
+                                </div>
+                                <span class="text-[11px] font-black uppercase tracking-widest text-slate-700">2. Serat
+                                    Pangan</span>
+                            </div>
+                            <div class="p-5 bg-slate-50/30">
+                                <label class="block text-[10px] font-bold text-slate-500 mb-2 leading-relaxed">Sebutkan
+                                    dua contoh bahan jajanan Nusantara yang mengandung serat pangan!</label>
+                                <textarea id="lkpd3_q2" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                    class="w-full min-h-[80px] p-4 bg-white border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-terracotta outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Q3: Manfaat Gula Aren -->
+                        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3 bg-orange-50 flex items-center gap-3 border-b border-white/50">
+                                <div
+                                    class="size-8 rounded-full bg-white flex items-center justify-center text-orange-500 shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">nutrition</span>
+                                </div>
+                                <span class="text-[11px] font-black uppercase tracking-widest text-slate-700">3. Manfaat
+                                    Gula Aren</span>
+                            </div>
+                            <div class="p-5 bg-slate-50/30">
+                                <label class="block text-[10px] font-bold text-slate-500 mb-2 leading-relaxed">Jelaskan
+                                    manfaat penggunaan gula aren dibandingkan gula pasir!</label>
+                                <textarea id="lkpd3_q3" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                    class="w-full min-h-[80px] p-4 bg-white border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-terracotta outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="lkpd-section-4" class="lkpd-section hidden py-10 text-center">
                     <p class="text-xs text-slate-400 italic">LKPD 4 Sedang Dalam Perancangan...</p>
@@ -2590,8 +2652,18 @@
                         bahan: document.getElementById('lkpd2_papua_bahan').value,
                         rasa: document.getElementById('lkpd2_papua_rasa').value
                     }
+                },
+                lkpd3: {
+                    q1: document.getElementById('lkpd3_q1').value,
+                    q2: document.getElementById('lkpd3_q2').value,
+                    q3: document.getElementById('lkpd3_q3').value
+                },
+                lkpd3: {
+                    q1: document.getElementById('lkpd3_q1').value,
+                    q2: document.getElementById('lkpd3_q2').value,
+                    q3: document.getElementById('lkpd3_q3').value
                 }
-                // Add LKPD 3-5 here as they are implemented
+                // Add LKPD 4-5 here as they are implemented
             };
             localStorage.setItem(`lkpd_draft_day${currentDay}`, JSON.stringify(lkpdData));
         }
@@ -2621,6 +2693,13 @@
                     if (document.getElementById(`lkpd2_${reg}_bahan`)) document.getElementById(`lkpd2_${reg}_bahan`).value = r.bahan || '';
                     if (document.getElementById(`lkpd2_${reg}_rasa`)) document.getElementById(`lkpd2_${reg}_rasa`).value = r.rasa || '';
                 });
+            }
+
+            // LKPD 3
+            if (data.lkpd3) {
+                if (document.getElementById('lkpd3_q1')) document.getElementById('lkpd3_q1').value = data.lkpd3.q1 || '';
+                if (document.getElementById('lkpd3_q2')) document.getElementById('lkpd3_q2').value = data.lkpd3.q2 || '';
+                if (document.getElementById('lkpd3_q3')) document.getElementById('lkpd3_q3').value = data.lkpd3.q3 || '';
             }
         }
 
