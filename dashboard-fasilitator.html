@@ -465,17 +465,9 @@
                     if (document.getElementById('fasilNipBody')) {
                         document.getElementById('fasilNipBody').textContent = userData.nip || '-';
                     }
-                    if (document.getElementById('fasilSubjectBody')) {
-                        document.getElementById('fasilSubjectBody').textContent = userData.mapel || 'Fasilitator';
-                    }
-
-                    // Robust Mapel Display
-                    const mapelDisplay = document.getElementById('fasilSubjectDisplay');
-                    if (mapelDisplay) {
+                    if (document.getElementById('fasilMapelHeader')) {
                         const mapelValue = (userData.mapel && userData.mapel.trim().length > 0) ? userData.mapel : 'Fasilitator Kokulikuler';
-                        mapelDisplay.textContent = mapelValue;
-                        mapelDisplay.classList.remove('hidden');
-                        mapelDisplay.setAttribute('style', 'display: block !important; visibility: visible !important; opacity: 1 !important; color: #1e293b !important; font-size: 16px !important; font-weight: 700 !important; min-height: 24px !important;');
+                        document.getElementById('fasilMapelHeader').textContent = mapelValue;
                     }
 
                     const photoUrl = userData.photo_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.full_name)}&background=13ec6d&color=fff&size=256`;
