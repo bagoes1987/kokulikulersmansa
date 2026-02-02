@@ -1111,7 +1111,7 @@
                 try {
                     console.log('=== LOAD RECENT ACTIVITIES ===');
 
-                    const studentIds = await getMyStudentIds();
+                    const { ids: studentIds, map: studentMap } = await getMyStudentsData();
                     if (!studentIds || studentIds.length === 0) {
                         container.innerHTML = `
                             <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
@@ -1122,7 +1122,7 @@
 
                     const { data: recentRaw, error: rError } = await supabaseClient
                         .from('module_responses')
-                        .select('*, students(nama)')
+                        .select('*')
                         .in('student_id', studentIds)
                         .order('created_at', { ascending: false })
                         .limit(50);
@@ -1149,13 +1149,13 @@
                         return 0;
                     }).slice(0, 5);
 
-                    container.innerHTML = renderActivityItems(processed);
+                    container.innerHTML = renderActivityItems(processed, studentMap);
                 } catch (e) {
                     console.error('Recent Activity Error:', e);
                 }
             }
 
-            async function getMyStudentIds() {
+            async function getMyStudentsData() {
                 const allFormats = [];
                 myClasses.forEach(c => {
                     const trimmed = c.trim();
@@ -1166,19 +1166,20 @@
 
                 const { data: students, error } = await supabaseClient
                     .from('students')
-                    .select('id')
+                    .select('id, nama')
                     .in('kelas', allFormats);
 
-                if (error) return [];
-                return students ? students.map(s => s.id) : [];
+                if (error) return { ids: [], map: {} };
+                const ids = students ? students.map(s => s.id) : [];
+                const map = Object.fromEntries(students ? students.map(s => [s.id, s.nama]) : []);
+                return { ids, map };
             }
 
-            function renderActivityItems(processed) {
+            function renderActivityItems(processed, studentMap) {
                 return processed.map(r => {
                     const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                    const date = new Date(r.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
                     const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
-                    const studentName = (r.students && r.students.nama) || '?';
+                    const studentName = studentMap[r.student_id] || '?';
                     const initials = studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
                     const moduleLabel = {
                         'pemantik': 'Pemantik',
@@ -1219,7 +1220,7 @@
                     </div>`;
 
                 try {
-                    const studentIds = await getMyStudentIds();
+                    const { ids: studentIds, map: studentMap } = await getMyStudentsData();
                     if (!studentIds || studentIds.length === 0) {
                         listContainer.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold">Tidak ada aktivitas ditemukan.</div>';
                         return;
@@ -1227,7 +1228,7 @@
 
                     const { data: allRecent, error } = await supabaseClient
                         .from('module_responses')
-                        .select('*, students(nama, kelas)')
+                        .select('*')
                         .in('student_id', studentIds)
                         .order('created_at', { ascending: false })
                         .limit(100);
@@ -1239,7 +1240,7 @@
                         return;
                     }
 
-                    // Group by status (Submitted first) then by class
+                    // Group by status (Submitted first)
                     const sorted = allRecent.sort((a, b) => {
                         if (a.status === 'submitted' && b.status !== 'submitted') return -1;
                         if (a.status !== 'submitted' && b.status === 'submitted') return 1;
@@ -1248,7 +1249,7 @@
 
                     listContainer.innerHTML = `
                         <div class="space-y-3">
-                            ${renderActivityItems(sorted)}
+                            ${renderActivityItems(sorted, studentMap)}
                         </div>`;
 
                 } catch (e) {
