@@ -425,6 +425,7 @@
                     // Individual checks for modal pre-population
                     checkExistingPemantik();
                     checkExistingMateri();
+                    checkExistingVideo();
                     checkExistingDokumentasi();
                 } catch (internalError) {
                     console.error('Non-auth error in loadStudentData:', internalError);
@@ -1981,8 +1982,12 @@
                         placeholder="Tuliskan poin-poin penting dari ketiga video di atas (minimal 100 kata)..."></textarea>
                 </div>
 
-                <!-- Penilaian Fasil (Placeholder) -->
-                <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100 flex flex-col items-center gap-2">
+                <!-- Penilaian Fasil (Dynamic) -->
+                <div id="videoStatusSection" class="hidden"></div>
+
+                <!-- Placeholder Penilaian (Hidden if logic above works) -->
+                <div id="videoFeedbackPlaceholder"
+                    class="bg-amber-50 p-4 rounded-2xl border border-amber-100 flex flex-col items-center gap-2">
                     <p class="text-[10px] font-bold text-amber-700 uppercase tracking-widest">Penilaian Fasilitator</p>
                     <div class="flex gap-1">
                         <span class="material-symbols-outlined text-slate-300 text-2xl">star</span>
@@ -2146,6 +2151,8 @@
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
 
+                checkExistingVideo(); // Cek status terbaru saat buka modal
+
                 // Load existing summary if any
                 const summary = localStorage.getItem('video_summary_day1') || '';
                 if (document.getElementById('videoSummaryInput')) {
@@ -2199,7 +2206,8 @@
             }
         }
 
-        function submitVideoLog() {
+        async function submitVideoLog() {
+            const btn = document.getElementById('btnSubmitVideo');
             const summary = document.getElementById('videoSummaryInput').value;
             const wordCount = summary.trim().split(/\s+/).length;
 
@@ -2208,14 +2216,115 @@
                 return;
             }
 
-            // Save to local storage
-            localStorage.setItem('video_summary_day1', summary);
+            btn.disabled = true;
+            btn.innerHTML = 'Mengirim...';
 
-            // Update progress
-            forceCompleteModule('video');
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error("User tidak ditemukan");
 
-            alert('Hebat! Ringkasan 100 kata berhasil disimpan. Progress tercatat.');
-            closeVideoModal();
+                // Save to local storage (backup)
+                localStorage.setItem('video_summary_day1', summary);
+
+                // 1. Simpan ke Supabase
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: currentDay,
+                        module_type: 'video',
+                        answers: [summary],
+                        status: 'submitted'
+                    });
+
+                if (error) throw error;
+
+                alert('Hebat! Ringkasan berhasil dikirim. Menunggu feedback dari fasilitator.');
+
+                // Update progress lokal agar sinkron
+                const dayKey = `day${currentDay}`;
+                studentProgress[dayKey]['video'] = false; // Tetap false agar show "Menunggu Feedback"
+                saveProgress();
+
+                checkAllModulesStatus(); // Refresh dashboard UI
+                closeVideoModal();
+                checkExistingVideo(); // Refresh modal content
+
+            } catch (err) {
+                console.error('Gagal kirim video summary:', err);
+                alert('Terjadi kesalahan saat mengirim ringkasan.');
+                btn.disabled = false;
+                btn.innerHTML = 'Simpan Ringkasan & Selesai';
+            }
+        }
+
+        async function checkExistingVideo() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data, error } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', currentDay)
+                    .eq('module_type', 'video')
+                    .maybeSingle();
+
+                if (data) {
+                    const input = document.getElementById('videoSummaryInput');
+                    const btn = document.getElementById('btnSubmitVideo');
+                    const statusSection = document.getElementById('videoStatusSection');
+                    const placeholder = document.getElementById('videoFeedbackPlaceholder');
+
+                    if (input) {
+                        input.value = data.answers[0] || '';
+                        input.disabled = true;
+                    }
+                    if (btn) btn.classList.add('hidden');
+                    if (placeholder) placeholder.classList.add('hidden');
+
+                    if (statusSection) {
+                        statusSection.classList.remove('hidden');
+                        if (data.status === 'submitted') {
+                            statusSection.innerHTML = `
+                                <div class="bg-yellow-50 p-4 rounded-2xl border border-yellow-100 flex items-center gap-3">
+                                    <div class="size-8 rounded-full bg-yellow-400 flex items-center justify-center text-white shrink-0 animate-pulse">
+                                        <span class="material-symbols-outlined text-sm">hourglass_top</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-[10px] font-black text-yellow-700 uppercase tracking-widest">Menunggu Feedback</p>
+                                        <p class="text-[10px] text-yellow-600 mt-0.5 font-medium">Fasilitator sedang membaca ringkasanmu.</p>
+                                    </div>
+                                </div>
+                            `;
+                        } else if (data.status === 'reviewed') {
+                            // Render Stars
+                            let starsHtml = '';
+                            const score = data.score || 0;
+                            const starCount = Math.round(score / 20);
+                            for (let i = 1; i <= 5; i++) {
+                                starsHtml += `<span class="material-symbols-outlined text-2xl ${i <= starCount ? 'text-amber-400 fill-current' : 'text-slate-200'}">star</span>`;
+                            }
+
+                            statusSection.innerHTML = `
+                                <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100 space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Dinilai Fasilitator</p>
+                                        <div class="flex">${starsHtml}</div>
+                                    </div>
+                                    <div class="p-3 bg-white rounded-xl border border-emerald-100">
+                                        <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Feedback:</p>
+                                        <p class="text-xs text-slate-700 font-medium italic">"${data.feedback || 'Bagus sekali!'}"</p>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('Error checkExistingVideo:', e);
+            }
         }
 
         // ASSESSMENT LOGIC

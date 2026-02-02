@@ -1045,6 +1045,19 @@
                             <p class="text-xs text-slate-700 font-medium leading-relaxed whitespace-pre-wrap">${summaryText}</p>
                         </div>
                         `;
+                    } else if (r.module_type === 'video') {
+                        // Special display for Video Summary
+                        const summaryText = answers[0] || '';
+                        const words = summaryText.trim() ? summaryText.trim().split(/\s+/).length : 0;
+                        answerCont.innerHTML = `
+                        <div class="bg-red-50 p-4 rounded-2xl border border-red-100">
+                            <div class="flex justify-between items-center mb-2">
+                                <p class="text-[8px] font-black text-red-400 uppercase tracking-wider">Ringkasan Video Belajar</p>
+                                <span class="bg-red-100 text-red-600 text-[8px] font-black px-2 py-0.5 rounded-lg uppercase">${words} Kata</span>
+                            </div>
+                            <p class="text-xs text-slate-700 font-medium leading-relaxed whitespace-pre-wrap">${summaryText}</p>
+                        </div>
+                        `;
                     } else if (r.module_type === 'kuis' || r.module_type === 'assessment') {
                         // Display Assessment Results
                         let userAnswers = {};
