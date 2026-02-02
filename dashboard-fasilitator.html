@@ -1111,6 +1111,48 @@
                         } else {
                             answerCont.innerHTML = '<div class="text-center text-red-400 text-xs">Gagal memuat bank soal.</div>';
                         }
+                    } else if (r.module_type === 'lkpd') {
+                        // Display LKPD Results (JSON)
+                        let lkpdData = {};
+                        try {
+                            lkpdData = JSON.parse(answers[0]);
+                        } catch (e) {
+                            console.error('Error parsing LKPD JSON', e);
+                            answerCont.innerHTML = `<div class="p-4 bg-red-50 text-red-500 text-xs rounded-xl">${answers[0]}</div>`;
+                            return;
+                        }
+
+                        let html = '<div class="space-y-4">';
+                        if (lkpdData.lkpd1) {
+                            html += `
+                                <div class="p-4 bg-orange-50 border border-orange-100 rounded-2xl">
+                                    <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-3">LKPD 1: Definisi & Budaya</p>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase">1. Pengertian Jajanan:</p>
+                                            <p class="text-xs text-slate-700 font-medium leading-relaxed">${lkpdData.lkpd1.q1 || '-'}</p>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3 pt-2">
+                                            <div class="p-3 bg-white rounded-xl border border-orange-50">
+                                                <p class="text-[8px] font-black text-slate-400 uppercase mb-1">A. Tiongkok</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Bentuk:</strong> ${lkpdData.lkpd1.q2a?.bentuk || '-'}</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Contoh:</strong> ${lkpdData.lkpd1.q2a?.contoh || '-'}</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Bahan:</strong> ${lkpdData.lkpd1.q2a?.bahan || '-'}</p>
+                                            </div>
+                                            <div class="p-3 bg-white rounded-xl border border-indigo-50">
+                                                <p class="text-[8px] font-black text-slate-400 uppercase mb-1">B. Eropa</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Bentuk:</strong> ${lkpdData.lkpd1.q2b?.bentuk || '-'}</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Contoh:</strong> ${lkpdData.lkpd1.q2b?.contoh || '-'}</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Bahan:</strong> ${lkpdData.lkpd1.q2b?.bahan || '-'}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        // Add lkpd2-5 cases as they are implemented
+                        html += '</div>';
+                        answerCont.innerHTML = html;
                     } else {
                         // Standard display for other modules (e.g., Pemantik)
                         answerCont.innerHTML = answers.map((ans, i) => `
@@ -1123,7 +1165,7 @@
 
                     const scoreInputArea = document.getElementById('scoreInputArea');
                     const starRatingArea = document.getElementById('starRatingArea');
-                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi'];
+                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi', 'lkpd'];
 
                     if (starModules.includes(r.module_type)) {
                         scoreInputArea.classList.add('hidden');
