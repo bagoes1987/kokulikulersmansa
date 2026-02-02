@@ -2168,7 +2168,7 @@
                 checkExistingVideo(); // Cek status terbaru saat buka modal
 
                 // Load existing summary if any
-                const summary = localStorage.getItem('video_summary_day1') || '';
+                const summary = localStorage.getItem(`video_summary_day${currentDay}`) || '';
                 if (document.getElementById('videoSummaryInput')) {
                     const input = document.getElementById('videoSummaryInput');
                     input.value = summary;
@@ -2238,7 +2238,7 @@
                 if (!user) throw new Error("User tidak ditemukan");
 
                 // Save to local storage (backup)
-                localStorage.setItem('video_summary_day1', summary);
+                localStorage.setItem(`video_summary_day${currentDay}`, summary);
 
                 // 1. Simpan ke Supabase
                 const { error } = await supabaseClient
