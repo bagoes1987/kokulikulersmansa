@@ -2311,8 +2311,109 @@
                         </div>
                     </div>
                 </div>
-                <div id="lkpd-section-4" class="lkpd-section hidden py-10 text-center">
-                    <p class="text-xs text-slate-400 italic">LKPD 4 Sedang Dalam Perancangan...</p>
+                <!-- LKPD 4: Inovasi Jajanan Nusantara Sehat -->
+                <div id="lkpd-section-4" class="lkpd-section hidden animate-slide-up pb-8">
+                    <div class="mb-6">
+                        <h4 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-2">LKPD 4: Inovasi
+                            Jajanan Nusantara Sehat</h4>
+                        <p class="text-[10px] text-slate-500 font-medium leading-relaxed">Diskusikan dan rancang satu
+                            ide jajanan Nusantara sehat untuk kegiatan bazar sekolah!</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <!-- Identitas Produk -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm-soft">
+                                <label
+                                    class="block text-[9px] font-black text-slate-400 mb-2 uppercase tracking-widest">Nama
+                                    Jajanan:</label>
+                                <input type="text" id="lkpd4_nama" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                    class="w-full p-3 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-medium focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300">
+                            </div>
+                            <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm-soft">
+                                <label
+                                    class="block text-[9px] font-black text-slate-400 mb-2 uppercase tracking-widest">Asal
+                                    Daerah:</label>
+                                <input type="text" id="lkpd4_asal" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                    class="w-full p-3 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-medium focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300">
+                            </div>
+                        </div>
+
+                        <!-- Aspek Inovasi Grid -->
+                        <div class="space-y-4">
+                            <!-- Bahan Utama -->
+                            <div
+                                class="bg-white rounded-[2rem] border border-indigo-50 shadow-sm overflow-hidden group">
+                                <div
+                                    class="px-5 py-3 bg-indigo-50/50 flex items-center gap-3 border-b border-indigo-100">
+                                    <div
+                                        class="size-8 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">shopping_basket</span>
+                                    </div>
+                                    <span class="text-xs font-black uppercase tracking-widest text-slate-700">Bahan
+                                        Utama</span>
+                                </div>
+                                <div class="p-5">
+                                    <textarea id="lkpd4_bahan" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                        class="w-full min-h-[80px] p-4 bg-slate-50/50 border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Inovasi Gizi -->
+                            <div
+                                class="bg-white rounded-[2rem] border border-indigo-50 shadow-sm overflow-hidden group">
+                                <div
+                                    class="px-5 py-3 bg-indigo-50/50 flex items-center gap-3 border-b border-indigo-100">
+                                    <div
+                                        class="size-8 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">health_and_safety</span>
+                                    </div>
+                                    <span class="text-xs font-black uppercase tracking-widest text-slate-700">Inovasi
+                                        Gizi</span>
+                                </div>
+                                <div class="p-5">
+                                    <textarea id="lkpd4_gizi" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                        class="w-full min-h-[80px] p-4 bg-slate-50/50 border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Metode Pengolahan -->
+                            <div
+                                class="bg-white rounded-[2rem] border border-indigo-50 shadow-sm overflow-hidden group">
+                                <div
+                                    class="px-5 py-3 bg-indigo-50/50 flex items-center gap-3 border-b border-indigo-100">
+                                    <div
+                                        class="size-8 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">cooking</span>
+                                    </div>
+                                    <span class="text-xs font-black uppercase tracking-widest text-slate-700">Metode
+                                        Pengolahan</span>
+                                </div>
+                                <div class="p-5">
+                                    <textarea id="lkpd4_metode" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                        class="w-full min-h-[80px] p-4 bg-slate-50/50 border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Keunggulan Produk -->
+                            <div
+                                class="bg-white rounded-[2rem] border border-indigo-50 shadow-sm overflow-hidden group">
+                                <div
+                                    class="px-5 py-3 bg-indigo-50/50 flex items-center gap-3 border-b border-indigo-100">
+                                    <div
+                                        class="size-8 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
+                                    </div>
+                                    <span class="text-xs font-black uppercase tracking-widest text-slate-700">Keunggulan
+                                        Produk</span>
+                                </div>
+                                <div class="p-5">
+                                    <textarea id="lkpd4_keunggulan" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                        class="w-full min-h-[80px] p-4 bg-slate-50/50 border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="lkpd-section-5" class="lkpd-section hidden py-10 text-center">
                     <p class="text-xs text-slate-400 italic">LKPD 5 Sedang Dalam Perancangan...</p>
@@ -2658,12 +2759,15 @@
                     q2: document.getElementById('lkpd3_q2').value,
                     q3: document.getElementById('lkpd3_q3').value
                 },
-                lkpd3: {
-                    q1: document.getElementById('lkpd3_q1').value,
-                    q2: document.getElementById('lkpd3_q2').value,
-                    q3: document.getElementById('lkpd3_q3').value
+                lkpd4: {
+                    nama: document.getElementById('lkpd4_nama').value,
+                    asal: document.getElementById('lkpd4_asal').value,
+                    bahan: document.getElementById('lkpd4_bahan').value,
+                    gizi: document.getElementById('lkpd4_gizi').value,
+                    metode: document.getElementById('lkpd4_metode').value,
+                    keunggulan: document.getElementById('lkpd4_keunggulan').value
                 }
-                // Add LKPD 4-5 here as they are implemented
+                // Add LKPD 5 here as it is implemented
             };
             localStorage.setItem(`lkpd_draft_day${currentDay}`, JSON.stringify(lkpdData));
         }
@@ -2700,6 +2804,16 @@
                 if (document.getElementById('lkpd3_q1')) document.getElementById('lkpd3_q1').value = data.lkpd3.q1 || '';
                 if (document.getElementById('lkpd3_q2')) document.getElementById('lkpd3_q2').value = data.lkpd3.q2 || '';
                 if (document.getElementById('lkpd3_q3')) document.getElementById('lkpd3_q3').value = data.lkpd3.q3 || '';
+            }
+
+            // LKPD 4
+            if (data.lkpd4) {
+                if (document.getElementById('lkpd4_nama')) document.getElementById('lkpd4_nama').value = data.lkpd4.nama || '';
+                if (document.getElementById('lkpd4_asal')) document.getElementById('lkpd4_asal').value = data.lkpd4.asal || '';
+                if (document.getElementById('lkpd4_bahan')) document.getElementById('lkpd4_bahan').value = data.lkpd4.bahan || '';
+                if (document.getElementById('lkpd4_gizi')) document.getElementById('lkpd4_gizi').value = data.lkpd4.gizi || '';
+                if (document.getElementById('lkpd4_metode')) document.getElementById('lkpd4_metode').value = data.lkpd4.metode || '';
+                if (document.getElementById('lkpd4_keunggulan')) document.getElementById('lkpd4_keunggulan').value = data.lkpd4.keunggulan || '';
             }
         }
 
