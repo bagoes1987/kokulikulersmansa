@@ -2222,6 +2222,7 @@
         let currentQuestionIndex = 0;
         let userAnswers = {}; // { quesID: correctIndex }
         let assessmentScore = 0;
+        let shuffledIndices = []; // Stores the randomized order of indices
 
         function openAssessmentModal() {
             // Load script dynamically if not present, then open
@@ -2244,8 +2245,40 @@
                 modal.classList.add('flex');
                 currentQuestionIndex = 0;
                 userAnswers = {};
+
+                // Initialize Shuffle
+                initShuffle();
+
                 renderQuestion(0);
             }
+        }
+
+        // Initialize or Load Shuffled Order
+        function initShuffle() {
+            const savedOrder = localStorage.getItem('assessment_shuffle_order_day1');
+            if (savedOrder) {
+                shuffledIndices = JSON.parse(savedOrder);
+                // Validation: ensure length matches current questions (in case questions updated)
+                if (shuffledIndices.length !== assessmentQuestions.length) {
+                    generateNewShuffle();
+                }
+            } else {
+                generateNewShuffle();
+            }
+        }
+
+        function generateNewShuffle() {
+            // Create array of indices [0, 1, ... N]
+            shuffledIndices = Array.from({ length: assessmentQuestions.length }, (_, i) => i);
+
+            // Fisher-Yates Shuffle
+            for (let i = shuffledIndices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+            }
+
+            // Save to preserve order for this user/device
+            localStorage.setItem('assessment_shuffle_order_day1', JSON.stringify(shuffledIndices));
         }
 
         function closeAssessmentModal() {
@@ -2259,7 +2292,11 @@
         function renderQuestion(index) {
             if (!assessmentQuestions || !assessmentQuestions[index]) return;
 
-            const q = assessmentQuestions[index];
+            // Get the Question Object based on SHUFFLED index
+            // If shuffledIndices is empty (fail-safe), use index directly
+            const realIndex = (shuffledIndices.length > 0) ? shuffledIndices[index] : index;
+            const q = assessmentQuestions[realIndex];
+
             const container = document.getElementById('assessmentQuestionContainer');
 
             // Progress Bar
@@ -2268,8 +2305,9 @@
             document.getElementById('assessmentProgressText').innerText = `Soal ${index + 1} dari ${assessmentQuestions.length}`;
 
             // Render
+            // Display numbering as 1, 2, 3... even though content is random
             let html = `
-                <h4 class="text-sm font-bold text-slate-800 mb-4">${q.id}. ${q.question}</h4>
+                <h4 class="text-sm font-bold text-slate-800 mb-4">${index + 1}. ${q.question}</h4>
                 <div class="space-y-3">
             `;
 
@@ -2318,7 +2356,10 @@
         }
 
         async function finishAssessment() {
-            const q = assessmentQuestions[currentQuestionIndex];
+            // Get current question using shuffled index mapping to validate answer
+            const realIndex = (shuffledIndices.length > 0) ? shuffledIndices[currentQuestionIndex] : currentQuestionIndex;
+            const q = assessmentQuestions[realIndex];
+
             if (userAnswers[q.id] === undefined) {
                 alert('Pilih jawaban dulu ya!');
                 return;

@@ -181,14 +181,15 @@
                 </div>
                 <!-- 4. Alur Kegiatan -->
                 <!-- 4. Bank Soal & Kunci -->
-                <div onclick="openAssessmentKeys()"
+                <!-- 4. Bank Soal & Kunci -->
+                <div onclick="openBankSoalMenu()"
                     class="bg-purple-50/50 border border-purple-100/50 rounded-2xl p-4 shadow-sm active:scale-95 transition-transform cursor-pointer">
                     <div
                         class="size-10 bg-purple-500 rounded-xl flex items-center justify-center text-white mb-4 shadow-sm">
                         <span class="material-symbols-outlined text-2xl">quiz</span>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-base">Bank Soal</h3>
-                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Cek soal & kunci jawaban.</p>
+                    <h3 class="font-bold text-slate-800 text-base">Bank Soal Assessment</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-1 leading-relaxed">Hari 1, 2, & 3</p>
                 </div>
                 <!-- 5. Laporan Akhir -->
                 <div onclick="alert('Menu Laporan & Ekspor Sertifikat sedang disiapkan...')"
@@ -367,7 +368,7 @@
             <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-white">
                 <div>
                     <h3 class="text-lg font-black text-slate-800">Bank Soal & Kunci</h3>
-                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Asesmen Hari 1 (50
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Assessment Hari 1 (50
                         Soal)</p>
                 </div>
                 <button onclick="document.getElementById('modalAssessmentKeys').classList.add('hidden')"
@@ -377,6 +378,71 @@
             </div>
             <div id="keysContainer" class="p-6 overflow-y-auto flex-1 space-y-4 bg-slate-50/50">
                 <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Selection Bank Soal -->
+    <div id="modalBankSoalSelection"
+        class="fixed inset-0 z-[160000] hidden flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl p-6 border border-slate-100 relative">
+            <button onclick="document.getElementById('modalBankSoalSelection').classList.add('hidden')"
+                class="absolute right-4 top-4 size-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-colors">
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+
+            <div class="text-center mb-6 mt-2">
+                <div
+                    class="size-14 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-600 mx-auto mb-4">
+                    <span class="material-symbols-outlined text-3xl">library_books</span>
+                </div>
+                <h3 class="text-lg font-black text-slate-800">Pilih Bank Soal</h3>
+                <p class="text-xs text-slate-500 font-medium mt-1">Silakan pilih hari untuk melihat soal & kunci.</p>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="openAssessmentKeys(1)"
+                    class="w-full p-4 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-between hover:bg-purple-100 transition-colors group">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="size-8 rounded-lg bg-purple-500 text-white flex items-center justify-center font-bold text-xs shadow-sm shadow-purple-200">
+                            H1</div>
+                        <div class="text-left">
+                            <p class="text-sm font-bold text-slate-800">Asesmen Hari 1</p>
+                            <p class="text-[10px] text-slate-500">Cita Rasa Jajanan</p>
+                        </div>
+                    </div>
+                    <span
+                        class="material-symbols-outlined text-slate-400 group-hover:text-purple-500">chevron_right</span>
+                </button>
+
+                <button onclick="alert('Bank Soal Hari 2 belum tersedia.')"
+                    class="w-full p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between hover:bg-slate-100 transition-colors opacity-75 group">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="size-8 rounded-lg bg-slate-400 text-white flex items-center justify-center font-bold text-xs">
+                            H2</div>
+                        <div class="text-left">
+                            <p class="text-sm font-bold text-slate-600">Asesmen Hari 2</p>
+                            <p class="text-[10px] text-slate-400">Strategi Pemasaran (WIP)</p>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-300">lock</span>
+                </button>
+
+                <button onclick="alert('Bank Soal Hari 3 belum tersedia.')"
+                    class="w-full p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between hover:bg-slate-100 transition-colors opacity-75 group">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="size-8 rounded-lg bg-slate-400 text-white flex items-center justify-center font-bold text-xs">
+                            H3</div>
+                        <div class="text-left">
+                            <p class="text-sm font-bold text-slate-600">Asesmen Hari 3</p>
+                            <p class="text-[10px] text-slate-400">Laporan & Evaluasi (WIP)</p>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-slate-300">lock</span>
+                </button>
             </div>
         </div>
     </div>
@@ -875,12 +941,25 @@
             document.getElementById('modalFacilitatorMonitoring').classList.add('hidden');
         }
 
-        function openAssessmentKeys() {
+        function openBankSoalMenu() {
+            const modal = document.getElementById('modalBankSoalSelection');
+            modal.classList.remove('hidden');
+        }
+
+        function openAssessmentKeys(day) {
+            // Close selection modal
+            document.getElementById('modalBankSoalSelection').classList.add('hidden');
+
             const modal = document.getElementById('modalAssessmentKeys');
             const container = document.getElementById('keysContainer');
 
             modal.classList.remove('hidden');
             container.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase text-[10px] animate-pulse">Memuat soal...</div>';
+
+            if (day !== 1) {
+                container.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold text-xs">Soal Hari ' + day + ' belum tersedia.</div>';
+                return;
+            }
 
             if (typeof assessmentQuestions === 'undefined') {
                 container.innerHTML = '<div class="text-center py-10 text-red-400 font-bold text-xs">Error: Data soal tidak dimuat.</div>';
