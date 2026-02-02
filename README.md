@@ -1,6 +1,6 @@
 # Kokulikuler SMA Negeri 1 Belitang
 
-Landing page untuk kegiatan kokulikuler SMA Negeri 1 Belitang. Website ini dirancang untuk memberikan informasi interaktif mengenai program "Harmonisasi Citra Rasa Jajanan Nusantara".
+Landing page untuk kegiatan kokulikuler SMA Negeri 1 Belitang. Website ini dirancang untuk memberikan informasi interaktif mengenai program "Harmonisasi Citra Rasa Jajanan Nusantara melalui Inovasi Kuliner Sehat, Bergizi dan Kekinian".
 
 ## Fitur Utama
 - **Desain Modern**: Tata letak grid dan accordion untuk tampilan yang rapi dan responsif.
