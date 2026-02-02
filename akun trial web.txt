@@ -1,0 +1,26 @@
+BERHASIL! Skenario Akun Trial sudah saya suntikkan ke sistem.
+
+Silakan Bapak/Ibu mulai ujicoba dengan data login berikut:
+
+1. AKUN KOORDINATOR
+Koordinator A (Pegang Kelas TRIAL-1 & TRIAL-2):
+Username: koord_trial_A
+Password: trialuser123
+Koordinator B (Pegang Kelas TRIAL-3):
+Username: koord_trial_B
+Password: trialuser123
+2. AKUN FASILITATOR (Wali Kelas)
+Fasilitator Kelas TRIAL-1:
+Username: fasil_trial_1
+Password: trialuser123
+(dst untuk fasil_trial_2 & fasil_trial_3)
+3. AKUN SISWA (Semua di Kelas TRIAL-1)
+Siswa 1: NIS 99901 (Pass: 99901)
+Siswa 2: NIS 99902 (Pass: 99902)
+(dst sampai 99905)
+Saran Alur Uji Coba:
+
+Login sebagai Siswa 1, isi jurnal harian (agar ada data masuk).
+Login sebagai Fasilitator 1, nilai tugas siswa tersebut.
+Login sebagai Koordinator A, cek menu "Monitoring Fasilitator" untuk melihat pergerakan datanya.
+Selamat bersimulasi! Kabari kalau ada yang macet.
