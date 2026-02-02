@@ -707,6 +707,14 @@
             }
         }
 
+        function goToSlide(n) {
+            if (n >= 0 && n < totalMateriSlides) {
+                currentMateriSlide = n;
+                updateMateriSlideUI();
+                document.getElementById('materiContentArea').scrollTop = 0;
+            }
+        }
+
         function updateMateriSlideUI() {
             // Hide semua slide
             for (let i = 0; i < totalMateriSlides; i++) {
@@ -715,6 +723,18 @@
             }
             // Tampilkan slide aktif
             document.getElementById(`slide-materi-${currentMateriSlide}`).classList.remove('hidden');
+
+            // Update Navigation Pills
+            for (let i = 0; i < totalMateriSlides; i++) {
+                const pill = document.getElementById(`nav-pill-${i}`);
+                if (pill) {
+                    if (i === currentMateriSlide) {
+                        pill.className = "size-8 rounded-lg bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center shadow-md shadow-emerald-200 transition-all";
+                    } else {
+                        pill.className = "size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all";
+                    }
+                }
+            }
 
             // Update Progress Bar
             const progress = ((currentMateriSlide + 1) / totalMateriSlides) * 100;
@@ -1328,7 +1348,7 @@
                 <div id="slide-materi-0" class="animate-slide-up">
                     <div class="flex flex-col items-center text-center mb-6">
                         <span class="material-symbols-outlined text-5xl text-emerald-500 mb-2">info</span>
-                        <h4 class="text-lg font-black text-slate-800">Bab I: Pengertian & Ruang Lingkup</h4>
+                        <h4 class="text-lg font-black text-slate-800">Bagian I: Pengertian & Ruang Lingkup</h4>
                     </div>
                     <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium">
                         <p>Jajanan Nusantara adalah istilah yang mencakup berbagai jenis penganan atau makanan selingan
@@ -1359,7 +1379,7 @@
                 <div id="slide-materi-1" class="hidden animate-slide-up">
                     <div class="flex flex-col items-center text-center mb-6">
                         <span class="material-symbols-outlined text-5xl text-amber-500 mb-2">history</span>
-                        <h4 class="text-lg font-black text-slate-800">Bab II: Sejarah & Perkembangan</h4>
+                        <h4 class="text-lg font-black text-slate-800">Bagian II: Sejarah & Perkembangan</h4>
                     </div>
                     <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium">
                         <p>Sejarah jajanan Nusantara dimulai dari tradisi kuliner lokal yang sudah ada sejak sebelum era
@@ -1393,7 +1413,7 @@
                 <div id="slide-materi-2" class="hidden animate-slide-up">
                     <div class="flex flex-col items-center text-center mb-6">
                         <span class="material-symbols-outlined text-5xl text-orange-500 mb-2">cooking</span>
-                        <h4 class="text-lg font-black text-slate-800">Bab III: Teknik Pengolahan</h4>
+                        <h4 class="text-lg font-black text-slate-800">Bagian III: Teknik Pengolahan</h4>
                     </div>
                     <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium">
                         <p>Setiap daerah di Indonesia memiliki keahlian unik dalam mengolah jajanan. Teknik pengolahan
@@ -1419,7 +1439,8 @@
                                 </div>
                             </div>
                             <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex gap-4">
-                                <span class="material-symbols-outlined text-blue-500 flex-shrink-0">frying_pan</span>
+                                <span
+                                    class="material-symbols-outlined text-blue-500 flex-shrink-0 !text-[18px]">frying_pan</span>
                                 <div>
                                     <p class="text-xs font-black text-slate-800 uppercase mb-1">Teknik Modern (Baking &
                                         Frying)</p>
@@ -1435,7 +1456,7 @@
                 <div id="slide-materi-3" class="hidden animate-slide-up">
                     <div class="flex flex-col items-center text-center mb-6">
                         <span class="material-symbols-outlined text-5xl text-indigo-500 mb-2">map</span>
-                        <h4 class="text-lg font-black text-slate-800">Bab IV: Atlas Kuliner Nusantara</h4>
+                        <h4 class="text-lg font-black text-slate-800">Bagian IV: Atlas Kuliner Nusantara</h4>
                     </div>
                     <div class="space-y-4 text-xs font-medium text-slate-600">
                         <p class="text-center italic mb-2">Identitas rasa setiap wilayah:</p>
@@ -1463,7 +1484,7 @@
                 <div id="slide-materi-4" class="hidden animate-slide-up">
                     <div class="flex flex-col items-center text-center mb-6">
                         <span class="material-symbols-outlined text-5xl text-rose-500 mb-2">nutrition</span>
-                        <h4 class="text-lg font-black text-slate-800">Bab V: Analisis Kandungan Gizi</h4>
+                        <h4 class="text-lg font-black text-slate-800">Bagian V: Analisis Kandungan Gizi</h4>
                     </div>
                     <div class="space-y-4 px-2">
                         <div class="overflow-x-auto rounded-xl border border-slate-200">
@@ -1544,7 +1565,7 @@
                 <div id="slide-materi-5" class="hidden animate-slide-up">
                     <div class="flex flex-col items-center text-center mb-6">
                         <span class="material-symbols-outlined text-5xl text-cyan-500 mb-2">lightbulb</span>
-                        <h4 class="text-lg font-black text-slate-800">Bab VI: Strategi Inovasi</h4>
+                        <h4 class="text-lg font-black text-slate-800">Bagian VI: Strategi Inovasi</h4>
                     </div>
                     <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium">
                         <p>Agar jajanan tradisional lebih sehat, bergizi dan kekinian namun tetap diminati di bazar,
@@ -1576,7 +1597,7 @@
                 <div id="slide-materi-6" class="hidden animate-slide-up">
                     <div class="flex flex-col items-center text-center mb-6">
                         <span class="material-symbols-outlined text-5xl text-purple-500 mb-2">storefront</span>
-                        <h4 class="text-lg font-black text-slate-800">Bab VII: Manajemen Bazar</h4>
+                        <h4 class="text-lg font-black text-slate-800">Bagian VII: Manajemen Bazar</h4>
                     </div>
                     <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium">
                         <p>Penjualan di bazar memerlukan perencanaan matang agar produk 'Kuliner Sehat' dilirik
@@ -1602,7 +1623,7 @@
                 <div id="slide-materi-7" class="hidden animate-slide-up">
                     <div class="flex flex-col items-center text-center mb-6">
                         <span class="material-symbols-outlined text-5xl text-sky-500 mb-2">package_2</span>
-                        <h4 class="text-lg font-black text-slate-800">Bab VIII: Pengemasan & Labeling</h4>
+                        <h4 class="text-lg font-black text-slate-800">Bagian VIII: Pengemasan & Labeling</h4>
                     </div>
                     <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium">
                         <p>Kemasan adalah wajah pertama produk Anda. Untuk produk kuliner sehat, kemasan harus memenuhi
@@ -1640,7 +1661,7 @@
                 <div id="slide-materi-8" class="hidden animate-slide-up h-full flex flex-col">
                     <div class="flex flex-col items-center text-center mb-4">
                         <span class="material-symbols-outlined text-4xl text-emerald-500 mb-1">edit_document</span>
-                        <h4 class="text-lg font-black text-slate-800">Bab IX: Ringkasan Materi</h4>
+                        <h4 class="text-lg font-black text-slate-800">Bagian IX: Ringkasan Materi</h4>
                         <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Tuliskan apa yang kamu
                             pelajari hari ini</p>
                     </div>
@@ -1670,18 +1691,44 @@
                 </div>
 
             </div>
+        </div>
 
-            <!-- Footer Controls -->
-            <div class="p-6 border-t border-slate-50 bg-white flex gap-3">
-                <button id="btnPrevMateri" onclick="prevMateriSlide()"
-                    class="flex-1 py-3.5 rounded-2xl bg-slate-50 text-slate-400 font-bold text-xs transition-all invisible">Kembali</button>
-                <button id="btnNextMateri" onclick="nextMateriSlide()"
-                    class="flex-[3] py-3.5 rounded-2xl bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 active:scale-95">Selanjutnya</button>
-                <button id="btnFinishMateri" onclick="settleMateri()"
-                    class="flex-[3] py-3.5 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-lg shadow-emerald-500/30 transition-all active:scale-95 hidden">Selesaikan
-                    Materi</button>
+        <!-- Slide Navigation Bar -->
+        <div class="px-6 pb-4">
+            <div
+                class="flex items-center justify-between bg-slate-50/50 p-2 rounded-[1.5rem] border border-slate-100 overflow-x-auto no-scrollbar gap-2">
+                <button id="nav-pill-0" onclick="goToSlide(0)"
+                    class="size-8 rounded-lg bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center shadow-md shadow-emerald-200 transition-all">1</button>
+                <button id="nav-pill-1" onclick="goToSlide(1)"
+                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">2</button>
+                <button id="nav-pill-2" onclick="goToSlide(2)"
+                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">3</button>
+                <button id="nav-pill-3" onclick="goToSlide(3)"
+                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">4</button>
+                <button id="nav-pill-4" onclick="goToSlide(4)"
+                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">5</button>
+                <button id="nav-pill-5" onclick="goToSlide(5)"
+                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">6</button>
+                <button id="nav-pill-6" onclick="goToSlide(6)"
+                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">7</button>
+                <button id="nav-pill-7" onclick="goToSlide(7)"
+                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">8</button>
+                <button id="nav-pill-8" onclick="goToSlide(8)"
+                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">9</button>
             </div>
         </div>
+
+        <!-- Footer Controls -->
+        <div class="p-6 border-t border-slate-50 bg-white flex gap-3">
+            <button id="btnPrevMateri" onclick="prevMateriSlide()"
+                class="flex-1 py-3.5 rounded-2xl bg-slate-50 text-slate-400 font-bold text-xs transition-all invisible">Kembali</button>
+            <button id="btnNextMateri" onclick="nextMateriSlide()"
+                class="flex-[3] py-3.5 rounded-2xl bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 active:scale-95">Selanjutnya</button>
+            <button id="btnFinishMateri" onclick="settleMateri()"
+                class="flex-[3] py-3.5 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-lg shadow-emerald-500/30 transition-all active:scale-95 hidden">Selesaikan
+                Materi</button>
+        </div>
+    </div>
     </div>
 
     <!-- MODAL DOKUMENTASI FOTO (REPLACEMENT RANGKUMAN) -->
