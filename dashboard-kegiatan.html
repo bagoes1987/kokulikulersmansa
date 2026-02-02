@@ -421,6 +421,8 @@
 
                     loadProgress();
                     updateDashboardUI();
+                    checkAllModulesStatus();
+                    // Individual checks for modal pre-population
                     checkExistingPemantik();
                     checkExistingMateri();
                     checkExistingDokumentasi();
@@ -495,37 +497,37 @@
         }
 
         // Helper untuk memanggil toggle original dari dalam modal
-        function forceCompleteModule(moduleId) {
+        function forceCompleteModule(moduleId, score = 0) {
             const dayKey = `day${currentDay}`;
             studentProgress[dayKey][moduleId] = true;
             saveProgress();
-            updateModuleUI(moduleId, true);
+            updateModuleUI(moduleId, true, score);
         }
 
         // Update UI for a single module
-        function updateModuleUI(moduleId, isComplete) {
+        function updateModuleUI(moduleId, isComplete, score = 0) {
             const statusIcon = document.getElementById(`status-${moduleId}`);
             const statusLabel = document.getElementById(`label-${moduleId}`);
 
-            // Safety check: Avoid null errors if element is removed or mismatched
             if (!statusIcon || !statusLabel) return;
 
             if (isComplete) {
                 statusIcon.textContent = 'check_circle';
-                statusIcon.classList.remove('text-slate-400');
-                statusIcon.classList.add('text-emerald-custom');
+                statusIcon.className = 'material-symbols-outlined !text-[14px] text-emerald-custom';
 
-                statusLabel.textContent = 'Selesai';
-                statusLabel.classList.remove('text-slate-400');
-                statusLabel.classList.add('text-emerald-custom');
+                if (score > 0) {
+                    const starCount = Math.round(score / 20);
+                    const stars = '⭐'.repeat(starCount) || '⭐';
+                    statusLabel.textContent = `Selesai ${stars}`;
+                } else {
+                    statusLabel.textContent = 'Selesai';
+                }
+                statusLabel.className = 'text-[11px] font-semibold text-emerald-custom';
             } else {
                 statusIcon.textContent = 'radio_button_unchecked';
-                statusIcon.classList.remove('text-emerald-custom');
-                statusIcon.classList.add('text-slate-400');
-
+                statusIcon.className = 'material-symbols-outlined !text-[14px] text-slate-400';
                 statusLabel.textContent = 'Belum Selesai';
-                statusLabel.classList.remove('text-emerald-custom');
-                statusLabel.classList.add('text-slate-400');
+                statusLabel.className = 'text-[11px] font-semibold text-slate-400';
             }
         }
 
@@ -588,9 +590,47 @@
             updateDashboardUI();
 
             // Re-fetch database statuses to ensure sync
-            checkExistingPemantik();
-            checkExistingMateri();
-            checkExistingDokumentasi();
+            checkAllModulesStatus();
+        }
+
+        // SINKRONISASI GLOBAL SEMUA MODUL
+        async function checkAllModulesStatus() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                // Ambil semua respon hari ini dalam satu query
+                const { data: responses, error } = await supabaseClient
+                    .from('module_responses')
+                    .select('module_type, status, score')
+                    .eq('student_id', user.id)
+                    .eq('day_id', currentDay);
+
+                if (error) throw error;
+
+                // Reset UI dulu ke progress local
+                updateDashboardUI();
+
+                // Timpa dengan data dari database jika ada
+                if (responses && responses.length > 0) {
+                    responses.forEach(r => {
+                        if (r.status === 'submitted') {
+                            const icon = document.getElementById(`status-${r.module_type}`);
+                            const label = document.getElementById(`label-${r.module_type}`);
+                            if (icon && label) {
+                                icon.textContent = 'hourglass_top';
+                                icon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse';
+                                label.textContent = 'Menunggu Feedback';
+                                label.className = 'text-[11px] font-semibold text-yellow-500';
+                            }
+                        } else if (r.status === 'reviewed') {
+                            forceCompleteModule(r.module_type, r.score);
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error("Error checkAllModulesStatus:", err);
+            }
         }
 
         // Logout function
@@ -799,11 +839,9 @@
 
                 if (responses && responses.length > 0) {
                     const r = responses[0];
-                    updateMateriStatusUI(r.status, r.score, r.feedback);
-
                     // SINKRONKAN ke local progress bar
                     if (r.status === 'reviewed') {
-                        forceCompleteModule('materi');
+                        forceCompleteModule('materi', r.score);
                     }
 
                     const area = document.getElementById('summaryArea');
@@ -998,10 +1036,9 @@
 
                 if (responses && responses.length > 0) {
                     const r = responses[0];
-                    updateDokumentasiStatusUI(r.status, r.score);
 
                     if (r.status === 'submitted' || r.status === 'reviewed') {
-                        forceCompleteModule('dokumentasi');
+                        forceCompleteModule('dokumentasi', r.score);
                         if (container) container.classList.add('hidden');
                         if (btn) btn.classList.add('hidden');
                         if (statusMsg) {
@@ -1030,54 +1067,7 @@
             } catch (e) { console.error('Error checkExistingDokumentasi:', e); }
         }
 
-        function updateDokumentasiStatusUI(status, score) {
-            const icon = document.getElementById('status-dokumentasi');
-            const label = document.getElementById('label-dokumentasi');
-            if (!icon || !label) return;
-
-            if (status === 'submitted') {
-                icon.textContent = 'hourglass_top';
-                icon.className = "material-symbols-outlined !text-base text-amber-500 animate-pulse";
-                label.textContent = "Menunggu Feedback";
-                label.className = "text-[13px] font-bold text-amber-500";
-            } else if (status === 'reviewed') {
-                const starCount = Math.round((score || 0) / 20);
-                const stars = '⭐'.repeat(starCount) || '⭐';
-                icon.textContent = 'check_circle';
-                icon.className = "material-symbols-outlined !text-base text-emerald-custom";
-                label.textContent = `Selesai ${stars}`;
-                label.className = "text-[13px] font-bold text-emerald-custom";
-            }
-        }
-
-        function updateMateriStatusUI(status, score, feedback) {
-            const icon = document.getElementById('status-materi');
-            const label = document.getElementById('label-materi');
-            if (!icon || !label) return;
-
-            const card = icon.closest('div.cursor-pointer');
-            if (!card) return;
-
-            if (status === 'submitted') {
-                icon.textContent = 'pending';
-                icon.className = "material-symbols-outlined !text-base text-amber-500 animate-pulse";
-                label.textContent = "Menunggu Feedback";
-                label.className = "text-[13px] font-bold text-amber-500";
-
-                // Nuclear class reset and apply amber
-                card.className = "bg-amber-50/50 p-4 rounded-[24px] ios-shadow border border-amber-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95";
-            } else if (status === 'reviewed') {
-                const starCount = Math.round((score || 0) / 20);
-                const stars = '⭐'.repeat(starCount) || '⭐';
-                icon.textContent = 'check_circle';
-                icon.className = "material-symbols-outlined !text-base text-emerald-custom";
-                label.textContent = `Selesai ${stars}`;
-                label.className = "text-[13px] font-bold text-emerald-custom";
-
-                // Nuclear class reset and apply emerald
-                card.className = "bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95";
-            }
-        }
+        // Deprecated: Functions below are now handled by updateModuleUI or specific modal logic
 
         // Kirim Jawaban
         async function submitPemantik() {
@@ -1168,16 +1158,9 @@
                         if (data.status === 'submitted') {
                             statusMsg.className = "bg-yellow-50 text-yellow-700 p-4 rounded-xl border border-yellow-200 text-xs font-medium mb-4";
                             statusMsg.innerHTML = "⏳ <b>Jawaban Terkirim</b><br>Menunggu feedback dari fasilitator.";
-                            updatePemantikStatusUI('submitted');
                         } else if (data.status === 'reviewed') {
                             statusMsg.className = "bg-emerald-50 text-emerald-700 p-4 rounded-xl border border-emerald-200 text-xs font-medium mb-4";
                             statusMsg.innerHTML = `✅ <b>Sudah Direview (Skor: ${data.score || 0})</b><br>Feedback: "${data.feedback || '-'}"`;
-
-                            // Update UI Dashboard Card
-                            updatePemantikStatusUI('reviewed', data.score);
-
-                            // SINKRONKAN ke local progress bar
-                            forceCompleteModule('pemantik');
                         }
                     }
                 } else {
@@ -1207,51 +1190,7 @@
         }
 
         // Helper: Update Tampilan Icon di Dashboard (Kuning jika pending)
-        function updatePemantikStatusUI(status, score) {
-            const statusIcon = document.getElementById('status-pemantik');
-            const statusLabel = document.getElementById('label-pemantik');
-            if (!statusIcon || !statusLabel) return;
-
-            if (status === 'submitted') {
-                statusIcon.textContent = 'hourglass_top'; // Icon jam pasir
-                statusIcon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse';
-                statusLabel.textContent = 'Menunggu Feedback';
-                statusLabel.className = 'text-[11px] font-semibold text-yellow-500';
-            } else if (status === 'reviewed') {
-                const starCount = Math.round((score || 0) / 20);
-                const stars = '⭐'.repeat(starCount) || '⭐';
-                statusIcon.textContent = 'check_circle';
-                statusIcon.className = 'material-symbols-outlined !text-[14px] text-emerald-500';
-                statusLabel.textContent = `Selesai ${stars}`;
-                statusLabel.className = 'text-[11px] font-semibold text-emerald-500';
-            } else {
-                statusIcon.textContent = 'circle_notifications';
-                statusIcon.className = 'material-symbols-outlined !text-[14px] text-amber-400';
-                statusLabel.textContent = 'Belum Diisi';
-                statusLabel.className = 'text-[11px] font-semibold text-slate-400';
-            }
-        }
-
-        // Generic helper for Video, Glosarium, Refleksi
-        function updateStatusUIForModule(type, status, score) {
-            const statusIcon = document.getElementById(`status-${type}`);
-            const statusLabel = document.getElementById(`label-${type}`);
-            if (!statusIcon || !statusLabel) return;
-
-            if (status === 'submitted') {
-                statusIcon.textContent = 'hourglass_top';
-                statusIcon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse';
-                statusLabel.textContent = 'Menunggu Feedback';
-                statusLabel.className = 'text-[11px] font-semibold text-yellow-500';
-            } else if (status === 'reviewed') {
-                const starCount = Math.round((score || 0) / 20);
-                const stars = '⭐'.repeat(starCount) || '⭐';
-                statusIcon.textContent = 'check_circle';
-                statusIcon.className = 'material-symbols-outlined !text-[14px] text-emerald-500';
-                statusLabel.textContent = `Selesai ${stars}`;
-                statusLabel.className = 'text-[11px] font-semibold text-emerald-500';
-            }
-        }
+        // Deprecated: Handled by updateModuleUI
 
     </script>
 
