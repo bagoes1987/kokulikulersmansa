@@ -2256,59 +2256,45 @@
                     </div>
 
                     <div class="space-y-5">
-                        <!-- Q1: Sumber Energi -->
-                        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-                            <div class="px-5 py-3 bg-amber-50 flex items-center gap-3 border-b border-white/50">
-                                <div
-                                    class="size-8 rounded-full bg-white flex items-center justify-center text-amber-500 shadow-sm">
-                                    <span class="material-symbols-outlined text-[18px]">bolt</span>
-                                </div>
-                                <span class="text-[11px] font-black uppercase tracking-widest text-slate-700">1. Sumber
-                                    Energi Utama</span>
-                            </div>
-                            <div class="p-5 bg-slate-50/30">
-                                <label class="block text-[10px] font-bold text-slate-500 mb-2 leading-relaxed">Mengapa
-                                    jajanan berbahan dasar beras, singkong, atau sagu menjadi sumber energi?</label>
-                                <textarea id="lkpd3_q1" oninput="saveLKPDDraft()" placeholder="Jawab..."
-                                    class="w-full min-h-[80px] p-4 bg-white border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-terracotta outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
-                            </div>
-                        </div>
+                        <script>
+                            function generateNutrientCard(num, question, id) {
+                                return `
+                                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden group">
+                                    <div class="px-5 py-3 bg-emerald-50/50 flex items-center gap-3 border-b border-white/50">
+                                        <div class="size-8 rounded-full bg-white flex items-center justify-center text-emerald-500 shadow-sm">
+                                            <span class="text-[10px] font-black">${num}</span>
+                                        </div>
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-700">Pertanyaan ${num}</span>
+                                    </div>
+                                    <div class="p-5 bg-slate-50/30">
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-2 leading-relaxed">${question}</label>
+                                        <textarea id="lkpd3_q${num}" oninput="saveLKPDDraft()" placeholder="Jawab..."
+                                            class="w-full min-h-[80px] p-4 bg-white border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-terracotta outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                                    </div>
+                                </div>`;
+                            }
+                        </script>
 
-                        <!-- Q2: Serat Pangan -->
-                        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-                            <div class="px-5 py-3 bg-emerald-50 flex items-center gap-3 border-b border-white/50">
-                                <div
-                                    class="size-8 rounded-full bg-white flex items-center justify-center text-emerald-500 shadow-sm">
-                                    <span class="material-symbols-outlined text-[18px]">grass</span>
-                                </div>
-                                <span class="text-[11px] font-black uppercase tracking-widest text-slate-700">2. Serat
-                                    Pangan</span>
-                            </div>
-                            <div class="p-5 bg-slate-50/30">
-                                <label class="block text-[10px] font-bold text-slate-500 mb-2 leading-relaxed">Sebutkan
-                                    dua contoh bahan jajanan Nusantara yang mengandung serat pangan!</label>
-                                <textarea id="lkpd3_q2" oninput="saveLKPDDraft()" placeholder="Jawab..."
-                                    class="w-full min-h-[80px] p-4 bg-white border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-terracotta outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Q3: Manfaat Gula Aren -->
-                        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-                            <div class="px-5 py-3 bg-orange-50 flex items-center gap-3 border-b border-white/50">
-                                <div
-                                    class="size-8 rounded-full bg-white flex items-center justify-center text-orange-500 shadow-sm">
-                                    <span class="material-symbols-outlined text-[18px]">nutrition</span>
-                                </div>
-                                <span class="text-[11px] font-black uppercase tracking-widest text-slate-700">3. Manfaat
-                                    Gula Aren</span>
-                            </div>
-                            <div class="p-5 bg-slate-50/30">
-                                <label class="block text-[10px] font-bold text-slate-500 mb-2 leading-relaxed">Jelaskan
-                                    manfaat penggunaan gula aren dibandingkan gula pasir!</label>
-                                <textarea id="lkpd3_q3" oninput="saveLKPDDraft()" placeholder="Jawab..."
-                                    class="w-full min-h-[80px] p-4 bg-white border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-terracotta outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
-                            </div>
-                        </div>
+                        <div id="lkpd3-questions-container"></div>
+                        <script>
+                            const lkpd3Questions = [
+                                "Sebutkan 3 jenis bahan lokal yang menjadi sumber karbohidrat utama dalam jajanan Nusantara!",
+                                "Mengapa bahan umbi-umbian (singkong/sagu) lebih unggul seratnya dibanding tepung terigu?",
+                                "Identifikasi zat gizi utama pada Bika Ambon berdasarkan bahan penyusunnya!",
+                                "Apa peran kelapa parut dalam memberikan serat pada jajanan Jawa Barat?",
+                                "Jelaskan manfaat gizi utama dari penggunaan kacang hijau pada jajanan Yogyakarta!",
+                                "Sebutkan mineral penting dalam pisang (Sulawesi Selatan) yang bermanfaat bagi tubuh!",
+                                "Apa keunggulan pati sagu alami (Papua) bagi kesehatan, khususnya terkait gluten?",
+                                "Jelaskan perbedaan manfaat gula aren dibanding gula pasir!",
+                                "Bagaimana cara meningkatkan nilai gizi panada menggunakan sayuran?",
+                                "Apa kontribusi gizi dari penggunaan santan/kelapa selain sebagai pemberi rasa gurih?"
+                            ];
+                            let lkpd3Html = '';
+                            lkpd3Questions.forEach((q, i) => {
+                                lkpd3Html += generateNutrientCard(i + 1, q, `lkpd3_q${i + 1}`);
+                            });
+                            document.getElementById('lkpd3-questions-container').outerHTML = lkpd3Html;
+                        </script>
                     </div>
                 </div>
                 <!-- LKPD 4: Inovasi Jajanan Nusantara Sehat -->
@@ -2755,9 +2741,16 @@
                     }
                 },
                 lkpd3: {
-                    q1: document.getElementById('lkpd3_q1').value,
-                    q2: document.getElementById('lkpd3_q2').value,
-                    q3: document.getElementById('lkpd3_q3').value
+                    q1: document.getElementById('lkpd3_q1')?.value || '',
+                    q2: document.getElementById('lkpd3_q2')?.value || '',
+                    q3: document.getElementById('lkpd3_q3')?.value || '',
+                    q4: document.getElementById('lkpd3_q4')?.value || '',
+                    q5: document.getElementById('lkpd3_q5')?.value || '',
+                    q6: document.getElementById('lkpd3_q6')?.value || '',
+                    q7: document.getElementById('lkpd3_q7')?.value || '',
+                    q8: document.getElementById('lkpd3_q8')?.value || '',
+                    q9: document.getElementById('lkpd3_q9')?.value || '',
+                    q10: document.getElementById('lkpd3_q10')?.value || ''
                 },
                 lkpd4: {
                     nama: document.getElementById('lkpd4_nama').value,
@@ -2801,9 +2794,10 @@
 
             // LKPD 3
             if (data.lkpd3) {
-                if (document.getElementById('lkpd3_q1')) document.getElementById('lkpd3_q1').value = data.lkpd3.q1 || '';
-                if (document.getElementById('lkpd3_q2')) document.getElementById('lkpd3_q2').value = data.lkpd3.q2 || '';
-                if (document.getElementById('lkpd3_q3')) document.getElementById('lkpd3_q3').value = data.lkpd3.q3 || '';
+                for (let i = 1; i <= 10; i++) {
+                    const el = document.getElementById(`lkpd3_q${i}`);
+                    if (el) el.value = data.lkpd3[`q${i}`] || '';
+                }
             }
 
             // LKPD 4
