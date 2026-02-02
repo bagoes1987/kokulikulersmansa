@@ -997,7 +997,7 @@
 
                 if (responses && responses.length > 0) {
                     const r = responses[0];
-                    updateDokumentasiStatusUI(r.status);
+                    updateDokumentasiStatusUI(r.status, r.score);
 
                     if (r.status === 'submitted' || r.status === 'reviewed') {
                         forceCompleteModule('dokumentasi');
@@ -1029,13 +1029,22 @@
             } catch (e) { console.error('Error checkExistingDokumentasi:', e); }
         }
 
-        function updateDokumentasiStatusUI(status) {
+        function updateDokumentasiStatusUI(status, score) {
             const icon = document.getElementById('status-dokumentasi');
             const label = document.getElementById('label-dokumentasi');
-            if (status === 'submitted' || status === 'reviewed') {
+            if (!icon || !label) return;
+
+            if (status === 'submitted') {
+                icon.textContent = 'hourglass_top';
+                icon.className = "material-symbols-outlined !text-base text-amber-500 animate-pulse";
+                label.textContent = "Menunggu Feedback";
+                label.className = "text-[13px] font-bold text-amber-500";
+            } else if (status === 'reviewed') {
+                const starCount = Math.round((score || 0) / 20);
+                const stars = '⭐'.repeat(starCount) || '⭐';
                 icon.textContent = 'check_circle';
                 icon.className = "material-symbols-outlined !text-base text-emerald-custom";
-                label.textContent = "Selesai";
+                label.textContent = `Selesai ${stars}`;
                 label.className = "text-[13px] font-bold text-emerald-custom";
             }
         }
@@ -1057,9 +1066,11 @@
                 // Nuclear class reset and apply amber
                 card.className = "bg-amber-50/50 p-4 rounded-[24px] ios-shadow border border-amber-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95";
             } else if (status === 'reviewed') {
+                const starCount = Math.round((score || 0) / 20);
+                const stars = '⭐'.repeat(starCount) || '⭐';
                 icon.textContent = 'check_circle';
                 icon.className = "material-symbols-outlined !text-base text-emerald-custom";
-                label.textContent = `Selesai (${score || 0})`;
+                label.textContent = `Selesai ${stars}`;
                 label.className = "text-[13px] font-bold text-emerald-custom";
 
                 // Nuclear class reset and apply emerald
@@ -1162,7 +1173,7 @@
                             statusMsg.innerHTML = `✅ <b>Sudah Direview (Skor: ${data.score || 0})</b><br>Feedback: "${data.feedback || '-'}"`;
 
                             // Update UI Dashboard Card
-                            updatePemantikStatusUI('reviewed');
+                            updatePemantikStatusUI('reviewed', data.score);
 
                             // SINKRONKAN ke local progress bar
                             forceCompleteModule('pemantik');
@@ -1195,20 +1206,48 @@
         }
 
         // Helper: Update Tampilan Icon di Dashboard (Kuning jika pending)
-        function updatePemantikStatusUI(status) {
+        function updatePemantikStatusUI(status, score) {
             const statusIcon = document.getElementById('status-pemantik');
             const statusLabel = document.getElementById('label-pemantik');
             if (!statusIcon || !statusLabel) return;
 
             if (status === 'submitted') {
                 statusIcon.textContent = 'hourglass_top'; // Icon jam pasir
-                statusIcon.className = 'material-symbols-outlined !text-[14px] text-yellow-500';
+                statusIcon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse';
                 statusLabel.textContent = 'Menunggu Feedback';
                 statusLabel.className = 'text-[11px] font-semibold text-yellow-500';
             } else if (status === 'reviewed') {
+                const starCount = Math.round((score || 0) / 20);
+                const stars = '⭐'.repeat(starCount) || '⭐';
                 statusIcon.textContent = 'check_circle';
                 statusIcon.className = 'material-symbols-outlined !text-[14px] text-emerald-500';
-                statusLabel.textContent = 'Selesai (Dinilai)';
+                statusLabel.textContent = `Selesai ${stars}`;
+                statusLabel.className = 'text-[11px] font-semibold text-emerald-500';
+            } else {
+                statusIcon.textContent = 'circle_notifications';
+                statusIcon.className = 'material-symbols-outlined !text-[14px] text-amber-400';
+                statusLabel.textContent = 'Belum Diisi';
+                statusLabel.className = 'text-[11px] font-semibold text-slate-400';
+            }
+        }
+
+        // Generic helper for Video, Glosarium, Refleksi
+        function updateStatusUIForModule(type, status, score) {
+            const statusIcon = document.getElementById(`status-${type}`);
+            const statusLabel = document.getElementById(`label-${type}`);
+            if (!statusIcon || !statusLabel) return;
+
+            if (status === 'submitted') {
+                statusIcon.textContent = 'hourglass_top';
+                statusIcon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse';
+                statusLabel.textContent = 'Menunggu Feedback';
+                statusLabel.className = 'text-[11px] font-semibold text-yellow-500';
+            } else if (status === 'reviewed') {
+                const starCount = Math.round((score || 0) / 20);
+                const stars = '⭐'.repeat(starCount) || '⭐';
+                statusIcon.textContent = 'check_circle';
+                statusIcon.className = 'material-symbols-outlined !text-[14px] text-emerald-500';
+                statusLabel.textContent = `Selesai ${stars}`;
                 statusLabel.className = 'text-[11px] font-semibold text-emerald-500';
             }
         }

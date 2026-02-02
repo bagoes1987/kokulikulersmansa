@@ -111,9 +111,55 @@
                 <div class="mt-8 pt-8 border-t space-y-5">
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Input Skor
                         (0-100)</label>
-                    <input type="number" id="gradeScore"
-                        class="w-full py-5 px-8 bg-slate-50 rounded-3xl font-black text-2xl focus:ring-4 focus:ring-primary/20 transition-all outline-none border-none"
-                        placeholder="0">
+                    <div id="scoreInputArea">
+                        <input type="number" id="gradeScore"
+                            class="w-full py-5 px-8 bg-slate-50 rounded-3xl font-black text-2xl focus:ring-4 focus:ring-primary/20 transition-all outline-none border-none"
+                            placeholder="0">
+                    </div>
+
+                    <!-- Star Rating UI -->
+                    <div id="starRatingArea" class="hidden">
+                        <label
+                            class="text-[10px] font-black text-indigo-400 uppercase tracking-widest block mb-4 text-center">Rating
+                            Dokumentasi (Klik Bintang)</label>
+                        <div
+                            class="flex items-center gap-3 justify-center bg-indigo-50/30 p-6 rounded-3xl border border-indigo-100/50">
+                            <button onclick="setStarRating(1)"
+                                class="star-btn flex items-center justify-center p-1 hover:scale-125 transition-transform"
+                                data-star="1">
+                                <span class="material-symbols-outlined text-4xl text-slate-200"
+                                    style="font-variation-settings: 'FILL' 0;">star</span>
+                            </button>
+                            <button onclick="setStarRating(2)"
+                                class="star-btn flex items-center justify-center p-1 hover:scale-125 transition-transform"
+                                data-star="2">
+                                <span class="material-symbols-outlined text-4xl text-slate-200"
+                                    style="font-variation-settings: 'FILL' 0;">star</span>
+                            </button>
+                            <button onclick="setStarRating(3)"
+                                class="star-btn flex items-center justify-center p-1 hover:scale-125 transition-transform"
+                                data-star="3">
+                                <span class="material-symbols-outlined text-4xl text-slate-200"
+                                    style="font-variation-settings: 'FILL' 0;">star</span>
+                            </button>
+                            <button onclick="setStarRating(4)"
+                                class="star-btn flex items-center justify-center p-1 hover:scale-125 transition-transform"
+                                data-star="4">
+                                <span class="material-symbols-outlined text-4xl text-slate-200"
+                                    style="font-variation-settings: 'FILL' 0;">star</span>
+                            </button>
+                            <button onclick="setStarRating(5)"
+                                class="star-btn flex items-center justify-center p-1 hover:scale-125 transition-transform"
+                                data-star="5">
+                                <span class="material-symbols-outlined text-4xl text-slate-200"
+                                    style="font-variation-settings: 'FILL' 0;">star</span>
+                            </button>
+                        </div>
+                        <p id="starLabel"
+                            class="text-center text-[10px] font-bold text-indigo-400 mt-2 uppercase tracking-widest">-
+                        </p>
+                    </div>
+
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Feedback
                         Fasilitator</label>
                     <textarea id="gradeFeedback" rows="3"
@@ -855,9 +901,16 @@
                     }
 
                     selectedResponseId = r.id;
-                    console.log('📌 Mengambil Response ID:', selectedResponseId);
-
-                    document.getElementById('gradingModuleTitle').textContent = `Hari ${r.day_id} • ${r.module_type.toUpperCase()} `;
+                    const typeLabels = {
+                        'pemantik': 'Pertanyaan Pemantik',
+                        'materi': 'Ringkasan Materi',
+                        'dokumentasi': 'Dokumentasi Foto',
+                        'lkpd': 'LKPD Digital',
+                        'kuis': 'Asesmen',
+                        'video': 'Video Belajar',
+                        'refleksi': 'Refleksi'
+                    };
+                    document.getElementById('gradingModuleTitle').textContent = `HARI ${r.day_id} • ${typeLabels[r.module_type] || r.module_type.toUpperCase()}`;
 
                     const answers = Array.isArray(r.answers) ? r.answers : [];
 
@@ -896,7 +949,22 @@
                         `).join('');
                     }
 
-                    document.getElementById('gradeScore').value = r.score || '';
+                    const scoreInputArea = document.getElementById('scoreInputArea');
+                    const starRatingArea = document.getElementById('starRatingArea');
+                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi'];
+
+                    if (starModules.includes(r.module_type)) {
+                        scoreInputArea.classList.add('hidden');
+                        starRatingArea.classList.remove('hidden');
+                        // Pre-set stars based on existing score
+                        const currentStars = Math.round((r.score || 0) / 20);
+                        updateStarUI(currentStars);
+                    } else {
+                        scoreInputArea.classList.remove('hidden');
+                        starRatingArea.classList.add('hidden');
+                        document.getElementById('gradeScore').value = r.score || '';
+                    }
+
                     document.getElementById('gradeFeedback').value = r.feedback || '';
 
                 } catch (e) {
@@ -1134,6 +1202,52 @@
                     await supabaseClient.auth.signOut();
                     localStorage.clear();
                     window.location.href = 'login.html';
+                }
+            }
+
+            function setStarRating(rating) {
+                const scoreField = document.getElementById('gradeScore');
+                const feedbackField = document.getElementById('gradeFeedback');
+
+                const feedbackMap = {
+                    1: "Masih sangat kurang, mohon tingkatkan lagi usahamu dan baca instruksi dengan teliti.",
+                    2: "Kurang lengkap, coba tambahkan detail lebih banyak pada jawaban atau tugasmu.",
+                    3: "Cukup baik, namun masih ada beberapa bagian yang perlu diperbaiki/dilengkapi.",
+                    4: "Bagus sekali! Jawabanmu sudah tepat dan lengkap. Pertahankan!",
+                    5: "Luar biasa! Hasil kerja yang sangat komprehensif dan melampaui ekspektasi."
+                };
+
+                updateStarUI(rating);
+
+                // Map stars to score (20, 40, 60, 80, 100)
+                scoreField.value = rating * 20;
+
+                // Auto-populate feedback if it's currently empty or already contains a mapped feedback
+                const currentFeedback = feedbackField.value.trim();
+                const isAutoFeedback = Object.values(feedbackMap).includes(currentFeedback);
+
+                if (!currentFeedback || isAutoFeedback) {
+                    feedbackField.value = feedbackMap[rating] || "";
+                }
+            }
+
+            function updateStarUI(rating) {
+                const buttons = document.querySelectorAll('.star-btn');
+                const labels = ['', 'Sangat Kurang', 'Kurang', 'Cukup Baik', 'Bagus', 'Sangat Bagus'];
+
+                buttons.forEach((btn, idx) => {
+                    const icon = btn.querySelector('.material-symbols-outlined');
+                    if (idx < rating) {
+                        icon.style.color = '#f59e0b'; // Amber-500
+                        icon.style.fontVariationSettings = "'FILL' 1";
+                    } else {
+                        icon.style.color = '#cbd5e1'; // Slate-300
+                        icon.style.fontVariationSettings = "'FILL' 0";
+                    }
+                });
+
+                if (document.getElementById('starLabel')) {
+                    document.getElementById('starLabel').textContent = labels[rating] || '-';
                 }
             }
 
