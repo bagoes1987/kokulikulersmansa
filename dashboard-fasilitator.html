@@ -1224,37 +1224,81 @@
                         }
 
                         if (lkpdData.lkpd4) {
+                            const m = lkpdData.lkpd4.makan || {};
+                            const d = lkpdData.lkpd4.minum || {};
+
                             html += `
                             < div class="p-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl" >
-                                    <p class="text-[9px] font-black text-indigo-600 uppercase tracking-widest mb-3">LKPD 4: Inovasi Jajanan Sehat</p>
-                                    <div class="grid grid-cols-2 gap-2 mb-3">
-                                        <div class="p-2 bg-white rounded-xl border border-indigo-50 text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase">Nama Jajanan</p>
-                                            <p class="text-[10px] text-slate-700 font-bold">${lkpdData.lkpd4.nama || '-'}</p>
+                                    <p class="text-[9px] font-black text-indigo-600 uppercase tracking-widest mb-4">LKPD 4: Inovasi Jajanan Nusantara</p>
+                                    
+                                    <!--MAKANAN -->
+                                    <div class="space-y-3 mb-6">
+                                        <div class="flex items-center gap-2 border-b border-orange-100 pb-1 mb-2">
+                                            <span class="material-symbols-outlined text-[14px] text-orange-500">restaurant</span>
+                                            <p class="text-[10px] font-black text-slate-700 uppercase">A. Inovasi Makanan</p>
                                         </div>
-                                        <div class="p-2 bg-white rounded-xl border border-indigo-50 text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase">Asal Daerah</p>
-                                            <p class="text-[10px] text-slate-700 font-bold">${lkpdData.lkpd4.asal || '-'}</p>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <div class="p-2 bg-white rounded-xl border border-orange-50">
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase">Nama Makanan</p>
+                                                <p class="text-[10px] text-slate-700 font-bold">${m.nama || '-'}</p>
+                                            </div>
+                                            <div class="p-2 bg-white rounded-xl border border-orange-50">
+                                                <p class="text-[8px] font-bold text-slate-400 uppercase">Asal Daerah</p>
+                                                <p class="text-[10px] text-slate-700 font-bold">${m.asal || '-'}</p>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <div class="p-3 bg-white rounded-xl border border-orange-50">
+                                                <p class="text-[8px] font-bold text-orange-400 uppercase mb-1">Bahan & Gizi:</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Bahan:</strong> ${m.bahan || '-'}</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Gizi:</strong> ${m.gizi || '-'}</p>
+                                            </div>
+                                            <div class="p-3 bg-white rounded-xl border border-orange-50">
+                                                <p class="text-[8px] font-bold text-orange-400 uppercase mb-1">Proses & Produk:</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Metode:</strong> ${m.metode || '-'}</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Keunggulan:</strong> ${m.keunggulan || '-'}</p>
+                                            </div>
+                                            <div class="p-3 bg-white rounded-xl border border-orange-50">
+                                                <p class="text-[8px] font-bold text-orange-400 uppercase mb-1">Pemasaran & Inovasi:</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Teknologi:</strong> ${m.pemasaran || '-'}</p>
+                                                <p class="text-[10px] text-slate-600"><strong>Inovasi:</strong> ${m.inovasi || '-'}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="space-y-2">
-                                        <div class="p-3 bg-white rounded-xl border border-indigo-50">
-                                            <p class="text-[9px] font-bold text-indigo-400 uppercase mb-1">Bahan Utama:</p>
-                                            <p class="text-[10px] text-slate-700 font-medium">${lkpdData.lkpd4.bahan || '-'}</p>
-                                        </div>
-                                        <div class="p-3 bg-white rounded-xl border border-indigo-50">
-                                            <p class="text-[9px] font-bold text-indigo-400 uppercase mb-1">Inovasi Gizi:</p>
-                                            <p class="text-[10px] text-slate-700 font-medium">${lkpdData.lkpd4.gizi || '-'}</p>
-                                        </div>
-                                        <div class="p-3 bg-white rounded-xl border border-indigo-50">
-                                            <p class="text-[9px] font-bold text-indigo-400 uppercase mb-1">Metode:</p>
-                                            <p class="text-[10px] text-slate-700 font-medium">${lkpdData.lkpd4.metode || '-'}</p>
-                                        </div>
-                                        <div class="p-3 bg-white rounded-xl border border-indigo-50">
-                                            <p class="text-[9px] font-bold text-indigo-400 uppercase mb-1">Keunggulan:</p>
-                                            <p class="text-[10px] text-slate-700 font-medium">${lkpdData.lkpd4.keunggulan || '-'}</p>
-                                        </div>
+
+                                    <!--MINUMAN -->
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-2 border-b border-blue-100 pb-1 mb-2">
+                                    <span class="material-symbols-outlined text-[14px] text-blue-500">local_drink</span>
+                                    <p class="text-[10px] font-black text-slate-700 uppercase">B. Inovasi Minuman</p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="p-2 bg-white rounded-xl border border-blue-50">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Nama Minuman</p>
+                                        <p class="text-[10px] text-slate-700 font-bold">${d.nama || '-'}</p>
                                     </div>
+                                    <div class="p-2 bg-white rounded-xl border border-blue-50">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Asal Daerah</p>
+                                        <p class="text-[10px] text-slate-700 font-bold">${d.asal || '-'}</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="p-3 bg-white rounded-xl border border-blue-50">
+                                        <p class="text-[8px] font-bold text-blue-400 uppercase mb-1">Bahan & Gizi:</p>
+                                        <p class="text-[10px] text-slate-600"><strong>Bahan:</strong> ${d.bahan || '-'}</p>
+                                        <p class="text-[10px] text-slate-600"><strong>Gizi:</strong> ${d.gizi || '-'}</p>
+                                    </div>
+                                    <div class="p-3 bg-white rounded-xl border border-blue-50">
+                                        <p class="text-[8px] font-bold text-blue-400 uppercase mb-1">Proses & Keunggulan:</p>
+                                        <p class="text-[10px] text-slate-600"><strong>Metode:</strong> ${d.metode || '-'}</p>
+                                        <p class="text-[10px] text-slate-600"><strong>Keunggulan:</strong> ${d.keunggulan || '-'}</p>
+                                    </div>
+                                    <div class="p-3 bg-white rounded-xl border border-blue-50">
+                                        <p class="text-[8px] font-bold text-blue-400 uppercase mb-1">Pemasaran:</p>
+                                        <p class="text-[10px] text-slate-600"><strong>Teknologi:</strong> ${d.pemasaran || '-'}</p>
+                                    </div>
+                                </div>
+                            </div>
                                 </div > `;
                         }
 
@@ -1264,9 +1308,9 @@
                         // Standard display for other modules (e.g., Pemantik)
                         answerCont.innerHTML = answers.map((ans, i) => `
                             < div class="bg-slate-50 p-3 rounded-xl border border-slate-100" >
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Pertanyaan ${i + 1}</p>
-                            <p class="text-xs text-slate-700 font-medium leading-relaxed">${ans}</p>
-                        </div >
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Pertanyaan ${i + 1}</p>
+                                <p class="text-xs text-slate-700 font-medium leading-relaxed">${ans}</p>
+                            </div >
                             `).join('');
                     }
 
@@ -1386,7 +1430,7 @@
                             < div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm" >
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">${cls}</p>
                             <p class="text-xl font-black text-slate-800">${pct}%</p>
-                        </div >
+                            </div >
                             `;
                 }
 
@@ -1554,7 +1598,7 @@
                     listContainer.innerHTML = `
                             < div class="space-y-3" >
                                 ${ renderActivityItems(sorted, studentMap) }
-                        </div > `;
+                            </div > `;
 
                 } catch (e) {
                     console.error('Error openAllActivitiesModal:', e);
@@ -1659,7 +1703,7 @@
                             < div class="flex items-start gap-3 p-3 rounded-xl border ${style} text-xs" >
                                 <div class="mt-0.5 shrink-0">${icon}</div>
                                 <span>${opt}</span>
-                            </div >
+                                </div >
                             `;
                     }).join('');
 
@@ -1673,7 +1717,7 @@
                             <div class="space-y-2">
                                 ${optionsHtml}
                             </div>
-                        </div >
+                            </div >
                     `;
                 }).join('');
             }

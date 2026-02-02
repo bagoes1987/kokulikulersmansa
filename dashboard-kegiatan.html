@@ -2297,105 +2297,212 @@
                         </script>
                     </div>
                 </div>
-                <!-- LKPD 4: Inovasi Jajanan Nusantara Sehat -->
+                <!-- LKPD 4: Inovasi Jajanan Nusantara -->
                 <div id="lkpd-section-4" class="lkpd-section hidden animate-slide-up pb-8">
                     <div class="mb-6">
                         <h4 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-2">LKPD 4: Inovasi
-                            Jajanan Nusantara Sehat</h4>
-                        <p class="text-[10px] text-slate-500 font-medium leading-relaxed">Diskusikan dan rancang satu
-                            ide jajanan Nusantara sehat untuk kegiatan bazar sekolah!</p>
+                            Jajanan Nusantara</h4>
+                        <p class="text-[10px] text-slate-500 font-medium leading-relaxed">Rancanglah inovasi jajanan
+                            (makanan & minuman) Nusantara untuk kegiatan bazar sekolah!</p>
                     </div>
 
-                    <div class="space-y-6">
-                        <!-- Identitas Produk -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm-soft">
-                                <label
-                                    class="block text-[9px] font-black text-slate-400 mb-2 uppercase tracking-widest">Nama
-                                    Jajanan:</label>
-                                <input type="text" id="lkpd4_nama" oninput="saveLKPDDraft()" placeholder="Jawab..."
-                                    class="w-full p-3 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-medium focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300">
+                    <div class="space-y-8">
+                        <!-- BAGIAN MAKANAN -->
+                        <div class="space-y-5">
+                            <div class="flex items-center gap-3 border-b border-orange-100 pb-2">
+                                <span class="material-symbols-outlined text-orange-500">restaurant</span>
+                                <h5 class="text-xs font-black text-slate-700 uppercase tracking-widest">A. Inovasi
+                                    Makanan</h5>
                             </div>
-                            <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm-soft">
-                                <label
-                                    class="block text-[9px] font-black text-slate-400 mb-2 uppercase tracking-widest">Asal
-                                    Daerah:</label>
-                                <input type="text" id="lkpd4_asal" oninput="saveLKPDDraft()" placeholder="Jawab..."
-                                    class="w-full p-3 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-medium focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Nama Makanan -->
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                    <label
+                                        class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                        <span class="material-symbols-outlined !text-sm">label</span> Nama Makanan
+                                    </label>
+                                    <input type="text" id="lkpd4_m_nama" oninput="saveLKPDDraft()"
+                                        placeholder="Nama inovasi makanan..."
+                                        class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-orange-400 outline-none transition-all">
+                                </div>
+                                <!-- Asal Daerah -->
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                    <label
+                                        class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                        <span class="material-symbols-outlined !text-sm">location_on</span> Asal Daerah
+                                    </label>
+                                    <input type="text" id="lkpd4_m_asal" oninput="saveLKPDDraft()"
+                                        placeholder="Asal daerah makanan..."
+                                        class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-orange-400 outline-none transition-all">
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <!-- Grid Kolom 3 & 4: Bahan & Gizi -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">shopping_basket</span>
+                                            Bahan Utama
+                                        </label>
+                                        <textarea id="lkpd4_m_bahan" oninput="saveLKPDDraft()"
+                                            placeholder="Daftar bahan utama..."
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-orange-400 outline-none transition-all resize-none"></textarea>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">nutrition</span> Informasi
+                                            Gizi
+                                        </label>
+                                        <textarea id="lkpd4_m_gizi" oninput="saveLKPDDraft()"
+                                            placeholder="Kandungan gizi..."
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-orange-400 outline-none transition-all resize-none"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Grid Kolom 5 & 6: Metode & Keunggulan -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">cooking</span> Metode
+                                            Pengolahan
+                                        </label>
+                                        <textarea id="lkpd4_m_metode" oninput="saveLKPDDraft()"
+                                            placeholder="Cara mengolah..."
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-orange-400 outline-none transition-all resize-none"></textarea>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">workspace_premium</span>
+                                            Keunggulan Produk
+                                        </label>
+                                        <textarea id="lkpd4_m_keunggulan" oninput="saveLKPDDraft()"
+                                            placeholder="Apa keunggulan makanan ini?"
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-orange-400 outline-none transition-all resize-none"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Grid Kolom 7 & 8: Teknologi Pemasaran & Inovasi -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">ads_click</span> Teknologi
+                                            Pemasaran
+                                        </label>
+                                        <textarea id="lkpd4_m_pemasaran" oninput="saveLKPDDraft()"
+                                            placeholder="Strategi pemasaran digital/modern..."
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-orange-400 outline-none transition-all resize-none"></textarea>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">lightbulb</span> Inovasi
+                                            Makanan
+                                        </label>
+                                        <textarea id="lkpd4_m_inovasi" oninput="saveLKPDDraft()"
+                                            placeholder="Apa sentuhan inovasi barunya?"
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-orange-400 outline-none transition-all resize-none"></textarea>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Aspek Inovasi Grid -->
-                        <div class="space-y-4">
-                            <!-- Bahan Utama -->
-                            <div
-                                class="bg-white rounded-[2rem] border border-indigo-50 shadow-sm overflow-hidden group">
-                                <div
-                                    class="px-5 py-3 bg-indigo-50/50 flex items-center gap-3 border-b border-indigo-100">
-                                    <div
-                                        class="size-8 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm">
-                                        <span class="material-symbols-outlined text-[18px]">shopping_basket</span>
-                                    </div>
-                                    <span class="text-xs font-black uppercase tracking-widest text-slate-700">Bahan
-                                        Utama</span>
+                        <!-- BAGIAN MINUMAN -->
+                        <div class="space-y-5 pt-4">
+                            <div class="flex items-center gap-3 border-b border-blue-100 pb-2">
+                                <span class="material-symbols-outlined text-blue-500">local_drink</span>
+                                <h5 class="text-xs font-black text-slate-700 uppercase tracking-widest">B. Inovasi
+                                    Minuman</h5>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Nama Minuman -->
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                    <label
+                                        class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                        <span class="material-symbols-outlined !text-sm">label</span> Nama Minuman
+                                    </label>
+                                    <input type="text" id="lkpd4_d_nama" oninput="saveLKPDDraft()"
+                                        placeholder="Nama inovasi minuman..."
+                                        class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-blue-400 outline-none transition-all">
                                 </div>
-                                <div class="p-5">
-                                    <textarea id="lkpd4_bahan" oninput="saveLKPDDraft()" placeholder="Jawab..."
-                                        class="w-full min-h-[80px] p-4 bg-slate-50/50 border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                                <!-- Asal Daerah -->
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                    <label
+                                        class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                        <span class="material-symbols-outlined !text-sm">location_on</span> Asal Daerah
+                                    </label>
+                                    <input type="text" id="lkpd4_d_asal" oninput="saveLKPDDraft()"
+                                        placeholder="Asal daerah minuman..."
+                                        class="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-blue-400 outline-none transition-all">
                                 </div>
                             </div>
 
-                            <!-- Inovasi Gizi -->
-                            <div
-                                class="bg-white rounded-[2rem] border border-indigo-50 shadow-sm overflow-hidden group">
-                                <div
-                                    class="px-5 py-3 bg-indigo-50/50 flex items-center gap-3 border-b border-indigo-100">
-                                    <div
-                                        class="size-8 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm">
-                                        <span class="material-symbols-outlined text-[18px]">health_and_safety</span>
+                            <div class="space-y-4">
+                                <!-- Grid Kolom 3 & 4: Bahan & Gizi -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">shopping_basket</span>
+                                            Bahan Utama
+                                        </label>
+                                        <textarea id="lkpd4_d_bahan" oninput="saveLKPDDraft()"
+                                            placeholder="Daftar bahan utama..."
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-blue-400 outline-none transition-all resize-none"></textarea>
                                     </div>
-                                    <span class="text-xs font-black uppercase tracking-widest text-slate-700">Inovasi
-                                        Gizi</span>
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">nutrition</span> Informasi
+                                            Gizi
+                                        </label>
+                                        <textarea id="lkpd4_d_gizi" oninput="saveLKPDDraft()"
+                                            placeholder="Kandungan gizi..."
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-blue-400 outline-none transition-all resize-none"></textarea>
+                                    </div>
                                 </div>
-                                <div class="p-5">
-                                    <textarea id="lkpd4_gizi" oninput="saveLKPDDraft()" placeholder="Jawab..."
-                                        class="w-full min-h-[80px] p-4 bg-slate-50/50 border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
-                                </div>
-                            </div>
 
-                            <!-- Metode Pengolahan -->
-                            <div
-                                class="bg-white rounded-[2rem] border border-indigo-50 shadow-sm overflow-hidden group">
-                                <div
-                                    class="px-5 py-3 bg-indigo-50/50 flex items-center gap-3 border-b border-indigo-100">
-                                    <div
-                                        class="size-8 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm">
-                                        <span class="material-symbols-outlined text-[18px]">cooking</span>
+                                <!-- Grid Kolom 5 & 6: Metode & Keunggulan -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">cooking</span> Metode
+                                            Pengolahan
+                                        </label>
+                                        <textarea id="lkpd4_d_metode" oninput="saveLKPDDraft()"
+                                            placeholder="Cara mengolah..."
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-blue-400 outline-none transition-all resize-none"></textarea>
                                     </div>
-                                    <span class="text-xs font-black uppercase tracking-widest text-slate-700">Metode
-                                        Pengolahan</span>
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                        <label
+                                            class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                            <span class="material-symbols-outlined !text-sm">workspace_premium</span>
+                                            Keunggulan Produk
+                                        </label>
+                                        <textarea id="lkpd4_d_keunggulan" oninput="saveLKPDDraft()"
+                                            placeholder="Apa keunggulan minuman ini?"
+                                            class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-blue-400 outline-none transition-all resize-none"></textarea>
+                                    </div>
                                 </div>
-                                <div class="p-5">
-                                    <textarea id="lkpd4_metode" oninput="saveLKPDDraft()" placeholder="Jawab..."
-                                        class="w-full min-h-[80px] p-4 bg-slate-50/50 border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
-                                </div>
-                            </div>
 
-                            <!-- Keunggulan Produk -->
-                            <div
-                                class="bg-white rounded-[2rem] border border-indigo-50 shadow-sm overflow-hidden group">
-                                <div
-                                    class="px-5 py-3 bg-indigo-50/50 flex items-center gap-3 border-b border-indigo-100">
-                                    <div
-                                        class="size-8 rounded-full bg-white flex items-center justify-center text-indigo-500 shadow-sm">
-                                        <span class="material-symbols-outlined text-[18px]">workspace_premium</span>
-                                    </div>
-                                    <span class="text-xs font-black uppercase tracking-widest text-slate-700">Keunggulan
-                                        Produk</span>
-                                </div>
-                                <div class="p-5">
-                                    <textarea id="lkpd4_keunggulan" oninput="saveLKPDDraft()" placeholder="Jawab..."
-                                        class="w-full min-h-[80px] p-4 bg-slate-50/50 border border-slate-100 rounded-2xl text-xs text-slate-700 focus:border-indigo-400 outline-none transition-all placeholder:text-slate-300 font-medium"></textarea>
+                                <!-- Kolom 7: Teknologi Pemasaran -->
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                    <label
+                                        class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                        <span class="material-symbols-outlined !text-sm">ads_click</span> Teknologi
+                                        Pemasaran
+                                    </label>
+                                    <textarea id="lkpd4_d_pemasaran" oninput="saveLKPDDraft()"
+                                        placeholder="Strategi pemasaran digital/modern..."
+                                        class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-blue-400 outline-none transition-all resize-none"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -2753,12 +2860,25 @@
                     q10: document.getElementById('lkpd3_q10')?.value || ''
                 },
                 lkpd4: {
-                    nama: document.getElementById('lkpd4_nama').value,
-                    asal: document.getElementById('lkpd4_asal').value,
-                    bahan: document.getElementById('lkpd4_bahan').value,
-                    gizi: document.getElementById('lkpd4_gizi').value,
-                    metode: document.getElementById('lkpd4_metode').value,
-                    keunggulan: document.getElementById('lkpd4_keunggulan').value
+                    makan: {
+                        nama: document.getElementById('lkpd4_m_nama').value,
+                        asal: document.getElementById('lkpd4_m_asal').value,
+                        bahan: document.getElementById('lkpd4_m_bahan').value,
+                        gizi: document.getElementById('lkpd4_m_gizi').value,
+                        metode: document.getElementById('lkpd4_m_metode').value,
+                        keunggulan: document.getElementById('lkpd4_m_keunggulan').value,
+                        pemasaran: document.getElementById('lkpd4_m_pemasaran').value,
+                        inovasi: document.getElementById('lkpd4_m_inovasi').value
+                    },
+                    minum: {
+                        nama: document.getElementById('lkpd4_d_nama').value,
+                        asal: document.getElementById('lkpd4_d_asal').value,
+                        bahan: document.getElementById('lkpd4_d_bahan').value,
+                        gizi: document.getElementById('lkpd4_d_gizi').value,
+                        metode: document.getElementById('lkpd4_d_metode').value,
+                        keunggulan: document.getElementById('lkpd4_d_keunggulan').value,
+                        pemasaran: document.getElementById('lkpd4_d_pemasaran').value
+                    }
                 }
                 // Add LKPD 5 here as it is implemented
             };
@@ -2802,12 +2922,26 @@
 
             // LKPD 4
             if (data.lkpd4) {
-                if (document.getElementById('lkpd4_nama')) document.getElementById('lkpd4_nama').value = data.lkpd4.nama || '';
-                if (document.getElementById('lkpd4_asal')) document.getElementById('lkpd4_asal').value = data.lkpd4.asal || '';
-                if (document.getElementById('lkpd4_bahan')) document.getElementById('lkpd4_bahan').value = data.lkpd4.bahan || '';
-                if (document.getElementById('lkpd4_gizi')) document.getElementById('lkpd4_gizi').value = data.lkpd4.gizi || '';
-                if (document.getElementById('lkpd4_metode')) document.getElementById('lkpd4_metode').value = data.lkpd4.metode || '';
-                if (document.getElementById('lkpd4_keunggulan')) document.getElementById('lkpd4_keunggulan').value = data.lkpd4.keunggulan || '';
+                // Makanan
+                const m = data.lkpd4.makan || {};
+                if (document.getElementById('lkpd4_m_nama')) document.getElementById('lkpd4_m_nama').value = m.nama || '';
+                if (document.getElementById('lkpd4_m_asal')) document.getElementById('lkpd4_m_asal').value = m.asal || '';
+                if (document.getElementById('lkpd4_m_bahan')) document.getElementById('lkpd4_m_bahan').value = m.bahan || '';
+                if (document.getElementById('lkpd4_m_gizi')) document.getElementById('lkpd4_m_gizi').value = m.gizi || '';
+                if (document.getElementById('lkpd4_m_metode')) document.getElementById('lkpd4_m_metode').value = m.metode || '';
+                if (document.getElementById('lkpd4_m_keunggulan')) document.getElementById('lkpd4_m_keunggulan').value = m.keunggulan || '';
+                if (document.getElementById('lkpd4_m_pemasaran')) document.getElementById('lkpd4_m_pemasaran').value = m.pemasaran || '';
+                if (document.getElementById('lkpd4_m_inovasi')) document.getElementById('lkpd4_m_inovasi').value = m.inovasi || '';
+
+                // Minuman
+                const d = data.lkpd4.minum || {};
+                if (document.getElementById('lkpd4_d_nama')) document.getElementById('lkpd4_d_nama').value = d.nama || '';
+                if (document.getElementById('lkpd4_d_asal')) document.getElementById('lkpd4_d_asal').value = d.asal || '';
+                if (document.getElementById('lkpd4_d_bahan')) document.getElementById('lkpd4_d_bahan').value = d.bahan || '';
+                if (document.getElementById('lkpd4_d_gizi')) document.getElementById('lkpd4_d_gizi').value = d.gizi || '';
+                if (document.getElementById('lkpd4_d_metode')) document.getElementById('lkpd4_d_metode').value = d.metode || '';
+                if (document.getElementById('lkpd4_d_keunggulan')) document.getElementById('lkpd4_d_keunggulan').value = d.keunggulan || '';
+                if (document.getElementById('lkpd4_d_pemasaran')) document.getElementById('lkpd4_d_pemasaran').value = d.pemasaran || '';
             }
         }
 
