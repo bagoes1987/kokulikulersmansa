@@ -729,9 +729,9 @@
                 const pill = document.getElementById(`nav-pill-${i}`);
                 if (pill) {
                     if (i === currentMateriSlide) {
-                        pill.className = "size-8 rounded-lg bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center shadow-md shadow-emerald-200 transition-all";
+                        pill.className = "size-7 rounded-lg bg-emerald-500 text-white text-[9px] font-bold flex items-center justify-center shadow-md shadow-emerald-200 transition-all";
                     } else {
-                        pill.className = "size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all";
+                        pill.className = "size-7 rounded-lg bg-slate-50 text-slate-400 text-[9px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all";
                     }
                 }
             }
@@ -1440,7 +1440,7 @@
                             </div>
                             <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex gap-4">
                                 <span
-                                    class="material-symbols-outlined text-blue-500 flex-shrink-0 !text-[18px]">frying_pan</span>
+                                    class="material-symbols-outlined text-blue-500 flex-shrink-0 !text-[18px] !normal-case !not-italic">skillet</span>
                                 <div>
                                     <p class="text-xs font-black text-slate-800 uppercase mb-1">Teknik Modern (Baking &
                                         Frying)</p>
@@ -1687,112 +1687,110 @@
                                 menyelesaikan materi setelah mendapat review.
                             </p>
                         </div>
-                    </div>
-                </div>
 
-            </div>
-        </div>
-
-        <!-- Slide Navigation Bar -->
-        <div class="px-6 pb-4">
-            <div
-                class="flex items-center justify-between bg-slate-50/50 p-2 rounded-[1.5rem] border border-slate-100 overflow-x-auto no-scrollbar gap-2">
-                <button id="nav-pill-0" onclick="goToSlide(0)"
-                    class="size-8 rounded-lg bg-emerald-500 text-white text-[10px] font-bold flex items-center justify-center shadow-md shadow-emerald-200 transition-all">1</button>
-                <button id="nav-pill-1" onclick="goToSlide(1)"
-                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">2</button>
-                <button id="nav-pill-2" onclick="goToSlide(2)"
-                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">3</button>
-                <button id="nav-pill-3" onclick="goToSlide(3)"
-                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">4</button>
-                <button id="nav-pill-4" onclick="goToSlide(4)"
-                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">5</button>
-                <button id="nav-pill-5" onclick="goToSlide(5)"
-                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">6</button>
-                <button id="nav-pill-6" onclick="goToSlide(6)"
-                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">7</button>
-                <button id="nav-pill-7" onclick="goToSlide(7)"
-                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">8</button>
-                <button id="nav-pill-8" onclick="goToSlide(8)"
-                    class="size-8 rounded-lg bg-slate-50 text-slate-400 text-[10px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all">9</button>
-            </div>
-        </div>
-
-        <!-- Footer Controls -->
-        <div class="p-6 border-t border-slate-50 bg-white flex gap-3">
-            <button id="btnPrevMateri" onclick="prevMateriSlide()"
-                class="flex-1 py-3.5 rounded-2xl bg-slate-50 text-slate-400 font-bold text-xs transition-all invisible">Kembali</button>
-            <button id="btnNextMateri" onclick="nextMateriSlide()"
-                class="flex-[3] py-3.5 rounded-2xl bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 active:scale-95">Selanjutnya</button>
-            <button id="btnFinishMateri" onclick="settleMateri()"
-                class="flex-[3] py-3.5 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-lg shadow-emerald-500/30 transition-all active:scale-95 hidden">Selesaikan
-                Materi</button>
-        </div>
-    </div>
-    </div>
-
-    <!-- MODAL DOKUMENTASI FOTO (REPLACEMENT RANGKUMAN) -->
-    <div id="modalDokumentasi"
-        class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
-        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="p-8 border-b flex justify-between items-center bg-slate-50/50">
-                <div class="flex items-center gap-4">
-                    <div
-                        class="size-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-200">
-                        <span class="material-symbols-outlined !text-2xl">photo_camera</span>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-black text-slate-800">Dokumentasi Foto</h3>
-                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Hanya 1 foto terbaik
-                            setiap hari</p>
-                    </div>
-                </div>
-                <button onclick="closeDokumentasiModal()"
-                    class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-
-            <div class="p-8 overflow-y-auto no-scrollbar flex-1">
-                <div id="docStatusMsg" class="hidden"></div>
-
-                <div id="docUploadArea" class="space-y-6">
-                    <div
-                        class="p-8 border-2 border-dashed border-slate-200 rounded-[2rem] bg-slate-50 flex flex-col items-center justify-center text-center group hover:border-indigo-400 transition-all cursor-pointer relative">
-                        <input type="file" accept="image/*" capture="environment"
-                            onchange="handleDocPhotoSelection(event)" class="absolute inset-0 opacity-0 cursor-pointer"
-                            id="docInput">
-                        <div
-                            class="size-16 rounded-full bg-white shadow-sm flex items-center justify-center text-indigo-500 mb-4 group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined !text-3xl">add_a_photo</span>
+                        <!-- Slide Navigation Bar -->
+                        <div class="px-6 pb-2">
+                            <div
+                                class="flex items-center justify-between bg-slate-50/50 p-1.5 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar gap-1.5">
+                                <button id="nav-pill-0" onclick="goToSlide(0)"
+                                    class="size-7 rounded-lg bg-emerald-500 text-white text-[9px] font-bold flex items-center justify-center shadow-md shadow-emerald-200 transition-all shrink-0">1</button>
+                                <button id="nav-pill-1" onclick="goToSlide(1)"
+                                    class="size-7 rounded-lg bg-slate-50 text-slate-400 text-[9px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all shrink-0">2</button>
+                                <button id="nav-pill-2" onclick="goToSlide(2)"
+                                    class="size-7 rounded-lg bg-slate-50 text-slate-400 text-[9px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all shrink-0">3</button>
+                                <button id="nav-pill-3" onclick="goToSlide(3)"
+                                    class="size-7 rounded-lg bg-slate-50 text-slate-400 text-[9px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all shrink-0">4</button>
+                                <button id="nav-pill-4" onclick="goToSlide(4)"
+                                    class="size-7 rounded-lg bg-slate-50 text-slate-400 text-[9px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all shrink-0">5</button>
+                                <button id="nav-pill-5" onclick="goToSlide(5)"
+                                    class="size-7 rounded-lg bg-slate-50 text-slate-400 text-[9px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all shrink-0">6</button>
+                                <button id="nav-pill-6" onclick="goToSlide(6)"
+                                    class="size-7 rounded-lg bg-slate-50 text-slate-400 text-[9px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all shrink-0">7</button>
+                                <button id="nav-pill-7" onclick="goToSlide(7)"
+                                    class="size-7 rounded-lg bg-slate-50 text-slate-400 text-[9px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all shrink-0">8</button>
+                                <button id="nav-pill-8" onclick="goToSlide(8)"
+                                    class="size-7 rounded-lg bg-slate-50 text-slate-400 text-[9px] font-bold flex items-center justify-center hover:bg-slate-100 transition-all shrink-0">9</button>
+                            </div>
                         </div>
-                        <p class="text-sm font-bold text-slate-700">Ambil Foto Kegiatan</p>
-                        <p class="text-[11px] text-slate-400 mt-1">Gunakan kamera HP untuk hasil terbaik</p>
-                    </div>
 
-                    <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100 flex gap-3">
-                        <span class="material-symbols-outlined text-amber-500 text-lg">info</span>
-                        <p class="text-[11px] text-amber-700 font-medium leading-relaxed">
-                            Foto akan dikompresi otomatis untuk menghemat kuota. Pastikan objek foto terlihat jelas.
-                        </p>
+                        <!-- Footer Controls -->
+                        <div class="p-6 border-t border-slate-50 bg-white flex gap-3">
+                            <button id="btnPrevMateri" onclick="prevMateriSlide()"
+                                class="flex-1 py-3.5 rounded-2xl bg-slate-50 text-slate-400 font-bold text-xs transition-all invisible">Kembali</button>
+                            <button id="btnNextMateri" onclick="nextMateriSlide()"
+                                class="flex-[3] py-3.5 rounded-2xl bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 active:scale-95">Selanjutnya</button>
+                            <button id="btnFinishMateri" onclick="settleMateri()"
+                                class="flex-[3] py-3.5 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-lg shadow-emerald-500/30 transition-all active:scale-95 hidden">Selesaikan
+                                Materi</button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-center">
-                    <img id="docPreview"
-                        class="hidden w-full max-h-64 object-cover rounded-2xl border-4 border-white shadow-xl" src=""
-                        alt="Preview">
-                </div>
-            </div>
+                <!-- MODAL DOKUMENTASI FOTO (REPLACEMENT RANGKUMAN) -->
+                <div id="modalDokumentasi"
+                    class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+                    <div
+                        class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                        <div class="p-8 border-b flex justify-between items-center bg-slate-50/50">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="size-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-lg shadow-indigo-200">
+                                    <span class="material-symbols-outlined !text-2xl">photo_camera</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800">Dokumentasi Foto</h3>
+                                    <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Hanya 1
+                                        foto terbaik
+                                        setiap hari</p>
+                                </div>
+                            </div>
+                            <button onclick="closeDokumentasiModal()"
+                                class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+                                <span class="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
 
-            <div class="p-8 bg-slate-50 border-t">
-                <button id="btnUploadDokumentasi" onclick="submitDokumentasi()"
-                    class="w-full py-5 bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-200 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100">
-                    Kirim Dokumentasi
-                </button>
-            </div>
-        </div>
-    </div>
+                        <div class="p-8 overflow-y-auto no-scrollbar flex-1">
+                            <div id="docStatusMsg" class="hidden"></div>
+
+                            <div id="docUploadArea" class="space-y-6">
+                                <div
+                                    class="p-8 border-2 border-dashed border-slate-200 rounded-[2rem] bg-slate-50 flex flex-col items-center justify-center text-center group hover:border-indigo-400 transition-all cursor-pointer relative">
+                                    <input type="file" accept="image/*" capture="environment"
+                                        onchange="handleDocPhotoSelection(event)"
+                                        class="absolute inset-0 opacity-0 cursor-pointer" id="docInput">
+                                    <div
+                                        class="size-16 rounded-full bg-white shadow-sm flex items-center justify-center text-indigo-500 mb-4 group-hover:scale-110 transition-transform">
+                                        <span class="material-symbols-outlined !text-3xl">add_a_photo</span>
+                                    </div>
+                                    <p class="text-sm font-bold text-slate-700">Ambil Foto Kegiatan</p>
+                                    <p class="text-[11px] text-slate-400 mt-1">Gunakan kamera HP untuk hasil terbaik</p>
+                                </div>
+
+                                <div class="bg-amber-50 p-4 rounded-2xl border border-amber-100 flex gap-3">
+                                    <span class="material-symbols-outlined text-amber-500 text-lg">info</span>
+                                    <p class="text-[11px] text-amber-700 font-medium leading-relaxed">
+                                        Foto akan dikompresi otomatis untuk menghemat kuota. Pastikan objek foto
+                                        terlihat jelas.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 flex justify-center">
+                                <img id="docPreview"
+                                    class="hidden w-full max-h-64 object-cover rounded-2xl border-4 border-white shadow-xl"
+                                    src="" alt="Preview">
+                            </div>
+                        </div>
+
+                        <div class="p-8 bg-slate-50 border-t">
+                            <button id="btnUploadDokumentasi" onclick="submitDokumentasi()"
+                                class="w-full py-5 bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-200 active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100">
+                                Kirim Dokumentasi
+                            </button>
+                        </div>
+                    </div>
+                </div>
 </body>
 
 </html>
