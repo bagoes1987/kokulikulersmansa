@@ -692,6 +692,7 @@
             document.getElementById('modalMateri').classList.remove('hidden');
             document.getElementById('modalMateri').classList.add('flex');
             updateMateriSlideUI();
+            checkExistingMateri(); // Pastikan status terpanggil
         }
 
         function closeMateriModal() {
@@ -841,7 +842,11 @@
                 if (error) throw error;
 
                 alert('Pesan: Ringkasan berhasil dikirim! Silakan tunggu review dari Fasilitator.');
+                // SINKRONKAN status lokal (tetap false agar show hourglass)
+                studentProgress[`day${currentDay}`]['materi'] = false;
+                saveProgress();
                 closeMateriModal();
+                checkAllModulesStatus();
                 checkExistingMateri();
 
             } catch (e) {
@@ -1041,7 +1046,11 @@
                 if (dbError) throw dbError;
 
                 alert('✅ Foto dokumentasi berhasil dikirim!');
+                // Reset local complete status
+                studentProgress[`day${currentDay}`]['dokumentasi'] = false;
+                saveProgress();
                 closeDokumentasiModal();
+                checkAllModulesStatus();
                 checkExistingDokumentasi();
 
             } catch (e) {
@@ -1075,7 +1084,9 @@
                     const r = responses[0];
 
                     if (r.status === 'submitted' || r.status === 'reviewed') {
-                        forceCompleteModule('dokumentasi', r.score);
+                        if (r.status === 'reviewed') {
+                            forceCompleteModule('dokumentasi', r.score);
+                        }
                         if (container) container.classList.add('hidden');
                         if (btn) btn.classList.add('hidden');
                         if (statusMsg) {
@@ -1134,7 +1145,7 @@
                     .from('module_responses')
                     .insert({
                         student_id: user.id,
-                        day_id: 1,
+                        day_id: currentDay, // Gunakan currentDay yang dinamis
                         module_type: 'pemantik',
                         answers: answers,
                         status: 'submitted' // Status awal
@@ -1145,9 +1156,12 @@
                 // Berhasil
                 alert('Jawaban berhasil dikirim! Menunggu feedback dari fasilitator.');
 
-                // Update UI Lokal (Tanpa centang hijau, tapi kuning)
-                updatePemantikStatusUI('submitted');
+                // SINKRONKAN status lokal
+                studentProgress[`day${currentDay}`]['pemantik'] = false;
+                saveProgress();
+                checkAllModulesStatus(); // Refresh icon dashboard
                 closePemantikModal();
+                checkExistingPemantik();
 
             } catch (err) {
                 console.error('Gagal kirim:', err);
@@ -2364,7 +2378,7 @@
 
         // Initialize or Load Shuffled Order
         function initShuffle() {
-            const savedOrder = localStorage.getItem('assessment_shuffle_order_day1');
+            const savedOrder = localStorage.getItem(`assessment_shuffle_order_day${currentDay}`);
             if (savedOrder) {
                 shuffledIndices = JSON.parse(savedOrder);
                 // Validation: ensure length matches current questions (in case questions updated)
@@ -2387,7 +2401,7 @@
             }
 
             // Save to preserve order for this user/device
-            localStorage.setItem('assessment_shuffle_order_day1', JSON.stringify(shuffledIndices));
+            localStorage.setItem(`assessment_shuffle_order_day${currentDay}`, JSON.stringify(shuffledIndices));
         }
 
         function closeAssessmentModal() {
@@ -2504,8 +2518,8 @@
             document.getElementById('resultScoreText').innerText = `Skor Kamu: ${score} / 100`;
 
             // Save Status Local
-            localStorage.setItem('assessment_video_day1_stars', stars);
-            localStorage.setItem('assessment_video_day1_score', score);
+            localStorage.setItem(`assessment_video_day${currentDay}_stars`, stars);
+            localStorage.setItem(`assessment_video_day${currentDay}_score`, score);
             forceCompleteModule('assessment', score);
 
             // SAVE TO SUPABASE
