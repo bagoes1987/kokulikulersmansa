@@ -121,6 +121,9 @@
                 <button onclick="switchDay(3)"
                     class="flex-1 py-3 rounded-xl text-base font-semibold text-slate-500 hover:text-slate-700 transition-all"
                     id="tab-day3">Hari 3</button>
+                <button onclick="switchDay('nilai')"
+                    class="flex-1 py-3 rounded-xl text-base font-semibold text-slate-500 hover:text-slate-700 transition-all"
+                    id="tab-nilai">Nilai</button>
             </div>
         </div>
 
@@ -131,150 +134,213 @@
         </div>
 
         <!-- Module Grid -->
-        <div class="grid grid-cols-2 gap-4 px-6">
-            <!-- Pertanyaan Pemantik -->
-            <div onclick="toggleModule('pemantik')"
-                class="bg-amber-50/50 p-4 rounded-[24px] ios-shadow border border-amber-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-amber-400 flex items-center justify-center text-white shadow-lg shadow-amber-200">
-                    <span class="material-symbols-outlined !text-2xl">lightbulb</span>
+        <div id="module-grid-container" class="animate-fade-in block">
+            <div class="grid grid-cols-2 gap-4 px-6">
+                <!-- Pertanyaan Pemantik -->
+                <div onclick="toggleModule('pemantik')"
+                    class="bg-amber-50/50 p-4 rounded-[24px] ios-shadow border border-amber-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-amber-400 flex items-center justify-center text-white shadow-lg shadow-amber-200">
+                        <span class="material-symbols-outlined !text-2xl">lightbulb</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Pertanyaan Pemantik</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-pemantik">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-pemantik">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">Pertanyaan Pemantik</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="material-symbols-outlined !text-base text-slate-400"
-                            id="status-pemantik">radio_button_unchecked</span>
-                        <span class="text-[13px] font-semibold text-slate-400" id="label-pemantik">Belum
-                            Selesai</span>
+
+                <!-- Materi Belajar -->
+                <div onclick="toggleModule('materi')"
+                    class="bg-blue-50/50 p-4 rounded-[24px] ios-shadow border border-blue-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                        <span class="material-symbols-outlined !text-2xl">description</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Materi Belajar</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-materi">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-materi">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Belajar -->
+                <div onclick="toggleModule('video')"
+                    class="bg-red-50/50 p-4 rounded-[24px] ios-shadow border border-red-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-red-500 flex items-center justify-center text-white shadow-lg shadow-red-200">
+                        <span class="material-symbols-outlined !text-2xl">play_circle</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Video Belajar</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-video">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-video">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LKPD Digital -->
+                <div onclick="toggleModule('lkpd')"
+                    class="bg-orange-50/50 p-4 rounded-[24px] ios-shadow border border-orange-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-terracotta flex items-center justify-center text-white shadow-lg shadow-terracotta/30">
+                        <span class="material-symbols-outlined !text-2xl">edit_note</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">LKPD Digital</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-lkpd">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-lkpd">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asesmen -->
+                <div onclick="toggleModule('asesmen')"
+                    class="bg-purple-50/50 p-4 rounded-[24px] ios-shadow border border-purple-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-purple-500 flex items-center justify-center text-white shadow-lg shadow-purple-200">
+                        <span class="material-symbols-outlined !text-2xl">task_alt</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Assessment</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-asesmen">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-asesmen">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dokumentasi Foto -->
+                <div onclick="toggleModule('dokumentasi')"
+                    class="bg-indigo-50/50 p-4 rounded-[24px] ios-shadow border border-indigo-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                        <span class="material-symbols-outlined !text-2xl">photo_camera</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Dokumentasi Foto</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-dokumentasi">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-dokumentasi">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Glosarium -->
+                <div onclick="toggleModule('glosarium')"
+                    class="bg-cyan-50/50 p-4 rounded-[24px] ios-shadow border border-cyan-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-white shadow-lg shadow-cyan-200">
+                        <span class="material-symbols-outlined !text-2xl">dictionary</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Glosarium</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-glosarium">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-glosarium">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Refleksi -->
+                <div onclick="toggleModule('refleksi')"
+                    class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-emerald-custom flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                        <span class="material-symbols-outlined !text-2xl">psychology_alt</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Refleksi</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-refleksi">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-refleksi">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nilai Final / Report Card Section -->
+        <div id="nilai-report-container" class="hidden animate-slide-up px-6 pb-24">
+            <div
+                class="bg-white rounded-[2.5rem] p-8 shadow-xl border border-slate-100 text-center relative overflow-hidden">
+                <!-- Decorative BG -->
+                <div
+                    class="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-b-[50%] -z-0">
+                </div>
+
+                <div class="relative z-10">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Nilai Kokurikuler
+                    </p>
+
+                    <div id="final-star-display" class="mb-4">
+                        <div class="flex justify-center gap-1 text-4xl mb-2">
+                            <span class="material-symbols-outlined text-slate-200"
+                                style="font-variation-settings: 'FILL' 1">star</span>
+                            <span class="material-symbols-outlined text-slate-200"
+                                style="font-variation-settings: 'FILL' 1">star</span>
+                            <span class="material-symbols-outlined text-slate-200"
+                                style="font-variation-settings: 'FILL' 1">star</span>
+                            <span class="material-symbols-outlined text-slate-200"
+                                style="font-variation-settings: 'FILL' 1">star</span>
+                            <span class="material-symbols-outlined text-slate-200"
+                                style="font-variation-settings: 'FILL' 1">star</span>
+                        </div>
+                        <p class="text-xs text-slate-400 font-bold" id="final-total-score">Belum Dinilai</p>
+                    </div>
+
+                    <div id="final-badge-container" class="my-6">
+                        <div class="inline-block px-8 py-3 bg-slate-50 rounded-full border border-slate-200">
+                            <span class="text-sm font-black text-slate-400">MENUNGGU PENILAIAN</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 text-left">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Deskripsi
+                            Capaian</p>
+                        <p class="text-xs text-slate-600 font-medium leading-relaxed" id="final-description">
+                            Fasilitator belum mempublikasikan nilai akhir projekmu. Silakan selesaikan semua tugas Hari
+                            1-3.
+                        </p>
+                    </div>
+
+                    <div id="final-feedback-section" class="mt-4 hidden">
+                        <div class="bg-amber-50 p-6 rounded-3xl border border-amber-100 text-left">
+                            <p class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-2">Catatan
+                                Fasilitator</p>
+                            <p class="text-xs text-slate-700 font-medium leading-relaxed italic"
+                                id="final-feedback-text">-</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Materi Belajar -->
-            <div onclick="toggleModule('materi')"
-                class="bg-blue-50/50 p-4 rounded-[24px] ios-shadow border border-blue-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                    <span class="material-symbols-outlined !text-2xl">description</span>
-                </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">Materi Belajar</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="material-symbols-outlined !text-base text-slate-400"
-                            id="status-materi">radio_button_unchecked</span>
-                        <span class="text-[13px] font-semibold text-slate-400" id="label-materi">Belum
-                            Selesai</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Video Belajar -->
-            <div onclick="toggleModule('video')"
-                class="bg-red-50/50 p-4 rounded-[24px] ios-shadow border border-red-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-red-500 flex items-center justify-center text-white shadow-lg shadow-red-200">
-                    <span class="material-symbols-outlined !text-2xl">play_circle</span>
-                </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">Video Belajar</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="material-symbols-outlined !text-base text-slate-400"
-                            id="status-video">radio_button_unchecked</span>
-                        <span class="text-[13px] font-semibold text-slate-400" id="label-video">Belum
-                            Selesai</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- LKPD Digital -->
-            <div onclick="toggleModule('lkpd')"
-                class="bg-orange-50/50 p-4 rounded-[24px] ios-shadow border border-orange-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-terracotta flex items-center justify-center text-white shadow-lg shadow-terracotta/30">
-                    <span class="material-symbols-outlined !text-2xl">edit_note</span>
-                </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">LKPD Digital</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="material-symbols-outlined !text-base text-slate-400"
-                            id="status-lkpd">radio_button_unchecked</span>
-                        <span class="text-[13px] font-semibold text-slate-400" id="label-lkpd">Belum
-                            Selesai</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Asesmen -->
-            <div onclick="toggleModule('asesmen')"
-                class="bg-purple-50/50 p-4 rounded-[24px] ios-shadow border border-purple-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-purple-500 flex items-center justify-center text-white shadow-lg shadow-purple-200">
-                    <span class="material-symbols-outlined !text-2xl">task_alt</span>
-                </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">Assessment</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="material-symbols-outlined !text-base text-slate-400"
-                            id="status-asesmen">radio_button_unchecked</span>
-                        <span class="text-[13px] font-semibold text-slate-400" id="label-asesmen">Belum
-                            Selesai</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dokumentasi Foto -->
-            <div onclick="toggleModule('dokumentasi')"
-                class="bg-indigo-50/50 p-4 rounded-[24px] ios-shadow border border-indigo-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-                    <span class="material-symbols-outlined !text-2xl">photo_camera</span>
-                </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">Dokumentasi Foto</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="material-symbols-outlined !text-base text-slate-400"
-                            id="status-dokumentasi">radio_button_unchecked</span>
-                        <span class="text-[13px] font-semibold text-slate-400" id="label-dokumentasi">Belum
-                            Selesai</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Glosarium -->
-            <div onclick="toggleModule('glosarium')"
-                class="bg-cyan-50/50 p-4 rounded-[24px] ios-shadow border border-cyan-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-white shadow-lg shadow-cyan-200">
-                    <span class="material-symbols-outlined !text-2xl">dictionary</span>
-                </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">Glosarium</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="material-symbols-outlined !text-base text-slate-400"
-                            id="status-glosarium">radio_button_unchecked</span>
-                        <span class="text-[13px] font-semibold text-slate-400" id="label-glosarium">Belum
-                            Selesai</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Refleksi -->
-            <div onclick="toggleModule('refleksi')"
-                class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
-                <div
-                    class="h-12 w-12 rounded-2xl bg-emerald-custom flex items-center justify-center text-white shadow-lg shadow-emerald-200">
-                    <span class="material-symbols-outlined !text-2xl">psychology_alt</span>
-                </div>
-                <div>
-                    <h3 class="text-[15px] font-bold text-slate-800">Refleksi</h3>
-                    <div class="flex items-center gap-1 mt-1">
-                        <span class="material-symbols-outlined !text-base text-slate-400"
-                            id="status-refleksi">radio_button_unchecked</span>
-                        <span class="text-[13px] font-semibold text-slate-400" id="label-refleksi">Belum
-                            Selesai</span>
-                    </div>
-                </div>
-            </div>
+            <button onclick="switchDay(3)"
+                class="w-full mt-6 py-4 rounded-2xl bg-slate-800 text-white font-bold shadow-lg shadow-slate-200 active:scale-95 transition-transform">
+                Kembali ke Tugas
+            </button>
         </div>
 
         <!-- Bottom Navigation -->
@@ -595,13 +661,35 @@
         function switchDay(day) {
             currentDay = day;
 
+            // Handle 'Nilai' Tab
+            if (day === 'nilai') {
+                document.getElementById('module-grid-container').classList.add('hidden');
+                document.getElementById('nilai-report-container').classList.remove('hidden');
+
+                // Update Tab Styles
+                for (let i = 1; i <= 3; i++) {
+                    const tab = document.getElementById(`tab-day${i}`);
+                    tab.className = 'flex-1 py-3 rounded-xl text-base font-semibold text-slate-500 hover:text-slate-700 transition-all';
+                }
+                const btnNilai = document.getElementById('tab-nilai');
+                btnNilai.className = 'flex-1 py-3 rounded-xl text-base font-semibold bg-white text-emerald-custom shadow-sm transition-all';
+
+                loadFinalGrade();
+                return;
+            }
+
+            // Handle Regular Days
+            document.getElementById('module-grid-container').classList.remove('hidden');
+            document.getElementById('nilai-report-container').classList.add('hidden');
+            document.getElementById('tab-nilai').className = 'flex-1 py-3 rounded-xl text-base font-semibold text-slate-500 hover:text-slate-700 transition-all';
+
             // Update tab styles
             for (let i = 1; i <= 3; i++) {
                 const tab = document.getElementById(`tab-day${i}`);
                 if (i === day) {
-                    tab.className = 'flex-1 py-2.5 rounded-xl text-sm font-semibold bg-white text-emerald-custom shadow-sm transition-all';
+                    tab.className = 'flex-1 py-3 rounded-xl text-base font-semibold bg-white text-emerald-custom shadow-sm transition-all';
                 } else {
-                    tab.className = 'flex-1 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all';
+                    tab.className = 'flex-1 py-3 rounded-xl text-base font-semibold text-slate-500 hover:text-slate-700 transition-all';
                 }
             }
 
@@ -610,6 +698,99 @@
 
             // Re-fetch database statuses to ensure sync
             checkAllModulesStatus();
+        }
+
+        async function loadFinalGrade() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data, error } = await supabaseClient
+                    .from('final_project_grades')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') throw error; // PGRST116 is no rows found
+
+                const badgeContainer = document.getElementById('final-badge-container');
+                const descEl = document.getElementById('final-description');
+                const scoreEl = document.getElementById('final-total-score');
+                const starContainer = document.getElementById('final-star-display').querySelector('div');
+
+                if (!data || data.status !== 'published') {
+                    // Default State: Belum Dinilai (Tampilan Khusus)
+                    badgeContainer.innerHTML = `
+                        <div class="flex flex-col items-center justify-center py-10 opacity-75">
+                            <div class="h-24 w-24 bg-slate-50 rounded-full flex items-center justify-center mb-4 animate-pulse">
+                                <span class="material-symbols-outlined text-5xl text-slate-300">hourglass_top</span>
+                            </div>
+                            <span class="text-sm font-black text-slate-400 uppercase tracking-widest mb-2">MENUNGGU PENILAIAN</span>
+                            <span class="text-xs font-medium text-slate-400 max-w-[200px] leading-relaxed">Fasilitator sedang meninjau seluruh aktivitasmu. Harap periksa kembali secara berkala.</span>
+                        </div>`;
+
+                    // Sembunyikan elemen nilai yang belum ada
+                    if (descEl.parentElement) descEl.parentElement.classList.add('hidden');
+                    if (scoreEl.parentElement && scoreEl.parentElement.parentElement) scoreEl.parentElement.parentElement.classList.add('hidden');
+
+                    document.getElementById('final-feedback-section').classList.add('hidden');
+                    return;
+                }
+
+                // Published State (Tampilkan Kembali elemen yang mungkin disembunyikan)
+                if (descEl.parentElement) descEl.parentElement.classList.remove('hidden');
+                if (scoreEl.parentElement && scoreEl.parentElement.parentElement) scoreEl.parentElement.parentElement.classList.remove('hidden');
+
+                // Published State
+                const category = data.category || 'Belum Valid';
+                const totalStars = data.total_stars || 0;
+
+                // Set Badge Style
+                let badgeClass = 'bg-slate-100 text-slate-600 border-slate-200';
+                if (category === 'Mahir') badgeClass = 'bg-emerald-100 text-emerald-600 border-emerald-200 shadow-emerald-200/50';
+                else if (category === 'Berkembang') badgeClass = 'bg-blue-100 text-blue-600 border-blue-200 shadow-blue-200/50';
+                else if (category === 'Cakap') badgeClass = 'bg-amber-100 text-amber-600 border-amber-200 shadow-amber-200/50';
+
+                badgeContainer.innerHTML = `
+                    <div class="inline-block px-8 py-3 rounded-full border shadow-lg ${badgeClass} animate-bounce">
+                        <span class="text-lg font-black uppercase tracking-widest">${category}</span>
+                    </div>`;
+
+                // Set Description
+                const descriptions = {
+                    'Mahir': "Peserta didik sangat kreatif dalam menghasilkan gagasan orisinal dan inovatif pada pengembangan produk jajanan Nusantara yang sehat, bergizi dan kekinian. Mampu merumuskan solusi usaha secara matang serta melakukan perhitungan BEP dengan tepat. Memanfaatkan teknologi digital secara optimal dan komunikatif.",
+                    'Berkembang': "Peserta didik menunjukkan kreativitas yang baik dalam mengembangkan produk jajanan Nusantara. Mampu merumuskan solusi usaha sederhana dan perhitungan BEP dengan pendampingan. Komunikasi cukup jelas dan mulai memanfaatkan teknologi digital.",
+                    'Cakap': "Peserta didik mulai mampu menunjukkan kreativitas dalam mengolah jajanan Nusantara. Perhitungan BEP dan solusi usaha masih memerlukan bimbingan. Penyampaian informasi sederhana dan memerlukan pendampingan teknologi digital."
+                };
+                descEl.textContent = descriptions[category] || "Selamat! Anda telah menyelesaikan projek ini.";
+
+                // Set Stars Display
+                // Assume totalStars is roughly 0-50 range? Or whatever the total sum is.
+                // Wait, I need to know the MAX stars to show relative stars?
+                // Visual stars here purely decorative or scaled?
+                // Let's just show 5 big stars filled if Mahir, 4 if Berkembang, 3 if Cakap
+                let visualStars = 0;
+                if (category === 'Mahir') visualStars = 5;
+                else if (category === 'Berkembang') visualStars = 4;
+                else if (category === 'Cakap') visualStars = 3;
+
+                let starsHtml = '';
+                for (let i = 1; i <= 5; i++) {
+                    const color = i <= visualStars ? 'text-amber-400 drop-shadow-sm' : 'text-slate-200';
+                    starsHtml += `<span class="material-symbols-outlined ${color}" style="font-variation-settings: 'FILL' 1">star</span>`;
+                }
+                starContainer.innerHTML = starsHtml;
+                scoreEl.innerHTML = `<span class="text-slate-800">${totalStars}</span> <span class="text-slate-400 font-medium">Total Bintang</span>`;
+
+                // Feedback
+                if (data.facilitator_feedback) {
+                    document.getElementById('final-feedback-section').classList.remove('hidden');
+                    document.getElementById('final-feedback-text').textContent = data.facilitator_feedback;
+                }
+
+            } catch (err) {
+                console.error('Final Grade error:', err);
+            }
         }
 
         // SINKRONISASI GLOBAL SEMUA MODUL
