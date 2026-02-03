@@ -960,6 +960,7 @@
                                 ${renderModuleItem(sid, snama, day, 'lkpd', responses)}
                                 ${renderModuleItem(sid, snama, day, 'kuis', responses)}
                                 ${renderModuleItem(sid, snama, day, 'dokumentasi', responses)}
+                                ${renderModuleItem(sid, snama, day, 'glosarium', responses)}
                                 ${renderModuleItem(sid, snama, day, 'refleksi', responses)}
                             </div>
                         </div>`;
@@ -1602,10 +1603,10 @@
                 const listContainer = document.getElementById('allActivitiesList');
                 modal.classList.remove('hidden');
                 listContainer.innerHTML = `
-                            < div class="flex flex-col items-center justify-center py-24" >
+                    <div class="flex flex-col items-center justify-center py-24">
                         <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
                         <p class="mt-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Memuat Semua Aktivitas...</p>
-                    </div > `;
+                    </div>`;
 
                 try {
                     const { ids: studentIds, map: studentMap } = await getMyStudentsData();
@@ -1740,15 +1741,15 @@
                             : '<span class="size-4 block"></span>'; // spacer
 
                         return `
-                            < div class="flex items-start gap-3 p-3 rounded-xl border ${style} text-xs" >
+                            <div class="flex items-start gap-3 p-3 rounded-xl border ${style} text-xs">
                                 <div class="mt-0.5 shrink-0">${icon}</div>
                                 <span>${opt}</span>
-                            </div >
+                            </div>
                             `;
                     }).join('');
 
                     return `
-                            < div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm" >
+                            <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
                             <div class="flex items-center gap-3 mb-3">
                                 <span class="size-6 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black flex items-center justify-center uppercase">No. ${q.id}</span>
                                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kunci: ${String.fromCharCode(65 + q.correctIndex)}</span>
@@ -1757,7 +1758,7 @@
                             <div class="space-y-2">
                                 ${optionsHtml}
                             </div>
-                        </div >
+                        </div>
                     `;
                 }).join('');
             }
