@@ -245,7 +245,7 @@
                 </div>
 
                 <!-- Glosarium -->
-                <div onclick="alert('Debug: Tombol Ditekan'); openGlosariumModal()"
+                <div onclick="openGlosariumModal()"
                     class="bg-cyan-50/50 p-4 rounded-[24px] ios-shadow border border-cyan-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-white shadow-lg shadow-cyan-200">
@@ -3061,7 +3061,7 @@
 
         <!-- MODAL GLOSARIUM (NEW) -->
         <div id="modalGlosarium"
-            class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+            class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
             <div
                 class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                 <!-- Header -->
@@ -4142,9 +4142,20 @@
         // ==========================================
 
         function openGlosariumModal() {
-            document.getElementById('modalGlosarium').classList.remove('hidden');
-            document.getElementById('modalGlosarium').classList.add('flex');
-            checkExistingGlosarium();
+            const modal = document.getElementById('modalGlosarium');
+            if (!modal) {
+                alert('Error: Modal Glosarium tidak ditemukan. Hubungi pengembang.');
+                return;
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Ensure z-index is top
+            modal.style.zIndex = '9999';
+            try {
+                checkExistingGlosarium();
+            } catch (e) {
+                console.error('Error fetching glosarium data:', e);
+            }
         }
 
         function closeGlosariumModal() {
