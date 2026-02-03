@@ -1340,175 +1340,7 @@
             } catch (e) { console.error('Error checkExistingDokumentasi:', e); }
         }
 
-        // ==========================================
-        // FITUR REFLEKSI HARIAN
-        // ==========================================
 
-        function openRefleksiModal() {
-            document.getElementById('modalRefleksi').classList.remove('hidden');
-            document.getElementById('modalRefleksi').classList.add('flex');
-            checkExistingRefleksi();
-        }
-
-        function closeRefleksiModal() {
-            document.getElementById('modalRefleksi').classList.add('hidden');
-            document.getElementById('modalRefleksi').classList.remove('flex');
-        }
-
-        async function submitRefleksi() {
-            const form = document.getElementById('refleksiForm');
-            const btn = form.querySelector('button');
-            const formData = new FormData(form);
-            const answers = {};
-
-            // Collect all answers
-            for (let i = 1; i <= 15; i++) {
-                const name = `refleksi_q${i}`;
-                const value = formData.get(name);
-                if (!value) {
-                    alert(`Pesan: Pertanyaan nomor ${i} belum dijawab!`);
-                    return;
-                }
-                answers[name] = value;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = 'Mengirim...';
-
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error('Silakan login ulang.');
-
-                const { error } = await supabaseClient
-                    .from('module_responses')
-                    .insert({
-                        student_id: user.id,
-                        day_id: currentDay,
-                        module_type: 'refleksi',
-                        answers: [JSON.stringify(answers)], // Store all answers as a JSON string in an array
-                        status: 'submitted'
-                    });
-
-                if (error) throw error;
-
-                alert('Pesan: Refleksi berhasil dikirim! Silakan tunggu review dari Fasilitator.');
-                studentProgress[`day${currentDay}`]['refleksi'] = false;
-                saveProgress();
-                closeRefleksiModal();
-                checkAllModulesStatus();
-                checkExistingRefleksi();
-
-            } catch (e) {
-                console.error(e);
-                alert('Gagal mengirim refleksi: ' + e.message);
-                btn.disabled = false;
-                btn.innerHTML = 'Kirim Refleksi';
-            }
-        }
-
-        async function checkExistingRefleksi() {
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) return;
-
-                const { data: responses } = await supabaseClient
-                    .from('module_responses')
-                    .select('*')
-                    .eq('student_id', user.id)
-                    .eq('day_id', currentDay)
-                    .eq('module_type', 'refleksi')
-                    .order('created_at', { ascending: false })
-                    .limit(1);
-
-                const form = document.getElementById('refleksiForm');
-                const btn = form.querySelector('button');
-                const statusMsgContainer = document.createElement('div'); // Create a temporary status message container
-                statusMsgContainer.id = 'refleksiStatusMessage';
-                statusMsgContainer.className = 'mb-4 p-4 rounded-xl text-xs font-medium';
-                statusMsgContainer.style.display = 'none'; // Initially hidden
-
-                // Insert status message container at the top of the form
-                form.prepend(statusMsgContainer);
-
-                if (responses && responses.length > 0) {
-                    const r = responses[0];
-                    const answers = JSON.parse(r.answers[0]);
-
-                    // Populate form with existing answers and disable inputs
-                    for (let i = 1; i <= 15; i++) {
-                        const name = `refleksi_q${i}`;
-                        const value = answers[name];
-                        if (value !== undefined) {
-                            const input = form.querySelector(`[name="${name}"]`);
-                            if (input) {
-                                if (input.type === 'radio') {
-                                    const radio = form.querySelector(`input[name="${name}"][value="${value}"]`);
-                                    if (radio) radio.checked = true;
-                                } else if (input.type === 'range') {
-                                    input.value = value;
-                                    const focusVal = document.getElementById('focusVal');
-                                    if (focusVal) focusVal.innerText = value;
-                                } else if (input.type === 'text' || input.tagName === 'TEXTAREA') {
-                                    input.value = value;
-                                }
-                                input.disabled = true;
-                                input.classList.add('bg-slate-100', 'text-slate-500');
-                            }
-                        }
-                    }
-
-                    // Disable all radio buttons and textareas
-                    form.querySelectorAll('input, textarea').forEach(el => {
-                        el.disabled = true;
-                        el.classList.add('bg-slate-100', 'text-slate-500');
-                    });
-
-                    // Hide submit button
-                    if (btn) btn.classList.add('hidden');
-
-                    // Show status message
-                    statusMsgContainer.style.display = 'block';
-                    if (r.status === 'submitted') {
-                        statusMsgContainer.className = "mb-4 p-4 rounded-xl text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200";
-                        statusMsgContainer.innerHTML = "⏳ <b>Refleksi Terkirim</b><br>Menunggu feedback dari fasilitator.";
-                        updateModuleUI('refleksi', 'submitted');
-                    } else if (r.status === 'reviewed') {
-                        statusMsgContainer.className = "mb-4 p-4 rounded-xl text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200";
-                        statusMsgContainer.innerHTML = `✅ <b>Sudah Direview (Skor: ${r.score || 0})</b><br>Feedback: "${r.feedback || '-'}"`;
-                        updateModuleUI('refleksi', true, r.score || 0);
-                    }
-                } else {
-                    // No existing data, ensure form is enabled and button is visible
-                    form.querySelectorAll('input, textarea').forEach(el => {
-                        el.disabled = false;
-                        el.classList.remove('bg-slate-100', 'text-slate-500');
-                        // Reset radio/checkboxes
-                        if (el.type === 'radio') el.checked = false;
-                        // Reset text/textarea
-                        if (el.type === 'text' || el.tagName === 'TEXTAREA') el.value = '';
-                        // Reset range
-                        if (el.type === 'range') {
-                            el.value = 5;
-                            const focusVal = document.getElementById('focusVal');
-                            if (focusVal) focusVal.innerText = 5;
-                        }
-                    });
-                    // Reset star rating
-                    form.querySelectorAll('input[name="refleksi_q10"]').forEach(radio => radio.checked = false);
-                    form.querySelectorAll('.rating label').forEach(label => label.classList.remove('peer-checked:text-amber-400'));
-
-
-                    if (btn) {
-                        btn.classList.remove('hidden');
-                        btn.disabled = false;
-                        btn.innerHTML = 'Kirim Refleksi';
-                    }
-                    statusMsgContainer.style.display = 'none';
-                }
-            } catch (e) {
-                console.error("Error checkExistingRefleksi:", e);
-            }
-        }
 
         // Deprecated: Functions below are now handled by updateModuleUI or specific modal logic
 
@@ -3485,6 +3317,260 @@
         </div>
     </div>
     </div>
+    <!-- MODAL REFLEKSI (CHECK) -->
+    <div id="modalRefleksi"
+        class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="p-8 border-b flex justify-between items-center bg-rose-50/50">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="size-12 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-lg shadow-rose-200">
+                        <span class="material-symbols-outlined !text-2xl">self_improvement</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800">Refleksi Harian</h3>
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Evaluasi Diri &
+                            Saran</p>
+                    </div>
+                </div>
+                <button onclick="closeRefleksiModal()"
+                    class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 overflow-y-auto no-scrollbar flex-1 space-y-8">
+                <form id="refleksiForm" class="space-y-8">
+                    <!-- BAGIAN 1: PERASAAN & MOOD -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-rose-500 text-lg">sentiment_satisfied</span>
+                            <h4 class="font-black text-slate-700 uppercase tracking-widest text-xs">Bagian 1: Perasaan &
+                                Mood</h4>
+                        </div>
+
+                        <!-- Q1 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">1. Bagaimana perasaanmu setelah
+                                mengikuti kegiatan hari ini? <span class="text-rose-500">*</span></label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="refleksi_q1" value="Sangat Senang" class="peer hidden"
+                                        required>
+                                    <div
+                                        class="p-3 rounded-xl border border-slate-200 bg-white hover:bg-rose-50 peer-checked:bg-rose-500 peer-checked:text-white peer-checked:border-rose-500 transition-all text-center text-xs font-bold">
+                                        😄 Sangat Senang
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="refleksi_q1" value="Biasa Saja" class="peer hidden">
+                                    <div
+                                        class="p-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 peer-checked:bg-slate-700 peer-checked:text-white peer-checked:border-slate-700 transition-all text-center text-xs font-bold">
+                                        😐 Biasa Saja
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="refleksi_q1" value="Bingung" class="peer hidden">
+                                    <div
+                                        class="p-3 rounded-xl border border-slate-200 bg-white hover:bg-amber-50 peer-checked:bg-amber-400 peer-checked:text-white peer-checked:border-amber-400 transition-all text-center text-xs font-bold">
+                                        🤔 Bingung
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="refleksi_q1" value="Lelah/Bosan" class="peer hidden">
+                                    <div
+                                        class="p-3 rounded-xl border border-slate-200 bg-white hover:bg-red-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition-all text-center text-xs font-bold">
+                                        😴 Lelah/Bosan
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BAGIAN 2: EVALUASI BELAJAR -->
+                    <div class="space-y-4 pt-4 border-t border-slate-100">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-indigo-500 text-lg">school</span>
+                            <h4 class="font-black text-slate-700 uppercase tracking-widest text-xs">Bagian 2: Evaluasi
+                                Belajar</h4>
+                        </div>
+
+                        <!-- Q2 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">2. Apa satu hal baru yang paling
+                                menarik kamu pelajari hari ini?</label>
+                            <textarea name="refleksi_q2" rows="3"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Ceritakan singkat..."></textarea>
+                        </div>
+                        <!-- Q3 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">3. Apa bagian yang paling sulit atau
+                                menantang?</label>
+                            <textarea name="refleksi_q3" rows="2"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Tuliskan kesulitanmu..."></textarea>
+                        </div>
+                        <!-- Q4 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">4. Bagaimana caramu mengatasi
+                                kesulitan tersebut?</label>
+                            <textarea name="refleksi_q4" rows="2"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Strategi belajarmu..."></textarea>
+                        </div>
+                        <!-- Q5 Range -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <label class="text-xs font-bold text-slate-600 block">5. Seberapa fokus kamu hari ini?
+                                    (1-10)</label>
+                                <span id="focusVal" class="text-xs font-black text-indigo-500">5</span>
+                            </div>
+                            <input type="range" name="refleksi_q5" min="1" max="10" value="5"
+                                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                                oninput="document.getElementById('focusVal').innerText = this.value">
+                            <div class="flex justify-between text-[9px] text-slate-400 font-bold uppercase">
+                                <span>Tidak Fokus</span>
+                                <span>Sangat Fokus</span>
+                            </div>
+                        </div>
+
+                        <!-- Q6 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">6. Apa kontrisibusimu dalam
+                                diskusi/kelompok hari ini?</label>
+                            <textarea name="refleksi_q6" rows="2"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Kontribusimu..."></textarea>
+                        </div>
+                        <!-- Q7 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">7. Skill/sikap apa yang kamu rasa
+                                berkembang hari ini?</label>
+                            <textarea name="refleksi_q7" rows="2"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Contoh: Kerjasama, komunikasi..."></textarea>
+                        </div>
+                        <!-- Q8 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">8. Apakah ada hambatan non-teknis
+                                (misal: mood, ngantuk, gangguan lain)?</label>
+                            <textarea name="refleksi_q8" rows="2"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Ceritakan jika ada..."></textarea>
+                        </div>
+                        <!-- Q9 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">9. Apa targetmu untuk pembelajaran
+                                besok?</label>
+                            <textarea name="refleksi_q9" rows="2"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Target besok..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- BAGIAN 3: FEEDBACK & LAINNYA -->
+                    <div class="space-y-4 pt-4 border-t border-slate-100">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined text-emerald-500 text-lg">thumbs_up_down</span>
+                            <h4 class="font-black text-slate-700 uppercase tracking-widest text-xs">Bagian 3: Feedback &
+                                Saran</h4>
+                        </div>
+
+                        <!-- Q10 Star Rating -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">10. Beri rating untuk keseruan
+                                aktivitas hari ini!</label>
+                            <div class="flex gap-2 rating justify-center py-2">
+                                <input type="radio" name="refleksi_q10" value="1" id="star1" class="hidden peer"><label
+                                    for="star1"
+                                    class="material-symbols-outlined text-3xl text-slate-300 cursor-pointer peer-check:text-amber-400 hover:text-amber-300 transition-colors"
+                                    onclick="setStars(1)">star</label>
+                                <input type="radio" name="refleksi_q10" value="2" id="star2" class="hidden peer"><label
+                                    for="star2"
+                                    class="material-symbols-outlined text-3xl text-slate-300 cursor-pointer peer-check:text-amber-400 hover:text-amber-300 transition-colors"
+                                    onclick="setStars(2)">star</label>
+                                <input type="radio" name="refleksi_q10" value="3" id="star3" class="hidden peer"><label
+                                    for="star3"
+                                    class="material-symbols-outlined text-3xl text-slate-300 cursor-pointer peer-check:text-amber-400 hover:text-amber-300 transition-colors"
+                                    onclick="setStars(3)">star</label>
+                                <input type="radio" name="refleksi_q10" value="4" id="star4" class="hidden peer"><label
+                                    for="star4"
+                                    class="material-symbols-outlined text-3xl text-slate-300 cursor-pointer peer-check:text-amber-400 hover:text-amber-300 transition-colors"
+                                    onclick="setStars(4)">star</label>
+                                <input type="radio" name="refleksi_q10" value="5" id="star5" class="hidden peer"><label
+                                    for="star5"
+                                    class="material-symbols-outlined text-3xl text-slate-300 cursor-pointer peer-check:text-amber-400 hover:text-amber-300 transition-colors"
+                                    onclick="setStars(5)">star</label>
+                            </div>
+                            <script>
+                                function setStars(n) {
+                                    for (let i = 1; i <= 5; i++) {
+                                        const lbl = document.querySelector(`label[for="star${i}"]`);
+                                        if (i <= n) lbl.classList.add('text-amber-400', 'fill-current');
+                                        else lbl.classList.remove('text-amber-400', 'fill-current');
+                                    }
+                                    const radio = document.getElementById(`star${n}`);
+                                    if (radio) radio.checked = true;
+                                }
+                            </script>
+                        </div>
+
+                        <!-- Q11 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">11. Siapa nama Fasilitator &
+                                Koordinator di kelasmu hari ini?</label>
+                            <input type="text" name="refleksi_q11"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Tulis nama mereka...">
+                        </div>
+                        <!-- Q12 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">12. Bagaimana gaya
+                                mengajar/pendampingan mereka? (Jujur saja)</label>
+                            <textarea name="refleksi_q12" rows="2"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Sabar, seru, atau...?"></textarea>
+                        </div>
+                        <!-- Q13 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">13. Apa pendapatmu tentang aplikasi
+                                web ini?</label>
+                            <textarea name="refleksi_q13" rows="2"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Keren, lemot, membantu...?"></textarea>
+                        </div>
+                        <!-- Q14 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">14. Apa saran untuk perbaikan kegiatan
+                                besok?</label>
+                            <textarea name="refleksi_q14" rows="2"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Sarannya..."></textarea>
+                        </div>
+                        <!-- Q15 -->
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-600 block">15. (Bonus) Tebak siapa yang membuat
+                                aplikasi ini?</label>
+                            <input type="text" name="refleksi_q15"
+                                class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none"
+                                placeholder="Tebakanmu...">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-8 bg-white border-t">
+                <button onclick="submitRefleksi()"
+                    class="w-full py-4 bg-rose-500 text-white rounded-2xl font-black shadow-lg shadow-rose-200 active:scale-95 transition-all">
+                    Kirim Refleksi
+                </button>
+            </div>
+        </div>
+    </div>
     <script>
         // VIDEO MODAL LOGIC
         function openVideoModal() {
@@ -4456,24 +4542,157 @@
         }
         async function checkExistingRefleksi() {
             try {
-                const { data, error } = await supabaseClient
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data: responses } = await supabaseClient
                     .from('module_responses')
                     .select('*')
-                    .eq('student_id', currentUser.id)
+                    .eq('student_id', user.id)
                     .eq('day_id', currentDay)
                     .eq('module_type', 'refleksi')
-                    .single();
+                    .order('created_at', { ascending: false })
+                    .limit(1);
 
-                if (data && (data.status === 'submitted' || data.status === 'reviewed')) {
-                    // Update button UI
-                    const btn = document.querySelector('div[onclick="toggleModule(\'refleksi\')"]');
-                    if (btn) {
-                        const icon = btn.querySelector('.material-symbols-outlined');
-                        if (icon) icon.innerText = 'check_circle';
+                const form = document.getElementById('refleksiForm');
+                const btn = document.querySelector('#modalRefleksi button[onclick="submitRefleksi()"]');
 
-                        const statusText = btn.querySelector('p.text-rose-500'); // If exists
-                        // We can add a badge if needed, similar to Glosarium
+                // Remove existing status message if any
+                const existingMsg = document.getElementById('refleksiStatusMessage');
+                if (existingMsg) existingMsg.remove();
+
+                const statusMsgContainer = document.createElement('div');
+                statusMsgContainer.id = 'refleksiStatusMessage';
+                statusMsgContainer.className = 'mb-4 p-4 rounded-xl text-xs font-medium';
+                statusMsgContainer.style.display = 'none';
+                form.prepend(statusMsgContainer);
+
+                if (responses && responses.length > 0) {
+                    const r = responses[0];
+                    // Handle array format properly
+                    let answers = r.answers;
+                    // If stored as JSON string inside array [ "JSON" ]
+                    if (answers.length === 1 && typeof answers[0] === 'string' && answers[0].startsWith('{')) {
+                        // But wait, submitRefleksi below sends an ARRAY of strings.
+                        // Let's assume the new format is ARRAY of values.
+                        // If it's the OLD format (JSON string in array), handle it.
+                        try {
+                            answers = JSON.parse(answers[0]);
+                        } catch (e) {
+                            // It's likely the new array format, so use r.answers directly
+                            answers = r.answers;
+                        }
                     }
+
+                    // If answers is Array (New Format)
+                    if (Array.isArray(answers) && answers.length > 1) {
+                        // Map Array Index to Form Fields
+                        // Q1: answers[0], Q2: answers[1], ...
+                        const fieldNames = [
+                            'refleksi_q1', 'refleksi_q2', 'refleksi_q3', 'refleksi_q4', 'refleksi_q5',
+                            'refleksi_q6', 'refleksi_q7', 'refleksi_q8', 'refleksi_q9', 'refleksi_q10',
+                            'refleksi_q11', 'refleksi_q12', 'refleksi_q13', 'refleksi_q14', 'refleksi_q15'
+                        ];
+
+                        fieldNames.forEach((name, idx) => {
+                            const val = answers[idx];
+                            const input = form.querySelector(`[name="${name}"]`);
+                            if (input) {
+                                if (input.type === 'radio') {
+                                    const radio = form.querySelector(`input[name="${name}"][value="${val}"]`);
+                                    if (radio) radio.checked = true;
+                                } else if (input.type === 'range') {
+                                    input.value = val;
+                                    const fv = document.getElementById('focusVal');
+                                    if (fv) fv.innerText = val;
+                                } else {
+                                    input.value = val;
+                                }
+                            }
+                        });
+
+                        // Special handling for Star Rating (Q10) which is Radio but custom UI
+                        if (answers[9]) {
+                            const starVal = answers[9];
+                            // Update UI
+                            for (let i = 1; i <= 5; i++) {
+                                const lbl = document.querySelector(`label[for="star${i}"]`);
+                                if (lbl) {
+                                    if (i <= starVal) lbl.classList.add('text-amber-400', 'fill-current');
+                                    else lbl.classList.remove('text-amber-400', 'fill-current');
+                                }
+                            }
+                        }
+
+                    } else if (!Array.isArray(answers) && typeof answers === 'object') {
+                        // OLD object format
+                        for (let i = 1; i <= 15; i++) {
+                            const name = `refleksi_q${i}`;
+                            const value = answers[name];
+                            const input = form.querySelector(`[name="${name}"]`);
+                            if (input) {
+                                if (input.type === 'radio') {
+                                    const radio = form.querySelector(`input[name="${name}"][value="${value}"]`);
+                                    if (radio) radio.checked = true;
+                                } else if (input.type === 'range') {
+                                    input.value = value;
+                                } else {
+                                    input.value = value;
+                                }
+                            }
+                        }
+                    }
+
+                    // Disable inputs
+                    form.querySelectorAll('input, textarea').forEach(el => {
+                        el.disabled = true;
+                        el.classList.add('bg-slate-100', 'text-slate-500');
+                    });
+
+                    // Hide submit button
+                    if (btn) btn.classList.add('hidden');
+
+                    // Update Status UI
+                    statusMsgContainer.style.display = 'block';
+                    if (r.status === 'submitted') {
+                        statusMsgContainer.className = "mb-4 p-4 rounded-xl text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200";
+                        statusMsgContainer.innerHTML = "⏳ <b>Refleksi Terkirim</b><br>Menunggu feedback dari fasilitator.";
+                        updateModuleUI('refleksi', 'submitted');
+                    } else if (r.status === 'reviewed') {
+                        statusMsgContainer.className = "mb-4 p-4 rounded-xl text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200";
+                        statusMsgContainer.innerHTML = `✅ <b>Sudah Direview (Skor: ${r.score || 0})</b><br>Feedback: "${r.feedback || '-'}"`;
+                        updateModuleUI('refleksi', true, r.score || 0);
+                    }
+
+                    // Update Dashboard Button
+                    const dashBtn = document.querySelector('div[onclick="toggleModule(\'refleksi\')"]');
+                    if (dashBtn) {
+                        const icon = dashBtn.querySelector('.material-symbols-outlined');
+                        if (icon) icon.innerText = 'check_circle';
+                    }
+
+
+                } else {
+                    // No data - Reset form
+                    form.querySelectorAll('input, textarea').forEach(el => {
+                        el.disabled = false;
+                        el.classList.remove('bg-slate-100', 'text-slate-500');
+                        if (el.type === 'radio') el.checked = false;
+                        if (el.type === 'text' || el.tagName === 'TEXTAREA') el.value = '';
+                        if (el.type === 'range') { el.value = 5; document.getElementById('focusVal').innerText = '5'; }
+                    });
+                    // Reset stars
+                    for (let i = 1; i <= 5; i++) {
+                        const lbl = document.querySelector(`label[for="star${i}"]`);
+                        if (lbl) lbl.classList.remove('text-amber-400', 'fill-current');
+                    }
+
+                    if (btn) {
+                        btn.classList.remove('hidden');
+                        btn.disabled = false;
+                        btn.innerHTML = 'Kirim Refleksi';
+                    }
+                    statusMsgContainer.style.display = 'none';
                 }
             } catch (e) {
                 console.error('Error checking refleksi:', e);
@@ -4481,9 +4700,9 @@
         }
 
         function openRefleksiModal() {
-            // Check if already submitted? (Optional, maybe let them edit? For now, standard flow)
             document.getElementById('modalRefleksi').classList.remove('hidden');
             document.getElementById('modalRefleksi').classList.add('flex');
+            checkExistingRefleksi();
         }
 
         function closeRefleksiModal() {
@@ -4496,32 +4715,29 @@
             const data = new FormData(form);
             const answers = [];
 
-            // Map Q1-Q15. Handle special cases (Radio, Checkbox)
-            // Q1 Radio
-            answers.push(data.get('refleksi_q1') || "-");
-            // Q2-Q4 Text
-            answers.push(data.get('refleksi_q2') || "-");
-            answers.push(data.get('refleksi_q3') || "-");
-            answers.push(data.get('refleksi_q4') || "-");
-            // Q5 Range
-            answers.push(data.get('refleksi_q5') || "0");
-            // Q6-Q9 Text
-            answers.push(data.get('refleksi_q6') || "-");
-            answers.push(data.get('refleksi_q7') || "-");
-            answers.push(data.get('refleksi_q8') || "-");
-            answers.push(data.get('refleksi_q9') || "-");
-            // Q10 Star Rating (Radio)
-            answers.push(data.get('refleksi_q10') || "0");
-            // Q11-Q15
-            answers.push(data.get('refleksi_q11') || "-");
-            answers.push(data.get('refleksi_q12') || "-");
-            answers.push(data.get('refleksi_q13') || "-");
-            answers.push(data.get('refleksi_q14') || "-");
-            answers.push(data.get('refleksi_q15') || "-");
+            // Helper to get value
+            const getV = (name, def = "-") => data.get(name) || def;
 
-            // Simple validation: Ensure at least some fields are filled
-            if (answers.every(a => a === "-" || a === "0")) {
-                alert('Mohon isi setidaknya sebagian pertanyaan refleksi.');
+            // Map Q1-Q15 to Array
+            answers.push(getV('refleksi_q1'));
+            answers.push(getV('refleksi_q2'));
+            answers.push(getV('refleksi_q3'));
+            answers.push(getV('refleksi_q4'));
+            answers.push(getV('refleksi_q5', "0"));
+            answers.push(getV('refleksi_q6'));
+            answers.push(getV('refleksi_q7'));
+            answers.push(getV('refleksi_q8'));
+            answers.push(getV('refleksi_q9'));
+            answers.push(getV('refleksi_q10', "0"));
+            answers.push(getV('refleksi_q11'));
+            answers.push(getV('refleksi_q12'));
+            answers.push(getV('refleksi_q13'));
+            answers.push(getV('refleksi_q14'));
+            answers.push(getV('refleksi_q15'));
+
+            // Validation: Ensure at least Q1 and Q2 are filled
+            if (!answers[0] || answers[0] === "-" || !answers[1] || answers[1] === "-") {
+                alert('Mohon isi minimal bagian Perasaan (No.1) dan Evaluasi (No.2) sebelum mengirim.');
                 return;
             }
 
@@ -4531,21 +4747,55 @@
             btn.disabled = true;
 
             try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error('Silakan login ulang.');
+
                 // Check existing
                 const { data: existing } = await supabaseClient
                     .from('module_responses')
                     .select('id')
-                    .eq('student_id', currentUser.id)
+                    .eq('student_id', user.id)
                     .eq('day_id', currentDay)
                     .eq('module_type', 'refleksi')
-                    .single();
+                    .maybeSingle();
 
                 let error;
+                // Store answers as actual Array (JSONB in Supabase handles array automatically if column is jsonb)
+                // If column is text array, this works too. 
+                // Previously used [JSON.stringify(obj)], typically Supabase returns array.
+                // We will send the array directly. 
+                // IMPORTANT: Facilitator dashboard expects ONE item in array? 
+                // Facilitator code: refData = JSON.parse(answers[0]);
+                // This implies facilitator expects a JSON STRING as the first element of the array.
+                // So I MUST Wrap it in [JSON.stringify(answersObject)] OR [JSON.stringify(answersArray)].
+                // My facilitator update handled KEY-BASED access (getVal('refleksi_q1')).
+                // So I should stick to OBJECT format wrapped in JSON String for compatibility with Facilitator code I just wrote.
+
+                // REVERTING TO OBJECT FORMAT FOR COMPATIBILITY
+                const answerObj = {};
+                answerObj['refleksi_q1'] = answers[0];
+                answerObj['refleksi_q2'] = answers[1];
+                answerObj['refleksi_q3'] = answers[2];
+                answerObj['refleksi_q4'] = answers[3];
+                answerObj['refleksi_q5'] = answers[4];
+                answerObj['refleksi_q6'] = answers[5];
+                answerObj['refleksi_q7'] = answers[6];
+                answerObj['refleksi_q8'] = answers[7];
+                answerObj['refleksi_q9'] = answers[8];
+                answerObj['refleksi_q10'] = answers[9];
+                answerObj['refleksi_q11'] = answers[10];
+                answerObj['refleksi_q12'] = answers[11];
+                answerObj['refleksi_q13'] = answers[12];
+                answerObj['refleksi_q14'] = answers[13];
+                answerObj['refleksi_q15'] = answers[14];
+
+                const payloadAnswers = [JSON.stringify(answerObj)];
+
                 if (existing) {
                     const { error: updErr } = await supabaseClient
                         .from('module_responses')
                         .update({
-                            answers: answers,
+                            answers: payloadAnswers,
                             status: 'submitted',
                             updated_at: new Date().toISOString()
                         })
@@ -4555,10 +4805,10 @@
                     const { error: insErr } = await supabaseClient
                         .from('module_responses')
                         .insert({
-                            student_id: currentUser.id,
+                            student_id: user.id,
                             day_id: currentDay,
                             module_type: 'refleksi',
-                            answers: answers,
+                            answers: payloadAnswers,
                             status: 'submitted'
                         });
                     error = insErr;
@@ -4568,17 +4818,20 @@
 
                 alert('Refleksi berhasil dikirim! Terima kasih atas masukanmu.');
                 closeRefleksiModal();
-                loadStats(); // Update progress
-                checkExistingRefleksi(); // Update UI
+                checkExistingRefleksi();
+                checkAllModulesStatus(); // Sync Dashboard Badge
 
             } catch (e) {
                 console.error('Submit Refleksi Error:', e);
                 alert('Gagal mengirim refleksi: ' + e.message);
             } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
+                if (btn) {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }
             }
         }
+
     </script>
 </body>
 
