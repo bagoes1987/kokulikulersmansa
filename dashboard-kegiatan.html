@@ -2506,6 +2506,38 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- BAGIAN C. INOVASI BAZAR -->
+                        <div class="space-y-5 pt-4">
+                            <div class="flex items-center gap-3 border-b border-purple-100 pb-2">
+                                <span class="material-symbols-outlined text-purple-500">storefront</span>
+                                <h5 class="text-xs font-black text-slate-700 uppercase tracking-widest">C. Inovasi Bazar
+                                </h5>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Alat -->
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                    <label
+                                        class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                        <span class="material-symbols-outlined !text-sm">construction</span> Alat
+                                    </label>
+                                    <textarea id="lkpd4_b_alat" oninput="saveLKPDDraft()"
+                                        placeholder="Daftar alat untuk booth..."
+                                        class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-purple-400 outline-none transition-all resize-none"></textarea>
+                                </div>
+                                <!-- Bahan -->
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm-soft">
+                                    <label
+                                        class="flex items-center gap-2 text-[9px] font-black text-slate-400 mb-2 uppercase">
+                                        <span class="material-symbols-outlined !text-sm">inventory_2</span> Bahan
+                                    </label>
+                                    <textarea id="lkpd4_b_bahan" oninput="saveLKPDDraft()"
+                                        placeholder="Daftar bahan dekorasi/booth..."
+                                        class="w-full min-h-[70px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium focus:border-purple-400 outline-none transition-all resize-none"></textarea>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="lkpd-section-5" class="lkpd-section hidden animate-slide-up pb-8">
@@ -2625,6 +2657,42 @@
                                     <p class="text-[9px] text-slate-400 mt-2">Format: JPG/PNG. Maks 5MB.</p>
                                 </div>
                                 <div id="status-booth"
+                                    class="hidden mt-3 text-[10px] font-bold text-slate-500 animate-pulse">Menyiapkan...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Desain Pemasaran -->
+                        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden group">
+                            <div class="px-5 py-3 bg-rose-50/50 flex items-center gap-3 border-b border-rose-100/50">
+                                <div
+                                    class="size-8 rounded-full bg-white flex items-center justify-center text-rose-500 shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">campaign</span>
+                                </div>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-700">4. Desain
+                                    Teknologi Pemasaran</span>
+                            </div>
+                            <div class="p-5 bg-slate-50/30 text-center">
+                                <div id="preview-container-marketing"
+                                    class="hidden mb-4 relative w-full h-48 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+                                    <img id="preview-img-marketing" src="" class="w-full h-full object-cover">
+                                    <div
+                                        class="absolute bottom-2 right-2 bg-emerald-500 text-white text-[9px] font-bold px-2 py-1 rounded-lg shadow-sm">
+                                        Terupload
+                                    </div>
+                                </div>
+
+                                <div id="upload-ui-marketing">
+                                    <input type="file" id="file-marketing" accept="image/*" class="hidden"
+                                        onchange="handleLKPDUpload('marketing', event)">
+                                    <label for="file-marketing"
+                                        class="w-full py-4 bg-white border-2 border-dashed border-rose-200 text-rose-500 rounded-2xl font-bold text-xs flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-rose-50 transition-all active:scale-95">
+                                        <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                                        <span>Pilih Flyer/Poster/Brosur</span>
+                                    </label>
+                                    <p class="text-[9px] text-slate-400 mt-2">Format: JPG/PNG. Maks 5MB.</p>
+                                </div>
+                                <div id="status-marketing"
                                     class="hidden mt-3 text-[10px] font-bold text-slate-500 animate-pulse">Menyiapkan...
                                 </div>
                             </div>
@@ -2999,12 +3067,17 @@
                         metode: document.getElementById('lkpd4_d_metode').value,
                         keunggulan: document.getElementById('lkpd4_d_keunggulan').value,
                         pemasaran: document.getElementById('lkpd4_d_pemasaran').value
+                    },
+                    bazar: {
+                        alat: document.getElementById('lkpd4_b_alat').value,
+                        bahan: document.getElementById('lkpd4_b_bahan').value
                     }
                 },
                 lkpd5: {
                     food: document.getElementById('preview-img-food')?.src || '',
                     drink: document.getElementById('preview-img-drink')?.src || '',
-                    booth: document.getElementById('preview-img-booth')?.src || ''
+                    booth: document.getElementById('preview-img-booth')?.src || '',
+                    marketing: document.getElementById('preview-img-marketing')?.src || ''
                 }
             };
             localStorage.setItem(`lkpd_draft_day${currentDay}`, JSON.stringify(lkpdData));
@@ -3067,6 +3140,11 @@
                 if (document.getElementById('lkpd4_d_metode')) document.getElementById('lkpd4_d_metode').value = d.metode || '';
                 if (document.getElementById('lkpd4_d_keunggulan')) document.getElementById('lkpd4_d_keunggulan').value = d.keunggulan || '';
                 if (document.getElementById('lkpd4_d_pemasaran')) document.getElementById('lkpd4_d_pemasaran').value = d.pemasaran || '';
+
+                // Bazar
+                const b = data.lkpd4.bazar || {};
+                if (document.getElementById('lkpd4_b_alat')) document.getElementById('lkpd4_b_alat').value = b.alat || '';
+                if (document.getElementById('lkpd4_b_bahan')) document.getElementById('lkpd4_b_bahan').value = b.bahan || '';
             }
 
             // LKPD 5
@@ -3087,6 +3165,7 @@
                 setPreview('food', data.lkpd5.food);
                 setPreview('drink', data.lkpd5.drink);
                 setPreview('booth', data.lkpd5.booth);
+                setPreview('marketing', data.lkpd5.marketing);
             }
         }
 
