@@ -263,11 +263,11 @@
                 </div>
 
                 <!-- Refleksi -->
-                <div onclick="toggleModule('refleksi')"
-                    class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                <div onclick="openRefleksiModal()"
+                    class="bg-rose-50/50 p-4 rounded-[24px] ios-shadow border border-rose-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
-                        class="h-12 w-12 rounded-2xl bg-emerald-custom flex items-center justify-center text-white shadow-lg shadow-emerald-200">
-                        <span class="material-symbols-outlined !text-2xl">psychology_alt</span>
+                        class="h-12 w-12 rounded-2xl bg-rose-500 flex items-center justify-center text-white shadow-lg shadow-rose-200">
+                        <span class="material-symbols-outlined !text-2xl">self_improvement</span>
                     </div>
                     <div>
                         <h3 class="text-[15px] font-bold text-slate-800">Refleksi</h3>
@@ -495,6 +495,7 @@
                     checkExistingVideo();
                     checkExistingDokumentasi();
                     checkExistingLKPD();
+                    checkExistingRefleksi(); // Add this line
                 } catch (internalError) {
                     console.error('Non-auth error in loadStudentData:', internalError);
                 }
@@ -568,11 +569,19 @@
                     openLKPDModal();
                     return;
                 }
+                if (moduleId === 'refleksi') {
+                    openRefleksiModal();
+                    return;
+                }
             }
 
             // Override untuk Hari 2 & 3 agar dokumentasi tetap buka modal
             if (moduleId === 'dokumentasi') {
                 openDokumentasiModal();
+                return;
+            }
+            if (moduleId === 'refleksi') {
+                openRefleksiModal();
                 return;
             }
 
@@ -1329,6 +1338,176 @@
                     }
                 }
             } catch (e) { console.error('Error checkExistingDokumentasi:', e); }
+        }
+
+        // ==========================================
+        // FITUR REFLEKSI HARIAN
+        // ==========================================
+
+        function openRefleksiModal() {
+            document.getElementById('modalRefleksi').classList.remove('hidden');
+            document.getElementById('modalRefleksi').classList.add('flex');
+            checkExistingRefleksi();
+        }
+
+        function closeRefleksiModal() {
+            document.getElementById('modalRefleksi').classList.add('hidden');
+            document.getElementById('modalRefleksi').classList.remove('flex');
+        }
+
+        async function submitRefleksi() {
+            const form = document.getElementById('refleksiForm');
+            const btn = form.querySelector('button');
+            const formData = new FormData(form);
+            const answers = {};
+
+            // Collect all answers
+            for (let i = 1; i <= 15; i++) {
+                const name = `refleksi_q${i}`;
+                const value = formData.get(name);
+                if (!value) {
+                    alert(`Pesan: Pertanyaan nomor ${i} belum dijawab!`);
+                    return;
+                }
+                answers[name] = value;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = 'Mengirim...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error('Silakan login ulang.');
+
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: currentDay,
+                        module_type: 'refleksi',
+                        answers: [JSON.stringify(answers)], // Store all answers as a JSON string in an array
+                        status: 'submitted'
+                    });
+
+                if (error) throw error;
+
+                alert('Pesan: Refleksi berhasil dikirim! Silakan tunggu review dari Fasilitator.');
+                studentProgress[`day${currentDay}`]['refleksi'] = false;
+                saveProgress();
+                closeRefleksiModal();
+                checkAllModulesStatus();
+                checkExistingRefleksi();
+
+            } catch (e) {
+                console.error(e);
+                alert('Gagal mengirim refleksi: ' + e.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Refleksi';
+            }
+        }
+
+        async function checkExistingRefleksi() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data: responses } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', currentDay)
+                    .eq('module_type', 'refleksi')
+                    .order('created_at', { ascending: false })
+                    .limit(1);
+
+                const form = document.getElementById('refleksiForm');
+                const btn = form.querySelector('button');
+                const statusMsgContainer = document.createElement('div'); // Create a temporary status message container
+                statusMsgContainer.id = 'refleksiStatusMessage';
+                statusMsgContainer.className = 'mb-4 p-4 rounded-xl text-xs font-medium';
+                statusMsgContainer.style.display = 'none'; // Initially hidden
+
+                // Insert status message container at the top of the form
+                form.prepend(statusMsgContainer);
+
+                if (responses && responses.length > 0) {
+                    const r = responses[0];
+                    const answers = JSON.parse(r.answers[0]);
+
+                    // Populate form with existing answers and disable inputs
+                    for (let i = 1; i <= 15; i++) {
+                        const name = `refleksi_q${i}`;
+                        const value = answers[name];
+                        if (value !== undefined) {
+                            const input = form.querySelector(`[name="${name}"]`);
+                            if (input) {
+                                if (input.type === 'radio') {
+                                    const radio = form.querySelector(`input[name="${name}"][value="${value}"]`);
+                                    if (radio) radio.checked = true;
+                                } else if (input.type === 'range') {
+                                    input.value = value;
+                                    const focusVal = document.getElementById('focusVal');
+                                    if (focusVal) focusVal.innerText = value;
+                                } else if (input.type === 'text' || input.tagName === 'TEXTAREA') {
+                                    input.value = value;
+                                }
+                                input.disabled = true;
+                                input.classList.add('bg-slate-100', 'text-slate-500');
+                            }
+                        }
+                    }
+
+                    // Disable all radio buttons and textareas
+                    form.querySelectorAll('input, textarea').forEach(el => {
+                        el.disabled = true;
+                        el.classList.add('bg-slate-100', 'text-slate-500');
+                    });
+
+                    // Hide submit button
+                    if (btn) btn.classList.add('hidden');
+
+                    // Show status message
+                    statusMsgContainer.style.display = 'block';
+                    if (r.status === 'submitted') {
+                        statusMsgContainer.className = "mb-4 p-4 rounded-xl text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200";
+                        statusMsgContainer.innerHTML = "⏳ <b>Refleksi Terkirim</b><br>Menunggu feedback dari fasilitator.";
+                        updateModuleUI('refleksi', 'submitted');
+                    } else if (r.status === 'reviewed') {
+                        statusMsgContainer.className = "mb-4 p-4 rounded-xl text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200";
+                        statusMsgContainer.innerHTML = `✅ <b>Sudah Direview (Skor: ${r.score || 0})</b><br>Feedback: "${r.feedback || '-'}"`;
+                        updateModuleUI('refleksi', true, r.score || 0);
+                    }
+                } else {
+                    // No existing data, ensure form is enabled and button is visible
+                    form.querySelectorAll('input, textarea').forEach(el => {
+                        el.disabled = false;
+                        el.classList.remove('bg-slate-100', 'text-slate-500');
+                        // Reset radio/checkboxes
+                        if (el.type === 'radio') el.checked = false;
+                        // Reset text/textarea
+                        if (el.type === 'text' || el.tagName === 'TEXTAREA') el.value = '';
+                        // Reset range
+                        if (el.type === 'range') {
+                            el.value = 5;
+                            const focusVal = document.getElementById('focusVal');
+                            if (focusVal) focusVal.innerText = 5;
+                        }
+                    });
+                    // Reset star rating
+                    form.querySelectorAll('input[name="refleksi_q10"]').forEach(radio => radio.checked = false);
+                    form.querySelectorAll('.rating label').forEach(label => label.classList.remove('peer-checked:text-amber-400'));
+
+
+                    if (btn) {
+                        btn.classList.remove('hidden');
+                        btn.disabled = false;
+                        btn.innerHTML = 'Kirim Refleksi';
+                    }
+                    statusMsgContainer.style.display = 'none';
+                }
+            } catch (e) {
+                console.error("Error checkExistingRefleksi:", e);
+            }
         }
 
         // Deprecated: Functions below are now handled by updateModuleUI or specific modal logic
@@ -4274,6 +4453,131 @@
                     }
                 }
             } catch (e) { console.error(e); }
+        }
+        async function checkExistingRefleksi() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', currentUser.id)
+                    .eq('day_id', currentDay)
+                    .eq('module_type', 'refleksi')
+                    .single();
+
+                if (data && (data.status === 'submitted' || data.status === 'reviewed')) {
+                    // Update button UI
+                    const btn = document.querySelector('div[onclick="toggleModule(\'refleksi\')"]');
+                    if (btn) {
+                        const icon = btn.querySelector('.material-symbols-outlined');
+                        if (icon) icon.innerText = 'check_circle';
+
+                        const statusText = btn.querySelector('p.text-rose-500'); // If exists
+                        // We can add a badge if needed, similar to Glosarium
+                    }
+                }
+            } catch (e) {
+                console.error('Error checking refleksi:', e);
+            }
+        }
+
+        function openRefleksiModal() {
+            // Check if already submitted? (Optional, maybe let them edit? For now, standard flow)
+            document.getElementById('modalRefleksi').classList.remove('hidden');
+            document.getElementById('modalRefleksi').classList.add('flex');
+        }
+
+        function closeRefleksiModal() {
+            document.getElementById('modalRefleksi').classList.add('hidden');
+            document.getElementById('modalRefleksi').classList.remove('flex');
+        }
+
+        async function submitRefleksi() {
+            const form = document.getElementById('refleksiForm');
+            const data = new FormData(form);
+            const answers = [];
+
+            // Map Q1-Q15. Handle special cases (Radio, Checkbox)
+            // Q1 Radio
+            answers.push(data.get('refleksi_q1') || "-");
+            // Q2-Q4 Text
+            answers.push(data.get('refleksi_q2') || "-");
+            answers.push(data.get('refleksi_q3') || "-");
+            answers.push(data.get('refleksi_q4') || "-");
+            // Q5 Range
+            answers.push(data.get('refleksi_q5') || "0");
+            // Q6-Q9 Text
+            answers.push(data.get('refleksi_q6') || "-");
+            answers.push(data.get('refleksi_q7') || "-");
+            answers.push(data.get('refleksi_q8') || "-");
+            answers.push(data.get('refleksi_q9') || "-");
+            // Q10 Star Rating (Radio)
+            answers.push(data.get('refleksi_q10') || "0");
+            // Q11-Q15
+            answers.push(data.get('refleksi_q11') || "-");
+            answers.push(data.get('refleksi_q12') || "-");
+            answers.push(data.get('refleksi_q13') || "-");
+            answers.push(data.get('refleksi_q14') || "-");
+            answers.push(data.get('refleksi_q15') || "-");
+
+            // Simple validation: Ensure at least some fields are filled
+            if (answers.every(a => a === "-" || a === "0")) {
+                alert('Mohon isi setidaknya sebagian pertanyaan refleksi.');
+                return;
+            }
+
+            const btn = document.querySelector('#modalRefleksi button[onclick="submitRefleksi()"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'Mengirim...';
+            btn.disabled = true;
+
+            try {
+                // Check existing
+                const { data: existing } = await supabaseClient
+                    .from('module_responses')
+                    .select('id')
+                    .eq('student_id', currentUser.id)
+                    .eq('day_id', currentDay)
+                    .eq('module_type', 'refleksi')
+                    .single();
+
+                let error;
+                if (existing) {
+                    const { error: updErr } = await supabaseClient
+                        .from('module_responses')
+                        .update({
+                            answers: answers,
+                            status: 'submitted',
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', existing.id);
+                    error = updErr;
+                } else {
+                    const { error: insErr } = await supabaseClient
+                        .from('module_responses')
+                        .insert({
+                            student_id: currentUser.id,
+                            day_id: currentDay,
+                            module_type: 'refleksi',
+                            answers: answers,
+                            status: 'submitted'
+                        });
+                    error = insErr;
+                }
+
+                if (error) throw error;
+
+                alert('Refleksi berhasil dikirim! Terima kasih atas masukanmu.');
+                closeRefleksiModal();
+                loadStats(); // Update progress
+                checkExistingRefleksi(); // Update UI
+
+            } catch (e) {
+                console.error('Submit Refleksi Error:', e);
+                alert('Gagal mengirim refleksi: ' + e.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
