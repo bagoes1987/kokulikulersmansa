@@ -11,7 +11,6 @@ const fasilitators = [
     { no: 2, kelas: "X. 1", nama: "Ari Muchtrinai N. N, S.Pd.I.", username: "fasil_ari" },
     { no: 3, kelas: "X. 2", nama: "Handaroh, S.Pd.", username: "fasil_handaroh" },
     { no: 4, kelas: "X. 2", nama: "Fantas Jaya A, S.Pd.", username: "fasil_fantas" },
-    { no: 5, kelas: "X. 3", nama: "Flortentinus Supriyanto, S.Pd.", username: "fasil_flortentinus" },
     { no: 6, kelas: "X. 3", nama: "Nelly Kurniasih, S.Pd.", username: "fasil_nelly" },
     { no: 101, kelas: "X. 3", nama: "Fika Mega Elita, S.Pd.", username: "fasil_fika" },
     { no: 7, kelas: "X. 4", nama: "Siti Anita, S.Pd.", username: "fasil_siti" },

@@ -10,7 +10,6 @@ Berikut adalah draf akun login yang sudah disesuaikan dengan instruksi bapak/ibu
 | 2 | X. 1 | Ari Muchtrinai N. N, S.Pd.I. | fasil_ari | kokulikuler@2026 |
 | 3 | X. 2 | Handaroh, S.Pd. | fasil_handaroh | kokulikuler@2026 |
 | 4 | X. 2 | Fantas Jaya A, S.Pd. | fasil_fantas | kokulikuler@2026 |
-| 5 | X. 3 | Flortentinus Supriyanto, S.Pd. | fasil_flortentinus | kokulikuler@2026 |
 | 6 | X. 3 | Nelly Kurniasih, S.Pd. | fasil_nelly | kokulikuler@2026 |
 | 101 | X. 3 | Fika Mega Elita, S.Pd. | fasil_fika | kokulikuler@2026 |
 | 7 | X. 4 | Siti Anita, S.Pd. | fasil_siti | kokulikuler@2026 |
