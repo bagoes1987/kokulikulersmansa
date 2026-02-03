@@ -1837,7 +1837,7 @@
                             category: selectedFinalCategory,
                             facilitator_feedback: feedback,
                             status: 'published'
-                        })
+                        }, { onConflict: 'student_id' })
                         .select();
 
                     if (error) throw error;
