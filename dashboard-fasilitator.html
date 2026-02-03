@@ -1522,6 +1522,11 @@
                     // Refresh ALL UI components
                     loadStats(); // Updates progress circle and "Status Terbaru"
                     loadStudentsByClass(currentClass); // Updates detailed student list
+
+                    // NEW [v1.0.7]: Force Refresh the Student Detail Modal if it's open
+                    if (currentDetailStudentId && typeof X_OPEN_STUDENT_STATUS_X === 'function') {
+                        X_OPEN_STUDENT_STATUS_X(currentDetailStudentId, currentDetailStudentName);
+                    }
                 } catch (e) {
                     console.error('❌ Error saveGrade:', e);
                     alert('Gagal menyimpan: ' + e.message);
