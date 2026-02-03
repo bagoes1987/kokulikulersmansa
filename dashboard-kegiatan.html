@@ -129,8 +129,8 @@
 
         <!-- Title -->
         <div class="px-6 mb-4">
-            <h2 class="text-2xl font-bold text-slate-900">Dasbor Kegiatan</h2>
-            <p class="text-base text-slate-500">Selesaikan modul hari ini</p>
+            <h2 class="text-2xl font-bold text-slate-900" id="dashboardTitle">Dasbor Kegiatan</h2>
+            <p class="text-base text-slate-500" id="dashboardSubtitle">Selesaikan modul hari ini</p>
         </div>
 
         <!-- Module Grid -->
@@ -337,7 +337,7 @@
                 </div>
             </div>
 
-            <button onclick="switchDay(3)"
+            <button onclick="switchDay(3)" id="btn-back-to-task"
                 class="w-full mt-6 py-4 rounded-2xl bg-slate-800 text-white font-bold shadow-lg shadow-slate-200 active:scale-95 transition-transform">
                 Kembali ke Tugas
             </button>
@@ -666,6 +666,10 @@
                 document.getElementById('module-grid-container').classList.add('hidden');
                 document.getElementById('nilai-report-container').classList.remove('hidden');
 
+                // Update Header Text
+                document.getElementById('dashboardTitle').textContent = 'Nilai Kokurikuler';
+                document.getElementById('dashboardSubtitle').textContent = 'Pantau hasil penilaian projekmu';
+
                 // Update Tab Styles
                 for (let i = 1; i <= 3; i++) {
                     const tab = document.getElementById(`tab-day${i}`);
@@ -682,6 +686,10 @@
             document.getElementById('module-grid-container').classList.remove('hidden');
             document.getElementById('nilai-report-container').classList.add('hidden');
             document.getElementById('tab-nilai').className = 'flex-1 py-3 rounded-xl text-base font-semibold text-slate-500 hover:text-slate-700 transition-all';
+
+            // Revert Header Text
+            document.getElementById('dashboardTitle').textContent = 'Dasbor Kegiatan';
+            document.getElementById('dashboardSubtitle').textContent = 'Selesaikan modul hari ini';
 
             // Update tab styles
             for (let i = 1; i <= 3; i++) {
@@ -738,8 +746,13 @@
                 }
 
                 // Published State (Tampilkan Kembali elemen yang mungkin disembunyikan)
+                // Published State (Tampilkan Kembali elemen yang mungkin disembunyikan)
                 if (descEl.parentElement) descEl.parentElement.classList.remove('hidden');
                 if (scoreEl.parentElement && scoreEl.parentElement.parentElement) scoreEl.parentElement.parentElement.classList.remove('hidden');
+
+                // Ubah Text Tombol Kembali
+                const btnBack = document.getElementById('btn-back-to-task');
+                if (btnBack) btnBack.textContent = "Selesai & Kembali ke Materi";
 
                 // Published State
                 const category = data.category || 'Belum Valid';
