@@ -990,6 +990,7 @@
                         'lkpd': { label: 'LKPD', icon: 'edit_note', color: 'emerald' },
                         'kuis': { label: 'Assessment', icon: 'quiz', color: 'indigo' },
                         'dokumentasi': { label: 'Dokumentasi', icon: 'photo_camera', color: 'indigo' },
+                        'glosarium': { label: 'Glosarium', icon: 'menu_book', color: 'cyan' },
                         'refleksi': { label: 'Refleksi', icon: 'self_improvement', color: 'rose' }
                     };
                     const c = config[type] || { label: type, icon: 'task', color: 'slate' };
@@ -1097,6 +1098,7 @@
                         'lkpd': 'LKPD Digital',
                         'kuis': 'Assessment',
                         'video': 'Video Belajar',
+                        'glosarium': 'Glosarium',
                         'refleksi': 'Refleksi'
                     };
                     document.getElementById('gradingModuleTitle').textContent = `HARI ${r.day_id} • ${typeLabels[r.module_type] || r.module_type.toUpperCase()}`;
@@ -1330,6 +1332,17 @@
 
                         html += '</div>';
                         answerCont.innerHTML = html;
+                    } else if (r.module_type === 'glosarium') {
+                        // Display Glosarium Answer
+                        const glosText = answers[0] || '';
+                        answerCont.innerHTML = `
+                        <div class="bg-cyan-50 p-4 rounded-2xl border border-cyan-100">
+                            <div class="flex justify-between items-center mb-2">
+                                <p class="text-[8px] font-black text-cyan-500 uppercase tracking-wider">Jawaban Glosarium (5 Istilah Baru)</p>
+                            </div>
+                            <p class="text-xs text-slate-700 font-medium leading-relaxed whitespace-pre-wrap">${glosText}</p>
+                        </div>
+                        `;
                     } else {
                         // Standard display for other modules (e.g., Pemantik)
                         answerCont.innerHTML = answers.map((ans, i) => `
@@ -1513,7 +1526,7 @@
 
                     const uniqueMap = new Map();
                     recentRaw.forEach(r => {
-                        const key = `${r.student_id}-${r.module_type}-${r.day_id}`;
+                        const key = `${r.student_id} -${r.module_type} -${r.day_id} `;
                         if (!uniqueMap.has(key)) uniqueMap.set(key, r);
                     });
 
@@ -1562,12 +1575,13 @@
                         'lkpd': 'LKPD',
                         'kuis': 'Assessment',
                         'dokumentasi': 'Dokumentasi',
+                        'glosarium': 'Glosarium',
                         'refleksi': 'Refleksi'
                     }[r.module_type] || r.module_type.toUpperCase();
 
                     return `
-                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentName.replace(/'/g, "\\'")}', '${r.day_id}', '${r.module_type}')">
-                            <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner">${initials}</div>
+                            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentName.replace(/'/g, "\\'")}', '${r.day_id}', '${r.module_type}')">
+                                <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner">${initials}</div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-[13px] font-black text-slate-800 leading-tight truncate">${studentName}</p>
                                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Hari ${r.day_id} • ${moduleLabel}</p>
@@ -1588,10 +1602,10 @@
                 const listContainer = document.getElementById('allActivitiesList');
                 modal.classList.remove('hidden');
                 listContainer.innerHTML = `
-                    <div class="flex flex-col items-center justify-center py-24">
+                            < div class="flex flex-col items-center justify-center py-24" >
                         <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
                         <p class="mt-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Memuat Semua Aktivitas...</p>
-                    </div>`;
+                    </div > `;
 
                 try {
                     const { ids: studentIds, map: studentMap } = await getMyStudentsData();
@@ -1622,9 +1636,9 @@
                     });
 
                     listContainer.innerHTML = `
-                        <div class="space-y-3">
-                            ${renderActivityItems(sorted, studentMap)}
-                        </div>`;
+                            < div class="space-y-3" >
+                                ${renderActivityItems(sorted, studentMap)}
+                        </div > `;
 
                 } catch (e) {
                     console.error('Error openAllActivitiesModal:', e);
@@ -1726,15 +1740,15 @@
                             : '<span class="size-4 block"></span>'; // spacer
 
                         return `
-                            <div class="flex items-start gap-3 p-3 rounded-xl border ${style} text-xs">
+                            < div class="flex items-start gap-3 p-3 rounded-xl border ${style} text-xs" >
                                 <div class="mt-0.5 shrink-0">${icon}</div>
                                 <span>${opt}</span>
-                            </div>
-                        `;
+                            </div >
+                            `;
                     }).join('');
 
                     return `
-                        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                            < div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm" >
                             <div class="flex items-center gap-3 mb-3">
                                 <span class="size-6 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black flex items-center justify-center uppercase">No. ${q.id}</span>
                                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kunci: ${String.fromCharCode(65 + q.correctIndex)}</span>
@@ -1743,7 +1757,7 @@
                             <div class="space-y-2">
                                 ${optionsHtml}
                             </div>
-                        </div>
+                        </div >
                     `;
                 }).join('');
             }
@@ -1802,18 +1816,18 @@
 
                 // Reset styles
                 ['mahir', 'berkembang', 'cakap'].forEach(c => {
-                    const btn = document.getElementById(`btn-cat-${c}`);
+                    const btn = document.getElementById(`btn - cat - ${c} `);
                     btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2');
                     btn.classList.add('border-slate-200');
                 });
 
                 // Apply Active Style
-                const btn = document.getElementById(`btn-cat-${category.toLowerCase()}`);
+                const btn = document.getElementById(`btn - cat - ${category.toLowerCase()} `);
                 const colorMap = { 'Mahir': 'emerald', 'Berkembang': 'blue', 'Cakap': 'amber' };
                 const col = colorMap[category];
 
                 btn.classList.remove('border-slate-200');
-                btn.classList.add(`bg-${col}-50`, `border-${col}-400`, 'ring-2', `ring-${col}-200`, 'ring-offset-2');
+                btn.classList.add(`bg - ${col} -50`, `border - ${col} -400`, 'ring-2', `ring - ${col} -200`, 'ring-offset-2');
             }
 
             async function submitFinalGrade() {
