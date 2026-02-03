@@ -10,8 +10,8 @@ Berikut adalah draf akun login yang sudah disesuaikan dengan instruksi bapak/ibu
 | 2 | X. 1 | Ari Muchtrinai N. N, S.Pd.I. | fasil_ari | kokulikuler@2026 |
 | 3 | X. 2 | Handaroh, S.Pd. | fasil_handaroh | kokulikuler@2026 |
 | 4 | X. 2 | Fantas Jaya A, S.Pd. | fasil_fantas | kokulikuler@2026 |
-| 5 | X. 3 | Flortentinus Supriyanto, S.Pd. | fasil_flortentinus | kokulikuler@2026 |
-| 6 | X. 3 | Nelly Kurniasih, S.Pd. | fasil_nelly | kokulikuler@2026 |
+| 5 | X. 3 | Fika Mega Elita, S.Pd. | fasil_fika | kokulikuler@2026 |
+| 6 | X. 3 | Fika Mega Elita, S.Pd. | fasil_fika | kokulikuler@2026 |
 | 7 | X. 4 | Siti Anita, S.Pd. | fasil_siti | kokulikuler@2026 |
 | 8 | X. 4 | Latifatu Anisa, S. Pd. | fasil_latifatu | kokulikuler@2026 |
 | 9 | X. 5 | Atik Setianingsih, S.Pd. | fasil_atik | kokulikuler@2026 |
@@ -42,10 +42,10 @@ Berikut adalah draf akun login yang sudah disesuaikan dengan instruksi bapak/ibu
 | 34 | XI. 6 | Suhaib Jawahir, S.Pd. | fasil_suhaib | kokulikuler@2026 |
 | 35 | XI. 7 | Singgih Sudarmawan, S.Ag. | fasil_singgih | kokulikuler@2026 |
 | 36 | XI. 7 | Suparmono, S.Ag. | fasil_suparmono | kokulikuler@2026 |
-| 37 | XI. 8 | Wely Marisa, S.Pd. | fasil_wely | kokulikuler@2026 |
-| 38 | XI. 9 | A.Thoriq Ganda, S.Pd. | fasil_athoriq | kokulikuler@2026 |
-| 39 | XI. 10 | Ari Yani A M, S.T. | fasil_ariyani | kokulikuler@2026 |
-| 40 | XI. 11 | Bagus Panca Wiratama, S.Pd., M.Pd. | fasil_bagus | kokulikuler@2026 |
+| 37 | XI. 8 | Arif Alimudin Rasyid, S.Pd. | fasil_arif | kokulikuler@2026 |
+| 38 | XI. 9 | Rizki Rahmadika, S.Pd. | fasil_rizki | kokulikuler@2026 |
+| 39 | XI. 10 | Adventus, S.Pd. | fasil_adventus | kokulikuler@2026 |
+| 40 | XI. 11 | Samijo, S.Pd. | fasil_samijo | kokulikuler@2026 |
 | 41 | XII. 1 | Tri Tamti Nugraheni, S.Pd. | fasil_tritamti | kokulikuler@2026 |
 | 42 | XII. 1 | Yuni Asrina, S.Pd. | fasil_yuni | kokulikuler@2026 |
 | 43 | XII. 2 | Titin Sumarni, S.Pd. | fasil_titin | kokulikuler@2026 |
