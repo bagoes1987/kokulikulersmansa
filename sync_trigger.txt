@@ -1,0 +1,4 @@
+# Force Sync Trigger
+Last sync attempt: 2026-02-06
+Status: Reverted to 76d2d8d
+Reason: Resetting to stable baseline and clearing any lingering deployment artifacts.
