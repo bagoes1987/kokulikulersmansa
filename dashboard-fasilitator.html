@@ -1063,12 +1063,27 @@
                 if (!confirmed) return;
 
                 try {
-                    const { error } = await supabaseClient
+                    console.log('🗑️ Attempting to delete response ID:', responseId);
+
+                    const { data, error } = await supabaseClient
                         .from('module_responses')
                         .delete()
-                        .eq('id', responseId);
+                        .eq('id', responseId)
+                        .select(); // Return deleted rows to verify
 
-                    if (error) throw error;
+                    if (error) {
+                        console.error('❌ DELETE failed:', error);
+                        throw error;
+                    }
+
+                    console.log('✅ DELETE successful. Deleted rows:', data);
+
+                    // Verify deletion by checking if data exists
+                    if (!data || data.length === 0) {
+                        console.warn('⚠️ DELETE returned no rows. Possible RLS issue or ID mismatch.');
+                        alert('PERINGATAN: Data mungkin tidak terhapus.\n\nPastikan:\n1. RLS Policy DELETE sudah aktif di Supabase\n2. Role Anda memiliki permission DELETE');
+                        return;
+                    }
 
                     alert('Berhasil! Jawaban telah direset.');
 
