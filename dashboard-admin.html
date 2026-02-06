@@ -1,18 +1,233 @@
 <!DOCTYPE html>
-<html lang="id">
+<html class="light" lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RESET - Dashboard Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Dashboard Admin - SMAN 1 Belitang</title>
+    <link rel="icon" href="./logo-sekolah.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style type="text/tailwindcss">
+        @layer base {
+            body { @apply font-sans bg-slate-900 text-slate-100; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
-    <div class="text-center p-10 border border-gray-700 rounded-xl bg-gray-800">
-        <h1 class="text-3xl font-bold mb-4">Dashboard Reset</h1>
-        <p class="text-gray-400">Sedang membangun ulang dashboard dari awal...(Clean Slate)</p>
+<body class="min-h-screen">
+    <div class="max-w-xl mx-auto p-6 space-y-8">
+        <!-- Header -->
+        <header
+            class="flex justify-between items-center bg-slate-800 p-6 rounded-3xl shadow-xl border border-slate-700">
+            <div>
+                <h1 class="text-2xl font-black text-white">Dashboard Admin</h1>
+                <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Sistem Reset Jawaban Siswa
+                </p>
+            </div>
+            <button onclick="window.location.href='index.html'"
+                class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                <span class="material-symbols-outlined">home</span>
+            </button>
+        </header>
+
+        <!-- Search Section -->
+        <section class="bg-slate-800 p-6 rounded-3xl shadow-xl border border-slate-700 space-y-4">
+            <h2 class="text-sm font-black text-slate-300 uppercase tracking-widest">Cari Siswa</h2>
+            <div class="flex gap-2">
+                <input type="text" id="studentSearch" placeholder="Masukkan nama atau NISN..."
+                    class="flex-1 bg-slate-900 border-slate-700 rounded-2xl p-4 text-sm text-white focus:ring-2 focus:ring-emerald-500 outline-none transition-all placeholder:text-slate-500 font-medium">
+                <button onclick="searchStudent()"
+                    class="px-6 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg hover:bg-emerald-500 transition-all active:scale-95">
+                    Cari
+                </button>
+            </div>
+            <div id="searchLoading" class="hidden text-center py-4">
+                <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-emerald-500 rounded-full"
+                    role="status"></div>
+            </div>
+            <div id="searchResult" class="space-y-3">
+                <!-- Result Cards -->
+            </div>
+        </section>
+
+        <!-- Reset Detail Modal (Floating) -->
+        <div id="resetModal"
+            class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm">
+            <div
+                class="bg-slate-800 w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-700 animate-fade-in flex flex-col max-h-[90vh]">
+                <div class="p-8 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
+                    <div>
+                        <h3 class="text-xl font-black text-white" id="modalStudentName">Nama Siswa</h3>
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1"
+                            id="modalStudentClass">Kelas</p>
+                    </div>
+                    <button onclick="closeResetModal()"
+                        class="size-10 bg-slate-700 rounded-xl flex items-center justify-center text-slate-400 hover:text-white">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="p-6 overflow-y-auto no-scrollbar space-y-3" id="modalResponseList">
+                    <!-- Responses will list here -->
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function searchStudent() {
+            const query = document.getElementById('studentSearch').value.trim();
+            if (query.length < 3) {
+                alert('Maukkan minimal 3 karakter');
+                return;
+            }
+
+            const loader = document.getElementById('searchLoading');
+            const resultCont = document.getElementById('searchResult');
+
+            loader.classList.remove('hidden');
+            resultCont.innerHTML = '';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('students')
+                    .select('*')
+                    .or(`nama.ilike.%${query}%,nisn.ilike.%${query}%`)
+                    .limit(10);
+
+                if (error) throw error;
+
+                if (!data.length) {
+                    resultCont.innerHTML = '<p class="text-center text-slate-500 py-4 font-bold uppercase text-[10px]">Data tidak ditemukan</p>';
+                    return;
+                }
+
+                data.forEach(s => {
+                    resultCont.innerHTML += `
+                        <div onclick="openStudentReset('${s.id}', '${s.nama.replace(/'/g, "\\'")}', '${s.kelas}')" 
+                             class="bg-slate-900/50 p-4 rounded-2xl border border-slate-700 flex items-center justify-between group cursor-pointer hover:border-emerald-500 transition-all">
+                            <div class="flex items-center gap-4">
+                                <div class="size-10 bg-slate-800 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                                    <span class="material-symbols-outlined">person</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-black text-white">${s.nama}</p>
+                                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">${s.kelas} • ${s.nisn}</p>
+                                </div>
+                            </div>
+                            <span class="material-symbols-outlined text-slate-600 group-hover:text-emerald-500">arrow_forward</span>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Pencarian gagal: ' + e.message);
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        async function openStudentReset(sid, sname, skelas) {
+            document.getElementById('modalStudentName').textContent = sname;
+            document.getElementById('modalStudentClass').textContent = skelas;
+            document.getElementById('resetModal').classList.remove('hidden');
+            document.getElementById('resetModal').classList.add('flex');
+
+            loadResponses(sid, sname);
+        }
+
+        async function loadResponses(sid, sname) {
+            const cont = document.getElementById('modalResponseList');
+            cont.innerHTML = '<p class="text-center text-slate-500 py-6 animate-pulse font-bold uppercase text-[10px]">Memuat jawaban...</p>';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', sid)
+                    .order('day_id', { ascending: true });
+
+                if (error) throw error;
+
+                if (!data.length) {
+                    cont.innerHTML = '<p class="text-center text-slate-600 py-10 font-bold uppercase text-[10px]">Belum ada jawaban sama sekali</p>';
+                    return;
+                }
+
+                const typeLabels = {
+                    'pemantik': 'Pemantik', 'materi': 'Materi', 'video': 'Video', 'lkpd': 'LKPD',
+                    'kuis': 'Assessment', 'dokumentasi': 'Dokumentasi', 'glosarium': 'Glosarium', 'refleksi': 'Refleksi'
+                };
+
+                let html = '';
+                data.forEach(r => {
+                    const label = typeLabels[r.module_type] || r.module_type.toUpperCase();
+                    html += `
+                        <div class="bg-slate-900 border border-slate-700 p-4 rounded-2xl flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">HARI ${r.day_id} • ${label}</p>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="size-1.5 bg-${r.status === 'reviewed' ? 'emerald' : 'amber'}-500 rounded-full"></span>
+                                    <p class="text-xs font-bold text-white uppercase">${r.status}</p>
+                                </div>
+                            </div>
+                            <button onclick="resetAction('${r.id}', '${sname.replace(/'/g, "\\'")}', '${label}', ${r.day_id})" 
+                                    class="size-10 bg-red-600/20 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-600 hover:text-white transition-all">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                    `;
+                });
+                cont.innerHTML = html;
+            } catch (e) {
+                console.error(e);
+                cont.innerHTML = `<p class="text-red-500 text-xs">${e.message}</p>`;
+            }
+        }
+
+        async function resetAction(rid, sname, moduleLabel, dayId) {
+            if (!confirm(`Konfirmasi permanen: Hapus jawaban ${moduleLabel} milik ${sname} di HARI ${dayId}?`)) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .delete()
+                    .eq('id', rid);
+
+                if (error) throw error;
+
+                alert('Berhasil direset!');
+                // Re-load same student responses
+                // To do this we need studentId. Let's find it from state or passing it.
+                searchStudent(); // For simplicity, let's just make user search again or find studentId
+                document.getElementById('resetModal').classList.add('hidden');
+            } catch (e) {
+                alert('Gagal: ' + e.message);
+            }
+        }
+
+        function closeResetModal() {
+            document.getElementById('resetModal').classList.add('hidden');
+            document.getElementById('resetModal').classList.remove('flex');
+        }
+
+        // Search on Enter
+        document.getElementById('studentSearch').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') searchStudent();
+        });
+    </script>
 </body>
 
 </html>

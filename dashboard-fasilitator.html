@@ -1016,9 +1016,21 @@
 
                     if (r) {
                         if (r.status === 'reviewed') {
-                            statusHtml = `<span class="px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase rounded-lg border border-emerald-100">Selesai</span>`;
+                            statusHtml = `
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase rounded-lg border border-emerald-100">Selesai</span>
+                                <button onclick="event.stopPropagation(); resetStudentResponse('${r.id}', '${safeName}', '${c.label}', ${dayId})" class="size-7 rounded-lg bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100" title="Reset Jawaban">
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                                </button>
+                            </div>`;
                         } else if (r.status === 'submitted') {
-                            statusHtml = `<span class="px-2.5 py-1 bg-amber-50 text-amber-600 text-[9px] font-bold uppercase rounded-lg border border-amber-100 animate-pulse">Review</span>`;
+                            statusHtml = `
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 bg-amber-50 text-amber-600 text-[9px] font-bold uppercase rounded-lg border border-amber-100 animate-pulse">Review</span>
+                                <button onclick="event.stopPropagation(); resetStudentResponse('${r.id}', '${safeName}', '${c.label}', ${dayId})" class="size-7 rounded-lg bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100" title="Reset Jawaban">
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                                </button>
+                            </div>`;
                         }
                         clickAction = `onclick="openGradingModal('${studentId}', '${safeName}', ${dayId}, '${type}')"`;
                     } else {
@@ -1039,6 +1051,38 @@
                 } catch (err) {
                     console.error('renderModuleItem Error:', err);
                     return `<div class="p-2 text-[8px] text-red-400 font-bold border border-red-100 rounded-lg">Render Error</div>`;
+                }
+            }
+
+            // Global Reset Function
+            async function resetStudentResponse(responseId, studentName, moduleLabel, dayId) {
+                const confirmed = confirm(`Apakah Anda yakin ingin MERESET (menghapus) jawaban ${moduleLabel} milik ${studentName} di HARI ${dayId}?\n\nSiswa akan bisa mengerjakan ulang modul ini.`);
+                if (!confirmed) return;
+
+                try {
+                    const { error } = await supabaseClient
+                        .from('module_responses')
+                        .delete()
+                        .eq('id', responseId);
+
+                    if (error) throw error;
+
+                    alert('Berhasil! Jawaban telah direset.');
+
+                    // Refresh data student detail (using current student ID if any)
+                    // We can reuse the load student data logic. 
+                    // Let's check how to refresh the modal.
+                    const modal = document.getElementById('X_MODAL_STUDENT_DETAIL_X');
+                    if (modal && !modal.classList.contains('hidden')) {
+                        // Find studentId from what we have..
+                        // Actually, it's easier to just refresh the student lists which will likely close the modal or need us to re-open it.
+                        // But we want to stay in the modal. Let's see if we can find studentId.
+                        // For now, simple refresh is better.
+                        window.location.reload();
+                    }
+                } catch (e) {
+                    console.error('Reset Error:', e);
+                    alert('Gagal mereset jawaban: ' + e.message + '\n\nPastikan RLS Policy DELETE sudah diaktifkan di Supabase.');
                 }
             }
 
