@@ -511,24 +511,67 @@
             }
         }
 
-        // Load progress logic
+        // Load progress logic with version control
         function loadProgress() {
+            const STORAGE_VERSION = '2.0'; // Increment this to force localStorage reset
+            const currentVersion = localStorage.getItem('progress_version');
+
+            // Force reset if version mismatch or corrupted data detected
+            if (currentVersion !== STORAGE_VERSION) {
+                console.log('Storage version mismatch or first load. Resetting progress...');
+                localStorage.removeItem('student_progress');
+                localStorage.setItem('progress_version', STORAGE_VERSION);
+                studentProgress = JSON.parse(JSON.stringify(defaultProgress));
+                calculateGlobalProgress();
+                return;
+            }
+
             const savedProgress = localStorage.getItem('student_progress');
             if (savedProgress) {
-                studentProgress = JSON.parse(savedProgress);
-                // Sanitize: Migrasi dari 'rangkuman' ke 'dokumentasi' jika ada data lama
-                ['day1', 'day2', 'day3'].forEach(d => {
-                    if (studentProgress[d] && studentProgress[d].rangkuman !== undefined) {
-                        if (studentProgress[d].dokumentasi === undefined) {
-                            studentProgress[d].dokumentasi = studentProgress[d].rangkuman;
+                try {
+                    studentProgress = JSON.parse(savedProgress);
+
+                    // Validate structure - ensure all days exist
+                    const requiredDays = ['day1', 'day2', 'day3'];
+                    const requiredModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi'];
+
+                    let isCorrupted = false;
+                    requiredDays.forEach(day => {
+                        if (!studentProgress[day]) {
+                            isCorrupted = true;
+                            return;
                         }
-                        delete studentProgress[d].rangkuman;
+                        requiredModules.forEach(module => {
+                            if (studentProgress[day][module] === undefined) {
+                                isCorrupted = true;
+                            }
+                        });
+                    });
+
+                    if (isCorrupted) {
+                        console.warn('Corrupted progress data detected. Resetting...');
+                        studentProgress = JSON.parse(JSON.stringify(defaultProgress));
+                        saveProgress();
+                        return;
                     }
-                    // Pastikan field dokumentasi ada
-                    if (studentProgress[d] && studentProgress[d].dokumentasi === undefined) {
-                        studentProgress[d].dokumentasi = false;
-                    }
-                });
+
+                    // Sanitize: Migrasi dari 'rangkuman' ke 'dokumentasi' jika ada data lama
+                    ['day1', 'day2', 'day3'].forEach(d => {
+                        if (studentProgress[d] && studentProgress[d].rangkuman !== undefined) {
+                            if (studentProgress[d].dokumentasi === undefined) {
+                                studentProgress[d].dokumentasi = studentProgress[d].rangkuman;
+                            }
+                            delete studentProgress[d].rangkuman;
+                        }
+                        // Pastikan field dokumentasi ada
+                        if (studentProgress[d] && studentProgress[d].dokumentasi === undefined) {
+                            studentProgress[d].dokumentasi = false;
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error parsing progress:', e);
+                    studentProgress = JSON.parse(JSON.stringify(defaultProgress));
+                }
             } else {
                 studentProgress = JSON.parse(JSON.stringify(defaultProgress));
             }
