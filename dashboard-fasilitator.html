@@ -11,6 +11,7 @@
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
+    <script src="data/workshop_content.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             theme: {
@@ -1277,58 +1278,54 @@
                         }
 
                         if (lkpdData.lkpd3) {
-                            html += `
-                                <div class="p-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl">
-                                    <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-3">LKPD 3: Analisis Gizi & Bahan</p>
-                                    <div class="space-y-3">
-                                        <div class="p-3 bg-white rounded-xl border border-emerald-50">
-                                            <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">1. Mengapa Bahan Dasar (Beras/Sago/Singkong) jadi sumber energi?</p>
-                                            <p class="text-xs text-slate-700 font-medium">${lkpdData.lkpd3.q1 || '-'}</p>
-                                        </div>
-                                        <div class="p-3 bg-white rounded-xl border border-emerald-50">
-                                            <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">2. Dua Bahan Jajanan yang mengandung serat pangan:</p>
-                                            <p class="text-xs text-slate-700 font-medium">${lkpdData.lkpd3.q2 || '-'}</p>
-                                        </div>
-                                        <div class="p-3 bg-white rounded-xl border border-emerald-50">
-                                            <p class="text-[9px] font-bold text-slate-400 uppercase mb-1">3. Manfaat Gula Aren dibanding Gula Pasir:</p>
-                                            <p class="text-xs text-slate-700 font-medium">${lkpdData.lkpd3.q3 || '-'}</p>
-                                        </div>
-                                    </div>
-                                </div>`;
+                            let lkpd3QuestionsHtml = '';
+                            const lkpd3Labels = [
+                                "Sumber Karbohidrat", "Serat Umbi vs Terigu", "Gizi Bika Ambon", "Serat Kelapa",
+                                "Gizi Kacang Hijau", "Mineral Pisang", "Keunggulan Sagu", "Gula Aren vs Pasir",
+                                "Gizi Panada", "Manfaat Santan"
+                            ];
+                            for (let i = 1; i <= 10; i++) {
+                                const ans = lkpdData.lkpd3[`q${i}`];
+                                if (ans) {
+                                    lkpd3QuestionsHtml += `
+                                        <div class="p-3 bg-white rounded-xl border border-emerald-50 mb-2">
+                                            <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">${i}. ${lkpd3Labels[i - 1] || 'Pertanyaan'}</p>
+                                            <p class="text-xs text-slate-700 font-medium">${ans}</p>
+                                        </div>`;
+                                }
+                            }
+                            if (lkpd3QuestionsHtml) {
+                                html += `
+                                    <div class="p-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl">
+                                        <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-3">LKPD 3: Analisis Gizi & Bahan</p>
+                                        <div class="space-y-1">${lkpd3QuestionsHtml}</div>
+                                    </div>`;
+                            }
                         }
 
                         if (lkpdData.lkpd4) {
+                            const renderPart = (title, data, color) => {
+                                if (!data || !data.nama && !data.alat) return '';
+                                return `
+                                    <div class="p-4 bg-${color}-50/50 border border-${color}-100 rounded-2xl">
+                                        <p class="text-[9px] font-black text-${color}-600 uppercase tracking-widest mb-3">${title}</p>
+                                        <div class="space-y-2">
+                                            ${data.nama ? `<p class="text-xs font-bold text-slate-800">${data.nama} (${data.asal || '-'})</p>` : ''}
+                                            <p class="text-[10px] text-slate-600"><strong>Bahan:</strong> ${data.bahan || '-'}</p>
+                                            ${data.gizi ? `<p class="text-[10px] text-slate-600"><strong>Gizi/Inovasi:</strong> ${data.gizi}</p>` : ''}
+                                            ${data.metode ? `<p class="text-[10px] text-slate-600"><strong>Metode:</strong> ${data.metode}</p>` : ''}
+                                            ${data.keunggulan ? `<p class="text-[10px] text-slate-600"><strong>Keunggulan:</strong> ${data.keunggulan}</p>` : ''}
+                                            ${data.alat ? `<p class="text-[10px] text-slate-600"><strong>Alat:</strong> ${data.alat}</p>` : ''}
+                                        </div>
+                                    </div>`;
+                            };
+
                             html += `
-                                <div class="p-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl">
-                                    <p class="text-[9px] font-black text-indigo-600 uppercase tracking-widest mb-3">LKPD 4: Inovasi Jajanan Sehat</p>
-                                    <div class="grid grid-cols-2 gap-2 mb-3">
-                                        <div class="p-2 bg-white rounded-xl border border-indigo-50 text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase">Nama Jajanan</p>
-                                            <p class="text-[10px] text-slate-700 font-bold">${lkpdData.lkpd4.nama || '-'}</p>
-                                        </div>
-                                        <div class="p-2 bg-white rounded-xl border border-indigo-50 text-center">
-                                            <p class="text-[8px] font-bold text-slate-400 uppercase">Asal Daerah</p>
-                                            <p class="text-[10px] text-slate-700 font-bold">${lkpdData.lkpd4.asal || '-'}</p>
-                                        </div>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <div class="p-3 bg-white rounded-xl border border-indigo-50">
-                                            <p class="text-[9px] font-bold text-indigo-400 uppercase mb-1">Bahan Utama:</p>
-                                            <p class="text-[10px] text-slate-700 font-medium">${lkpdData.lkpd4.bahan || '-'}</p>
-                                        </div>
-                                        <div class="p-3 bg-white rounded-xl border border-indigo-50">
-                                            <p class="text-[9px] font-bold text-indigo-400 uppercase mb-1">Inovasi Gizi:</p>
-                                            <p class="text-[10px] text-slate-700 font-medium">${lkpdData.lkpd4.gizi || '-'}</p>
-                                        </div>
-                                        <div class="p-3 bg-white rounded-xl border border-indigo-50">
-                                            <p class="text-[9px] font-bold text-indigo-400 uppercase mb-1">Metode:</p>
-                                            <p class="text-[10px] text-slate-700 font-medium">${lkpdData.lkpd4.metode || '-'}</p>
-                                        </div>
-                                        <div class="p-3 bg-white rounded-xl border border-indigo-50">
-                                            <p class="text-[9px] font-bold text-indigo-400 uppercase mb-1">Keunggulan:</p>
-                                            <p class="text-[10px] text-slate-700 font-medium">${lkpdData.lkpd4.keunggulan || '-'}</p>
-                                        </div>
-                                    </div>
+                                <div class="space-y-4">
+                                    <p class="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] px-2">LKPD 4: Inovasi Bazar</p>
+                                    ${renderPart('Produk Makanan', lkpdData.lkpd4.makan, 'indigo')}
+                                    ${renderPart('Produk Minuman', lkpdData.lkpd4.minum, 'blue')}
+                                    ${renderPart('Persiapan Bazar', lkpdData.lkpd4.bazar, 'amber')}
                                 </div>`;
                         }
 
@@ -1452,11 +1449,25 @@
                             </div>
                         </div>
                         `;
+                    } else if (r.module_type === 'pemantik') {
+                        // Display Pemantik with dynamic questions
+                        const dayData = workshopContent[`day${r.day_id}`] || {};
+                        const questions = dayData.triggerQuestions || [];
+                        answerCont.innerHTML = answers.map((ans, i) => {
+                            const qText = questions[i] || `Pertanyaan ${i + 1}`;
+                            return `
+                            <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100/50 mb-3">
+                                <p class="text-[8px] font-black text-amber-500 uppercase tracking-wider mb-1">Pertanyaan ${i + 1}</p>
+                                <p class="text-[10px] font-bold text-slate-500 mb-2 leading-tight">${qText}</p>
+                                <p class="text-xs text-slate-800 font-medium leading-relaxed bg-white/80 p-3 rounded-xl border border-white shadow-sm">${ans}</p>
+                            </div>
+                            `;
+                        }).join('');
                     } else {
-                        // Standard display for other modules (e.g., Pemantik) - update 21:58
+                        // Standard display for other modules - update 21:58
                         answerCont.innerHTML = answers.map((ans, i) => `
                         <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Pertanyaan ${i + 1}</p>
+                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Butir ${i + 1}</p>
                             <p class="text-xs text-slate-700 font-medium leading-relaxed">${ans}</p>
                         </div>
                         `).join('');
