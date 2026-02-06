@@ -2626,7 +2626,7 @@
             <div class="p-8 overflow-y-auto no-scrollbar flex-1">
                 <div id="docStatusMsg" class="hidden"></div>
 
-                <!-- Upload Area (hidden when photo selected) -->
+                <!-- Upload Area -->
                 <div id="docUploadArea" class="space-y-6">
                     <div
                         class="p-8 border-2 border-dashed border-slate-200 rounded-[2rem] bg-slate-50 flex flex-col items-center justify-center text-center group hover:border-indigo-400 transition-all cursor-pointer relative">
@@ -2650,7 +2650,7 @@
                     </div>
                 </div>
 
-                <!-- Preview Area (shown when photo selected) -->
+                <!-- Preview Area (shown after photo selected) -->
                 <div id="docPreviewArea" class="hidden space-y-4">
                     <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 flex gap-3">
                         <span class="material-symbols-outlined text-emerald-500 text-lg">check_circle</span>
@@ -2659,8 +2659,10 @@
                         </p>
                     </div>
 
-                    <div class="relative rounded-2xl overflow-hidden border-4 border-white shadow-xl bg-slate-100">
-                        <img id="docPreview" class="w-full min-h-[200px] max-h-[400px] object-contain" src=""
+                    <!-- Preview Image Container -->
+                    <div class="bg-slate-100 rounded-2xl overflow-hidden border-4 border-white shadow-xl p-2">
+                        <img id="docPreview" class="w-full rounded-xl"
+                            style="display: block; min-height: 200px; max-height: 400px; object-fit: contain;" src=""
                             alt="Preview Foto">
                     </div>
 
