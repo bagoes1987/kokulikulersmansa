@@ -986,6 +986,9 @@
                         return isModuleMatch && isDayMatch;
                     });
 
+                    // DEBUG: Log what we found
+                    console.log(`🔍 Rendering ${type} for Day ${dayId}:`, r ? `Found (${r.status})` : 'NOT FOUND');
+
                     const config = {
                         'pemantik': { label: 'Pemantik', icon: 'lightbulb', color: 'amber' },
                         'materi': { label: 'Materi', icon: 'menu_book', color: 'blue' },
