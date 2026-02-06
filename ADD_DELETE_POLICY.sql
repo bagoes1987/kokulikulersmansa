@@ -1,18 +1,22 @@
 -- ============================================
 -- ADD DELETE POLICY FOR MODULE_RESPONSES
--- Allows facilitators and admins to delete student responses
+-- Allows facilitators, admins, and coordinators to delete student responses
 -- ============================================
 
 -- Drop existing DELETE policy if any
-DROP POLICY IF EXISTS "Allow facilitators and admins to delete responses" ON module_responses;
+DROP POLICY IF EXISTS "Enable delete for facilitators, admins, and coordinators" ON public.module_responses;
 
--- Create DELETE policy
--- This allows authenticated users (facilitators/admins) to delete any response
--- You can make this more restrictive if needed
-CREATE POLICY "Allow facilitators and admins to delete responses"
-ON module_responses FOR DELETE
-TO authenticated
-USING (true);
+-- Create DELETE policy with role-based access
+CREATE POLICY "Enable delete for facilitators, admins, and coordinators"
+ON public.module_responses
+FOR DELETE
+USING (
+  auth.role() = 'authenticated' AND (
+    (auth.jwt() ->> 'role' = 'facilitator') OR
+    (auth.jwt() ->> 'role' = 'admin') OR
+    (auth.jwt() ->> 'role' = 'coordinator')
+  )
+);
 
 -- Verify the policy was created
 SELECT tablename, policyname, permissive, roles, cmd 
