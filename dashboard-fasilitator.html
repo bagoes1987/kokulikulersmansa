@@ -1077,7 +1077,7 @@
                     if (modal && !modal.classList.contains('hidden')) {
                         // Use global variable to reload student detail
                         if (currentDetailStudentId && currentDetailStudentName) {
-                            await showStudentDetail(currentDetailStudentName, currentDetailStudentId);
+                            await X_OPEN_STUDENT_STATUS_X(currentDetailStudentId, currentDetailStudentName);
                         } else {
                             // Fallback: close modal
                             closeDetailModal();
