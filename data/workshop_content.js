@@ -264,13 +264,14 @@ const workshopContent = {
         pemantik: [
             "1. Apa kabar kamu hari ini?",
             "2. Dengan perasaan apa kamu datang ke sekolah pagi ini?",
-            "3. Ada hal kecil yang membuatmu senang hari ini?",
-            "4. Seberapa siap kamu mengikuti kegiaan kokulikuler hari ini?",
-            "5. Apa yang sudah kamu persiapkan hari ini?",
-            "6. Ada hal yang ingin kamu ceritakan hari ini?",
-            "7. Hal kecil apa yang membuatmu tersenyum pagi ini?",
+            "3. Hal kecil apa yang membuatmu tersenyum pagi ini?",
+            "4. Ada hal kecil yang membuatmu senang hari ini?",
+            "5. Ada hal yang ingin kamu ceritakan hari ini?",
+            "6. Seberapa siap kamu mengikuti kegiatan kokurikuler hari ini?",
+            "7. Apa yang sudah kamu persiapkan hari ini?",
             "8. Apa hal yang paling kamu ingat dari keseruan materi Citra Rasa Jajanan Nusantara kemarin?",
-            "9. Kalau hari ini punya satu kata, kata apa itu?"
+            "9. Kalau hari ini punya satu kata, kata apa itu?",
+            "10. Kata-kata apa yang ingin kamu sampaikan untuk fasilitator di kelasmu?"
         ],
         materi: [
             `<div class="animate-slide-up flex flex-col items-center justify-center py-20 opacity-50">
