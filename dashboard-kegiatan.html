@@ -1273,14 +1273,42 @@
         // ==========================================
 
         function openDokumentasiModal() {
-            document.getElementById('modalDokumentasi').classList.remove('hidden');
-            document.getElementById('modalDokumentasi').classList.add('flex');
+            const modal = document.getElementById('modalDokumentasi');
+            const uploadArea = document.getElementById('docUploadArea');
+            const previewArea = document.getElementById('docPreviewArea');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            // Reset UI to upload state
+            uploadArea.classList.remove('hidden');
+            previewArea.classList.add('hidden');
+
             checkExistingDokumentasi();
         }
 
         function closeDokumentasiModal() {
             document.getElementById('modalDokumentasi').classList.add('hidden');
             document.getElementById('modalDokumentasi').classList.remove('flex');
+        }
+
+        function changeDocPhoto() {
+            const uploadArea = document.getElementById('docUploadArea');
+            const previewArea = document.getElementById('docPreviewArea');
+            const docInput = document.getElementById('docInput');
+            const statusText = document.getElementById('docStatusMsg');
+
+            // Reset to upload state
+            uploadArea.classList.remove('hidden');
+            previewArea.classList.add('hidden');
+            statusText.classList.add('hidden');
+
+            // Reset file input
+            docInput.value = '';
+            window.selectedDocFile = null;
+
+            // Disable submit button until new photo selected
+            document.getElementById('btnUploadDokumentasi').disabled = true;
         }
 
         // Compress image function (Optimized for Documentation)
@@ -1324,6 +1352,8 @@
             const btn = document.getElementById('btnUploadDokumentasi');
             const statusText = document.getElementById('docStatusMsg');
             const preview = document.getElementById('docPreview');
+            const uploadArea = document.getElementById('docUploadArea');
+            const previewArea = document.getElementById('docPreviewArea');
 
             statusText.classList.remove('hidden');
             statusText.className = "mb-4 p-4 rounded-2xl text-[11px] font-bold border border-blue-100 bg-blue-50 text-blue-700 animate-pulse";
@@ -1338,7 +1368,9 @@
                 const reader = new FileReader();
                 reader.onload = (re) => {
                     preview.src = re.target.result;
-                    preview.classList.remove('hidden');
+                    // Show preview area, hide upload area
+                    uploadArea.classList.add('hidden');
+                    previewArea.classList.remove('hidden');
                 };
                 reader.readAsDataURL(compressedFile);
 
@@ -2590,6 +2622,7 @@
             <div class="p-8 overflow-y-auto no-scrollbar flex-1">
                 <div id="docStatusMsg" class="hidden"></div>
 
+                <!-- Upload Area (hidden when photo selected) -->
                 <div id="docUploadArea" class="space-y-6">
                     <div
                         class="p-8 border-2 border-dashed border-slate-200 rounded-[2rem] bg-slate-50 flex flex-col items-center justify-center text-center group hover:border-indigo-400 transition-all cursor-pointer relative">
@@ -2613,10 +2646,24 @@
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-center">
-                    <img id="docPreview"
-                        class="hidden w-full max-h-64 object-cover rounded-2xl border-4 border-white shadow-xl" src=""
-                        alt="Preview">
+                <!-- Preview Area (shown when photo selected) -->
+                <div id="docPreviewArea" class="hidden space-y-4">
+                    <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100 flex gap-3">
+                        <span class="material-symbols-outlined text-emerald-500 text-lg">check_circle</span>
+                        <p class="text-[11px] text-emerald-700 font-bold">
+                            Foto berhasil dipilih! Pastikan foto sudah benar sebelum mengirim.
+                        </p>
+                    </div>
+
+                    <div class="relative rounded-2xl overflow-hidden border-4 border-white shadow-xl">
+                        <img id="docPreview" class="w-full object-cover" src="" alt="Preview Foto">
+                    </div>
+
+                    <button onclick="changeDocPhoto()"
+                        class="w-full py-4 bg-slate-100 text-slate-700 rounded-2xl font-bold hover:bg-slate-200 active:scale-95 transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-lg">sync</span>
+                        Ganti Foto
+                    </button>
                 </div>
             </div>
 
