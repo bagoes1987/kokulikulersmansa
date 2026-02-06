@@ -710,6 +710,19 @@
                 }
             }
 
+            // CRITICAL FIX: Reset ALL module UI to default state first
+            const allModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi'];
+            allModules.forEach(moduleId => {
+                const statusIcon = document.getElementById(`status-${moduleId}`);
+                const statusLabel = document.getElementById(`label-${moduleId}`);
+                if (statusIcon && statusLabel) {
+                    statusIcon.textContent = 'radio_button_unchecked';
+                    statusIcon.className = 'material-symbols-outlined !text-[14px] text-slate-400';
+                    statusLabel.textContent = 'Belum Selesai';
+                    statusLabel.className = 'text-[11px] font-semibold text-slate-400';
+                }
+            });
+
             // Update modules display based on new day
             updateDashboardUI();
 
