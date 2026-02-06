@@ -889,13 +889,19 @@
                 // Reset UI dulu ke progress local
                 updateDashboardUI();
 
-                // Timpa dengan data dari database jika ada
+                // CRITICAL: Sync localStorage with database
+                // If a module exists in localStorage but NOT in database, it was deleted by facilitator
+                const dayKey = `day${currentDay}`;
+                const dbModules = new Set();
+
                 if (responses && responses.length > 0) {
                     responses.forEach(r => {
                         // Mapping Database Type to UI ID
                         let moduleId = r.module_type;
                         if (moduleId === 'kuis') moduleId = 'asesmen';
                         if (moduleId === 'summary') moduleId = 'materi';
+
+                        dbModules.add(moduleId);
 
                         if (r.status === 'submitted') {
                             const icon = document.getElementById(`status-${moduleId}`);
@@ -911,6 +917,20 @@
                         }
                     });
                 }
+
+                // Check for deleted modules: if localStorage says true but not in database, reset to false
+                const allModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi'];
+                allModules.forEach(moduleId => {
+                    // If localStorage has this as completed/submitted but database doesn't have it, reset
+                    if (studentProgress[dayKey][moduleId] === true && !dbModules.has(moduleId)) {
+                        console.log(`🔄 Syncing: ${moduleId} was deleted by facilitator, resetting to false`);
+                        studentProgress[dayKey][moduleId] = false;
+                        updateModuleUI(moduleId, false);
+                    }
+                });
+
+                // Save synced progress
+                saveProgress();
             } catch (err) {
                 console.error("Error checkAllModulesStatus:", err);
             }

@@ -1069,16 +1069,19 @@
 
                     alert('Berhasil! Jawaban telah direset.');
 
-                    // Refresh data student detail (using current student ID if any)
-                    // We can reuse the load student data logic. 
-                    // Let's check how to refresh the modal.
+                    // Refresh "Status Terbaru" section
+                    await loadRecentActivities();
+
+                    // Refresh modal if it's open
                     const modal = document.getElementById('X_MODAL_STUDENT_DETAIL_X');
                     if (modal && !modal.classList.contains('hidden')) {
-                        // Find studentId from what we have..
-                        // Actually, it's easier to just refresh the student lists which will likely close the modal or need us to re-open it.
-                        // But we want to stay in the modal. Let's see if we can find studentId.
-                        // For now, simple refresh is better.
-                        window.location.reload();
+                        // Use global variable to reload student detail
+                        if (currentDetailStudentId && currentDetailStudentName) {
+                            await showStudentDetail(currentDetailStudentName, currentDetailStudentId);
+                        } else {
+                            // Fallback: close modal
+                            closeDetailModal();
+                        }
                     }
                 } catch (e) {
                     console.error('Reset Error:', e);
