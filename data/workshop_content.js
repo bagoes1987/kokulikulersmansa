@@ -496,10 +496,65 @@ const workshopContent = {
                     </div>
                 </div>
             </div>`,
+            `<div class="animate-slide-up">
+                <div class="flex flex-col items-center text-center mb-6">
+                    <span class="material-symbols-outlined text-5xl text-orange-500 mb-2">bakery_dining</span>
+                    <h4 class="text-lg font-black text-slate-800 uppercase text-center w-full">BAGIAN 7: CONTOH PERHITUNGAN BEP (STUDI KASUS: ONDE-ONDE)</h4>
+                </div>
+                <div class="space-y-6 text-sm text-slate-600 leading-relaxed font-medium text-justify">
+                    
+                    <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 mb-4">
+                        <h5 class="font-black text-orange-800 text-xs uppercase mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">list_alt</span> Diketahui Data Keuangan
+                        </h5>
+                        <div class="space-y-2 text-xs">
+                            <div class="flex justify-between border-b border-orange-200 pb-1">
+                                <span>Biaya Tetap (Sewa Alat & Tenaga)</span>
+                                <span class="font-bold font-mono">Rp 150.000</span>
+                            </div>
+                            <div class="flex justify-between border-b border-orange-200 pb-1">
+                                <span>Biaya Variabel (Bahan per biji)</span>
+                                <span class="font-bold font-mono">Rp 1.500</span>
+                            </div>
+                            <div class="flex justify-between border-b border-orange-200 pb-1">
+                                <span>Harga Jual (Per biji)</span>
+                                <span class="font-bold font-mono">Rp 3.000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        <!-- Perhitungan BEP Unit -->
+                        <div class="bg-white p-4 rounded-2xl border-l-4 border-emerald-500 shadow-sm">
+                            <h5 class="font-black text-slate-800 text-sm mb-2">1. Menghitung BEP Unit</h5>
+                            <div class="bg-slate-50 p-3 rounded-xl mb-2 font-mono text-[10px] text-slate-600">
+                                <p>BEP Unit = FC / (P - VC)</p>
+                                <p>= 150.000 / (3.000 - 1.500)</p>
+                                <p>= 150.000 / 1.500</p>
+                            </div>
+                            <p class="text-xs font-bold text-emerald-600 text-right">Hasil = 100 Biji Onde-onde</p>
+                            <p class="text-[10px] text-slate-400 mt-1 italic">Artinya: Kamu harus menjual minimal 100 biji onde-onde agar modal kembali (tidak rugi).</p>
+                        </div>
+
+                        <!-- Perhitungan BEP Rupiah -->
+                        <div class="bg-white p-4 rounded-2xl border-l-4 border-blue-500 shadow-sm">
+                            <h5 class="font-black text-slate-800 text-sm mb-2">2. Menghitung BEP Rupiah</h5>
+                            <div class="bg-slate-50 p-3 rounded-xl mb-2 font-mono text-[10px] text-slate-600">
+                                <p>BEP Rupiah = FC / (1 - (VC / P))</p>
+                                <p>= 150.000 / (1 - (1.500 / 3.000))</p>
+                                <p>= 150.000 / (1 - 0,5)</p>
+                                <p>= 150.000 / 0,5</p>
+                            </div>
+                            <p class="text-xs font-bold text-blue-600 text-right">Hasil = Rp 300.000</p>
+                            <p class="text-[10px] text-slate-400 mt-1 italic">Artinya: Kamu harus mendapatkan omzet Rp 300.000 agar balik modal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
             `<div class="animate-slide-up h-full flex flex-col">
                 <div class="flex flex-col items-center text-center mb-4">
                     <span class="material-symbols-outlined text-4xl text-emerald-500 mb-1">edit_document</span>
-                    <h4 class="text-lg font-black text-slate-800">Bagian 7: Ringkasan Materi</h4>
+                    <h4 class="text-lg font-black text-slate-800">Bagian 8: Ringkasan Materi</h4>
                     <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Tuliskan apa yang kamu pelajari hari ini</p>
                 </div>
                 <div id="materiStatusMsg" class="hidden mb-4 p-3 rounded-2xl text-[11px] font-medium border"></div>
