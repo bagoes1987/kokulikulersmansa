@@ -1280,8 +1280,9 @@
             const counter = document.getElementById('wordCounter');
             const text = textarea.value.trim();
             const words = text ? text.split(/\s+/).length : 0;
+            const minWords = parseInt(textarea.getAttribute('data-min-words')) || 200;
 
-            counter.textContent = `${words} / 200 kata`;
+            counter.textContent = `${words} / ${minWords} kata`;
 
             const btn = document.getElementById('btnFinishMateri');
             if (textarea.disabled) {
@@ -1290,7 +1291,7 @@
                 return;
             }
 
-            if (words >= 200) {
+            if (words >= minWords) {
                 counter.className = "text-[10px] font-bold text-emerald-500";
                 btn.disabled = false;
                 btn.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -1303,10 +1304,12 @@
 
         async function submitMateriSummary() {
             const btn = document.getElementById('btnFinishMateri');
-            const summary = document.getElementById('summaryArea').value.trim();
+            const summaryArea = document.getElementById('summaryArea');
+            const summary = summaryArea.value.trim();
+            const minWords = parseInt(summaryArea.getAttribute('data-min-words')) || 200;
 
-            if (summary.split(/\s+/).length < 200) {
-                alert('Pesan: Ringkasan minimal harus 200 kata.');
+            if (summary.split(/\s+/).length < minWords) {
+                alert(`Pesan: Ringkasan minimal harus ${minWords} kata.`);
                 return;
             }
 

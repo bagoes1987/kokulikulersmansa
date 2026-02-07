@@ -591,8 +591,8 @@ const workshopContent = {
                 <div id="materiStatusMsg" class="hidden mb-4 p-3 rounded-2xl text-[11px] font-medium border"></div>
                 <div class="flex-1 flex flex-col gap-3">
                     <div class="relative flex-1">
-                        <textarea id="summaryArea" oninput="updateWordCount()" class="w-full h-full min-h-[200px] bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all resize-none font-medium leading-relaxed" placeholder="Tuliskan ringkasan materi minimal 200 kata..."></textarea>
-                        <div class="absolute bottom-3 right-4"><span id="wordCounter" class="text-[10px] font-bold text-slate-400 bg-white/80 backdrop-blur px-2 py-1 rounded-lg border border-slate-100">0 / 200 kata</span></div>
+                        <textarea id="summaryArea" oninput="updateWordCount()" data-min-words="100" class="w-full h-full min-h-[200px] bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all resize-none font-medium leading-relaxed" placeholder="Tuliskan ringkasan materi minimal 100 kata..."></textarea>
+                        <div class="absolute bottom-3 right-4"><span id="wordCounter" class="text-[10px] font-bold text-slate-400 bg-white/80 backdrop-blur px-2 py-1 rounded-lg border border-slate-100">0 / 100 kata</span></div>
                     </div>
                     <div class="bg-amber-50 p-3 rounded-2xl border border-amber-100/50 flex gap-3">
                         <span class="material-symbols-outlined text-amber-500 text-lg">info</span>
