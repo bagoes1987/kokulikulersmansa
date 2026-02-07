@@ -503,18 +503,49 @@ const workshopContent = {
                 </div>
                 <div class="space-y-6 text-sm text-slate-600 leading-relaxed font-medium text-justify">
                     
+                    <!-- Rincian Bahan Baku (New) -->
+                    <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
+                        <h5 class="font-black text-indigo-800 text-xs uppercase mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">shopping_cart</span> 1. Rincian Biaya Variabel (Bahan Baku)
+                        </h5>
+                        <p class="text-[10px] text-slate-500 mb-2">Asumsi untuk memproduksi <b>100 biji</b> onde-onde:</p>
+                        
+                        <div class="bg-white rounded-xl border border-indigo-100 overflow-hidden">
+                            <table class="w-full text-[10px] text-left">
+                                <thead class="bg-indigo-50 text-indigo-900 font-bold border-b border-indigo-100">
+                                    <tr>
+                                        <th class="p-2">Nama Bahan</th>
+                                        <th class="p-2 text-right">Harga</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-50 text-slate-600">
+                                    <tr><td class="p-2">Tepung Ketan (1 kg)</td><td class="p-2 text-right">Rp 25.000</td></tr>
+                                    <tr><td class="p-2">Kacang Hijau (500 gr)</td><td class="p-2 text-right">Rp 15.000</td></tr>
+                                    <tr><td class="p-2">Gula Pasir (500 gr)</td><td class="p-2 text-right">Rp 10.000</td></tr>
+                                    <tr><td class="p-2">Wijen (250 gr)</td><td class="p-2 text-right">Rp 15.000</td></tr>
+                                    <tr><td class="p-2">Minyak Goreng (2 Liter)</td><td class="p-2 text-right">Rp 35.000</td></tr>
+                                    <tr><td class="p-2">Gas LPG & Kemasan</td><td class="p-2 text-right">Rp 50.000</td></tr>
+                                    <tr class="bg-indigo-50/50 font-bold text-slate-800">
+                                        <td class="p-2">Total Biaya (100 biji)</td>
+                                        <td class="p-2 text-right">Rp 150.000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-2 text-[10px] flex justify-between items-center bg-white p-2 rounded-lg border border-indigo-100">
+                            <span class="text-slate-500 font-bold">Biaya Variabel per Biji (VC)</span>
+                            <span class="font-mono font-bold text-indigo-600">Rp 150.000 / 100 = Rp 1.500</span>
+                        </div>
+                    </div>
+
                     <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100 mb-4">
                         <h5 class="font-black text-orange-800 text-xs uppercase mb-3 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">list_alt</span> Diketahui Data Keuangan
+                            <span class="material-symbols-outlined text-sm">list_alt</span> 2. Data Keuangan Lainnya
                         </h5>
                         <div class="space-y-2 text-xs">
                             <div class="flex justify-between border-b border-orange-200 pb-1">
                                 <span>Biaya Tetap (Sewa Alat & Tenaga)</span>
                                 <span class="font-bold font-mono">Rp 150.000</span>
-                            </div>
-                            <div class="flex justify-between border-b border-orange-200 pb-1">
-                                <span>Biaya Variabel (Bahan per biji)</span>
-                                <span class="font-bold font-mono">Rp 1.500</span>
                             </div>
                             <div class="flex justify-between border-b border-orange-200 pb-1">
                                 <span>Harga Jual (Per biji)</span>
@@ -526,7 +557,7 @@ const workshopContent = {
                     <div class="grid grid-cols-1 gap-4">
                         <!-- Perhitungan BEP Unit -->
                         <div class="bg-white p-4 rounded-2xl border-l-4 border-emerald-500 shadow-sm">
-                            <h5 class="font-black text-slate-800 text-sm mb-2">1. Menghitung BEP Unit</h5>
+                            <h5 class="font-black text-slate-800 text-sm mb-2">3. Menghitung BEP Unit</h5>
                             <div class="bg-slate-50 p-3 rounded-xl mb-2 font-mono text-[10px] text-slate-600">
                                 <p>BEP Unit = FC / (P - VC)</p>
                                 <p>= 150.000 / (3.000 - 1.500)</p>
@@ -538,7 +569,7 @@ const workshopContent = {
 
                         <!-- Perhitungan BEP Rupiah -->
                         <div class="bg-white p-4 rounded-2xl border-l-4 border-blue-500 shadow-sm">
-                            <h5 class="font-black text-slate-800 text-sm mb-2">2. Menghitung BEP Rupiah</h5>
+                            <h5 class="font-black text-slate-800 text-sm mb-2">4. Menghitung BEP Rupiah</h5>
                             <div class="bg-slate-50 p-3 rounded-xl mb-2 font-mono text-[10px] text-slate-600">
                                 <p>BEP Rupiah = FC / (1 - (VC / P))</p>
                                 <p>= 150.000 / (1 - (1.500 / 3.000))</p>
