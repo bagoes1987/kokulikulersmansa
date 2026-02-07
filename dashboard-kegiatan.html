@@ -1472,6 +1472,98 @@
             ]
         };
 
+        // ==========================================
+        // FITUR BEP CALCULATOR
+        // ==========================================
+        function openBEPModal() {
+            document.getElementById('modalBEP').classList.remove('hidden');
+            document.getElementById('modalBEP').classList.add('flex');
+            switchBEPTab('makanan'); // Default tab
+        }
+
+        function closeBEPModal() {
+            document.getElementById('modalBEP').classList.add('hidden');
+            document.getElementById('modalBEP').classList.remove('flex');
+        }
+
+        function switchBEPTab(tab) {
+            // Update UI Tabs
+            ['makanan', 'minuman', 'stand'].forEach(t => {
+                const btn = document.getElementById(`tab-bep-${t}`);
+                const content = document.getElementById(`content-bep-${t}`);
+
+                if (t === tab) {
+                    btn.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all";
+                    btn.classList.remove('text-slate-400', 'hover:bg-slate-100');
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all";
+                    content.classList.add('hidden');
+                }
+            });
+
+            // Reset Result UI for new tab (optional, or keep generic)
+            calculateBEP(tab);
+        }
+
+        function calculateBEP(type) {
+            let fc = 0, vc = 0, p = 0, margin = 0;
+            let bepUnit = 0, bepRupiah = 0;
+            const resultUnit = document.getElementById('res-bep-unit');
+            const resultRupiah = document.getElementById('res-bep-rupiah');
+            const analysisBox = document.getElementById('bep-analysis');
+            const analysisText = analysisBox.querySelector('p');
+
+            if (type === 'stand') {
+                fc = parseFloat(document.getElementById('fc-stand').value) || 0;
+                margin = parseFloat(document.getElementById('margin-stand').value) || 0;
+
+                // Logic BEP Stand: FC / Margin per item = Items to sell
+                if (margin > 0) {
+                    bepUnit = Math.ceil(fc / margin);
+                    bepRupiah = bepUnit * margin; // Ini sebenarnya 'Gross Profit needed', tp kita tampilkan sbg angka
+                }
+
+                // Customize display for Stand
+                if (fc > 0 && margin > 0) {
+                    resultUnit.textContent = bepUnit.toLocaleString('id-ID');
+                    resultRupiah.textContent = "Rp " + fc.toLocaleString('id-ID'); // Target profit = Cost
+                    resultRupiah.previousElementSibling.textContent = "Biaya Tercover";
+
+                    analysisBox.classList.remove('hidden');
+                    analysisBox.className = "mt-4 p-4 rounded-2xl bg-purple-50 border border-purple-100";
+                    analysisText.innerHTML = `Kamu harus menjual <b>${bepUnit} produk</b> (dengan untung Rp ${margin.toLocaleString('id-ID')}/item) untuk menutup biaya stand sebesar Rp ${fc.toLocaleString('id-ID')}.`;
+                } else {
+                    resultUnit.textContent = "0";
+                    resultRupiah.textContent = "Rp 0";
+                    analysisBox.classList.add('hidden');
+                }
+
+            } else {
+                // Makanan / Minuman
+                fc = parseFloat(document.getElementById(`fc-${type}`).value) || 0;
+                vc = parseFloat(document.getElementById(`vc-${type}`).value) || 0;
+                p = parseFloat(document.getElementById(`p-${type}`).value) || 0;
+
+                if (p > vc && p > 0) {
+                    bepUnit = Math.ceil(fc / (p - vc));
+                    bepRupiah = Math.ceil(fc / (1 - (vc / p)));
+
+                    resultUnit.textContent = bepUnit.toLocaleString('id-ID');
+                    resultRupiah.textContent = "Rp " + bepRupiah.toLocaleString('id-ID');
+                    resultRupiah.previousElementSibling.textContent = "Target Omzet (Rp)";
+
+                    analysisBox.classList.remove('hidden');
+                    analysisBox.className = "mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-100";
+                    analysisText.innerHTML = `Agar balik modal, kamu harus menjual minimal <b>${bepUnit} porsi</b>. Jika behasil jual lebih dari itu, kamu mulai UNTUNG! 🚀`;
+                } else {
+                    resultUnit.textContent = "0";
+                    resultRupiah.textContent = "Rp 0";
+                    analysisBox.classList.add('hidden');
+                }
+            }
+        }
+
         function openVideoModal() {
             const modal = document.getElementById('modalVideo');
             modal.classList.remove('hidden');
@@ -2411,6 +2503,165 @@
                     class="w-full py-4 bg-slate-300 text-white rounded-2xl font-black shadow-none transition-all cursor-not-allowed">
                     Simpan Ringkasan & Selesai
                 </button>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- MODAL PERHITUNGAN BEP (NEW) -->
+    <div id="modalBEP"
+        class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+            <!-- Header -->
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-pink-50/50">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="size-12 rounded-2xl bg-pink-500 text-white flex items-center justify-center shadow-lg shadow-pink-200">
+                        <span class="material-symbols-outlined !text-2xl">calculate</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800">Kalkulator BEP</h3>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Simulasi Keuntungan
+                        </p>
+                    </div>
+                </div>
+                <button onclick="closeBEPModal()"
+                    class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex p-2 bg-slate-50 border-b border-slate-100 gap-1 overflow-x-auto">
+                <button onclick="switchBEPTab('makanan')" id="tab-bep-makanan"
+                    class="flex-1 py-2 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100">Makanan</button>
+                <button onclick="switchBEPTab('minuman')" id="tab-bep-minuman"
+                    class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100">Minuman</button>
+                <button onclick="switchBEPTab('stand')" id="tab-bep-stand"
+                    class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100">Stand</button>
+            </div>
+
+            <!-- Content -->
+            <div class="flex-1 overflow-y-auto no-scrollbar p-6 bg-slate-50/30">
+
+                <!-- Tab Makanan -->
+                <div id="content-bep-makanan" class="bep-tab-content space-y-4">
+                    <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100">
+                        <h4 class="text-xs font-black text-orange-800 uppercase mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">lunch_dining</span> Input Data Makanan
+                        </h4>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Tetap
+                                    (FC)</label>
+                                <input type="number" id="fc-makanan" oninput="calculateBEP('makanan')"
+                                    placeholder="Contoh: 100000"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Biaya Variabel per Unit
+                                    (VC)</label>
+                                <input type="number" id="vc-makanan" oninput="calculateBEP('makanan')"
+                                    placeholder="Contoh: 2000"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Jual per Unit
+                                    (P)</label>
+                                <input type="number" id="p-makanan" oninput="calculateBEP('makanan')"
+                                    placeholder="Contoh: 5000"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Minuman -->
+                <div id="content-bep-minuman" class="bep-tab-content hidden space-y-4">
+                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                        <h4 class="text-xs font-black text-blue-800 uppercase mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">water_drop</span> Input Data Minuman
+                        </h4>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Tetap
+                                    (FC)</label>
+                                <input type="number" id="fc-minuman" oninput="calculateBEP('minuman')"
+                                    placeholder="Contoh: 50000"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Biaya Variabel per Unit
+                                    (VC)</label>
+                                <input type="number" id="vc-minuman" oninput="calculateBEP('minuman')"
+                                    placeholder="Contoh: 1000"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Jual per Unit
+                                    (P)</label>
+                                <input type="number" id="p-minuman" oninput="calculateBEP('minuman')"
+                                    placeholder="Contoh: 3000"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Stand -->
+                <div id="content-bep-stand" class="bep-tab-content hidden space-y-4">
+                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-100">
+                        <h4 class="text-xs font-black text-purple-800 uppercase mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">storefront</span> Input Biaya Stand
+                        </h4>
+                        <p class="text-[10px] text-slate-500 mb-3 italic">Gunakan ini untuk menghitung target penjualan
+                            agar balik modal biaya pembuatan stand.</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Pembuatan
+                                    Stand (FC)</label>
+                                <input type="number" id="fc-stand" oninput="calculateBEP('stand')"
+                                    placeholder="Contoh: 200000"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-purple-500 focus:ring-purple-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Rata-rata Margin per
+                                    Produk (P - VC)</label>
+                                <input type="number" id="margin-stand" oninput="calculateBEP('stand')"
+                                    placeholder="Contoh: 1500"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-purple-500 focus:ring-purple-500 outline-none">
+                                <p class="text-[9px] text-slate-400 mt-1">*Keuntungan rata-rata yg diambil per item
+                                    terjual</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results - Shared Structure -->
+                <div id="result-bep-container" class="border-t border-slate-200 pt-6 mt-2">
+                    <h4 class="text-sm font-black text-slate-800 mb-4">Hasil Perhitungan</h4>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-1">Target Jual
+                                (Unit)</p>
+                            <p id="res-bep-unit" class="text-2xl font-black text-emerald-700">0</p>
+                            <span class="text-[10px] text-emerald-500">Pcs/Biji</span>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                            <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1">Target Omzet
+                                (Rp)</p>
+                            <p id="res-bep-rupiah" class="text-xl font-black text-blue-700">Rp 0</p>
+                            <span class="text-[10px] text-blue-500">Balik Modal</span>
+                        </div>
+                    </div>
+
+                    <div id="bep-analysis" class="mt-4 p-4 rounded-2xl bg-slate-100 border border-slate-200 hidden">
+                        <p class="text-[11px] font-medium text-slate-600 text-center italic"></p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
