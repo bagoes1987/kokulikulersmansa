@@ -191,7 +191,7 @@
                 </div>
 
                 <!-- LKPD Digital -->
-                <div onclick="toggleModule('lkpd')"
+                <div id="module-lkpd" onclick="toggleModule('lkpd')"
                     class="bg-orange-50/50 p-4 rounded-[24px] ios-shadow border border-orange-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-terracotta flex items-center justify-center text-white shadow-lg shadow-terracotta/30">
@@ -209,7 +209,7 @@
                 </div>
 
                 <!-- Asesmen -->
-                <div onclick="toggleModule('asesmen')"
+                <div id="module-asesmen" onclick="toggleModule('asesmen')"
                     class="bg-purple-50/50 p-4 rounded-[24px] ios-shadow border border-purple-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-purple-500 flex items-center justify-center text-white shadow-lg shadow-purple-200">
@@ -245,7 +245,7 @@
                 </div>
 
                 <!-- Glosarium -->
-                <div onclick="openGlosariumModal()"
+                <div id="module-glosarium" onclick="openGlosariumModal()"
                     class="bg-cyan-50/50 p-4 rounded-[24px] ios-shadow border border-cyan-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-white shadow-lg shadow-cyan-200">
@@ -263,7 +263,7 @@
                 </div>
 
                 <!-- Refleksi -->
-                <div onclick="openRefleksiModal()"
+                <div id="module-refleksi" onclick="openRefleksiModal()"
                     class="bg-rose-50/50 p-4 rounded-[24px] ios-shadow border border-rose-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-rose-500 flex items-center justify-center text-white shadow-lg shadow-rose-200">
@@ -677,15 +677,18 @@
                 updateModuleUI(moduleId, currentDayProgress[moduleId]);
             });
 
-            // HIDE Video Belajar for Day 2
-            const videoModule = document.getElementById('module-video');
-            if (videoModule) {
-                if (currentDay === 2) {
-                    videoModule.style.display = 'none';
-                } else {
-                    videoModule.style.display = '';
+            // HIDE modules for Day 2: Video, LKPD, Assessment, Glosarium, Refleksi
+            const modulesToHide = ['module-video', 'module-lkpd', 'module-asesmen', 'module-glosarium', 'module-refleksi'];
+            modulesToHide.forEach(moduleId => {
+                const moduleElement = document.getElementById(moduleId);
+                if (moduleElement) {
+                    if (currentDay === 2) {
+                        moduleElement.style.display = 'none';
+                    } else {
+                        moduleElement.style.display = '';
+                    }
                 }
-            }
+            });
         }
 
         // Calculate and update global progress circle
