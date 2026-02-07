@@ -677,12 +677,12 @@
                 updateModuleUI(moduleId, currentDayProgress[moduleId]);
             });
 
-            // HIDE modules for Day 2: Video, LKPD, Assessment, Glosarium, Refleksi
+            // HIDE modules for Day 2 and Day 3: Video, LKPD, Assessment, Glosarium, Refleksi
             const modulesToHide = ['module-video', 'module-lkpd', 'module-asesmen', 'module-glosarium', 'module-refleksi'];
             modulesToHide.forEach(moduleId => {
                 const moduleElement = document.getElementById(moduleId);
                 if (moduleElement) {
-                    if (currentDay === 2) {
+                    if (currentDay === 2 || currentDay === 3) {
                         moduleElement.style.display = 'none';
                     } else {
                         moduleElement.style.display = '';
