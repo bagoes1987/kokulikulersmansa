@@ -908,7 +908,7 @@
                         snama = nameIfId;
                     }
 
-                    console.log('🚀 [v1.0.7] CACHE-BREAKER TRIGGERED:', snama, sid);
+                    console.log('🚀 [v1.0.9] CACHE-BREAKER TRIGGERED:', snama, sid);
                     currentDetailStudentId = sid; // Update global
                     currentDetailStudentName = snama;
 
@@ -917,7 +917,7 @@
                     const container = document.getElementById('detailTaskContainer');
 
                     if (!modal) {
-                        alert('GALAT KRITIKAL: Modal v1.0.7 tidak ditemukan. Mohon Refresh Cerdas (Ctrl + F5).');
+                        alert('GALAT KRITIKAL: Modal v1.0.8 tidak ditemukan. Mohon Refresh Cerdas (Ctrl + F5).');
                         return;
                     }
 
@@ -937,14 +937,14 @@
                         `;
 
                     // FORCED FETCH FROM SUPABASE (No reliance on allResponses)
-                    console.log('📡 [v1.0.7] Querying Supabase directly...');
+                    console.log('📡 [v1.0.8] Querying Supabase directly...');
                     const { data: sRes, error } = await supabaseClient
                         .from('module_responses')
                         .select('id, student_id, module_type, status, day_id')
                         .eq('student_id', sid);
 
                     if (error) throw error;
-                    console.log('📊 [v1.0.7] Data found:', (sRes || []).length);
+                    console.log('📊 [v1.0.8] Data found:', (sRes || []).length);
 
                     let html = '';
                     const responses = sRes || [];
@@ -961,6 +961,7 @@
                                 ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'video', responses)}
                                 ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'lkpd', responses)}
                                 ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'kuis', responses)}
+                                ${(day === 2) ? renderModuleItem(sid, snama, day, 'bep_analisis', responses) : ''}
                                 ${renderModuleItem(sid, snama, day, 'dokumentasi', responses)}
                                 ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'glosarium', responses)}
                                 ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'refleksi', responses)}
@@ -969,11 +970,11 @@
                     }
 
                     container.innerHTML = html;
-                    console.log('✨ [v1.0.7] Modal UI Rendered.');
+                    console.log('✨ [v1.0.8] Modal UI Rendered.');
 
                 } catch (err) {
-                    console.error('❌ [v1.0.7] CRITICAL FAIL:', err);
-                    alert('MODAL FAIL [v1.0.7]: ' + err.message);
+                    console.error('❌ [v1.0.8] CRITICAL FAIL:', err);
+                    alert('MODAL FAIL [v1.0.8]: ' + err.message);
                 }
             }
 
@@ -997,7 +998,8 @@
                         'kuis': { label: 'Assessment', icon: 'quiz', color: 'indigo' },
                         'dokumentasi': { label: 'Dokumentasi', icon: 'photo_camera', color: 'indigo' },
                         'glosarium': { label: 'Glosarium', icon: 'menu_book', color: 'cyan' },
-                        'refleksi': { label: 'Refleksi', icon: 'self_improvement', color: 'rose' }
+                        'refleksi': { label: 'Refleksi', icon: 'self_improvement', color: 'rose' },
+                        'bep_analisis': { label: 'Analisis Produk', icon: 'analytics', color: 'pink' }
                     };
                     const c = config[type] || { label: type, icon: 'task', color: 'slate' };
 
