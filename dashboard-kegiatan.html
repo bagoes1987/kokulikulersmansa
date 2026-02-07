@@ -635,15 +635,6 @@
                     loadProgress();
                     updateDashboardUI();
                     checkAllModulesStatus();
-                    // Individual checks for modal pre-population
-                    checkExistingPemantik();
-                    checkExistingMateri();
-                    checkExistingVideo();
-                    checkExistingDokumentasi();
-                    checkExistingLKPD();
-                    checkExistingRefleksi();
-                    checkExistingAssessment();
-                    if (currentDay === 2) checkExistingAnalisis();
                 } catch (internalError) {
                     console.error('Non-auth error in loadStudentData:', internalError);
                 }
@@ -1204,6 +1195,10 @@
                     </button>
                 `).join('');
             }
+
+
+            // Cek status materi/summary
+            checkExistingMateri();
 
             document.getElementById('modalMateri').classList.remove('hidden');
             document.getElementById('modalMateri').classList.add('flex');
