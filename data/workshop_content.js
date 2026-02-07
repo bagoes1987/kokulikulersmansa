@@ -361,6 +361,84 @@ const workshopContent = {
                         </div>
                     </div>
                 </div>
+            </div>`,
+            `<div class="animate-slide-up">
+                <div class="flex flex-col items-center text-center mb-6">
+                    <span class="material-symbols-outlined text-5xl text-purple-500 mb-2">calculate</span>
+                    <h4 class="text-lg font-black text-slate-800 uppercase text-center w-full">BAGIAN 5: KOMPONEN BEP</h4>
+                </div>
+                <div class="space-y-6 text-sm text-slate-600 leading-relaxed font-medium text-justify">
+                    <p>Agar dapat menghitung berapa besar titik impas BEP dibutuhkan beberapa komponen. Terdapat 3 komponen BEP, yaitu:</p>
+                    
+                    <div class="grid grid-cols-1 gap-4">
+                        <!-- Biaya Tetap -->
+                        <div class="bg-purple-50 p-4 rounded-2xl border border-purple-100">
+                            <h5 class="font-black text-purple-800 text-sm mb-2 flex items-center gap-2">
+                                <span class="material-symbols-outlined">domain</span> Biaya Tetap (Fixed Cost)
+                            </h5>
+                            <p class="text-xs text-slate-700 mb-3">Biaya yang bersifat statis (tetap) pada kapasitas tertentu. Artinya, biaya ini tidak berubah jika barang yang diproduksi mengalami perubahan dalam kapasitas tertentu.</p>
+                            <div class="bg-white p-2 rounded-lg border border-purple-100">
+                                <p class="text-[10px] font-bold text-purple-600">Contoh:</p>
+                                <p class="text-[10px] text-slate-500">Biaya penyusutan, biaya sewa gedung, dan gaji karyawan.</p>
+                            </div>
+                        </div>
+
+                        <!-- Biaya Variabel -->
+                        <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                            <h5 class="font-black text-blue-800 text-sm mb-2 flex items-center gap-2">
+                                <span class="material-symbols-outlined">bolt</span> Biaya Variabel (Variable Cost)
+                            </h5>
+                            <p class="text-xs text-slate-700 mb-3">Biaya yang bersifat dinamis mengikuti jumlah barang diproduksi. Semakin banyak kapasitas produksi maka biaya variabel juga akan meningkat.</p>
+                            <div class="bg-white p-2 rounded-lg border border-blue-100">
+                                <p class="text-[10px] font-bold text-blue-600">Contoh:</p>
+                                <p class="text-[10px] text-slate-500">Biaya bahan baku, biaya listrik.</p>
+                            </div>
+                        </div>
+
+                        <!-- Harga Jual -->
+                        <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                            <h5 class="font-black text-emerald-800 text-sm mb-2 flex items-center gap-2">
+                                <span class="material-symbols-outlined">payments</span> Harga Jual (Selling Price)
+                            </h5>
+                            <p class="text-xs text-slate-700">Satuan harga jual per unit barang atau jasa yang telah diproduksi dan siap dijual oleh perusahaan dengan sudah memperhitungkan berapa harga yang bisa ditentukan dengan target mendapatkan keuntungan.</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <h5 class="font-black text-slate-800 text-sm mb-3">Penentuan Harga Pokok</h5>
+                        <p class="mb-4">Penentuan penghitungan harga pokok menggunakan rumus sebagai berikut:</p>
+                        
+                        <div class="bg-slate-800 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-10">
+                                <span class="material-symbols-outlined text-6xl">functions</span>
+                            </div>
+                            <p class="text-center font-black text-lg mb-4 tracking-wider border-b border-slate-600 pb-4">Harga Pokok = VC + FC/TS</p>
+                            <div class="space-y-2 text-xs font-mono text-slate-300">
+                                <p><strong class="text-emerald-400">VC</strong> = Variable Cost (Biaya Variabel)</p>
+                                <p><strong class="text-purple-400">FC</strong> = Fixed Cost (Biaya Tetap)</p>
+                                <p><strong class="text-blue-400">TS</strong> = Total Sales (Total Penjualan)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
+            `<div class="animate-slide-up h-full flex flex-col">
+                <div class="flex flex-col items-center text-center mb-4">
+                    <span class="material-symbols-outlined text-4xl text-emerald-500 mb-1">edit_document</span>
+                    <h4 class="text-lg font-black text-slate-800">Bagian 6: Ringkasan Materi</h4>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Tuliskan apa yang kamu pelajari hari ini</p>
+                </div>
+                <div id="materiStatusMsg" class="hidden mb-4 p-3 rounded-2xl text-[11px] font-medium border"></div>
+                <div class="flex-1 flex flex-col gap-3">
+                    <div class="relative flex-1">
+                        <textarea id="summaryArea" oninput="updateWordCount()" class="w-full h-full min-h-[200px] bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-700 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all resize-none font-medium leading-relaxed" placeholder="Tuliskan ringkasan materi minimal 200 kata..."></textarea>
+                        <div class="absolute bottom-3 right-4"><span id="wordCounter" class="text-[10px] font-bold text-slate-400 bg-white/80 backdrop-blur px-2 py-1 rounded-lg border border-slate-100">0 / 200 kata</span></div>
+                    </div>
+                    <div class="bg-amber-50 p-3 rounded-2xl border border-amber-100/50 flex gap-3">
+                        <span class="material-symbols-outlined text-amber-500 text-lg">info</span>
+                        <p class="text-[10px] text-amber-700 font-medium leading-relaxed"><b>Penting:</b> Ringkasan ini akan diperiksa oleh Fasilitator. Kamu baru dianggap menyelesaikan materi setelah mendapat review.</p>
+                    </div>
+                </div>
             </div>`
         ],
         video: [],
