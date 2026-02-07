@@ -1174,17 +1174,74 @@
                     const answers = Array.isArray(r.answers) ? r.answers : [];
 
                     if (r.module_type === 'dokumentasi') {
-                        // Display Photo for Documentation
-                        const photoUrl = answers[0] || '';
-                        answerCont.innerHTML = `
-                        <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100 flex flex-col items-center">
-                            <p class="text-[8px] font-black text-indigo-400 uppercase tracking-wider mb-3">Foto Dokumentasi</p>
-                            <a href="${photoUrl}" target="_blank" class="w-full flex justify-center">
-                                <img src="${photoUrl}" class="max-w-full max-h-[300px] object-contain rounded-2xl shadow-lg border-4 border-white hover:scale-[1.02] transition-transform" alt="Dokumentasi">
-                            </a>
-                            <p class="text-[9px] text-indigo-300 mt-2 italic font-medium">Klik foto untuk memperbesar</p>
-                        </div>
-                        `;
+                        // Check if Day 2 (5 categories) or other days (single photo)
+                        if (r.day_id === 2) {
+                            // Day 2: Fetch all 5 category photos
+                            const { data: allDocs, error: docError } = await supabaseClient
+                                .from('module_responses')
+                                .select('*')
+                                .eq('student_id', studentId)
+                                .eq('day_id', 2)
+                                .eq('module_type', 'dokumentasi')
+                                .order('category');
+
+                            if (docError) {
+                                console.error('Error fetching Day 2 docs:', docError);
+                                answerCont.innerHTML = `<div class="text-red-500 text-xs">Error loading photos</div>`;
+                            } else {
+                                const categories = {
+                                    'makanan': '1. Pembuatan Makanan',
+                                    'minuman': '2. Pembuatan Minuman',
+                                    'stand': '3. Pembuatan Stand Booth',
+                                    'iklan': '4. Pembuatan Iklan',
+                                    'presentasi': '5. Presentasi Produk'
+                                };
+
+                                let photosHTML = '';
+                                for (const [catKey, catLabel] of Object.entries(categories)) {
+                                    const doc = allDocs.find(d => d.category === catKey);
+                                    const photoUrl = doc && doc.answers && doc.answers[0] ? doc.answers[0] : '';
+
+                                    photosHTML += `
+                                    <div class="bg-white p-3 rounded-2xl border border-indigo-100">
+                                        <p class="text-[9px] font-black text-indigo-600 uppercase tracking-wider mb-2">${catLabel}</p>
+                                        ${photoUrl ? `
+                                            <a href="${photoUrl}" target="_blank" class="block">
+                                                <img src="${photoUrl}" class="w-full h-32 object-cover rounded-xl shadow-md border-2 border-white hover:scale-[1.02] transition-transform" alt="${catLabel}">
+                                            </a>
+                                        ` : `
+                                            <div class="w-full h-32 bg-slate-100 rounded-xl flex items-center justify-center">
+                                                <span class="text-[10px] text-slate-400 font-bold">Belum Upload</span>
+                                            </div>
+                                        `}
+                                    </div>
+                                    `;
+                                }
+
+                                answerCont.innerHTML = `
+                                <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100">
+                                    <p class="text-[8px] font-black text-indigo-400 uppercase tracking-wider mb-4">Dokumentasi Foto - 5 Kategori</p>
+                                    <div class="grid grid-cols-1 gap-3">
+                                        ${photosHTML}
+                                    </div>
+                                    <p class="text-[9px] text-indigo-300 mt-3 italic font-medium text-center">Klik foto untuk memperbesar</p>
+                                </div>
+                                `;
+                            }
+                        } else {
+                            // Other days: Single photo display
+                            const photoUrl = answers[0] || '';
+                            answerCont.innerHTML = `
+                            <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100 flex flex-col items-center">
+                                <p class="text-[8px] font-black text-indigo-400 uppercase tracking-wider mb-3">Foto Dokumentasi</p>
+                                <a href="${photoUrl}" target="_blank" class="w-full flex justify-center">
+                                    <img src="${photoUrl}" class="max-w-full max-h-[300px] object-contain rounded-2xl shadow-lg border-4 border-white hover:scale-[1.02] transition-transform" alt="Dokumentasi">
+                                </a>
+                                <p class="text-[9px] text-indigo-300 mt-2 italic font-medium">Klik foto untuk memperbesar</p>
+                            </div>
+                            `;
+                        }
+
                     } else if (r.module_type === 'materi') {
                         // Special display for Material Summary
                         const summaryText = answers[0] || '';
