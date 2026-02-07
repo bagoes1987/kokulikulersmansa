@@ -172,19 +172,19 @@
                     </div>
                 </div>
 
-                <!-- Perhitungan BEP (Day 2 Only) -->
+                <!-- Analisis Produk (Day 2 Only) -->
                 <div id="module-bep" onclick="openBEPModal()" style="display: none;"
                     class="bg-pink-50/50 p-4 rounded-[24px] ios-shadow border border-pink-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-pink-500 flex items-center justify-center text-white shadow-lg shadow-pink-200">
-                        <span class="material-symbols-outlined !text-2xl">calculate</span>
+                        <span class="material-symbols-outlined !text-2xl">analytics</span>
                     </div>
                     <div>
-                        <h3 class="text-[15px] font-bold text-slate-800">Perhitungan BEP</h3>
+                        <h3 class="text-[15px] font-bold text-slate-800">Analisis Produk</h3>
                         <div class="flex items-center gap-1 mt-1">
                             <span class="material-symbols-outlined !text-base text-slate-400"
                                 id="status-bep">radio_button_unchecked</span>
-                            <span class="text-[13px] font-semibold text-slate-400" id="label-bep">Simulasi</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-bep">Belum Selesai</span>
                         </div>
                     </div>
                 </div>
@@ -530,7 +530,7 @@
         // Struktur data progress default (3 hari x 8 modul)
         const defaultProgress = {
             day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
-            day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
+            day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false, bep: false },
             day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false }
         };
 
@@ -642,7 +642,8 @@
                     checkExistingDokumentasi();
                     checkExistingLKPD();
                     checkExistingRefleksi();
-                    checkExistingAssessment(); // Add this line
+                    checkExistingAssessment();
+                    if (currentDay === 2) checkExistingAnalisis();
                 } catch (internalError) {
                     console.error('Non-auth error in loadStudentData:', internalError);
                 }
@@ -675,7 +676,7 @@
 
                     // Validate structure - ensure all days exist
                     const requiredDays = ['day1', 'day2', 'day3'];
-                    const requiredModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi'];
+                    const requiredModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi', 'bep'];
 
                     let isCorrupted = false;
                     requiredDays.forEach(day => {
@@ -760,6 +761,10 @@
             }
             if (moduleId === 'refleksi') {
                 openRefleksiModal();
+                return;
+            }
+            if (moduleId === 'bep') {
+                openBEPModal();
                 return;
             }
 
@@ -2482,7 +2487,7 @@
 
     </div>
 
-    <!-- MODAL PERHITUNGAN BEP (NEW) -->
+    <!-- MODAL ANALISIS PRODUK (REPLACING BEP) -->
     <div id="modalBEP"
         class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
         <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
@@ -2491,12 +2496,11 @@
                 <div class="flex items-center gap-4">
                     <div
                         class="size-12 rounded-2xl bg-pink-500 text-white flex items-center justify-center shadow-lg shadow-pink-200">
-                        <span class="material-symbols-outlined !text-2xl">calculate</span>
+                        <span class="material-symbols-outlined !text-2xl">analytics</span>
                     </div>
                     <div>
-                        <h3 class="text-lg font-black text-slate-800">Kalkulator BEP</h3>
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Simulasi Keuntungan
-                        </p>
+                        <h3 class="text-lg font-black text-slate-800">Analisis Produk</h3>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Laporan & Simulasi</p>
                     </div>
                 </div>
                 <button onclick="closeBEPModal()"
@@ -2505,106 +2509,251 @@
                 </button>
             </div>
 
-            <!-- Tabs -->
-            <div class="flex p-2 bg-slate-50 border-b border-slate-100 gap-1 overflow-x-auto">
-                <button onclick="switchBEPTab('makanan')" id="tab-bep-makanan"
-                    class="flex-1 py-2 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100">Makanan</button>
-                <button onclick="switchBEPTab('minuman')" id="tab-bep-minuman"
-                    class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100">Minuman</button>
-
+            <!-- Main Tabs -->
+            <div class="flex p-2 bg-slate-50 border-b border-slate-100 gap-1">
+                <button onclick="switchAnalisisTab('laporan')" id="tab-analisis-laporan"
+                    class="flex-1 py-3 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all">
+                    📝 Laporan (Wajib)
+                </button>
+                <button onclick="switchAnalisisTab('simulasi')" id="tab-analisis-simulasi"
+                    class="flex-1 py-3 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all">
+                    🧮 Simulasi BEP
+                </button>
             </div>
 
-            <!-- Content -->
-            <div class="flex-1 overflow-y-auto no-scrollbar p-6 bg-slate-50/30">
+            <!-- Content Area -->
+            <div class="flex-1 overflow-y-auto no-scrollbar bg-slate-50/30 relative">
 
-                <!-- Tab Makanan -->
-                <div id="content-bep-makanan" class="bep-tab-content space-y-4">
-                    <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100">
-                        <h4 class="text-xs font-black text-orange-800 uppercase mb-3 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">lunch_dining</span> Input Data Makanan
-                        </h4>
+                <!-- TAB 1: LAPORAN (GRADED) -->
+                <div id="content-analisis-laporan" class="p-6 space-y-6">
+                    <!-- Status Section (If Submitted) -->
+                    <div id="analisisStatusSection" class="hidden"></div>
+
+                    <!-- Form Container -->
+                    <div id="analisisFormContainer">
+                        <!-- 1. Identitas Produk -->
                         <div class="space-y-3">
+                            <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-pink-500">inventory_2</span> 1.
+                                Identitas Produk
+                            </h4>
                             <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Tetap
-                                    (FC)</label>
-                                <input type="number" id="fc-makanan" oninput="calculateBEP('makanan')"
-                                    placeholder="Contoh: 100000"
-                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1">Nama Menu / Produk
+                                    Utama</label>
+                                <input type="text" id="input-nama-produk"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none"
+                                    placeholder="Contoh: Es Kuwut Bali">
                             </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Biaya Variabel per Unit
-                                    (VC)</label>
-                                <input type="number" id="vc-makanan" oninput="calculateBEP('makanan')"
-                                    placeholder="Contoh: 2000"
-                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
+                        </div>
+
+                        <!-- 2. Rincian Bahan (HPP) -->
+                        <div class="space-y-3 pt-2">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm text-pink-500">shopping_basket</span>
+                                    2. Bahan Baku (HPP)
+                                </h4>
+                                <button onclick="addIngredientRow()"
+                                    class="text-[10px] font-bold text-pink-500 bg-pink-50 px-2 py-1 rounded-lg border border-pink-100 hover:bg-pink-100">+
+                                    Tambah</button>
                             </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Jual per Unit
-                                    (P)</label>
-                                <input type="number" id="p-makanan" oninput="calculateBEP('makanan')"
-                                    placeholder="Contoh: 5000"
-                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
+                            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="text-[9px] text-slate-400 uppercase border-b border-slate-100">
+                                            <th class="pb-2 pl-1 font-bold">Nama Bahan</th>
+                                            <th class="pb-2 font-bold w-24">Harga (Rp)</th>
+                                            <th class="pb-2 w-6"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ingredients-table-body">
+                                        <!-- Dynamic Rows -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="border-t border-slate-100">
+                                            <td class="pt-2 pl-1 text-[10px] font-bold text-slate-600">Total HPP</td>
+                                            <td class="pt-2 text-[10px] font-black text-pink-600"
+                                                id="total-hpp-display">Rp 0</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
+                        </div>
+
+                        <!-- 3. Kandungan Gizi -->
+                        <div class="space-y-3 pt-2">
+                            <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-pink-500">nutrition</span> 3. Nilai
+                                Gizi (Per Porsi)
+                            </h4>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-400 mb-1">Energi (kkal)</label>
+                                    <input type="number" id="gizi-kalori"
+                                        class="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-bold outline-none focus:border-pink-500"
+                                        placeholder="0">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-400 mb-1">Protein (g)</label>
+                                    <input type="number" id="gizi-protein"
+                                        class="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-bold outline-none focus:border-pink-500"
+                                        placeholder="0">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-400 mb-1">Lemak (g)</label>
+                                    <input type="number" id="gizi-lemak"
+                                        class="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-bold outline-none focus:border-pink-500"
+                                        placeholder="0">
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-400 mb-1">Karbohidrat
+                                        (g)</label>
+                                    <input type="number" id="gizi-karbo"
+                                        class="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-bold outline-none focus:border-pink-500"
+                                        placeholder="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Biaya Stand -->
+                        <div class="space-y-3 pt-2">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm text-pink-500">storefront</span> 4.
+                                    Biaya Stand
+                                </h4>
+                                <button onclick="addStandRow()"
+                                    class="text-[10px] font-bold text-pink-500 bg-pink-50 px-2 py-1 rounded-lg border border-pink-100 hover:bg-pink-100">+
+                                    Tambah</button>
+                            </div>
+                            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+                                <table class="w-full text-left border-collapse">
+                                    <tbody id="stand-table-body">
+                                        <!-- Dynamic Rows -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="border-t border-slate-100">
+                                            <td class="pt-2 pl-1 text-[10px] font-bold text-slate-600">Total Stand</td>
+                                            <td class="pt-2 text-[10px] font-black text-pink-600"
+                                                id="total-stand-display">Rp 0</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-6 pb-2">
+                            <button onclick="submitAnalisisProduk()" id="btnSubmitAnalisis"
+                                class="w-full py-4 bg-pink-500 text-white rounded-2xl font-black shadow-lg shadow-pink-200 active:scale-95 transition-all">
+                                Kirim Laporan
+                            </button>
+                            <p class="text-[10px] text-center text-slate-400 mt-3">Pastikan data sudah benar sebelum
+                                dikirim.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tab Minuman -->
-                <div id="content-bep-minuman" class="bep-tab-content hidden space-y-4">
-                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                        <h4 class="text-xs font-black text-blue-800 uppercase mb-3 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">water_drop</span> Input Data Minuman
-                        </h4>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Tetap
-                                    (FC)</label>
-                                <input type="number" id="fc-minuman" oninput="calculateBEP('minuman')"
-                                    placeholder="Contoh: 50000"
-                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Biaya Variabel per Unit
-                                    (VC)</label>
-                                <input type="number" id="vc-minuman" oninput="calculateBEP('minuman')"
-                                    placeholder="Contoh: 1000"
-                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Jual per Unit
-                                    (P)</label>
-                                <input type="number" id="p-minuman" oninput="calculateBEP('minuman')"
-                                    placeholder="Contoh: 3000"
-                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
+                <!-- TAB 2: SIMULASI (EXISTING CALCULATOR) -->
+                <div id="content-analisis-simulasi" class="hidden p-6 bg-slate-50/30">
+                    <!-- Calculator Inner Tabs -->
+                    <div class="flex p-1 bg-slate-200 rounded-xl mb-4 gap-1">
+                        <button onclick="switchBEPTab('makanan')" id="tab-bep-makanan"
+                            class="flex-1 py-2 rounded-lg text-[10px] font-bold bg-white text-pink-600 shadow-sm transition-all">Makanan</button>
+                        <button onclick="switchBEPTab('minuman')" id="tab-bep-minuman"
+                            class="flex-1 py-2 rounded-lg text-[10px] font-bold text-slate-500 hover:text-slate-700 transition-all">Minuman</button>
+                    </div>
+
+                    <!-- Tab Makanan -->
+                    <div id="content-bep-makanan" class="bep-tab-content space-y-4">
+                        <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100">
+                            <h4 class="text-xs font-black text-orange-800 uppercase mb-3 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">lunch_dining</span> Input Data Makanan
+                            </h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Tetap
+                                        (FC)</label>
+                                    <input type="number" id="fc-makanan" oninput="calculateBEP('makanan')"
+                                        placeholder="Contoh: 100000"
+                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Biaya Variabel per
+                                        Unit (VC)</label>
+                                    <input type="number" id="vc-makanan" oninput="calculateBEP('makanan')"
+                                        placeholder="Contoh: 2000"
+                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Jual per Unit
+                                        (P)</label>
+                                    <input type="number" id="p-makanan" oninput="calculateBEP('makanan')"
+                                        placeholder="Contoh: 5000"
+                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-
-
-                <!-- Results - Shared Structure -->
-                <div id="result-bep-container" class="border-t border-slate-200 pt-6 mt-2">
-                    <h4 class="text-sm font-black text-slate-800 mb-4">Hasil Perhitungan</h4>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
-                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-1">Target Jual
-                                (Unit)</p>
-                            <p id="res-bep-unit" class="text-2xl font-black text-emerald-700">0</p>
-                            <span class="text-[10px] text-emerald-500">Pcs/Biji</span>
-                        </div>
+                    <!-- Tab Minuman -->
+                    <div id="content-bep-minuman" class="bep-tab-content hidden space-y-4">
                         <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                            <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1">Target Omzet
-                                (Rp)</p>
-                            <p id="res-bep-rupiah" class="text-xl font-black text-blue-700">Rp 0</p>
-                            <span class="text-[10px] text-blue-500">Balik Modal</span>
+                            <h4 class="text-xs font-black text-blue-800 uppercase mb-3 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">water_drop</span> Input Data Minuman
+                            </h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Tetap
+                                        (FC)</label>
+                                    <input type="number" id="fc-minuman" oninput="calculateBEP('minuman')"
+                                        placeholder="Contoh: 50000"
+                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Biaya Variabel per
+                                        Unit (VC)</label>
+                                    <input type="number" id="vc-minuman" oninput="calculateBEP('minuman')"
+                                        placeholder="Contoh: 1000"
+                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Jual per Unit
+                                        (P)</label>
+                                    <input type="number" id="p-minuman" oninput="calculateBEP('minuman')"
+                                        placeholder="Contoh: 3000"
+                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="bep-analysis" class="mt-4 p-4 rounded-2xl bg-slate-100 border border-slate-200 hidden">
-                        <p class="text-[11px] font-medium text-slate-600 text-center italic"></p>
+                    <!-- Results - Shared Structure -->
+                    <div id="result-bep-container" class="border-t border-slate-200 pt-6 mt-2">
+                        <h4 class="text-sm font-black text-slate-800 mb-4">Hasil Perhitungan</h4>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                                <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-1">Target
+                                    Jual (Unit)</p>
+                                <p id="res-bep-unit" class="text-2xl font-black text-emerald-700">0</p>
+                                <span class="text-[10px] text-emerald-500">Pcs/Biji</span>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
+                                <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1">Target
+                                    Omzet (Rp)</p>
+                                <p id="res-bep-rupiah" class="text-xl font-black text-blue-700">Rp 0</p>
+                                <span class="text-[10px] text-blue-500">Balik Modal</span>
+                            </div>
+                        </div>
+
+                        <div id="bep-analysis" class="mt-4 p-4 rounded-2xl bg-slate-100 border border-slate-200 hidden">
+                            <p class="text-[11px] font-medium text-slate-600 text-center italic"></p>
+                        </div>
                     </div>
+
                 </div>
 
             </div>
@@ -5146,6 +5295,7 @@
             document.getElementById('modalRefleksi').classList.remove('hidden');
             document.getElementById('modalRefleksi').classList.add('flex');
             checkExistingRefleksi();
+            if (currentDay === 2) checkExistingAnalisis();
         }
 
         function closeRefleksiModal() {
@@ -5275,6 +5425,263 @@
             }
         }
 
+
+
+        function openBEPModal() {
+            const modal = document.getElementById('modalBEP');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            checkExistingAnalisis();
+        }
+
+        function closeBEPModal() {
+            const modal = document.getElementById('modalBEP');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // ==========================================
+        // ANALISIS PRODUK (LAPORAN & SIMULASI)
+        // ==========================================
+
+        function switchAnalisisTab(tab) {
+            // Update Tab UI
+            const btnLaporan = document.getElementById('tab-analisis-laporan');
+            const btnSimulasi = document.getElementById('tab-analisis-simulasi');
+            const contentLaporan = document.getElementById('content-analisis-laporan');
+            const contentSimulasi = document.getElementById('content-analisis-simulasi');
+
+            if (tab === 'laporan') {
+                btnLaporan.className = "flex-1 py-3 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all";
+                btnSimulasi.className = "flex-1 py-3 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all";
+                contentLaporan.classList.remove('hidden');
+                contentSimulasi.classList.add('hidden');
+            } else {
+                btnLaporan.className = "flex-1 py-3 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all";
+                btnSimulasi.className = "flex-1 py-3 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all";
+                contentLaporan.classList.add('hidden');
+                contentSimulasi.classList.remove('hidden');
+            }
+        }
+
+        // --- DYNAMIC ROWS Logic ---
+        function addIngredientRow() {
+            const table = document.getElementById('ingredients-table-body');
+            const row = document.createElement('tr');
+            row.className = "border-b border-slate-50";
+            row.innerHTML = `
+                <td class="py-2 pl-1"><input type="text" placeholder="Item..." class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td>
+                <td class="py-2"><input type="number" placeholder="0" oninput="calculateAnalisisTotal()" class="ingredient-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td>
+                <td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>
+            `;
+            table.appendChild(row);
+        }
+
+        function addStandRow() {
+            const table = document.getElementById('stand-table-body');
+            const row = document.createElement('tr');
+            row.className = "border-b border-slate-50";
+            row.innerHTML = `
+                <td class="py-2 pl-1"><input type="text" placeholder="Item..." class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td>
+                <td class="py-2"><input type="number" placeholder="0" oninput="calculateAnalisisTotal()" class="stand-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td>
+                <td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>
+            `;
+            table.appendChild(row);
+        }
+
+        function calculateAnalisisTotal() {
+            // Calculate Ingredients
+            let totalHpp = 0;
+            document.querySelectorAll('.ingredient-cost').forEach(input => {
+                totalHpp += parseFloat(input.value) || 0;
+            });
+            document.getElementById('total-hpp-display').textContent = 'Rp ' + totalHpp.toLocaleString('id-ID');
+
+            // Calculate Stand
+            let totalStand = 0;
+            document.querySelectorAll('.stand-cost').forEach(input => {
+                totalStand += parseFloat(input.value) || 0;
+            });
+            document.getElementById('total-stand-display').textContent = 'Rp ' + totalStand.toLocaleString('id-ID');
+        }
+
+        // --- SUBMIT Logic ---
+        async function submitAnalisisProduk() {
+            const btn = document.getElementById('btnSubmitAnalisis');
+            const namaProduk = document.getElementById('input-nama-produk').value;
+
+            if (!namaProduk.trim()) {
+                alert('Mohon isi Nama Produk.');
+                return;
+            }
+
+            // Gather Ingredients
+            const ingredients = [];
+            document.querySelectorAll('#ingredients-table-body tr').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value.trim()) {
+                    ingredients.push({
+                        item: inputs[0].value,
+                        cost: parseFloat(inputs[1].value) || 0
+                    });
+                }
+            });
+
+            // Gather Nutrition
+            const nutrition = {
+                kalori: parseFloat(document.getElementById('gizi-kalori').value) || 0,
+                protein: parseFloat(document.getElementById('gizi-protein').value) || 0,
+                lemak: parseFloat(document.getElementById('gizi-lemak').value) || 0,
+                karbo: parseFloat(document.getElementById('gizi-karbo').value) || 0,
+            };
+
+            // Gather Stand
+            const standItems = [];
+            document.querySelectorAll('#stand-table-body tr').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value.trim()) {
+                    standItems.push({
+                        item: inputs[0].value,
+                        cost: parseFloat(inputs[1].value) || 0
+                    });
+                }
+            });
+
+            const submissionData = {
+                nama_produk: namaProduk,
+                ingredients: ingredients,
+                nutrition: nutrition,
+                stand_items: standItems,
+                total_hpp: ingredients.reduce((sum, item) => sum + item.cost, 0),
+                total_stand: standItems.reduce((sum, item) => sum + item.cost, 0)
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = 'Mengirim...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error("Sesi habis");
+
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: currentDay,
+                        module_type: 'bep_analisis',
+                        answers: [JSON.stringify(submissionData)],
+                        status: 'submitted'
+                    });
+
+                if (error) throw error;
+
+                alert('Laporan Analisis Produk berhasil dikirim!');
+
+                // Update Local Progress
+                studentProgress[`day${currentDay}`]['bep'] = false; // keep false as it waits for grading
+                saveProgress();
+
+                checkExistingAnalisis();
+
+            } catch (err) {
+                console.error('Submit failed:', err);
+                alert('Gagal mengirim laporan: ' + err.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Laporan';
+            }
+        }
+
+        async function checkExistingAnalisis() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data, error } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', currentDay)
+                    .eq('module_type', 'bep_analisis')
+                    .maybeSingle();
+
+                if (data) {
+                    const statusSection = document.getElementById('analisisStatusSection');
+                    const formContainer = document.getElementById('analisisFormContainer');
+                    const statusIcon = document.getElementById('status-bep');
+                    const statusLabel = document.getElementById('label-bep');
+
+                    // Parse Data
+                    let ans;
+                    try {
+                        ans = JSON.parse(data.answers[0]);
+                    } catch (e) { ans = {}; }
+
+                    // Update UI: View Mode
+                    if (statusSection) statusSection.classList.remove('hidden');
+                    if (formContainer) {
+                        formContainer.classList.remove('hidden');
+                        formContainer.classList.add('opacity-70', 'pointer-events-none');
+                        document.getElementById('btnSubmitAnalisis').classList.add('hidden');
+                    }
+
+                    // Fill input values for visual confirmation (Optional, but good UX)
+                    if (document.getElementById('input-nama-produk')) document.getElementById('input-nama-produk').value = ans.nama_produk || '';
+
+
+                    if (data.status === 'submitted') {
+                        if (statusSection) {
+                            statusSection.innerHTML = `
+                                <div class="bg-yellow-50 p-4 rounded-2xl border border-yellow-100 flex items-center gap-3">
+                                    <div class="size-8 rounded-full bg-yellow-400 flex items-center justify-center text-white shrink-0 animate-pulse">
+                                        <span class="material-symbols-outlined text-sm">hourglass_top</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-yellow-700 uppercase tracking-widest">Menunggu Review</p>
+                                        <p class="text-[10px] text-yellow-600 mt-0.5 font-medium">Laporanmu sudah diterima fasilitator.</p>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        // Update Dashboard Grid
+                        if (statusIcon) {
+                            statusIcon.textContent = 'hourglass_top';
+                            statusIcon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse';
+                        }
+                        if (statusLabel) {
+                            statusLabel.textContent = 'Menunggu Feedback';
+                            statusLabel.className = 'text-[11px] font-semibold text-yellow-500';
+                        }
+                        updateModuleUI('bep', 'submitted');
+
+                    } else if (data.status === 'reviewed') {
+                        if (statusSection) {
+                            statusSection.innerHTML = `
+                                <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100 space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Dinilai Fasilitator</p>
+                                        <div class="flex items-center gap-1">
+                                            <span class="text-lg font-black text-emerald-600">${data.score || 0}</span>
+                                            <span class="text-[10px] text-emerald-500">Poin</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 bg-white rounded-xl border border-emerald-100">
+                                        <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Feedback:</p>
+                                        <p class="text-xs text-slate-700 font-medium italic">"${data.feedback || 'Laporan diterima.'}"</p>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        // Update Dashboard Grid
+                        updateModuleUI('bep', true, data.score || 0);
+
+                        // Mark as done in local progress
+                        studentProgress[`day${currentDay}`]['bep'] = true;
+                        saveProgress();
+                        calculateGlobalProgress();
+                    }
+                }
+            } catch (err) { console.error('Check BEP error:', err); }
+        }
     </script>
 </body>
 

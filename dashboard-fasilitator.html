@@ -1464,6 +1464,78 @@
                             <p class="text-xs text-slate-700 font-medium leading-relaxed whitespace-pre-wrap">${glosText}</p>
                         </div>
                         `;
+
+                    } else if (r.module_type === 'bep_analisis') {
+                        let data = {};
+                        try { data = JSON.parse(answers[0]); } catch (e) { console.error(e); }
+
+                        answerCont.innerHTML = `
+                        <div class="space-y-4">
+                            <div class="bg-pink-50 p-4 rounded-2xl border border-pink-100">
+                                <p class="text-[9px] font-black text-pink-500 uppercase tracking-widest mb-1">Nama Produk</p>
+                                <p class="text-sm font-bold text-slate-800">${data.nama_produk || '-'}</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Bahan Baku -->
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100">
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b pb-2">Bahan Baku (HPP)</p>
+                                    <div class="space-y-2">
+                                        ${(data.ingredients || []).map(i => `
+                                            <div class="flex justify-between text-xs border-b border-slate-50 pb-1">
+                                                <span class="text-slate-600 font-medium">${i.item}</span>
+                                                <span class="font-bold text-slate-800">Rp ${(i.cost || 0).toLocaleString('id-ID')}</span>
+                                            </div>
+                                        `).join('')}
+                                        <div class="flex justify-between text-xs pt-2">
+                                            <span class="text-slate-500 font-bold">Total HPP</span>
+                                            <span class="font-black text-pink-600">Rp ${(data.total_hpp || 0).toLocaleString('id-ID')}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Biaya Stand -->
+                                <div class="bg-white p-4 rounded-2xl border border-slate-100">
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b pb-2">Biaya Stand</p>
+                                    <div class="space-y-2">
+                                        ${(data.stand_items || []).map(i => `
+                                            <div class="flex justify-between text-xs border-b border-slate-50 pb-1">
+                                                <span class="text-slate-600 font-medium">${i.item}</span>
+                                                <span class="font-bold text-slate-800">Rp ${(i.cost || 0).toLocaleString('id-ID')}</span>
+                                            </div>
+                                        `).join('')}
+                                        <div class="flex justify-between text-xs pt-2">
+                                            <span class="text-slate-500 font-bold">Total Stand</span>
+                                            <span class="font-black text-pink-600">Rp ${(data.total_stand || 0).toLocaleString('id-ID')}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nilai Gizi -->
+                            <div class="bg-orange-50/50 p-4 rounded-2xl border border-orange-100">
+                                <p class="text-[9px] font-black text-orange-500 uppercase tracking-widest mb-3">Informasi Nilai Gizi</p>
+                                <div class="grid grid-cols-4 gap-2 text-center">
+                                    <div class="bg-white p-2 rounded-xl border border-orange-100">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Energi</p>
+                                        <p class="text-xs font-black text-orange-600">${data.nutrition?.kalori || 0} <span class="text-[8px] font-normal text-slate-400">kkal</span></p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-xl border border-orange-100">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Protein</p>
+                                        <p class="text-xs font-black text-orange-600">${data.nutrition?.protein || 0} <span class="text-[8px] font-normal text-slate-400">g</span></p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-xl border border-orange-100">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Lemak</p>
+                                        <p class="text-xs font-black text-orange-600">${data.nutrition?.lemak || 0} <span class="text-[8px] font-normal text-slate-400">g</span></p>
+                                    </div>
+                                    <div class="bg-white p-2 rounded-xl border border-orange-100">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Karbo</p>
+                                        <p class="text-xs font-black text-orange-600">${data.nutrition?.karbo || 0} <span class="text-[8px] font-normal text-slate-400">g</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `;
                     } else if (r.module_type === 'refleksi') {
                         // Display Refleksi Results (Array of 15 strings)
                         let refData = [];
@@ -1597,7 +1669,7 @@
 
                     const scoreInputArea = document.getElementById('scoreInputArea');
                     const starRatingArea = document.getElementById('starRatingArea');
-                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi', 'lkpd'];
+                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi', 'lkpd', 'bep_analisis'];
 
                     if (starModules.includes(r.module_type)) {
                         scoreInputArea.classList.add('hidden');
