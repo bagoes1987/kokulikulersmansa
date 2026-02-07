@@ -172,6 +172,23 @@
                     </div>
                 </div>
 
+                <!-- Perhitungan BEP (Day 2 Only) -->
+                <div id="module-bep" onclick="openBEPModal()" style="display: none;"
+                    class="bg-pink-50/50 p-4 rounded-[24px] ios-shadow border border-pink-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-pink-500 flex items-center justify-center text-white shadow-lg shadow-pink-200">
+                        <span class="material-symbols-outlined !text-2xl">calculate</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Perhitungan BEP</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-bep">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-bep">Simulasi</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Video Belajar -->
                 <div id="module-video" onclick="toggleModule('video')"
                     class="bg-red-50/50 p-4 rounded-[24px] ios-shadow border border-red-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
@@ -814,6 +831,16 @@
                     }
                 }
             });
+
+            // BEP Module Visibility (Only Day 2)
+            const bepModule = document.getElementById('module-bep');
+            if (bepModule) {
+                if (currentDay === 2) {
+                    bepModule.style.display = '';
+                } else {
+                    bepModule.style.display = 'none';
+                }
+            }
         }
 
         // Calculate and update global progress circle
