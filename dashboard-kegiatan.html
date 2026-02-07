@@ -1394,10 +1394,10 @@
                         }
                     }
                 } else {
-                    // Jika tidak ada data, pastikan tombol muncul & textarea aktif
-                    const btn = document.getElementById('btnFinishMateri');
+                    // Jika tidak ada data, pastikan textarea aktif
+                    // const btn = document.getElementById('btnFinishMateri'); // Let updateMateriSlideUI handle visibility
                     const area = document.getElementById('summaryArea');
-                    if (btn) btn.classList.remove('hidden');
+                    // if (btn) btn.classList.remove('hidden'); // REMOVED: Causing button to show on slide 1
                     if (area) {
                         area.disabled = false;
                         area.classList.remove('bg-slate-100', 'text-slate-500');
