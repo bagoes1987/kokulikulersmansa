@@ -170,9 +170,9 @@ function updateVideoWordCount() {
     const text = input.value.trim();
     const wordCount = text ? text.split(/\s+/).length : 0;
 
-    display.textContent = `${wordCount} / 100 kata`;
+    display.textContent = `${wordCount} / 50 kata`;
 
-    if (wordCount >= 100) {
+    if (wordCount >= 50) {
         display.className = 'text-[10px] font-bold text-emerald-500 bg-white/50 px-2 py-1 rounded-lg border border-emerald-100';
         submitBtn.disabled = false;
         submitBtn.className = 'w-full py-4 bg-red-500 text-white rounded-2xl font-black shadow-lg shadow-red-200 active:scale-95 transition-all';
@@ -187,8 +187,8 @@ async function submitVideoLog() {
     const summaryInput = document.getElementById('videoSummaryInput');
     const summary = summaryInput.value.trim();
 
-    if (!summary || summary.split(/\s+/).length < 100) {
-        alert('Ringkasan minimal 100 kata!');
+    if (!summary || summary.split(/\s+/).length < 50) {
+        alert('Ringkasan minimal 50 kata!');
         return;
     }
 
