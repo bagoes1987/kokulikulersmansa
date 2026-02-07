@@ -422,10 +422,84 @@ const workshopContent = {
                     </div>
                 </div>
             </div>`,
+            `<div class="animate-slide-up">
+                <div class="flex flex-col items-center text-center mb-6">
+                    <span class="material-symbols-outlined text-5xl text-blue-600 mb-2">calculate</span>
+                    <h4 class="text-lg font-black text-slate-800 uppercase text-center w-full">BAGIAN 6: CARA MENGHITUNG BREAK EVEN POINT (BEP)</h4>
+                </div>
+                <div class="space-y-6 text-sm text-slate-600 leading-relaxed font-medium text-justify">
+                    
+                    <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100">
+                        <h5 class="font-black text-indigo-800 text-xs uppercase mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">rule</span> Ketentuan Menghitung BEP
+                        </h5>
+                        <ul class="space-y-2 text-xs text-slate-700 list-disc ml-4 marker:text-indigo-400">
+                            <li><b>Harga jual produk harus tetap.</b></li>
+                            <li><b>Hanya menggunakan satu jenis produk.</b> Jika lebih dari satu, gunakan analisis BEP tersendiri.</li>
+                            <li><b>Produksi harus stabil.</b></li>
+                            <li><b>Semua biaya produksi</b> dapat diukur secara nyata (fakta) dan data yang realistik.</li>
+                        </ul>
+                    </div>
+
+                    <p class="font-bold text-center text-slate-800">Terdapat dua perhitungan BEP, yaitu:</p>
+
+                    <div class="grid grid-cols-1 gap-4">
+                        <!-- BEP Unit -->
+                        <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-sm">
+                            <h5 class="font-black text-slate-800 text-sm mb-2 flex items-center gap-2">
+                                <span class="size-6 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">1</span>
+                                BEP Unit
+                            </h5>
+                            <p class="text-xs text-slate-500 mb-4">
+                                Data jumlah unit produk yang harus dicapai pada titik impas. 
+                                <br><span class="text-red-500">Di bawah BEP = Rugi</span>. 
+                                <br><span class="text-emerald-500">Di atas BEP = Untung</span>.
+                            </p>
+                            
+                            <div class="bg-slate-800 text-white p-4 rounded-xl text-center relative overflow-hidden mb-3">
+                                <p class="font-mono text-sm font-bold tracking-wider">BEP = FC / (P - VC)</p>
+                            </div>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <p class="text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Keterangan:</p>
+                                <div class="grid grid-cols-1 gap-1 text-[10px] text-slate-600 font-mono">
+                                    <p><span class="font-bold text-slate-800">FC</span> : Fixed Cost (Biaya Tetap)</p>
+                                    <p><span class="font-bold text-slate-800">VC</span> : Variable Cost (Biaya Variabel)</p>
+                                    <p><span class="font-bold text-slate-800">P</span>  : Price per unit (Harga per unit)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BEP Rupiah -->
+                        <div class="bg-white p-5 rounded-2xl border-2 border-slate-100 shadow-sm">
+                            <h5 class="font-black text-slate-800 text-sm mb-2 flex items-center gap-2">
+                                <span class="size-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-xs">2</span>
+                                BEP Rupiah
+                            </h5>
+                            <p class="text-xs text-slate-500 mb-4">
+                                Data jumlah penjualan (rupiah) yang harus dicapai pada titik impas. 
+                            </p>
+                            
+                            <div class="bg-slate-800 text-white p-4 rounded-xl text-center relative overflow-hidden mb-3">
+                                <p class="font-mono text-sm font-bold tracking-wider mb-1">BEP = FC / (1 - (VC / P))</p>
+                            </div>
+                            
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <p class="text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-widest">Keterangan:</p>
+                                <div class="grid grid-cols-1 gap-1 text-[10px] text-slate-600 font-mono">
+                                    <p><span class="font-bold text-slate-800">FC</span> : Fixed Cost (Biaya Tetap)</p>
+                                    <p><span class="font-bold text-slate-800">VC</span> : Variable Cost (Biaya Variabel)</p>
+                                    <p><span class="font-bold text-slate-800">P</span>  : Price per unit (Harga per unit)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`,
             `<div class="animate-slide-up h-full flex flex-col">
                 <div class="flex flex-col items-center text-center mb-4">
                     <span class="material-symbols-outlined text-4xl text-emerald-500 mb-1">edit_document</span>
-                    <h4 class="text-lg font-black text-slate-800">Bagian 6: Ringkasan Materi</h4>
+                    <h4 class="text-lg font-black text-slate-800">Bagian 7: Ringkasan Materi</h4>
                     <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Tuliskan apa yang kamu pelajari hari ini</p>
                 </div>
                 <div id="materiStatusMsg" class="hidden mb-4 p-3 rounded-2xl text-[11px] font-medium border"></div>
