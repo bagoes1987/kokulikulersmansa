@@ -958,12 +958,12 @@
                             <div class="grid grid-cols-1 gap-3.5">
                                 ${renderModuleItem(sid, snama, day, 'pemantik', responses)}
                                 ${renderModuleItem(sid, snama, day, 'materi', responses)}
-                                ${renderModuleItem(sid, snama, day, 'video', responses)}
-                                ${renderModuleItem(sid, snama, day, 'lkpd', responses)}
-                                ${renderModuleItem(sid, snama, day, 'kuis', responses)}
+                                ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'video', responses)}
+                                ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'lkpd', responses)}
+                                ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'kuis', responses)}
                                 ${renderModuleItem(sid, snama, day, 'dokumentasi', responses)}
-                                ${renderModuleItem(sid, snama, day, 'glosarium', responses)}
-                                ${renderModuleItem(sid, snama, day, 'refleksi', responses)}
+                                ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'glosarium', responses)}
+                                ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'refleksi', responses)}
                             </div>
                         </div>`;
                     }
