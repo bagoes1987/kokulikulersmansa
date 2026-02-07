@@ -173,7 +173,7 @@
                 </div>
 
                 <!-- Video Belajar -->
-                <div onclick="toggleModule('video')"
+                <div id="module-video" onclick="toggleModule('video')"
                     class="bg-red-50/50 p-4 rounded-[24px] ios-shadow border border-red-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-red-500 flex items-center justify-center text-white shadow-lg shadow-red-200">
@@ -676,6 +676,16 @@
             Object.keys(currentDayProgress).forEach(moduleId => {
                 updateModuleUI(moduleId, currentDayProgress[moduleId]);
             });
+
+            // HIDE Video Belajar for Day 2
+            const videoModule = document.getElementById('module-video');
+            if (videoModule) {
+                if (currentDay === 2) {
+                    videoModule.style.display = 'none';
+                } else {
+                    videoModule.style.display = '';
+                }
+            }
         }
 
         // Calculate and update global progress circle
@@ -3863,8 +3873,8 @@
             const summary = document.getElementById('videoSummaryInput').value;
             const wordCount = summary.trim().split(/\s+/).length;
 
-            if (wordCount < 100) {
-                alert('Ringkasan belum mencapai 100 kata. Silakan lengkapi lagi.');
+            if (wordCount < 50) {
+                alert('Ringkasan belum mencapai 50 kata. Silakan lengkapi lagi.');
                 return;
             }
 
