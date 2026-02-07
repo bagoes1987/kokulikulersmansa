@@ -1488,7 +1488,7 @@
 
         function switchBEPTab(tab) {
             // Update UI Tabs
-            ['makanan', 'minuman', 'stand'].forEach(t => {
+            ['makanan', 'minuman'].forEach(t => {
                 const btn = document.getElementById(`tab-bep-${t}`);
                 const content = document.getElementById(`content-bep-${t}`);
 
@@ -1514,53 +1514,26 @@
             const analysisBox = document.getElementById('bep-analysis');
             const analysisText = analysisBox.querySelector('p');
 
-            if (type === 'stand') {
-                fc = parseFloat(document.getElementById('fc-stand').value) || 0;
-                margin = parseFloat(document.getElementById('margin-stand').value) || 0;
+            // Makanan / Minuman
+            fc = parseFloat(document.getElementById(`fc-${type}`).value) || 0;
+            vc = parseFloat(document.getElementById(`vc-${type}`).value) || 0;
+            p = parseFloat(document.getElementById(`p-${type}`).value) || 0;
 
-                // Logic BEP Stand: FC / Margin per item = Items to sell
-                if (margin > 0) {
-                    bepUnit = Math.ceil(fc / margin);
-                    bepRupiah = bepUnit * margin; // Ini sebenarnya 'Gross Profit needed', tp kita tampilkan sbg angka
-                }
+            if (p > vc && p > 0) {
+                bepUnit = Math.ceil(fc / (p - vc));
+                bepRupiah = Math.ceil(fc / (1 - (vc / p)));
 
-                // Customize display for Stand
-                if (fc > 0 && margin > 0) {
-                    resultUnit.textContent = bepUnit.toLocaleString('id-ID');
-                    resultRupiah.textContent = "Rp " + fc.toLocaleString('id-ID'); // Target profit = Cost
-                    resultRupiah.previousElementSibling.textContent = "Biaya Tercover";
+                resultUnit.textContent = bepUnit.toLocaleString('id-ID');
+                resultRupiah.textContent = "Rp " + bepRupiah.toLocaleString('id-ID');
+                resultRupiah.previousElementSibling.textContent = "Target Omzet (Rp)";
 
-                    analysisBox.classList.remove('hidden');
-                    analysisBox.className = "mt-4 p-4 rounded-2xl bg-purple-50 border border-purple-100";
-                    analysisText.innerHTML = `Kamu harus menjual <b>${bepUnit} produk</b> (dengan untung Rp ${margin.toLocaleString('id-ID')}/item) untuk menutup biaya stand sebesar Rp ${fc.toLocaleString('id-ID')}.`;
-                } else {
-                    resultUnit.textContent = "0";
-                    resultRupiah.textContent = "Rp 0";
-                    analysisBox.classList.add('hidden');
-                }
-
+                analysisBox.classList.remove('hidden');
+                analysisBox.className = "mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-100";
+                analysisText.innerHTML = `Agar balik modal, kamu harus menjual minimal <b>${bepUnit} porsi</b>. Jika behasil jual lebih dari itu, kamu mulai UNTUNG! 🚀`;
             } else {
-                // Makanan / Minuman
-                fc = parseFloat(document.getElementById(`fc-${type}`).value) || 0;
-                vc = parseFloat(document.getElementById(`vc-${type}`).value) || 0;
-                p = parseFloat(document.getElementById(`p-${type}`).value) || 0;
-
-                if (p > vc && p > 0) {
-                    bepUnit = Math.ceil(fc / (p - vc));
-                    bepRupiah = Math.ceil(fc / (1 - (vc / p)));
-
-                    resultUnit.textContent = bepUnit.toLocaleString('id-ID');
-                    resultRupiah.textContent = "Rp " + bepRupiah.toLocaleString('id-ID');
-                    resultRupiah.previousElementSibling.textContent = "Target Omzet (Rp)";
-
-                    analysisBox.classList.remove('hidden');
-                    analysisBox.className = "mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-100";
-                    analysisText.innerHTML = `Agar balik modal, kamu harus menjual minimal <b>${bepUnit} porsi</b>. Jika behasil jual lebih dari itu, kamu mulai UNTUNG! 🚀`;
-                } else {
-                    resultUnit.textContent = "0";
-                    resultRupiah.textContent = "Rp 0";
-                    analysisBox.classList.add('hidden');
-                }
+                resultUnit.textContent = "0";
+                resultRupiah.textContent = "Rp 0";
+                analysisBox.classList.add('hidden');
             }
         }
 
@@ -2538,8 +2511,7 @@
                     class="flex-1 py-2 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100">Makanan</button>
                 <button onclick="switchBEPTab('minuman')" id="tab-bep-minuman"
                     class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100">Minuman</button>
-                <button onclick="switchBEPTab('stand')" id="tab-bep-stand"
-                    class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100">Stand</button>
+
             </div>
 
             <!-- Content -->
@@ -2609,34 +2581,7 @@
                     </div>
                 </div>
 
-                <!-- Tab Stand -->
-                <div id="content-bep-stand" class="bep-tab-content hidden space-y-4">
-                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-100">
-                        <h4 class="text-xs font-black text-purple-800 uppercase mb-3 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">storefront</span> Input Biaya Stand
-                        </h4>
-                        <p class="text-[10px] text-slate-500 mb-3 italic">Gunakan ini untuk menghitung target penjualan
-                            agar balik modal biaya pembuatan stand.</p>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Pembuatan
-                                    Stand (FC)</label>
-                                <input type="number" id="fc-stand" oninput="calculateBEP('stand')"
-                                    placeholder="Contoh: 200000"
-                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-purple-500 focus:ring-purple-500 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Rata-rata Margin per
-                                    Produk (P - VC)</label>
-                                <input type="number" id="margin-stand" oninput="calculateBEP('stand')"
-                                    placeholder="Contoh: 1500"
-                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-purple-500 focus:ring-purple-500 outline-none">
-                                <p class="text-[9px] text-slate-400 mt-1">*Keuntungan rata-rata yg diambil per item
-                                    terjual</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
 
                 <!-- Results - Shared Structure -->
                 <div id="result-bep-container" class="border-t border-slate-200 pt-6 mt-2">
