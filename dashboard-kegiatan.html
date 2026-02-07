@@ -1370,9 +1370,9 @@
             const text = input.value.trim();
             const wordCount = text ? text.split(/\s+/).length : 0;
 
-            display.textContent = `${wordCount} / 100 kata`;
+            display.textContent = `${wordCount} / 50 kata`;
 
-            if (wordCount >= 100) {
+            if (wordCount >= 50) {
                 display.className = 'text-[10px] font-bold text-emerald-500 bg-white/50 px-2 py-1 rounded-lg border border-emerald-100';
                 submitBtn.disabled = false;
                 submitBtn.className = 'w-full py-4 bg-red-500 text-white rounded-2xl font-black shadow-lg shadow-red-200 active:scale-95 transition-all';
@@ -1387,8 +1387,8 @@
             const summaryInput = document.getElementById('videoSummaryInput');
             const summary = summaryInput.value.trim();
 
-            if (!summary || summary.split(/\s+/).length < 100) {
-                alert('Ringkasan minimal 100 kata!');
+            if (!summary || summary.split(/\s+/).length < 50) {
+                alert('Ringkasan minimal 50 kata!');
                 return;
             }
 
@@ -1969,11 +1969,11 @@
                         </div>
                         <span id="videoWordCountDisplay"
                             class="text-[10px] font-bold text-red-500 bg-white/50 px-2 py-1 rounded-lg border border-red-100">0
-                            / 100 kata</span>
+                            / 50 kata</span>
                     </div>
                     <textarea id="videoSummaryInput" rows="4" oninput="updateVideoWordCount()"
                         class="w-full rounded-xl border-slate-200 text-sm focus:border-red-500 focus:ring-red-500 p-3"
-                        placeholder="Tuliskan poin-poin penting dari ketiga video di atas (minimal 100 kata)..."></textarea>
+                        placeholder="Tuliskan poin-poin penting dari video di atas (minimal 50 kata)..."></textarea>
                 </div>
 
                 <!-- Penilaian Fasil (Dynamic) -->
