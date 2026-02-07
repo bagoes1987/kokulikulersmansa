@@ -274,9 +274,93 @@ const workshopContent = {
             "10. Kata-kata apa yang ingin kamu sampaikan untuk fasilitator di kelasmu?"
         ],
         materi: [
-            `<div class="animate-slide-up flex flex-col items-center justify-center py-20 opacity-50">
-                <span class="material-symbols-outlined text-6xl mb-4">construction</span>
-                <p class="font-black text-slate-400 uppercase tracking-widest">Materi Hari 2 Belum Tersedia</p>
+            `<div class="animate-slide-up">
+                <div class="flex flex-col items-center text-center mb-6">
+                    <span class="material-symbols-outlined text-5xl text-emerald-500 mb-2">calculate</span>
+                    <h4 class="text-lg font-black text-slate-800 uppercase text-center w-full">BAGIAN 1: PENGERTIAN BREAK EVEN POINT (BEP)</h4>
+                </div>
+                <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium text-justify">
+                    <p>Break Even Point (BEP) adalah posisi suatu perusahaan atau bisnis baik dalam bisnis lokal maupun internasional belum memperoleh keuntungan namun tidak juga merugi. BEP dapat diartikan juga sebuah kondisi jumlah pengeluaran yang diperlukan untuk biaya produksi sama dengan jumlah pendapatan yang diterima dari hasil penjualan sehingga perusahaan tidak mengalami laba ataupun rugi. Istilah BEP disebut juga dengan istilah titik impas.</p>
+                    <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100 shadow-sm">
+                        <p class="text-xs text-slate-700">Break even point (BEP) berguna bagi perusahaan untuk menentukan besaran jumlah produksi yang akan dihasilkan dan nilai harga jual barang. Dengan menerapkan analisa BEP, perusahaan dapat melihat laba, kerugian, harga jual, produksi, dan sebagainya yang telah dapat diprediksi sebelumnya, sehingga memudahkan pelaku bisnis untuk menentukan kebijakan perusahaan.</p>
+                    </div>
+                </div>
+            </div>`,
+            `<div class="animate-slide-up">
+                <div class="flex flex-col items-center text-center mb-6">
+                    <span class="material-symbols-outlined text-5xl text-amber-500 mb-2">analytics</span>
+                    <h4 class="text-lg font-black text-slate-800 uppercase text-center w-full">BAGIAN 2: MANFAAT ANALISIS BEP</h4>
+                </div>
+                <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium text-justify">
+                    <p>Dengan melakukan analisis BEP, dapat diperoleh beberapa manfaat yaitu:</p>
+                    <div class="bg-amber-50 p-5 rounded-2xl border border-amber-100 shadow-sm">
+                        <ul class="space-y-3 text-xs text-slate-700">
+                            <li class="flex gap-3 items-start">
+                                <span class="flex-shrink-0 size-5 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-[10px]">a</span>
+                                <span>Dapat mengetahui berapa jumlah penjualan minimum yang harus dipertahankan agar perusahaan tidak mengalami kerugian. Jumlah penjualan minimum artinya adalah jumlah produksi paling rendah yang harus dibuat oleh dunia usaha atau industri.</span>
+                            </li>
+                            <li class="flex gap-3 items-start">
+                                <span class="flex-shrink-0 size-5 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-[10px]">b</span>
+                                <span>Dapat menentukan berapa jumlah penjualan yang sebaiknya diperoleh agar mendapatkan keuntungan yang direncanakan.</span>
+                            </li>
+                            <li class="flex gap-3 items-start">
+                                <span class="flex-shrink-0 size-5 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-[10px]">c</span>
+                                <span>Dapat menaksir seberapa tingkat produksi yang harusnya ditetapkan agar mendapat keuntungan.</span>
+                            </li>
+                            <li class="flex gap-3 items-start">
+                                <span class="flex-shrink-0 size-5 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-[10px]">d</span>
+                                <span>Dapat menjaga dan mengukur penjualan serta tingkat produksi yang tidak lebih rendah dari BEP.</span>
+                            </li>
+                            <li class="flex gap-3 items-start">
+                                <span class="flex-shrink-0 size-5 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-[10px]">e</span>
+                                <span>Dapat menganalisis perubahan harga pokok, harga jual, dan besarnya tingkat produksi hasil penjualan.</span>
+                            </li>
+                            <li class="flex gap-3 items-start">
+                                <span class="flex-shrink-0 size-5 bg-amber-500 text-white rounded-full flex items-center justify-center font-bold text-[10px]">f</span>
+                                <span>Sebagai alat perencanaan tingkat produksi dan sekaligus penjualan agar perusahaan tidak mengalami kerugian.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>`,
+            `<div class="animate-slide-up">
+                <div class="flex flex-col items-center text-center mb-6">
+                    <span class="material-symbols-outlined text-5xl text-orange-500 mb-2">sell</span>
+                    <h4 class="text-lg font-black text-slate-800 uppercase text-center w-full">BAGIAN 3: STRATEGI MENETAPKAN HARGA JUAL MAKANAN KHAS DAERAH</h4>
+                </div>
+                <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium text-justify">
+                    <p>Menentukan harga jual produk yang paling sesuai dan tepat tidaklah mudah untuk wirausawan yang baru memulai usahanya. Harga jual sangat berkaitan dengan tingkat penjualan dan tingkat keuntungan yang ditetapkan.</p>
+                    <div class="bg-orange-50 border border-orange-200 rounded-2xl p-4">
+                        <p class="text-xs text-slate-700">Jika menetapkan harga terlalu mahal, dikhawatirkan pelanggan akan tidak jadi membeli produk. Sedangkan jika menjual produk terlalu murah, maka akan menghasilkan laba dengan tingkat yang rendah. Menentukan harga jual yang asal-asalan akan meningkatkan resiko kerugian. Oleh karena itu, ketika akan menetapkan harga jual produk perlu melakukan suatu perhitungan yang matang.</p>
+                    </div>
+                </div>
+            </div>`,
+            `<div class="animate-slide-up">
+                <div class="flex flex-col items-center text-center mb-6">
+                    <span class="material-symbols-outlined text-5xl text-indigo-500 mb-2">checklist</span>
+                    <h4 class="text-lg font-black text-slate-800 uppercase text-center w-full">BAGIAN 4: HAL YANG HARUS DIPERHATIKAN SEBELUM MENENTUKAN HARGA JUAL</h4>
+                </div>
+                <div class="space-y-4 text-sm text-slate-600 leading-relaxed font-medium text-justify">
+                    <p>Ada beberapa hal yang harus diperhatikan sebelum menentukan harga jual suatu produk:</p>
+                    <div class="space-y-3">
+                        <div class="relative pl-4 border-l-4 border-indigo-500 bg-indigo-50/50 p-3 rounded-r-xl">
+                            <p class="font-black text-indigo-800 text-xs uppercase mb-1 flex items-center gap-2"><span class="material-symbols-outlined text-sm">group</span> a. Pelanggan</p>
+                            <p class="text-xs text-slate-700">Pelanggan merupakan prioritas utama dalam usaha makanan khas daerah, jadi pastikan bahwa harga jual yang ditetapkan akan dapat diterima oleh pelanggan. Pelanggan akan dengan senang hati membeli produk yang ditawarkan jika harga yang diberikan terjangkau dan kualitas barang pun berbanding lurus dengan kualitas barang.</p>
+                        </div>
+                        <div class="relative pl-4 border-l-4 border-red-500 bg-red-50/50 p-3 rounded-r-xl">
+                            <p class="font-black text-red-800 text-xs uppercase mb-1 flex items-center gap-2"><span class="material-symbols-outlined text-sm">trending_up</span> b. Pesaing</p>
+                            <p class="text-xs text-slate-700">Pastikan bahwa harga jual produk dapat bersaing dengan harga jual produk pesaing. Perhatikan tingkat keuntungan. Jangan mengambil keuntungan yang terlalu besar karena akan menyebabkan harga jual terlalu mahal. Ada baiknya menurunkan tingkat keuntungan sehingga harga yang ditawarkan dapat bersaing dengan harga yang ditetapkan dengan pesaing.</p>
+                        </div>
+                        <div class="relative pl-4 border-l-4 border-blue-500 bg-blue-50/50 p-3 rounded-r-xl">
+                            <p class="font-black text-blue-800 text-xs uppercase mb-1 flex items-center gap-2"><span class="material-symbols-outlined text-sm">payments</span> c. Biaya</p>
+                            <p class="text-xs text-slate-700">Pastikan harga jual produk yang ditetapkan dapat menutup biaya-biaya yang telah terjadi. Ini artinya harus benar-benar jeli dan teliti dalam menghitung biaya yang terjadi, pastikan bahwa tidak ada biaya yang tidak dimasukkan dalam perhitungan. Jika saja ada biaya yang tidak terhitung, akan menyebabkan harga yang tidak tepat, sehingga akan berpengaruh terhadap tingkat keuntungan, bahkan akan menyebabkan kerugian.</p>
+                        </div>
+                        <div class="relative pl-4 border-l-4 border-emerald-500 bg-emerald-50/50 p-3 rounded-r-xl">
+                            <p class="font-black text-emerald-800 text-xs uppercase mb-1 flex items-center gap-2"><span class="material-symbols-outlined text-sm">business_center</span> d. Kemanfaatan untuk usaha</p>
+                            <p class="text-xs text-slate-700">Harga jual yang ditetapkan dinilai pantas jika harga dapat memberikan keuntungan yang diharapkan. Seandainya saja keuntungan yang diharapkan dapat tercapai, akan mempermudah dalam mengembangkan usaha yang sudah dirintis.</p>
+                        </div>
+                    </div>
+                </div>
             </div>`
         ],
         video: [],
