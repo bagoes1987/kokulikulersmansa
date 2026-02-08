@@ -809,8 +809,15 @@
                             return;
                         }
                         requiredModules.forEach(module => {
-                            if (studentProgress[day][module] === undefined) {
-                                isCorrupted = true;
+                            // 'bep' only required for day2
+                            if (module === 'bep') {
+                                if (day === 'day2' && studentProgress[day][module] === undefined) {
+                                    isCorrupted = true;
+                                }
+                            } else {
+                                if (studentProgress[day][module] === undefined) {
+                                    isCorrupted = true;
+                                }
                             }
                         });
                     });
