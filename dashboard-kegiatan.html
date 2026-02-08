@@ -2663,39 +2663,7 @@
             } catch (e) { console.error('Error loadExistingDay3Documentation:', e); }
         }
 
-        // Modify toggleModule logic
-        function toggleModule(moduleId) {
-            // 1. Special Case: Dokumentasi (5 Kategoris untuk Day 2 & 3)
-            if (moduleId === 'dokumentasi') {
-                if (currentDay === 2) {
-                    openDokumentasiDay2Modal();
-                    return;
-                } else if (currentDay === 3) {
-                    openDokumentasiDay3Modal();
-                    return;
-                }
-            }
 
-            // 2. Generic Modal Modules (All Days)
-            if (moduleId === 'glosarium') { openGlosariumModal(); return; }
-            if (moduleId === 'mantik' || moduleId === 'pemantik') { openPemantikModal(); return; }
-            if (moduleId === 'materi') { openMateriModal(); return; }
-            if (moduleId === 'dokumentasi') { openDokumentasiModal(); return; } // Day 1
-            if (moduleId === 'video') { openVideoModal(); return; }
-            if (moduleId === 'asesmen' || moduleId === 'assessment') { openAssessmentModal(); return; }
-            if (moduleId === 'lkpd') { openLKPDModal(); return; }
-            if (moduleId === 'refleksi') { openRefleksiModal(); return; }
-
-            // 3. Fallback: Toggle Checkbox Logic (Legacy/Other)
-            const dayKey = `day${currentDay}`;
-            if (studentProgress[dayKey] && studentProgress[dayKey][moduleId] !== undefined) {
-                studentProgress[dayKey][moduleId] = !studentProgress[dayKey][moduleId];
-                saveProgress();
-                updateModuleUI(moduleId, studentProgress[dayKey][moduleId]);
-            } else {
-                console.warn(`Module ID '${moduleId}' not found in progress tracking.`);
-            }
-        }
 
 
 
