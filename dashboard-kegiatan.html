@@ -137,7 +137,7 @@
         <div id="module-grid-container" class="animate-fade-in block">
             <div class="grid grid-cols-2 gap-4 px-6">
                 <!-- Pertanyaan Pemantik -->
-                <div id="module-pemantik" onclick="toggleModule('pemantik')"
+                <div id="module-pemantik" onclick="handleModuleClick('pemantik')"
                     class="bg-amber-50/50 p-4 rounded-[24px] ios-shadow border border-amber-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-amber-400 flex items-center justify-center text-white shadow-lg shadow-amber-200">
@@ -155,7 +155,7 @@
                 </div>
 
                 <!-- Materi Belajar -->
-                <div id="module-materi" onclick="toggleModule('materi')"
+                <div id="module-materi" onclick="handleModuleClick('materi')"
                     class="bg-blue-50/50 p-4 rounded-[24px] ios-shadow border border-blue-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-200">
@@ -173,7 +173,7 @@
                 </div>
 
                 <!-- Analisis Produk (Day 2 Only) -->
-                <div id="module-bep" onclick="toggleModule('bep')" style="display: none;"
+                <div id="module-bep" onclick="handleModuleClick('bep')" style="display: none;"
                     class="bg-pink-50/50 p-4 rounded-[24px] ios-shadow border border-pink-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-pink-500 flex items-center justify-center text-white shadow-lg shadow-pink-200">
@@ -190,7 +190,7 @@
                 </div>
 
                 <!-- Laporan Akhir (Day 3 Only) -->
-                <div id="module-laporan-akhir" onclick="toggleModule('laporan-akhir')" style="display: none;"
+                <div id="module-laporan-akhir" onclick="handleModuleClick('laporan-akhir')" style="display: none;"
                     class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
@@ -208,7 +208,7 @@
                 </div>
 
                 <!-- Video Belajar -->
-                <div id="module-video" onclick="toggleModule('video')"
+                <div id="module-video" onclick="handleModuleClick('video')"
                     class="bg-red-50/50 p-4 rounded-[24px] ios-shadow border border-red-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-red-500 flex items-center justify-center text-white shadow-lg shadow-red-200">
@@ -226,7 +226,7 @@
                 </div>
 
                 <!-- LKPD Digital -->
-                <div id="module-lkpd" onclick="toggleModule('lkpd')"
+                <div id="module-lkpd" onclick="handleModuleClick('lkpd')"
                     class="bg-orange-50/50 p-4 rounded-[24px] ios-shadow border border-orange-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-terracotta flex items-center justify-center text-white shadow-lg shadow-terracotta/30">
@@ -244,7 +244,7 @@
                 </div>
 
                 <!-- Asesmen -->
-                <div id="module-asesmen" onclick="toggleModule('asesmen')"
+                <div id="module-asesmen" onclick="handleModuleClick('asesmen')"
                     class="bg-purple-50/50 p-4 rounded-[24px] ios-shadow border border-purple-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-purple-500 flex items-center justify-center text-white shadow-lg shadow-purple-200">
@@ -262,7 +262,7 @@
                 </div>
 
                 <!-- Dokumentasi Foto -->
-                <div id="module-dokumentasi" onclick="toggleModule('dokumentasi')"
+                <div id="module-dokumentasi" onclick="handleModuleClick('dokumentasi')"
                     class="bg-indigo-50/50 p-4 rounded-[24px] ios-shadow border border-indigo-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
@@ -880,7 +880,7 @@
         }
 
         // Toggle module completion
-        function toggleModule(moduleId) {
+        function handleModuleClick(moduleId) {
             // Global Override for Modal-based modules (Active on all days)
             if (moduleId === 'glosarium') {
                 openGlosariumModal();
@@ -5937,7 +5937,7 @@
                     }
 
                     // Update Dashboard Button
-                    const dashBtn = document.querySelector('div[onclick="toggleModule(\'refleksi\')"]');
+                    const dashBtn = document.querySelector('div[onclick="handleModuleClick(\'refleksi\')"]');
                     if (dashBtn) {
                         const icon = dashBtn.querySelector('.material-symbols-outlined');
                         if (icon) icon.innerText = 'check_circle';
@@ -6108,6 +6108,119 @@
 
 
     </script>
+
+    <!-- MODAL LAPORAN AKHIR (PUNCAK ACARA / HARI 3) -->
+    <div id="modalLaporanAkhir"
+        class="hidden fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300">
+        <div
+            class="bg-white w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-scale-in">
+
+            <!-- Header -->
+            <div class="relative bg-emerald-500 p-6 pb-8 overflow-hidden shrink-0">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <span class="material-symbols-outlined text-[80px] text-white">receipt_long</span>
+                </div>
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-black text-white tracking-tight leading-tight">Laporan Akhir<br>Puncak
+                        Acara
+                    </h3>
+                    <p class="text-emerald-100 text-sm font-medium mt-1">Input data keuangan hasil bazaar hari ini.</p>
+                </div>
+                <button onclick="closeLaporanAkhirModal()"
+                    class="absolute top-4 right-4 h-10 w-10 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all active:scale-95 z-20">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="p-6 overflow-y-auto space-y-6 bg-slate-50 flex-1">
+
+                <div id="laporanAkhirStatusSection" class="hidden">
+                    <!-- Dynamic Status -->
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h4 class="text-sm font-black text-slate-700 uppercase flex items-center gap-2">
+                        <span class="material-symbols-outlined text-emerald-500">payments</span>
+                        Rekap Keuangan
+                    </h4>
+
+                    <!-- 1. Modal Awal -->
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1 uppercase">1. Modal Awal (Patungan
+                            Siswa)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2.5 text-xs font-bold text-slate-400">Rp</span>
+                            <input type="number" id="input-modal-awal" oninput="calculateLabaRugi()"
+                                class="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:border-emerald-500 focus:ring-emerald-500 outline-none transition-all placeholder:font-normal"
+                                placeholder="0">
+                        </div>
+                    </div>
+
+                    <!-- 2. Pendapatan (Omzet) -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 mb-1">Hasil Jual Makanan</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2.5 text-xs font-bold text-slate-400">Rp</span>
+                                <input type="number" id="input-penjualan-makan" oninput="calculateLabaRugi()"
+                                    class="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:border-emerald-500 focus:ring-emerald-500 outline-none transition-all"
+                                    placeholder="0">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 mb-1">Hasil Jual Minuman</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2.5 text-xs font-bold text-slate-400">Rp</span>
+                                <input type="number" id="input-penjualan-minum" oninput="calculateLabaRugi()"
+                                    class="w-full pl-8 pr-3 py-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:border-emerald-500 focus:ring-emerald-500 outline-none transition-all"
+                                    placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Laba / Rugi (Otomatis) -->
+                    <div class="pt-2 border-t border-dashed border-slate-200">
+                        <label class="block text-[11px] font-bold text-slate-500 mb-1 uppercase flex justify-between">
+                            <span>Estimasi Laba/Rugi Bersih</span>
+                            <span id="label-status-keuangan"
+                                class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-500">-</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-sm font-black text-slate-400">Rp</span>
+                            <input type="text" id="input-laba-rugi" disabled
+                                class="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-base font-black text-slate-700 outline-none"
+                                value="0">
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1 italic leading-tight">
+                            *Rumus: (Jual Makan + Jual Minum) - Modal Awal. <br>
+                            Jika minus berarti rugi, jika plus berarti untung.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Catatan Tambahan -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-2 uppercase">Catatan / Kendala
+                        (Opsional)</label>
+                    <textarea id="input-catatan" rows="3"
+                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-medium focus:border-emerald-500 focus:ring-emerald-500 outline-none resize-none"
+                        placeholder="Ceritakan kendala atau hal menarik saat berjualan..."></textarea>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 bg-white border-t border-slate-100 shrink-0">
+                <button id="btnSubmitLaporanAkhir" onclick="submitLaporanAkhir()"
+                    class="w-full py-3.5 rounded-xl bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-200 active:scale-95 transition-all hover:bg-emerald-600 flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-lg">send</span>
+                    Kirim Laporan Akhir
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
