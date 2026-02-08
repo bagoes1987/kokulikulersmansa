@@ -2090,8 +2090,11 @@
         }
 
         function parseFormattedNumber(val) {
+            if (!val) return 0;
             if (typeof val !== 'string') return parseFloat(val) || 0;
-            return parseFloat(val.replace(/\./g, '')) || 0;
+            // Remove everything except digits
+            let clean = val.replace(/\D/g, '');
+            return parseFloat(clean) || 0;
         }
 
         function calculateFinancials(showCard = false) {
@@ -2134,22 +2137,29 @@
             const cmMakan = hargaMakan - varMakan;
             const cmMinum = hargaMinum - varMinum;
 
-            const totalBiayaTarget = totalBiaya; // Target is Total Cost for break even
-
             if (totalUnits > 0) {
                 const weightedCM = ((unitsMakan / totalUnits) * cmMakan) + ((unitsMinum / totalUnits) * cmMinum);
                 const weightedPrice = ((unitsMakan / totalUnits) * hargaMakan) + ((unitsMinum / totalUnits) * hargaMinum);
 
                 if (weightedCM > 0) {
-                    bepUnit = Math.ceil(totalBiayaTarget / weightedCM);
+                    bepUnit = Math.ceil(totalBiaya / weightedCM);
                     bepRupiah = Math.round(bepUnit * weightedPrice);
                 }
+            } else if (totalPenjualan === 0) {
+                // Initial target (if no sales yet)
+                const count = (hargaMakan > 0 ? 1 : 0) + (hargaMinum > 0 ? 1 : 0);
+                const avgCM = (cmMakan + cmMinum) / (count || 1);
+                const avgPrice = (hargaMakan + hargaMinum) / (count || 1);
+                if (avgCM > 0) {
+                    bepUnit = Math.ceil(totalBiaya / avgCM);
+                    bepRupiah = Math.round(bepUnit * avgPrice);
+                }
             } else {
-                // Fallback for single product if one is zero
+                // Fallback for single product
                 const unifiedCM = Math.max(cmMakan, cmMinum);
                 const unifiedPrice = cmMakan > cmMinum ? hargaMakan : hargaMinum;
                 if (unifiedCM > 0) {
-                    bepUnit = Math.ceil(totalBiayaTarget / unifiedCM);
+                    bepUnit = Math.ceil(totalBiaya / unifiedCM);
                     bepRupiah = bepUnit * unifiedPrice;
                 }
             }
@@ -2208,7 +2218,7 @@
                 }
             }
 
-            return { totalPenjualan, totalBiaya, labaRugi, bepUnit, bepRupiah };
+            return { totalPenjualan, totalBiaya, labaRugi, bepUnit, bepRupiah, totalUnits };
         }
 
         async function submitLaporanAkhir() {
@@ -2261,8 +2271,8 @@
                     biaya_prod_minum: fields.biayaProdMinum,
                     qty_minum: fields.qtyMinum,
                     biaya_tetap: fields.biayaTetap,
-                    var_makanan: results.totalUnits > 0 ? (fields.biayaProdMakan / (fields.qtyMakan || 1)) : 0,
-                    var_minuman: results.totalUnits > 0 ? (fields.biayaProdMinum / (fields.qtyMinum || 1)) : 0,
+                    var_makanan: results.totalUnits > 0 || fields.qtyMakan > 0 ? (fields.biayaProdMakan / (fields.qtyMakan || 1)) : 0,
+                    var_minuman: results.totalUnits > 0 || fields.qtyMinum > 0 ? (fields.biayaProdMinum / (fields.qtyMinum || 1)) : 0,
                     total_penjualan: results.totalPenjualan,
                     total_biaya: results.totalBiaya,
                     laba_rugi: results.labaRugi,
@@ -3713,8 +3723,8 @@
                                 <!-- Fixed Cost -->
                                 <div>
                                     <label
-                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase spacing-wider">Biaya
-                                        Tetap / Sewa Stan (Rp)</label>
+                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Biaya
+                                        Tetap / Sewa Stand Booth (Rp)</label>
                                     <input type="text" id="input-biaya-tetap"
                                         oninput="formatInputWithDots(this); calculateFinancials()"
                                         class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
