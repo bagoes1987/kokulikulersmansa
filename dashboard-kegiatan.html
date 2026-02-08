@@ -1936,7 +1936,7 @@
 
         // --- LAPORAN AKHIR LOGIC ---
         function openLaporanAkhirModal() {
-
+            console.log("Opening Laporan Akhir Modal...");
             const modal = document.getElementById('modalLaporanAkhir');
             if (modal) {
                 modal.classList.remove('hidden');
@@ -1956,6 +1956,7 @@
         }
 
         async function checkExistingLaporanAkhir() {
+            console.log("Checking existing Laporan Akhir...");
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) return;
@@ -2886,140 +2887,7 @@
 
 
 
-        // Deprecated: Functions below are now handled by updateModuleUI or specific modal logic
 
-        // Kirim Jawaban
-        async function submitPemantik() {
-            const btn = document.getElementById('btnSubmitPemantik');
-            btn.innerHTML = 'Mengirim...';
-            btn.disabled = true;
-
-            // Ambil jawaban secara dinamis sesuai jumlah pertanyaan hari ini
-            const dayKey = `day${currentDay}`;
-            const questions = workshopContent[dayKey]?.pemantik || [];
-            const answers = [];
-
-            for (let i = 1; i <= questions.length; i++) {
-                const val = document.getElementById(`tanya${i}`).value;
-                if (!val) {
-                    alert(`Jawaban nomor ${i} belum diisi!`);
-                    btn.innerHTML = 'Kirim Jawaban';
-                    btn.disabled = false;
-                    return;
-                }
-                answers.push(val);
-            }
-
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error("User tidak ditemukan");
-
-                // Simpan ke Supabase
-                const { error } = await supabaseClient
-                    .from('module_responses')
-                    .insert({
-                        student_id: user.id,
-                        day_id: currentDay, // Gunakan currentDay yang dinamis
-                        module_type: 'pemantik',
-                        answers: answers,
-                        status: 'submitted' // Status awal
-                    });
-
-                if (error) throw error;
-
-                // Berhasil
-                alert('Jawaban berhasil dikirim! Menunggu feedback dari fasilitator.');
-
-                // SINKRONKAN status lokal
-                studentProgress[`day${currentDay}`]['pemantik'] = false;
-                saveProgress();
-                checkAllModulesStatus(); // Refresh icon dashboard
-                closePemantikModal();
-                checkExistingPemantik();
-
-            } catch (err) {
-                console.error('Gagal kirim:', err);
-                alert('Terjadi kesalahan saat mengirim jawaban.');
-            } finally {
-                btn.innerHTML = 'Kirim Jawaban';
-                btn.disabled = false;
-            }
-        }
-
-        // Cek Status Jawaban (Saat load / buka modal)
-        async function checkExistingPemantik() {
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) return;
-
-                const { data, error } = await supabaseClient
-                    .from('module_responses')
-                    .select('*')
-                    .eq('student_id', user.id)
-                    .eq('day_id', currentDay) // Dinamis sesuai hari aktif
-                    .eq('module_type', 'pemantik')
-                    .limit(1)
-                    .maybeSingle();
-
-                if (data) {
-                    // Isi form dengan jawaban lama
-                    data.answers.forEach((ans, idx) => {
-                        const el = document.getElementById(`tanya${idx + 1}`);
-                        if (el) {
-                            el.value = ans;
-                            el.disabled = true; // Disable edit jika sudah submit
-                        }
-                    });
-
-                    // Hide tombol kirim jika sudah submit
-                    const btn = document.getElementById('btnSubmitPemantik');
-                    if (btn) btn.classList.add('hidden');
-
-                    // Show status message
-                    const statusMsg = document.getElementById('statusMessage');
-                    if (statusMsg) {
-                        statusMsg.classList.remove('hidden');
-
-                        if (data.status === 'submitted') {
-                            statusMsg.className = "bg-yellow-50 text-yellow-700 p-4 rounded-xl border border-yellow-200 text-xs font-medium mb-4";
-                            statusMsg.innerHTML = "⏳ <b>Jawaban Terkirim</b><br>Menunggu feedback dari fasilitator.";
-                            updateModuleUI('pemantik', 'submitted');
-                        } else if (data.status === 'reviewed') {
-                            statusMsg.className = "bg-emerald-50 text-emerald-700 p-4 rounded-xl border border-emerald-200 text-xs font-medium mb-4";
-                            statusMsg.innerHTML = `✅ <b>Sudah Direview (Skor: ${data.score || 0})</b><br>Feedback: "${data.feedback || '-'}"`;
-                            updateModuleUI('pemantik', true, data.score || 0);
-                        }
-                    }
-                } else {
-                    // Belum ada data
-                    const statusMsg = document.getElementById('statusMessage');
-                    if (statusMsg) statusMsg.classList.add('hidden');
-
-                    const btn = document.getElementById('btnSubmitPemantik');
-                    if (btn) {
-                        btn.classList.remove('hidden');
-                        btn.innerHTML = 'Kirim Jawaban';
-                        btn.disabled = false;
-                    }
-
-                    // Enable inputs
-                    const dayKey = `day${currentDay}`;
-                    const questions = workshopContent[dayKey]?.pemantik || [];
-                    for (let i = 1; i <= questions.length; i++) {
-                        const el = document.getElementById(`tanya${i}`);
-                        if (el) {
-                            el.disabled = false;
-                            el.value = '';
-                        }
-                    }
-                }
-            } catch (err) {
-                console.error("Error checkExistingPemantik:", err);
-            }
-        }
-
-        // Helper: Update Tampilan Icon di Dashboard (Kuning jika pending)
-        // Deprecated: Handled by updateModuleUI
 
     </script>
 
