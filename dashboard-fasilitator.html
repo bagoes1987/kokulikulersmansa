@@ -1565,17 +1565,35 @@
                                 </div>
                                 
                                 <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Total Modal Kelompok</p>
-                                        <p class="text-lg font-black text-white">Rp ${(data.total_modal || 0).toLocaleString('id-ID')}</p>
+                                    <div class="col-span-2 flex justify-between items-center bg-slate-800 p-3 rounded-xl">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Total Modal Kelompok</p>
+                                        <p class="text-base font-black text-white">Rp ${(data.total_modal || 0).toLocaleString('id-ID')}</p>
                                     </div>
-                                    <div>
-                                        <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Rencana Harga Jual</p>
-                                        <p class="text-lg font-black text-pink-400">Rp ${(data.harga_jual_rencana || 0).toLocaleString('id-ID')}</p>
+                                    
+                                    <!-- Makanan -->
+                                    <div class="space-y-2 p-3 bg-slate-800/50 rounded-xl border border-slate-700">
+                                        <p class="text-[8px] font-bold text-pink-400 uppercase">Makanan</p>
+                                        <div class="flex justify-between text-[10px]">
+                                            <span class="text-slate-400">Target:</span>
+                                            <span class="font-bold">${data.target_makanan || 0} Unit</span>
+                                        </div>
+                                        <div class="flex justify-between text-[10px]">
+                                            <span class="text-slate-400">Jual:</span>
+                                            <span class="font-bold text-pink-400">Rp ${(data.harga_makanan || 0).toLocaleString('id-ID')}</span>
+                                        </div>
                                     </div>
-                                    <div class="pt-2">
-                                        <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">BEP (Target Penjualan)</p>
-                                        <p class="text-lg font-black text-emerald-400">${data.bep_units || 0} Unit</p>
+
+                                    <!-- Minuman -->
+                                    <div class="space-y-2 p-3 bg-slate-800/50 rounded-xl border border-slate-700">
+                                        <p class="text-[8px] font-bold text-blue-400 uppercase">Minuman</p>
+                                        <div class="flex justify-between text-[10px]">
+                                            <span class="text-slate-400">Target:</span>
+                                            <span class="font-bold">${data.target_minuman || 0} Unit</span>
+                                        </div>
+                                        <div class="flex justify-between text-[10px]">
+                                            <span class="text-slate-400">Jual:</span>
+                                            <span class="font-bold text-blue-400">Rp ${(data.harga_minuman || 0).toLocaleString('id-ID')}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

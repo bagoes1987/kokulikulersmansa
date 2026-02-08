@@ -2651,48 +2651,97 @@
                             </h4>
 
                             <div class="grid grid-cols-1 gap-3">
-                                <!-- Total Modal Keseluruhan -->
-                                <div class="bg-slate-900 rounded-2xl p-4 text-white shadow-xl shadow-slate-200">
-                                    <p class="text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-1">Total
-                                        Modal Kelompok</p>
-                                    <h5 class="text-2xl font-black text-white" id="grand-total-modal">Rp 0</h5>
-                                </div>
-
                                 <!-- Simulasi Jual -->
-                                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                                    <div>
-                                        <label
-                                            class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Rencana
-                                            Harga Jual (Per Unit)</label>
-                                        <div class="relative">
-                                            <span
-                                                class="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
-                                            <input type="number" id="input-harga-jual"
-                                                oninput="calculateAnalisisTotal()"
-                                                class="w-full pl-10 p-3 rounded-xl border border-slate-200 text-sm font-black text-slate-700 focus:border-pink-500 focus:ring-pink-500 outline-none"
-                                                placeholder="Contoh: 15000">
+                                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                                    <!-- Makanan -->
+                                    <div class="space-y-3 pb-3 border-b border-slate-100">
+                                        <h5
+                                            class="text-[10px] font-black text-pink-600 uppercase flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">restaurant</span> Simulasi
+                                            Makanan
+                                        </h5>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label
+                                                    class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Target
+                                                    Produksi</label>
+                                                <input type="number" id="input-target-makanan"
+                                                    oninput="calculateAnalisisTotal()"
+                                                    class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-black text-slate-700 focus:border-pink-500 outline-none"
+                                                    placeholder="Unit">
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Harga
+                                                    Jual</label>
+                                                <input type="number" id="input-harga-makanan"
+                                                    oninput="calculateAnalisisTotal()"
+                                                    class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-black text-slate-700 focus:border-pink-500 outline-none"
+                                                    placeholder="Rp">
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-100">
+                                                <p class="text-[8px] font-bold text-emerald-600 uppercase mb-0.5">
+                                                    Rekomendasi</p>
+                                                <p class="text-xs font-black text-emerald-700" id="rek-harga-makanan">Rp
+                                                    0</p>
+                                            </div>
+                                            <div class="p-2.5 bg-pink-50 rounded-xl border border-pink-100">
+                                                <p class="text-[8px] font-bold text-pink-600 uppercase mb-0.5">BEP
+                                                    (Unit)</p>
+                                                <p class="text-xs font-black text-pink-700" id="bep-makanan">0 Unit</p>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-100">
-                                            <p class="text-[8px] font-bold text-emerald-600 uppercase mb-1">Rekomendasi
-                                                Harga</p>
-                                            <p class="text-xs font-black text-emerald-700" id="rekomendasi-harga">Rp 0
-                                            </p>
+                                    <!-- Minuman -->
+                                    <div class="space-y-3">
+                                        <h5
+                                            class="text-[10px] font-black text-blue-600 uppercase flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-sm">local_bar</span> Simulasi
+                                            Minuman
+                                        </h5>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label
+                                                    class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Target
+                                                    Produksi</label>
+                                                <input type="number" id="input-target-minuman"
+                                                    oninput="calculateAnalisisTotal()"
+                                                    class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-black text-slate-700 focus:border-blue-500 outline-none"
+                                                    placeholder="Unit">
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Harga
+                                                    Jual</label>
+                                                <input type="number" id="input-harga-minuman"
+                                                    oninput="calculateAnalisisTotal()"
+                                                    class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-black text-slate-700 focus:border-blue-500 outline-none"
+                                                    placeholder="Rp">
+                                            </div>
                                         </div>
-                                        <div class="p-3 bg-pink-50 rounded-xl border border-pink-100">
-                                            <p class="text-[8px] font-bold text-pink-600 uppercase mb-1">Nilai BEP
-                                                (Unit)</p>
-                                            <p class="text-xs font-black text-pink-700" id="bep-unit-result">0 Unit</p>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div class="p-2.5 bg-emerald-50 rounded-xl border border-emerald-100">
+                                                <p class="text-[8px] font-bold text-emerald-600 uppercase mb-0.5">
+                                                    Rekomendasi</p>
+                                                <p class="text-xs font-black text-emerald-700" id="rek-harga-minuman">Rp
+                                                    0</p>
+                                            </div>
+                                            <div class="p-2.5 bg-blue-50 rounded-xl border border-blue-100">
+                                                <p class="text-[8px] font-bold text-blue-600 uppercase mb-0.5">BEP
+                                                    (Unit)</p>
+                                                <p class="text-xs font-black text-blue-700" id="bep-minuman">0 Unit</p>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div id="bep-info-box"
-                                        class="p-3 bg-blue-50 rounded-xl border border-blue-100 hidden">
-                                        <p class="text-[10px] text-blue-700 font-medium leading-relaxed"
+                                        class="p-3 bg-slate-50 rounded-xl border border-slate-200 hidden">
+                                        <p class="text-[10px] text-slate-600 font-medium leading-relaxed"
                                             id="bep-description">
-                                            Isi harga jual untuk melihat analisis BEP.
+                                            *Biaya stand dibagi 2 untuk kalkulasi simulasi ini.
                                         </p>
                                     </div>
                                 </div>
@@ -5492,33 +5541,44 @@
             });
             document.getElementById('total-stand-display').textContent = 'Rp ' + totalStand.toLocaleString('id-ID');
 
-            // Grand Total Modal
-            const grandTotal = totalHpp + totalDrinks + totalStand;
-            document.getElementById('grand-total-modal').textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
+            // BEP & Rekomendasi (Terpisah)
+            const targetMakanan = parseFloat(document.getElementById('input-target-makanan').value) || 0;
+            const targetMinuman = parseFloat(document.getElementById('input-target-minuman').value) || 0;
+            const hargaMakanan = parseFloat(document.getElementById('input-harga-makanan').value) || 0;
+            const hargaMinuman = parseFloat(document.getElementById('input-harga-minuman').value) || 0;
 
-            // BEP & Rekomendasi (assuming 30% margin recommendation)
-            const margin = 0.3;
-            const recommendedPrice = Math.ceil((grandTotal * (1 + margin)) / 100) * 100; // Pembulatan ke 100 terdekat
-            document.getElementById('rekomendasi-harga').textContent = 'Rp ' + recommendedPrice.toLocaleString('id-ID');
+            const standShare = totalStand / 2;
+            const margin = 0.4; // 40% margin
 
-            const hargaJual = parseFloat(document.getElementById('input-harga-jual').value) || 0;
-            const bepUnitEl = document.getElementById('bep-unit-result');
-            const infoBox = document.getElementById('bep-info-box');
-            const infoText = document.getElementById('bep-description');
+            // --- Makanan ---
+            const hppMakPerUnit = targetMakanan > 0 ? ((totalHpp + standShare) / targetMakanan) : 0;
+            const rekMak = hppMakPerUnit > 0 ? (Math.ceil((hppMakPerUnit * (1 + margin)) / 100) * 100) : 0;
+            document.getElementById('rek-harga-makanan').textContent = rekMak > 0 ? 'Rp ' + rekMak.toLocaleString('id-ID') : '-';
 
-            if (hargaJual > 0) {
-                // Sederhananya: Total Modal / Harga Jual = Berapa unit harus terjual untuk balik modal
-                const bepUnits = Math.ceil(grandTotal / hargaJual);
-                bepUnitEl.textContent = bepUnits + ' Unit';
-
-                infoBox.classList.remove('hidden');
-                if (hargaJual < (grandTotal / 50)) { // Asumsi minimal jual 50 unit? Atau sekedar peringatan jika harga terlalu rendah
-                    infoText.innerHTML = `⚠️ Harga jual mungkin terlalu rendah. Kamu harus menjual <b>${bepUnits} unit</b> untuk balik modal.`;
-                } else {
-                    infoText.innerHTML = `✅ Dengan harga Rp ${hargaJual.toLocaleString('id-ID')}, kamu harus menjual minimal <b>${bepUnits} unit</b> agar modal kembali. Penjualan selanjutnya adalah UNTUNG! 🚀`;
-                }
+            const bepMakEl = document.getElementById('bep-makanan');
+            if (hargaMakanan > 0) {
+                bepMakEl.textContent = Math.ceil((totalHpp + standShare) / hargaMakanan) + ' Unit';
             } else {
-                bepUnitEl.textContent = '0 Unit';
+                bepMakEl.textContent = '0 Unit';
+            }
+
+            // --- Minuman ---
+            const hppMinPerUnit = targetMinuman > 0 ? ((totalDrinks + standShare) / targetMinuman) : 0;
+            const rekMin = hppMinPerUnit > 0 ? (Math.ceil((hppMinPerUnit * (1 + margin)) / 100) * 100) : 0;
+            document.getElementById('rek-harga-minuman').textContent = rekMin > 0 ? 'Rp ' + rekMin.toLocaleString('id-ID') : '-';
+
+            const bepMinEl = document.getElementById('bep-minuman');
+            if (hargaMinuman > 0) {
+                bepMinEl.textContent = Math.ceil((totalDrinks + standShare) / hargaMinuman) + ' Unit';
+            } else {
+                bepMinEl.textContent = '0 Unit';
+            }
+
+            // Info Box
+            const infoBox = document.getElementById('bep-info-box');
+            if (targetMakanan > 0 || targetMinuman > 0) {
+                infoBox.classList.remove('hidden');
+            } else {
                 infoBox.classList.add('hidden');
             }
         }
@@ -5575,17 +5635,16 @@
                 ingredients: ingredients,
                 drinks: drinks,
                 stand_items: standItems,
-                harga_jual_rencana: parseFloat(document.getElementById('input-harga-jual').value) || 0,
+                target_makanan: parseFloat(document.getElementById('input-target-makanan').value) || 0,
+                target_minuman: parseFloat(document.getElementById('input-target-minuman').value) || 0,
+                harga_makanan: parseFloat(document.getElementById('input-harga-makanan').value) || 0,
+                harga_minuman: parseFloat(document.getElementById('input-harga-minuman').value) || 0,
                 total_hpp_makanan: ingredients.reduce((sum, item) => sum + item.cost, 0),
                 total_hpp_minuman: drinks.reduce((sum, item) => sum + item.cost, 0),
                 total_hpp_stand: standItems.reduce((sum, item) => sum + item.cost, 0),
                 total_modal: (ingredients.reduce((sum, item) => sum + item.cost, 0) +
                     drinks.reduce((sum, item) => sum + item.cost, 0) +
-                    standItems.reduce((sum, item) => sum + item.cost, 0)),
-                bep_units: Math.ceil((ingredients.reduce((sum, item) => sum + item.cost, 0) +
-                    drinks.reduce((sum, item) => sum + item.cost, 0) +
-                    standItems.reduce((sum, item) => sum + item.cost, 0)) /
-                    (parseFloat(document.getElementById('input-harga-jual').value) || 1))
+                    standItems.reduce((sum, item) => sum + item.cost, 0))
             };
 
             btn.disabled = true;
@@ -5659,8 +5718,10 @@
                     // Fill input values for visual confirmation (Optional, but good UX)
                     if (document.getElementById('input-nama-produk')) document.getElementById('input-nama-produk').value = ans.nama_produk || '';
                     if (document.getElementById('input-nama-minuman')) document.getElementById('input-nama-minuman').value = ans.nama_minuman || '';
-                    if (document.getElementById('input-harga-jual')) document.getElementById('input-harga-jual').value = ans.harga_jual_rencana || '';
-
+                    if (document.getElementById('input-target-makanan')) document.getElementById('input-target-makanan').value = ans.target_makanan || '';
+                    if (document.getElementById('input-target-minuman')) document.getElementById('input-target-minuman').value = ans.target_minuman || '';
+                    if (document.getElementById('input-harga-makanan')) document.getElementById('input-harga-makanan').value = ans.harga_makanan || '';
+                    if (document.getElementById('input-harga-minuman')) document.getElementById('input-harga-minuman').value = ans.harga_minuman || '';
                     // Clear existing rows first
                     document.getElementById('ingredients-table-body').innerHTML = '';
                     document.getElementById('drinks-table-body').innerHTML = '';
