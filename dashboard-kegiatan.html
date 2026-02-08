@@ -510,6 +510,131 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal Dokumentasi 5 Kategori untuk Hari 3 -->
+        <div id="modal-dokumentasi-day3"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-[2rem] w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+                <!-- Header -->
+                <div class="sticky top-0 bg-white border-b border-slate-100 p-6 rounded-t-[2rem] z-10">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-white !text-2xl">photo_camera</span>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-black text-slate-900">Dokumentasi Foto</h2>
+                                <p class="text-xs text-slate-500 font-bold">HARI 3 - PUNCAK ACARA</p>
+                            </div>
+                        </div>
+                        <button onclick="closeDokumentasiDay3Modal()" class="text-slate-400 hover:text-slate-600">
+                            <span class="material-symbols-outlined !text-2xl">close</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6 space-y-6">
+                    <!-- Info -->
+                    <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-100">
+                        <p class="text-xs font-bold text-indigo-700">
+                            📸 Puncak Acara (Bazaar/Pameran). Upload 1 foto untuk setiap kategori (total 5 foto).
+                        </p>
+                    </div>
+
+                    <!-- Category 1: Stand & Produk -->
+                    <div class="doc-category-section">
+                        <h3 class="text-sm font-black text-slate-800 mb-3">1. Stand & Produk Inovasi</h3>
+                        <input type="file" id="doc-day3-stand" accept="image/*"
+                            onchange="handleCategoryPhotoDay3('stand', this)" class="hidden">
+                        <div id="upload-area-day3-stand"
+                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
+                            onclick="document.getElementById('doc-day3-stand').click()">
+                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
+                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                        </div>
+                        <div id="preview-area-day3-stand" class="hidden mt-3">
+                            <img id="preview-day3-stand" src="" alt="Preview" class="w-full rounded-2xl">
+                            <p id="status-day3-stand" class="text-xs mt-2"></p>
+                        </div>
+                    </div>
+
+                    <!-- Category 2: Label & Gizi -->
+                    <div class="doc-category-section">
+                        <h3 class="text-sm font-black text-slate-800 mb-3">2. Label & Informasi Gizi</h3>
+                        <input type="file" id="doc-day3-gizi" accept="image/*"
+                            onchange="handleCategoryPhotoDay3('gizi', this)" class="hidden">
+                        <div id="upload-area-day3-gizi"
+                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
+                            onclick="document.getElementById('doc-day3-gizi').click()">
+                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
+                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                        </div>
+                        <div id="preview-area-day3-gizi" class="hidden mt-3">
+                            <img id="preview-day3-gizi" src="" alt="Preview" class="w-full rounded-2xl">
+                            <p id="status-day3-gizi" class="text-xs mt-2"></p>
+                        </div>
+                    </div>
+
+                    <!-- Category 3: Aksi Jajanan -->
+                    <div class="doc-category-section">
+                        <h3 class="text-sm font-black text-slate-800 mb-3">3. Aksi Jajanan (Beli di Stand Lain)</h3>
+                        <input type="file" id="doc-day3-jajan" accept="image/*"
+                            onchange="handleCategoryPhotoDay3('jajan', this)" class="hidden">
+                        <div id="upload-area-day3-jajan"
+                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
+                            onclick="document.getElementById('doc-day3-jajan').click()">
+                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
+                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                        </div>
+                        <div id="preview-area-day3-jajan" class="hidden mt-3">
+                            <img id="preview-day3-jajan" src="" alt="Preview" class="w-full rounded-2xl">
+                            <p id="status-day3-jajan" class="text-xs mt-2"></p>
+                        </div>
+                    </div>
+
+                    <!-- Category 4: Suasana Acara -->
+                    <div class="doc-category-section">
+                        <h3 class="text-sm font-black text-slate-800 mb-3">4. Suasana Puncak Acara</h3>
+                        <input type="file" id="doc-day3-acara" accept="image/*"
+                            onchange="handleCategoryPhotoDay3('acara', this)" class="hidden">
+                        <div id="upload-area-day3-acara"
+                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
+                            onclick="document.getElementById('doc-day3-acara').click()">
+                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
+                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                        </div>
+                        <div id="preview-area-day3-acara" class="hidden mt-3">
+                            <img id="preview-day3-acara" src="" alt="Preview" class="w-full rounded-2xl">
+                            <p id="status-day3-acara" class="text-xs mt-2"></p>
+                        </div>
+                    </div>
+
+                    <!-- Category 5: Kenangan Bersama -->
+                    <div class="doc-category-section">
+                        <h3 class="text-sm font-black text-slate-800 mb-3">5. Kenangan Bersama (Siswa & Fasil)</h3>
+                        <input type="file" id="doc-day3-bersama" accept="image/*"
+                            onchange="handleCategoryPhotoDay3('bersama', this)" class="hidden">
+                        <div id="upload-area-day3-bersama"
+                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
+                            onclick="document.getElementById('doc-day3-bersama').click()">
+                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
+                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                        </div>
+                        <div id="preview-area-day3-bersama" class="hidden mt-3">
+                            <img id="preview-day3-bersama" src="" alt="Preview" class="w-full rounded-2xl">
+                            <p id="status-day3-bersama" class="text-xs mt-2"></p>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button id="btnSubmitAllDocsDay3" onclick="submitAllDocumentationDay3()" disabled
+                        class="w-full py-4 rounded-2xl bg-indigo-500 text-white font-black shadow-lg disabled:bg-slate-200 disabled:text-slate-400 transition-all active:scale-95">
+                        Kirim Semua Dokumentasi Hari 3
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Supabase -->
@@ -527,14 +652,15 @@
 
         let currentDay = 1;
 
-        // Struktur data progress default (3 hari x 8 modul)
-        const defaultProgress = {
-            day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
-            day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false, bep: false },
-            day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false }
-        };
-
         let studentProgress = JSON.parse(JSON.stringify(defaultProgress));
+
+        // State for Day 2 & 3 photos
+        window.day2Photos = {
+            makanan: null, minuman: null, stand: null, iklan: null, presentasi: null
+        };
+        window.day3Photos = {
+            stand: null, gizi: null, jajan: null, acara: null, bersama: null
+        };
 
         // Load student data
         async function loadStudentData() {
@@ -1995,19 +2121,72 @@
             }
         }
 
-        // Submit all 5 documentation photos
-        async function submitAllDocumentation() {
-            const btn = document.getElementById('btnSubmitAllDocs');
-            if (!btn) return;
-
-            // Validate all photos selected
-            const categories = ['makanan', 'minuman', 'stand', 'iklan', 'presentasi'];
-            for (const cat of categories) {
-                if (!window.day2Photos[cat]) {
-                    alert(`Foto ${cat} belum dipilih!`);
-                    return;
-                }
+        // --- HARI 3 DOCUMENTATION LOGIC (5 CATEGORIES) ---
+        function openDokumentasiDay3Modal() {
+            const modal = document.getElementById('modal-dokumentasi-day3');
+            if (modal) {
+                modal.classList.remove('hidden');
+                loadExistingDay3Documentation();
             }
+        }
+
+        function closeDokumentasiDay3Modal() {
+            const modal = document.getElementById('modal-dokumentasi-day3');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        async function handleCategoryPhotoDay3(category, fileInput) {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const MAX_SIZE = 10 * 1024 * 1024;
+            if (file.size > MAX_SIZE) {
+                alert(`File terlalu besar (${Math.round(file.size / 1024 / 1024)}MB). Maks 10MB.`);
+                fileInput.value = '';
+                return;
+            }
+
+            const uploadArea = document.getElementById(`upload-area-day3-${category}`);
+            const previewArea = document.getElementById(`preview-area-day3-${category}`);
+            const preview = document.getElementById(`preview-day3-${category}`);
+            const status = document.getElementById(`status-day3-${category}`);
+
+            status.className = "text-xs font-bold text-indigo-600 animate-pulse";
+            status.textContent = "⏳ Memproses...";
+
+            try {
+                const compressedBlob = await compressImage(file, 800, 0.7);
+                const compressedFile = new File([compressedBlob], `day3_${category}_${Date.now()}.jpg`, { type: 'image/jpeg' });
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    uploadArea.classList.add('hidden');
+                    previewArea.classList.remove('hidden');
+                };
+                reader.readAsDataURL(compressedFile);
+
+                window.day3Photos[category] = compressedFile;
+                status.className = "text-xs font-bold text-emerald-600";
+                status.textContent = `✅ Siap (~${Math.round(compressedBlob.size / 1024)} KB)`;
+
+                checkAllPhotosSelectedDay3();
+            } catch (err) {
+                console.error(err);
+                status.className = "text-xs font-bold text-red-600";
+                status.textContent = "❌ Gagal.";
+            }
+        }
+
+        function checkAllPhotosSelectedDay3() {
+            const allSelected = Object.values(window.day3Photos).every(photo => photo !== null);
+            const submitBtn = document.getElementById('btnSubmitAllDocsDay3');
+            if (submitBtn) submitBtn.disabled = !allSelected;
+        }
+
+        async function submitAllDocumentationDay3() {
+            const btn = document.getElementById('btnSubmitAllDocsDay3');
+            if (!btn) return;
 
             btn.disabled = true;
             btn.innerHTML = 'Mengirim...';
@@ -2016,29 +2195,28 @@
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) throw new Error('Silakan login ulang.');
 
-                // Upload each photo and insert to database
+                const categories = ['stand', 'gizi', 'jajan', 'acara', 'bersama'];
                 for (const category of categories) {
-                    const file = window.day2Photos[category];
-                    const fileName = `${user.id}/day2_${category}_${Date.now()}.jpg`;
+                    const file = window.day3Photos[category];
+                    if (!file) continue;
 
-                    // 1. Upload to Storage
+                    const fileName = `${user.id}/day3_${category}_${Date.now()}.jpg`;
+
                     const { error: uploadError } = await supabaseClient.storage
                         .from('documentation')
                         .upload(fileName, file);
 
                     if (uploadError) throw uploadError;
 
-                    // 2. Get public URL
                     const { data: { publicUrl } } = supabaseClient.storage
                         .from('documentation')
                         .getPublicUrl(fileName);
 
-                    // 3. Insert to database
                     const { error: dbError } = await supabaseClient
                         .from('module_responses')
                         .insert({
                             student_id: user.id,
-                            day_id: 2,
+                            day_id: 3,
                             module_type: 'dokumentasi',
                             category: category,
                             answers: [publicUrl],
@@ -2048,30 +2226,18 @@
                     if (dbError) throw dbError;
                 }
 
-                alert('✅ Semua dokumentasi berhasil dikirim!');
-
-                // Reset
-                window.day2Photos = {
-                    makanan: null,
-                    minuman: null,
-                    stand: null,
-                    iklan: null,
-                    presentasi: null
-                };
-
-                closeDokumentasiDay2Modal();
+                alert('✅ Dokumentasi Hari 3 berhasil dikirim!');
+                closeDokumentasiDay3Modal();
                 checkAllModulesStatus();
-
             } catch (e) {
                 console.error(e);
                 alert('Gagal mengirim: ' + e.message);
                 btn.disabled = false;
-                btn.innerHTML = 'Kirim Semua Dokumentasi';
+                btn.innerHTML = 'Kirim Semua Dokumentasi Hari 3';
             }
         }
 
-        // Load existing Day 2 documentation
-        async function loadExistingDay2Documentation() {
+        async function loadExistingDay3Documentation() {
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) return;
@@ -2080,56 +2246,46 @@
                     .from('module_responses')
                     .select('*')
                     .eq('student_id', user.id)
-                    .eq('day_id', 2)
+                    .eq('day_id', 3)
                     .eq('module_type', 'dokumentasi');
 
                 if (responses && responses.length > 0) {
-                    const categories = ['makanan', 'minuman', 'stand', 'iklan', 'presentasi'];
-
                     responses.forEach(r => {
-                        if (r.category && categories.includes(r.category)) {
-                            const uploadArea = document.getElementById(`upload-area-${r.category}`);
-                            const previewArea = document.getElementById(`preview-area-${r.category}`);
-                            const preview = document.getElementById(`preview-${r.category}`);
-                            const status = document.getElementById(`status-${r.category}`);
+                        const uploadArea = document.getElementById(`upload-area-day3-${r.category}`);
+                        const previewArea = document.getElementById(`preview-area-day3-${r.category}`);
+                        const preview = document.getElementById(`preview-day3-${r.category}`);
+                        const status = document.getElementById(`status-day3-${r.category}`);
 
-                            if (uploadArea) uploadArea.classList.add('hidden');
-                            if (previewArea) previewArea.classList.remove('hidden');
-                            if (preview && r.answers[0]) preview.src = r.answers[0];
-                            if (status) {
-                                status.className = "text-xs font-bold text-emerald-600";
-                                status.textContent = "✅ Sudah terkirim";
-                            }
+                        if (uploadArea) uploadArea.classList.add('hidden');
+                        if (previewArea) previewArea.classList.remove('hidden');
+                        if (preview && r.answers[0]) preview.src = r.answers[0];
+                        if (status) {
+                            status.className = "text-xs font-bold text-emerald-600";
+                            status.textContent = "✅ Terkirim";
                         }
                     });
 
-                    // Disable submit if all uploaded
-                    if (responses.length === 5) {
-                        const btn = document.getElementById('btnSubmitAllDocs');
-                        if (btn) {
-                            btn.disabled = true;
-                            btn.innerHTML = 'Semua Dokumentasi Sudah Terkirim';
-                        }
+                    const btn = document.getElementById('btnSubmitAllDocsDay3');
+                    if (btn && responses.length >= 5) {
+                        btn.disabled = true;
+                        btn.innerHTML = 'Semua Dokumentasi Hari 3 Terkirim';
                     }
                 }
-            } catch (e) {
-                console.error('Error loading Day 2 documentation:', e);
-            }
+            } catch (e) { console.error('Error loadExistingDay3Documentation:', e); }
         }
 
         // Modify toggleModule to detect Day 2 and generic modules
         function toggleModule(moduleId) {
-            // 1. Special Case: Dokumentasi Hari 2 (5 Kategori)
-            if (moduleId === 'dokumentasi' && currentDay === 2) {
-                openDokumentasiDay2Modal();
-                return;
+            // 1. Special Case: Dokumentasi (5 Kategoris)
+            if (moduleId === 'dokumentasi') {
+                if (currentDay === 2) {
+                    openDokumentasiDay2Modal();
+                    return;
+                } else if (currentDay === 3) {
+                    openDokumentasiDay3Modal();
+                    return;
+                }
             }
-
-            // 2. Generic Modal Modules (All Days)
-            if (moduleId === 'glosarium') { openGlosariumModal(); return; }
-            if (moduleId === 'mantik' || moduleId === 'pemantik') { openPemantikModal(); return; }
-            if (moduleId === 'materi') { openMateriModal(); return; }
-            if (moduleId === 'dokumentasi') { openDokumentasiModal(); return; } // Day 1 & 3
             if (moduleId === 'video') { openVideoModal(); return; }
             if (moduleId === 'asesmen' || moduleId === 'assessment') { openAssessmentModal(); return; }
             if (moduleId === 'lkpd') { openLKPDModal(); return; }

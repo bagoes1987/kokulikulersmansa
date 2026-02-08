@@ -1219,31 +1219,38 @@
 
                     if (r.module_type === 'dokumentasi') {
                         // Check if Day 2 (5 categories) or other days (single photo)
-                        if (r.day_id === 2) {
-                            // Day 2: Fetch all 5 category photos
+                        // Check if Day 2 or Day 3 (5 categories) or other days (single photo)
+                        if (r.day_id === 2 || r.day_id === 3) {
+                            // Fetch all 5 category photos for the specific day (2 or 3)
                             const { data: allDocs, error: docError } = await supabaseClient
                                 .from('module_responses')
                                 .select('*')
                                 .eq('student_id', studentId)
-                                .eq('day_id', 2)
+                                .eq('day_id', r.day_id)
                                 .eq('module_type', 'dokumentasi')
                                 .order('category');
 
                             if (docError) {
-                                console.error('Error fetching Day 2 docs:', docError);
+                                console.error(`Error fetching Day ${r.day_id} docs:`, docError);
                                 answerCont.innerHTML = `<div class="text-red-500 text-xs">Error loading photos</div>`;
                             } else {
-                                const categories = {
+                                const categories = r.day_id === 2 ? {
                                     'makanan': '1. Pembuatan Makanan',
                                     'minuman': '2. Pembuatan Minuman',
                                     'stand': '3. Pembuatan Stand Booth',
                                     'iklan': '4. Pembuatan Iklan',
                                     'presentasi': '5. Presentasi Produk'
+                                } : {
+                                    'stand': '1. Stand & Produk Inovasi',
+                                    'gizi': '2. Label & Informasi Gizi',
+                                    'jajan': '3. Aksi Jajanan (Beli di Luar)',
+                                    'acara': '4. Suasana Puncak Acara',
+                                    'bersama': '5. Kenangan Bersama'
                                 };
 
                                 let photosHTML = '';
                                 for (const [catKey, catLabel] of Object.entries(categories)) {
-                                    const doc = allDocs.find(d => d.category === catKey);
+                                    const doc = allDocs ? allDocs.find(d => d.category === catKey) : null;
                                     const photoUrl = doc && doc.answers && doc.answers[0] ? doc.answers[0] : '';
 
                                     photosHTML += `
@@ -1264,7 +1271,7 @@
 
                                 answerCont.innerHTML = `
                                 <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100">
-                                    <p class="text-[8px] font-black text-indigo-400 uppercase tracking-wider mb-4">Dokumentasi Foto - 5 Kategori</p>
+                                    <p class="text-[8px] font-black text-indigo-400 uppercase tracking-wider mb-4 text-center">Dokumentasi HARI ${r.day_id} - 5 Kategori</p>
                                     <div class="grid grid-cols-1 gap-3">
                                         ${photosHTML}
                                     </div>
@@ -1273,7 +1280,7 @@
                                 `;
                             }
                         } else {
-                            // Other days: Single photo display
+                            // Other days (Day 1): Single photo display
                             const photoUrl = answers[0] || '';
                             answerCont.innerHTML = `
                             <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100 flex flex-col items-center">
