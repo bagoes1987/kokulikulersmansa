@@ -606,11 +606,16 @@ const workshopContent = {
     },
     day3: {
         pemantik: [
-            "1. Bagaimana perasaanmu menghadapi puncak acara hari ini?",
-            "2. Apa hal yang paling kamu banggakan dari hasil kerja keras timmu?",
-            "3. Inovasi apa yang paling ingin kamu tunjukkan kepada pengunjung?",
-            "4. Apa satu pelajaran paling berharga yang kamu dapat dari kegiatan ini?",
-            "5. Pesan semangat apa yang ingin kamu berikan untuk kelompokmu hari ini?"
+            "1. Bagaimana perasaanmu setelah menyelesaikan seluruh rangkaian kegiatan 'Cita Rasa Jajanan Nusantara' selama 3 hari ini?",
+            "2. Apa tantangan tersulit yang dihadapi kelompokmu sejak hari pertama perencanaan hingga bazaar hari ini?",
+            "3. Bagaimana pengalamanmu menggunakan aplikasi/web kokurikuler ini dalam membantu proses belajarmu (seperti melihat progres atau mengunggah tugas)? Apa bagian yang paling kamu sukai?",
+            "4. Apa hal paling berharga yang kamu pelajari tentang nilai gizi dan kesehatan dari jajanan yang kalian buat?",
+            "5. Setelah mencoba berjualan hari ini, apa pengalaman paling berkesan saat berinteraksi dengan pembeli?",
+            "6. Bagaimana perasaanmu saat melihat produk hasil kerja keras kelompokmu laku terjual atau habis?",
+            "7. Jika kamu bisa memilih tema untuk kegiatan kokurikuler di semester depan, ide kreatif atau topik menarik apa yang sangat ingin kamu usulkan?",
+            "8. Ilmu praktis apa (misalnya: masak, TIK, atau BEP/Akuntansi) yang paling membantu kamu selama kegiatan ini?",
+            "9. Jika diberikan kesempatan lagi, bagian mana dari produk atau strategi pemasaranmu yang ingin kamu ubah agar lebih sukses?",
+            "10. Pesan apa yang ingin kamu sampaikan untuk teman-teman kelompokmu atas kerja sama mereka selama 3 hari ini?"
         ],
         materi: [
             `<div class="animate-slide-up flex flex-col items-center justify-center py-20 opacity-50">
