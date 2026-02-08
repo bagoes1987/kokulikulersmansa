@@ -1936,20 +1936,32 @@
 
         // --- LAPORAN AKHIR LOGIC ---
         function openLaporanAkhirModal() {
-            console.log("Opening Laporan Akhir Modal...");
+            console.log("Opening Laporan Akhir Modal... (Nuclear Fix)");
             const modal = document.getElementById('modalLaporanAkhir');
             if (modal) {
-                console.log("Modal found. Classes before:", modal.className);
-                modal.classList.remove('hidden');
+                // 1. Move to body to avoid hidden parents
+                if (modal.parentNode !== document.body) {
+                    console.log("Moving modal to body...");
+                    document.body.appendChild(modal);
+                }
+
+                // 2. Strip conflicting classes
+                modal.classList.remove('hidden', 'animate-fade-in');
                 modal.classList.add('flex');
-                modal.style.display = 'flex'; // FORCE DISPLAY
-                modal.style.zIndex = '9999'; // FORCE Z-INDEX
-                console.log("Classes after:", modal.className);
-                console.log("Style display:", modal.style.display);
+
+                // 3. Force Styles (Nuclear Option)
+                modal.style.display = 'flex';
+                modal.style.position = 'fixed';
+                modal.style.zIndex = '99999';
+                modal.style.inset = '0';
+                modal.style.opacity = '1';
+                modal.style.visibility = 'visible';
+                modal.style.backgroundColor = 'rgba(15, 23, 42, 0.6)'; // Restore backdrop manually
+
                 checkExistingLaporanAkhir();
             } else {
                 console.error("modalLaporanAkhir not found!");
-                alert("Error: Modal Laporan Akhir tidak ditemukan di halaman ini.");
+                alert("CRITICAL ERROR: Modal Laporan Akhir hilang dari DOM.");
             }
         }
 
