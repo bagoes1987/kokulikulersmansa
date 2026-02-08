@@ -652,6 +652,13 @@
 
         let currentDay = 1;
 
+        // Struktur data progress default (3 hari x 8 modul)
+        const defaultProgress = {
+            day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
+            day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false, bep: false },
+            day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false }
+        };
+
         let studentProgress = JSON.parse(JSON.stringify(defaultProgress));
 
         // State for Day 2 & 3 photos
@@ -2121,6 +2128,123 @@
             }
         }
 
+        // --- HARI 2 DOCUMENTATION LOGIC (5 CATEGORIES) ---
+        async function submitAllDocumentation() {
+            const btn = document.getElementById('btnSubmitAllDocs');
+            if (!btn) return;
+
+            // Validate all photos selected
+            const categories = ['makanan', 'minuman', 'stand', 'iklan', 'presentasi'];
+            for (const cat of categories) {
+                if (!window.day2Photos[cat]) {
+                    alert(`Foto ${cat} belum dipilih!`);
+                    return;
+                }
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = 'Mengirim...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error('Silakan login ulang.');
+
+                // Upload each photo and insert to database
+                for (const category of categories) {
+                    const file = window.day2Photos[category];
+                    const fileName = `${user.id}/day2_${category}_${Date.now()}.jpg`;
+
+                    // 1. Upload to Storage
+                    const { error: uploadError } = await supabaseClient.storage
+                        .from('documentation')
+                        .upload(fileName, file);
+
+                    if (uploadError) throw uploadError;
+
+                    // 2. Get public URL
+                    const { data: { publicUrl } } = supabaseClient.storage
+                        .from('documentation')
+                        .getPublicUrl(fileName);
+
+                    // 3. Insert to database
+                    const { error: dbError } = await supabaseClient
+                        .from('module_responses')
+                        .insert({
+                            student_id: user.id,
+                            day_id: 2,
+                            module_type: 'dokumentasi',
+                            category: category,
+                            answers: [publicUrl],
+                            status: 'submitted'
+                        });
+
+                    if (dbError) throw dbError;
+                }
+
+                alert('✅ Semua dokumentasi Hari 2 berhasil dikirim!');
+
+                // Reset
+                window.day2Photos = {
+                    makanan: null, minuman: null, stand: null, iklan: null, presentasi: null
+                };
+
+                closeDokumentasiDay2Modal();
+                checkAllModulesStatus();
+
+            } catch (e) {
+                console.error(e);
+                alert('Gagal mengirim: ' + e.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Semua Dokumentasi Hari 2';
+            }
+        }
+
+        async function loadExistingDay2Documentation() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data: responses } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', 2)
+                    .eq('module_type', 'dokumentasi');
+
+                if (responses && responses.length > 0) {
+                    const categories = ['makanan', 'minuman', 'stand', 'iklan', 'presentasi'];
+
+                    responses.forEach(r => {
+                        if (r.category && categories.includes(r.category)) {
+                            const uploadArea = document.getElementById(`upload-area-${r.category}`);
+                            const previewArea = document.getElementById(`preview-area-${r.category}`);
+                            const preview = document.getElementById(`preview-${r.category}`);
+                            const status = document.getElementById(`status-${r.category}`);
+
+                            if (uploadArea) uploadArea.classList.add('hidden');
+                            if (previewArea) previewArea.classList.remove('hidden');
+                            if (preview && r.answers[0]) preview.src = r.answers[0];
+                            if (status) {
+                                status.className = "text-xs font-bold text-emerald-600";
+                                status.textContent = "✅ Sudah terkirim";
+                            }
+                        }
+                    });
+
+                    // Disable submit if all uploaded
+                    if (responses.length >= 5) {
+                        const btn = document.getElementById('btnSubmitAllDocs');
+                        if (btn) {
+                            btn.disabled = true;
+                            btn.innerHTML = 'Semua Dokumentasi Hari 2 Terkirim';
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading Day 2 documentation:', e);
+            }
+        }
+
         // --- HARI 3 DOCUMENTATION LOGIC (5 CATEGORIES) ---
         function openDokumentasiDay3Modal() {
             const modal = document.getElementById('modal-dokumentasi-day3');
@@ -2274,9 +2398,9 @@
             } catch (e) { console.error('Error loadExistingDay3Documentation:', e); }
         }
 
-        // Modify toggleModule to detect Day 2 and generic modules
+        // Modify toggleModule logic
         function toggleModule(moduleId) {
-            // 1. Special Case: Dokumentasi (5 Kategoris)
+            // 1. Special Case: Dokumentasi (5 Kategoris untuk Day 2 & 3)
             if (moduleId === 'dokumentasi') {
                 if (currentDay === 2) {
                     openDokumentasiDay2Modal();
@@ -2286,6 +2410,12 @@
                     return;
                 }
             }
+
+            // 2. Generic Modal Modules (All Days)
+            if (moduleId === 'glosarium') { openGlosariumModal(); return; }
+            if (moduleId === 'mantik' || moduleId === 'pemantik') { openPemantikModal(); return; }
+            if (moduleId === 'materi') { openMateriModal(); return; }
+            if (moduleId === 'dokumentasi') { openDokumentasiModal(); return; } // Day 1
             if (moduleId === 'video') { openVideoModal(); return; }
             if (moduleId === 'asesmen' || moduleId === 'assessment') { openAssessmentModal(); return; }
             if (moduleId === 'lkpd') { openLKPDModal(); return; }
