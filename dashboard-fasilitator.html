@@ -1555,25 +1555,27 @@
                                 </div>
                             </div>
 
-                            <!-- Nilai Gizi -->
-                            <div class="bg-orange-50/50 p-4 rounded-2xl border border-orange-100">
-                                <p class="text-[9px] font-black text-orange-500 uppercase tracking-widest mb-3">Informasi Nilai Gizi</p>
-                                <div class="grid grid-cols-4 gap-2 text-center">
-                                    <div class="bg-white p-2 rounded-xl border border-orange-100">
-                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Energi</p>
-                                        <p class="text-xs font-black text-orange-600">${data.nutrition?.kalori || 0} <span class="text-[8px] font-normal text-slate-400">kkal</span></p>
+                             <!-- Ringkasan Modal & BEP -->
+                            <div class="bg-slate-900 p-5 rounded-2xl text-white shadow-lg space-y-4">
+                                <div class="flex items-center gap-3 border-b border-slate-700 pb-3">
+                                    <div class="size-8 rounded-lg bg-pink-500 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-sm">calculate</span>
                                     </div>
-                                    <div class="bg-white p-2 rounded-xl border border-orange-100">
-                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Protein</p>
-                                        <p class="text-xs font-black text-orange-600">${data.nutrition?.protein || 0} <span class="text-[8px] font-normal text-slate-400">g</span></p>
+                                    <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-300">Ringkasan Modal & BEP</h4>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Total Modal Kelompok</p>
+                                        <p class="text-lg font-black text-white">Rp ${(data.total_modal || 0).toLocaleString('id-ID')}</p>
                                     </div>
-                                    <div class="bg-white p-2 rounded-xl border border-orange-100">
-                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Lemak</p>
-                                        <p class="text-xs font-black text-orange-600">${data.nutrition?.lemak || 0} <span class="text-[8px] font-normal text-slate-400">g</span></p>
+                                    <div>
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Rencana Harga Jual</p>
+                                        <p class="text-lg font-black text-pink-400">Rp ${(data.harga_jual_rencana || 0).toLocaleString('id-ID')}</p>
                                     </div>
-                                    <div class="bg-white p-2 rounded-xl border border-orange-100">
-                                        <p class="text-[8px] font-bold text-slate-400 uppercase">Karbo</p>
-                                        <p class="text-xs font-black text-orange-600">${data.nutrition?.karbo || 0} <span class="text-[8px] font-normal text-slate-400">g</span></p>
+                                    <div class="pt-2">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">BEP (Target Penjualan)</p>
+                                        <p class="text-lg font-black text-emerald-400">${data.bep_units || 0} Unit</p>
                                     </div>
                                 </div>
                             </div>
