@@ -2571,7 +2571,14 @@
 
                         <!-- 3. Bahan Baku Minuman (HPP) -->
                         <div class="space-y-3 pt-2">
-                            <div class="flex justify-between items-center">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1">Nama Minuman
+                                    Utama</label>
+                                <input type="text" id="input-nama-minuman"
+                                    class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none"
+                                    placeholder="Contoh: Es Teh Manis / Thai Tea">
+                            </div>
+                            <div class="flex justify-between items-center pt-2">
                                 <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
                                     <span class="material-symbols-outlined text-sm text-pink-500">local_bar</span>
                                     3. Bahan Baku Minuman
@@ -5475,6 +5482,7 @@
 
             const submissionData = {
                 nama_produk: namaProduk,
+                nama_minuman: document.getElementById('input-nama-minuman').value, // Added Drink Name
                 ingredients: ingredients,
                 drinks: drinks, // Added drinks
                 stand_items: standItems,
@@ -5553,6 +5561,7 @@
 
                     // Fill input values for visual confirmation (Optional, but good UX)
                     if (document.getElementById('input-nama-produk')) document.getElementById('input-nama-produk').value = ans.nama_produk || '';
+                    if (document.getElementById('input-nama-minuman')) document.getElementById('input-nama-minuman').value = ans.nama_minuman || '';
 
 
                     if (data.status === 'submitted') {
