@@ -1338,35 +1338,63 @@
                         const a = JSON.parse(answers[0]);
                         answerCont.innerHTML = `
                         <div class="space-y-4">
+                            <!-- Ringkasan Finansial -->
                             <div class="grid grid-cols-2 gap-3">
                                 <div class="bg-blue-50 p-4 rounded-3xl border border-blue-100 flex flex-col justify-center items-center text-center">
-                                    <p class="text-[8px] font-black text-blue-400 uppercase tracking-widest mb-1">Modal Kelas</p>
-                                    <p class="text-base font-black text-blue-700">Rp ${a.modal_kelas.toLocaleString('id-ID')}</p>
+                                    <p class="text-[8px] font-black text-blue-400 uppercase tracking-widest mb-1">Total Penjualan</p>
+                                    <p class="text-base font-black text-blue-700">Rp ${a.total_penjualan.toLocaleString('id-ID')}</p>
                                 </div>
                                 <div class="bg-emerald-50 p-4 rounded-3xl border border-emerald-100 flex flex-col justify-center items-center text-center">
                                     <p class="text-[8px] font-black text-emerald-400 uppercase tracking-widest mb-1">Laba / Rugi</p>
-                                    <p class="text-base font-black ${(a.laba - a.rugi) >= 0 ? 'text-emerald-700' : 'text-red-700'}">
-                                        Rp ${(a.laba - a.rugi).toLocaleString('id-ID')}
+                                    <p class="text-base font-black ${a.laba_rugi >= 0 ? 'text-emerald-700' : 'text-red-700'}">
+                                        Rp ${a.laba_rugi.toLocaleString('id-ID')}
                                     </p>
                                 </div>
                             </div>
-                            
-                            <div class="p-5 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-4">
-                                <div class="flex justify-between items-center">
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Produksi Makanan</p>
-                                    <p class="text-sm font-black text-slate-700">${a.prod_makanan} Unit</p>
+
+                            <!-- Detail Biaya -->
+                            <div class="p-5 bg-slate-50 rounded-[2rem] border border-slate-100 space-y-3">
+                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest text-center mb-1">Detail Biaya & Penjualan</p>
+                                <div class="flex justify-between items-center text-[11px]">
+                                    <span class="text-slate-500 font-bold uppercase truncate">Penjualan Makanan</span>
+                                    <span class="font-black text-slate-700">Rp ${a.penjualan_makanan_rp.toLocaleString('id-ID')}</span>
                                 </div>
-                                <div class="flex justify-between items-center">
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Makanan Terjual</p>
-                                    <p class="text-sm font-black text-slate-700">${a.jual_makanan} Unit</p>
+                                <div class="flex justify-between items-center text-[11px]">
+                                    <span class="text-slate-500 font-bold uppercase truncate">Penjualan Minuman</span>
+                                    <span class="font-black text-slate-700">Rp ${a.penjualan_minuman_rp.toLocaleString('id-ID')}</span>
                                 </div>
-                                <div class="flex justify-between items-center pt-2 border-t border-slate-200">
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Produksi Minuman</p>
-                                    <p class="text-sm font-black text-slate-700">${a.prod_minuman} Unit</p>
+                                <div class="h-px bg-slate-200 my-1"></div>
+                                <div class="flex justify-between items-center text-[11px]">
+                                    <span class="text-slate-500 font-bold uppercase truncate">Biaya Produksi</span>
+                                    <span class="font-black text-slate-700">Rp ${a.biaya_produksi.toLocaleString('id-ID')}</span>
                                 </div>
-                                <div class="flex justify-between items-center">
-                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Minuman Terjual</p>
-                                    <p class="text-sm font-black text-slate-700">${a.jual_minuman} Unit</p>
+                                <div class="flex justify-between items-center text-[11px]">
+                                    <span class="text-slate-500 font-bold uppercase truncate">Biaya Kemasan</span>
+                                    <span class="font-black text-slate-700">Rp ${a.biaya_kemasan.toLocaleString('id-ID')}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-[11px]">
+                                    <span class="text-slate-500 font-bold uppercase truncate">Biaya Tetap</span>
+                                    <span class="font-black text-slate-700">Rp ${a.biaya_tetap.toLocaleString('id-ID')}</span>
+                                </div>
+                            </div>
+
+                            <!-- Analisis BEP -->
+                            <div class="p-5 bg-indigo-50 rounded-[2rem] border border-indigo-100 space-y-4">
+                                <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest text-center">Analisis BEP (Break Even Point)</p>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="text-center">
+                                        <p class="text-[8px] font-bold text-indigo-400 uppercase">BEP Unit</p>
+                                        <p class="text-sm font-black text-indigo-700">${a.bep_unit.toLocaleString('id-ID')} Unit</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-[8px] font-bold text-indigo-400 uppercase">BEP Rupiah</p>
+                                        <p class="text-sm font-black text-indigo-700">Rp ${a.bep_rupiah.toLocaleString('id-ID')}</p>
+                                    </div>
+                                </div>
+                                <div class="p-2 bg-white/60 rounded-xl text-center border border-indigo-100/50">
+                                    <p class="text-[10px] font-black uppercase ${a.total_penjualan >= a.bep_rupiah ? 'text-emerald-600' : 'text-orange-500'}">
+                                        ${a.total_penjualan >= a.bep_rupiah ? '🎯 Target BEP Tercapai' : '⚠️ Belum Mencapai BEP'}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -2175,6 +2203,18 @@
                     4: "Bagus sekali! Jawabanmu sudah tepat dan lengkap. Pertahankan!",
                     5: "Luar biasa! Hasil kerja yang sangat komprehensif dan melampaui ekspektasi."
                 };
+
+                // Special feedback for Laporan Akhir (Day 3)
+                if (gradingModuleType === 'laporan_akhir') {
+                    const lapsusFeedback = {
+                        1: "Data keuangan sangat tidak lengkap atau tidak masuk akal. Mohon periksa kembali input penjualan dan biaya produksi Anda agar laporan mencerminkan kondisi bisnis yang sebenarnya.",
+                        2: "Laporan sudah dikirim, namun terdapat ketidakkonsistenan dalam perhitungan biaya tetap yang belum sesuai. Coba evaluasi kembali biaya variabel dan harga jual Anda.",
+                        3: "Laporan cukup baik, namun analisis BEP menunjukkan margin keuntungan yang masih sangat tipis. Perlu inovasi lebih lanjut untuk menekan biaya produksi dan kemasan.",
+                        4: "Laporan sangat baik dan terperinci! Analisis BEP Anda akurat dan menunjukkan potensi keuntungan yang sehat. Pertahankan kedisiplinan dalam pencatatan keuangan ini.",
+                        5: "Luar biasa! Laporan sangat profesional, analisis BEP tepat, dan target profit tercapai secara signifikan. Kelompok Anda telah menunjukkan kemandirian finansial yang nyata!"
+                    };
+                    Object.assign(feedbackMap, lapsusFeedback);
+                }
 
                 updateStarUI(rating);
 
