@@ -1840,65 +1840,167 @@
         }
 
         async function checkExistingLaporanAkhir() {
-            const statusSection = document.getElementById('laporanAkhirStatusSection');
-            const formContainer = document.getElementById('laporanAkhirFormContainer');
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) return;
-                const { data, error } = await supabaseClient.from('module_responses').select('*').eq('student_id', user.id).eq('day_id', 3).eq('module_type', 'laporan_akhir').maybeSingle();
-                if (error) throw error;
+
+                const { data, error } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', 3)
+                    .eq('module_type', 'laporan_akhir')
+                    .maybeSingle();
+
                 if (data) {
-                    const answers = JSON.parse(data.answers[0]);
+                    const payload = JSON.parse(data.answers[0]);
+
+                    if (document.getElementById('input-modal-awal')) document.getElementById('input-modal-awal').value = payload.modal_awal || 0;
+                    if (document.getElementById('input-penjualan-makan')) document.getElementById('input-penjualan-makan').value = payload.penjualan_makanan || 0;
+                    if (document.getElementById('input-penjualan-minum')) document.getElementById('input-penjualan-minum').value = payload.penjualan_minuman || 0;
+                    if (document.getElementById('input-catatan')) document.getElementById('input-catatan').value = payload.catatan || '';
+
+                    calculateLabaRugi();
+
+                    // Disable inputs
+                    document.querySelectorAll('#modalLaporanAkhir input, #modalLaporanAkhir textarea').forEach(el => {
+                        el.disabled = true;
+                        el.classList.add('bg-slate-100', 'text-slate-500');
+                    });
+
+                    const btn = document.getElementById('btnSubmitLaporanAkhir');
+                    const statusSection = document.getElementById('laporanAkhirStatusSection');
+
+                    if (btn) btn.classList.add('hidden');
+
                     if (statusSection) {
                         statusSection.classList.remove('hidden');
                         if (data.status === 'submitted') {
-                            statusSection.innerHTML = `<div class="p-4 bg-yellow-50 border border-yellow-100 rounded-2xl flex items-start gap-3"><span class="material-symbols-outlined text-yellow-500">hourglass_top</span><div><p class="text-xs font-black text-yellow-700 uppercase">Menunggu Feedback</p><p class="text-[10px] text-yellow-600 font-medium">Laporanmu sedang ditinjau oleh Fasilitator.</p></div></div>`;
+                            statusSection.innerHTML = `
+                                <div class="bg-yellow-50 p-4 rounded-2xl border border-yellow-100 flex items-center gap-3">
+                                    <div class="size-8 rounded-full bg-yellow-400 flex items-center justify-center text-white shrink-0 animate-pulse">
+                                        <span class="material-symbols-outlined text-sm">hourglass_top</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-[10px] font-black text-yellow-700 uppercase tracking-widest">Menunggu Review</p>
+                                        <p class="text-[10px] text-yellow-600 mt-0.5 font-medium">Fasilitator sedang memeriksa laporan keuanganmu.</p>
+                                    </div>
+                                </div>
+                            `;
+                            updateModuleUI('laporan-akhir', 'submitted');
                         } else if (data.status === 'reviewed') {
-                            const stars = '⭐'.repeat(data.score / 20) || '⭐';
-                            statusSection.innerHTML = `<div class="space-y-3"><div class="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-start gap-3"><span class="material-symbols-outlined text-emerald-500">verified</span><div><p class="text-xs font-black text-emerald-700 uppercase tracking-wider">Laporan Dinilai ${stars}</p><p class="text-[10px] text-emerald-600 font-medium">Fasilitator telah meninjau laporanmu.</p></div></div>${data.feedback ? `<div class="p-4 bg-white border border-emerald-100 rounded-2xl"><p class="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">Feedback Fasilitator:</p><p class="text-xs font-bold text-slate-600 italic leading-relaxed">"${data.feedback}"</p></div>` : ''}</div>`;
+                            const score = data.score || 0;
+                            const starCount = Math.round(score / 20);
+                            let starsHtml = '';
+                            for (let i = 1; i <= 5; i++) {
+                                starsHtml += `<span class="material-symbols-outlined text-2xl ${i <= starCount ? 'text-amber-400 fill-current' : 'text-slate-200'}">star</span>`;
+                            }
+
+                            statusSection.innerHTML = `
+                                <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100 space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Dinilai Fasilitator</p>
+                                        <div class="flex">${starsHtml}</div>
+                                    </div>
+                                    <div class="p-3 bg-white rounded-xl border border-emerald-100">
+                                        <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Feedback:</p>
+                                        <p class="text-xs text-slate-700 font-medium italic">"${data.feedback || 'Bagus sekali!'}"</p>
+                                    </div>
+                                </div>
+                            `;
+                            updateModuleUI('laporan-akhir', true, score);
                         }
                     }
-                    if (document.getElementById('input-modal-kelas')) document.getElementById('input-modal-kelas').value = answers.modal_kelas;
-                    if (document.getElementById('input-prod-makanan')) document.getElementById('input-prod-makanan').value = answers.prod_makanan;
-                    if (document.getElementById('input-prod-minuman')) document.getElementById('input-prod-minuman').value = answers.prod_minuman;
-                    if (document.getElementById('input-jual-makanan')) document.getElementById('input-jual-makanan').value = answers.jual_makanan;
-                    if (document.getElementById('input-jual-minuman')) document.getElementById('input-jual-minuman').value = answers.jual_minuman;
-                    if (document.getElementById('input-laba')) document.getElementById('input-laba').value = answers.laba;
-                    if (document.getElementById('input-rugi')) document.getElementById('input-rugi').value = answers.rugi;
-                    if (formContainer) formContainer.querySelectorAll('input').forEach(i => i.disabled = true);
-                    const subBtn = document.getElementById('btnSubmitLaporanAkhir');
-                    if (subBtn) subBtn.style.display = 'none';
-                } else {
-                    if (statusSection) statusSection.classList.add('hidden');
-                    if (formContainer) formContainer.querySelectorAll('input').forEach(i => { i.disabled = false; i.value = ''; });
-                    const subBtn = document.getElementById('btnSubmitLaporanAkhir');
-                    if (subBtn) subBtn.style.display = 'block';
                 }
-            } catch (err) { console.error("Error checkExistingLaporanAkhir:", err); }
+            } catch (err) {
+                console.error('Error checkExistingLaporanAkhir:', err);
+            }
+        }
+
+        function calculateLabaRugi() {
+            const modalAwal = parseFloat(document.getElementById('input-modal-awal')?.value) || 0;
+            const penjualanMakan = parseFloat(document.getElementById('input-penjualan-makan')?.value) || 0;
+            const penjualanMinum = parseFloat(document.getElementById('input-penjualan-minum')?.value) || 0;
+
+            const totalPendapatan = penjualanMakan + penjualanMinum;
+            const labaRugi = totalPendapatan - modalAwal;
+
+            const inputLabaRugi = document.getElementById('input-laba-rugi');
+            const labelStatus = document.getElementById('label-status-keuangan');
+
+            if (inputLabaRugi) {
+                inputLabaRugi.value = labaRugi.toLocaleString('id-ID');
+            }
+
+            if (labelStatus) {
+                if (labaRugi > 0) {
+                    labelStatus.textContent = 'UNTUNG';
+                    labelStatus.className = 'text-[10px] px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 font-bold';
+                } else if (labaRugi < 0) {
+                    labelStatus.textContent = 'RUGI';
+                    labelStatus.className = 'text-[10px] px-2 py-0.5 rounded-md bg-red-100 text-red-700 font-bold';
+                } else {
+                    labelStatus.textContent = 'IMPAS';
+                    labelStatus.className = 'text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 font-bold';
+                }
+            }
         }
 
         async function submitLaporanAkhir() {
             const btn = document.getElementById('btnSubmitLaporanAkhir');
-            const dataFields = {
-                modal_kelas: parseFloat(document.getElementById('input-modal-kelas').value) || 0,
-                prod_makanan: parseFloat(document.getElementById('input-prod-makanan').value) || 0,
-                prod_minuman: parseFloat(document.getElementById('input-prod-minuman').value) || 0,
-                jual_makanan: parseFloat(document.getElementById('input-jual-makanan').value) || 0,
-                jual_minuman: parseFloat(document.getElementById('input-jual-minuman').value) || 0,
-                laba: parseFloat(document.getElementById('input-laba').value) || 0,
-                rugi: parseFloat(document.getElementById('input-rugi').value) || 0
-            };
-            if (Object.values(dataFields).every(v => v === 0)) { alert("Mohon isi data laporan dengan benar."); return; }
-            btn.disabled = true; btn.innerHTML = 'Mengirim...';
+            const modalAwal = parseFloat(document.getElementById('input-modal-awal')?.value) || 0;
+            const penjualanMakan = parseFloat(document.getElementById('input-penjualan-makan')?.value) || 0;
+            const penjualanMinum = parseFloat(document.getElementById('input-penjualan-minum')?.value) || 0;
+            const catatan = document.getElementById('input-catatan')?.value || '';
+
+            if (modalAwal === 0 || (penjualanMakan === 0 && penjualanMinum === 0)) {
+                alert('Mohon lengkapi data Modal Awal dan minimal satu Penjualan (Makanan/Minuman).');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> Mengirim...';
+
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error("Sesi habis");
-                const { error } = await supabaseClient.from('module_responses').insert({ student_id: user.id, day_id: 3, module_type: 'laporan_akhir', answers: [JSON.stringify(dataFields)], status: 'submitted' });
+                if (!user) throw new Error('Silakan login ulang.');
+
+                const totalPendapatan = penjualanMakan + penjualanMinum;
+                const labaRugi = totalPendapatan - modalAwal;
+
+                const payload = {
+                    modal_awal: modalAwal,
+                    penjualan_makanan: penjualanMakan,
+                    penjualan_minuman: penjualanMinum,
+                    total_pendapatan: totalPendapatan,
+                    laba_rugi: labaRugi,
+                    catatan: catatan
+                };
+
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: 3,
+                        module_type: 'laporan_akhir',
+                        answers: [JSON.stringify(payload)],
+                        status: 'submitted'
+                    });
+
                 if (error) throw error;
-                showToast('Laporan Akhir berhasil dikirim!');
+
+                alert('✅ Laporan Akhir berhasil dikirim! Terima kasih atas partisipasimu.');
                 closeLaporanAkhirModal();
                 updateModuleUI('laporan-akhir', 'submitted');
-            } catch (err) { alert(err.message); } finally { btn.disabled = false; btn.innerHTML = 'Kirim Laporan Akhir'; }
+                checkAllModulesStatus();
+
+            } catch (err) {
+                console.error('Error submit Laporan Akhir:', err);
+                alert('Gagal mengirim laporan: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined text-lg">send</span> Kirim Laporan Akhir';
+            }
         }
 
         async function checkExistingAnalisis() {
