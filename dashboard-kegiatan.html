@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html class="light" lang="id">
 
 <head>
@@ -1968,6 +1968,14 @@
         function closeLaporanAkhirModal() {
             const modal = document.getElementById('modalLaporanAkhir');
             if (modal) {
+                // Reset Forced Styles
+                modal.style.display = 'none';
+                modal.style.zIndex = '';
+                modal.style.inset = '';
+                modal.style.opacity = '';
+                modal.style.visibility = '';
+                modal.style.backgroundColor = '';
+
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             }
@@ -2052,91 +2060,121 @@
             }
         }
 
-        function calculateLabaRugi() {
-            const modalAwal = parseFloat(document.getElementById('input-modal-awal')?.value) || 0;
-            const penjualanMakan = parseFloat(document.getElementById('input-penjualan-makan')?.value) || 0;
-            const penjualanMinum = parseFloat(document.getElementById('input-penjualan-minum')?.value) || 0;
+function calculateLabaRugi() {
+    // FIXED IDS matching HTML:
+    // input-modal-kelas (Rp) -> modalAwal
+    // input-jual-makanan (Unit) -> jualMakanUnit
+    // input-jual-minuman (Unit) -> jualMinumUnit
 
-            const totalPendapatan = penjualanMakan + penjualanMinum;
-            const labaRugi = totalPendapatan - modalAwal;
+    const modalAwal = parseFloat(document.getElementById('input-modal-kelas')?.value) || 0;
+    let jualMakanUnit = parseFloat(document.getElementById('input-jual-makanan')?.value) || 0;
+    let jualMinumUnit = parseFloat(document.getElementById('input-jual-minuman')?.value) || 0;
 
-            const inputLabaRugi = document.getElementById('input-laba-rugi');
-            const labelStatus = document.getElementById('label-status-keuangan');
+    // Logika Harga:
+    // Jika user input < 1000, kita asumsikan itu UNIT dan dikali harga standar.
+    // Harga standar: Makanan = 2000, Minuman = 1000.
+    // Jika user input >= 1000, kita asumsikan itu RUPIAH langsung.
 
-            if (inputLabaRugi) {
-                inputLabaRugi.value = labaRugi.toLocaleString('id-ID');
-            }
+    let jualMakanRp = jualMakanUnit;
+    let jualMinumRp = jualMinumUnit;
 
-            if (labelStatus) {
-                if (labaRugi > 0) {
-                    labelStatus.textContent = 'UNTUNG';
-                    labelStatus.className = 'text-[10px] px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 font-bold';
-                } else if (labaRugi < 0) {
-                    labelStatus.textContent = 'RUGI';
-                    labelStatus.className = 'text-[10px] px-2 py-0.5 rounded-md bg-red-100 text-red-700 font-bold';
-                } else {
-                    labelStatus.textContent = 'IMPAS';
-                    labelStatus.className = 'text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 font-bold';
-                }
-            }
+    if (jualMakanUnit > 0 && jualMakanUnit < 1000) jualMakanRp = jualMakanUnit * 2000;
+    if (jualMinumUnit > 0 && jualMinumUnit < 1000) jualMinumRp = jualMinumUnit * 1000;
+
+    const totalPendapatan = jualMakanRp + jualMinumRp;
+    const labaRugi = totalPendapatan - modalAwal;
+
+    const inputLaba = document.getElementById('input-laba');
+    const labelStatus = document.getElementById('label-status-keuangan');
+
+    if (inputLaba) {
+        inputLaba.value = labaRugi;
+    }
+
+    if (labelStatus) {
+        if (labaRugi > 0) {
+            labelStatus.textContent = 'UNTUNG';
+            labelStatus.className = 'text-[10px] px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 font-bold';
+        } else if (labaRugi < 0) {
+            labelStatus.textContent = 'RUGI';
+            labelStatus.className = 'text-[10px] px-2 py-0.5 rounded-md bg-red-100 text-red-700 font-bold';
+        } else {
+            labelStatus.textContent = 'IMPAS';
+            labelStatus.className = 'text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 font-bold';
         }
+    }
+}
 
-        async function submitLaporanAkhir() {
-            const btn = document.getElementById('btnSubmitLaporanAkhir');
-            const modalAwal = parseFloat(document.getElementById('input-modal-awal')?.value) || 0;
-            const penjualanMakan = parseFloat(document.getElementById('input-penjualan-makan')?.value) || 0;
-            const penjualanMinum = parseFloat(document.getElementById('input-penjualan-minum')?.value) || 0;
-            const catatan = document.getElementById('input-catatan')?.value || '';
+async function submitLaporanAkhir() {
+    const btn = document.getElementById('btnSubmitLaporanAkhir');
+    const modalAwal = parseFloat(document.getElementById('input-modal-kelas')?.value) || 0;
+    const jualMakanUnit = parseFloat(document.getElementById('input-jual-makanan')?.value) || 0;
+    const jualMinumUnit = parseFloat(document.getElementById('input-jual-minuman')?.value) || 0;
+    const catatan = document.getElementById('input-catatan')?.value || '';
 
-            if (modalAwal === 0 || (penjualanMakan === 0 && penjualanMinum === 0)) {
-                alert('Mohon lengkapi data Modal Awal dan minimal satu Penjualan (Makanan/Minuman).');
-                return;
-            }
+    // Validasi: Modal wajib, dan minimal ada 1 penjualan (unit atau rupiah)
+    if (modalAwal === 0) {
+        alert('Mohon isi Modal Awal Kelas (Rp).');
+        return;
+    }
+    if (jualMakanUnit === 0 && jualMinumUnit === 0) {
+        alert('Mohon isi minimal satu data Penjualan (Makanan atau Minuman).');
+        return;
+    }
 
-            btn.disabled = true;
-            btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> Mengirim...';
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> Mengirim...';
 
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error('Silakan login ulang.');
+    try {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) throw new Error('Silakan login ulang.');
 
-                const totalPendapatan = penjualanMakan + penjualanMinum;
-                const labaRugi = totalPendapatan - modalAwal;
+        // Calculate Totals ensure logic matches calculateLabaRugi
+        let jualMakanRp = jualMakanUnit;
+        let jualMinumRp = jualMinumUnit;
 
-                const payload = {
-                    modal_awal: modalAwal,
-                    penjualan_makanan: penjualanMakan,
-                    penjualan_minuman: penjualanMinum,
-                    total_pendapatan: totalPendapatan,
-                    laba_rugi: labaRugi,
-                    catatan: catatan
-                };
+        if (jualMakanUnit > 0 && jualMakanUnit < 1000) jualMakanRp = jualMakanUnit * 2000;
+        if (jualMinumUnit > 0 && jualMinumUnit < 1000) jualMinumRp = jualMinumUnit * 1000;
 
-                const { error } = await supabaseClient
-                    .from('module_responses')
-                    .insert({
-                        student_id: user.id,
-                        day_id: 3,
-                        module_type: 'laporan_akhir',
-                        answers: [JSON.stringify(payload)],
-                        status: 'submitted'
-                    });
+        const totalPendapatan = jualMakanRp + jualMinumRp;
+        const labaRugi = totalPendapatan - modalAwal;
 
-                if (error) throw error;
+        const payload = {
+            modal_awal: modalAwal,
+            penjualan_makanan: jualMakanUnit,
+            penjualan_minuman: jualMinumUnit,
+            penjualan_makanan_rp: jualMakanRp,
+            penjualan_minuman_rp: jualMinumRp,
+            total_pendapatan: totalPendapatan,
+            laba_rugi: labaRugi,
+            catatan: catatan
+        };
 
-                alert('✅ Laporan Akhir berhasil dikirim! Terima kasih atas partisipasimu.');
-                closeLaporanAkhirModal();
-                updateModuleUI('laporan-akhir', 'submitted');
-                checkAllModulesStatus();
+        const { error } = await supabaseClient
+            .from('module_responses')
+            .insert({
+                student_id: user.id,
+                day_id: 3,
+                module_type: 'laporan_akhir',
+                answers: [JSON.stringify(payload)],
+                status: 'submitted'
+            });
 
-            } catch (err) {
-                console.error('Error submit Laporan Akhir:', err);
-                alert('Gagal mengirim laporan: ' + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<span class="material-symbols-outlined text-lg">send</span> Kirim Laporan Akhir';
-            }
-        }
+        if (error) throw error;
+
+        alert('✅ Laporan Akhir berhasil dikirim! Terima kasih atas partisipasimu.');
+        closeLaporanAkhirModal();
+        updateModuleUI('laporan-akhir', 'submitted');
+        checkAllModulesStatus();
+
+    } catch (err) {
+        console.error('Error submit Laporan Akhir:', err);
+        alert('Gagal mengirim laporan: ' + err.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined text-lg">send</span> Kirim Laporan Akhir';
+    }
+}
 
         async function checkExistingAnalisis() {
             try {
@@ -3503,31 +3541,47 @@
 
                         <!-- 3. Rekapitulasi Laba/Rugi -->
                         <div class="space-y-4 pt-2">
-                            <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm text-emerald-500">balance</span> 3. Laba
-                                / Rugi
-                            </h4>
-                            <div class="space-y-3 p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-100">
-                                        <label
-                                            class="block text-[10px] font-bold text-emerald-600 mb-1 uppercase tracking-wider">Keuntungan
-                                            (Rp)</label>
-                                        <input type="number" id="input-laba"
-                                            class="w-full bg-transparent text-sm font-black text-emerald-700 outline-none"
-                                            placeholder="0">
-                                    </div>
-                                    <div class="p-3 bg-red-50 rounded-2xl border border-red-100">
-                                        <label
-                                            class="block text-[10px] font-bold text-red-600 mb-1 uppercase tracking-wider">Kerugian
-                                            (Rp)</label>
-                                        <input type="number" id="input-rugi"
-                                            class="w-full bg-transparent text-sm font-black text-red-700 outline-none"
-                                            placeholder="0">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<!-- 3. Rekapitulasi Laba/Rugi -->
+<div class="space-y-4 pt-2">
+    <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm text-emerald-500">balance</span> 3. Laba
+        / Rugi
+    </h4>
+    <div class="space-y-3 p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
+        <div class="flex items-center justify-between mb-1">
+            <span class="text-[10px] font-bold text-slate-400 uppercase">Status Keuangan</span>
+            <span id="label-status-keuangan"
+                class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 font-bold">-</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-100">
+                <label class="block text-[10px] font-bold text-emerald-600 mb-1 uppercase tracking-wider">Keuntungan
+                    (Rp)</label>
+                <input type="number" id="input-laba"
+                    class="w-full bg-transparent text-sm font-black text-emerald-700 outline-none" placeholder="0"
+                    readonly>
+            </div>
+            <div class="p-3 bg-red-50 rounded-2xl border border-red-100">
+                <label class="block text-[10px] font-bold text-red-600 mb-1 uppercase tracking-wider">Kerugian
+                    (Rp)</label>
+                <input type="number" id="input-rugi"
+                    class="w-full bg-transparent text-sm font-black text-red-700 outline-none" placeholder="0" readonly>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4. Catatan (NEW) -->
+<div class="space-y-4 pt-2">
+    <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm text-emerald-500">edit_note</span> 4. Catatan Evaluasi
+    </h4>
+    <div class="p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
+        <textarea id="input-catatan" rows="3"
+            class="w-full text-sm font-medium text-slate-700 placeholder:text-slate-300 outline-none resize-none"
+            placeholder="Tuliskan evaluasi kegiatan menu dan penjualan hari ini..."></textarea>
+    </div>
+</div>
 
                         <!-- Submit Button -->
                         <div class="pt-6 pb-2">
