@@ -605,7 +605,13 @@ const workshopContent = {
         asesmen: []
     },
     day3: {
-        pemantik: ["Materi Hari 3 Belum Tersedia"],
+        pemantik: [
+            "1. Bagaimana perasaanmu menghadapi puncak acara hari ini?",
+            "2. Apa hal yang paling kamu banggakan dari hasil kerja keras timmu?",
+            "3. Inovasi apa yang paling ingin kamu tunjukkan kepada pengunjung?",
+            "4. Apa satu pelajaran paling berharga yang kamu dapat dari kegiatan ini?",
+            "5. Pesan semangat apa yang ingin kamu berikan untuk kelompokmu hari ini?"
+        ],
         materi: [
             `<div class="animate-slide-up flex flex-col items-center justify-center py-20 opacity-50">
                 <span class="material-symbols-outlined text-6xl mb-4">construction</span>
