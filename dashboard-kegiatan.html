@@ -1939,11 +1939,17 @@
             console.log("Opening Laporan Akhir Modal...");
             const modal = document.getElementById('modalLaporanAkhir');
             if (modal) {
+                console.log("Modal found. Classes before:", modal.className);
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
+                modal.style.display = 'flex'; // FORCE DISPLAY
+                modal.style.zIndex = '9999'; // FORCE Z-INDEX
+                console.log("Classes after:", modal.className);
+                console.log("Style display:", modal.style.display);
                 checkExistingLaporanAkhir();
             } else {
                 console.error("modalLaporanAkhir not found!");
+                alert("Error: Modal Laporan Akhir tidak ditemukan di halaman ini.");
             }
         }
 
