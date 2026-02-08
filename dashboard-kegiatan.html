@@ -1061,6 +1061,7 @@
                         let moduleId = r.module_type;
                         if (moduleId === 'kuis') moduleId = 'asesmen';
                         if (moduleId === 'summary') moduleId = 'materi';
+                        if (moduleId === 'bep_analisis') moduleId = 'bep';
 
                         dbModules.add(moduleId);
 
@@ -1080,7 +1081,7 @@
                 }
 
                 // Check for deleted modules: if localStorage says true but not in database, reset to false
-                const allModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi'];
+                const allModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'bep', 'dokumentasi', 'glosarium', 'refleksi'];
                 allModules.forEach(moduleId => {
                     // If localStorage has this as completed/submitted but database doesn't have it, reset
                     if (studentProgress[dayKey][moduleId] === true && !dbModules.has(moduleId)) {
