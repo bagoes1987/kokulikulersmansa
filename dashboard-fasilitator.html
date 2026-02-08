@@ -630,6 +630,7 @@
             let selectedResponseId = null;
             let allStudents = []; // State global untuk pencarian
             let allResponses = []; // State global untuk progres
+            let selectedStudentIdForGrading = null; // Added for bulk updates
 
             async function init() {
                 try {
@@ -1128,98 +1129,95 @@
                 modal.style.removeProperty('opacity');
                 modal.style.removeProperty('visibility');
                 modal.style.removeProperty('z-index');
-                let selectedResponseId = null;
-                let currentDetailStudentId = null;
-                let currentDetailStudentName = null;
-                let selectedStudentIdForGrading = null; // Added for bulk updates
+            }
 
-                async function openGradingModal(studentId, studentName, filterDay = null, filterModule = null) {
-                    // console.log('🔍 Menyiapkan modal penilaian untuk:', studentName, '(' + studentId + ')', 'Filter:', filterDay, filterModule);
-                    selectedStudentIdForGrading = studentId; // Set global variable
-                    const modal = document.getElementById('modalPenilaian');
-                    modal.classList.remove('hidden');
-                    document.getElementById('gradingStudentName').textContent = studentName;
+            async function openGradingModal(studentId, studentName, filterDay = null, filterModule = null) {
+                // console.log('🔍 Menyiapkan modal penilaian untuk:', studentName, '(' + studentId + ')', 'Filter:', filterDay, filterModule);
+                selectedStudentIdForGrading = studentId; // Set global variable
+                const modal = document.getElementById('modalPenilaian');
+                modal.classList.remove('hidden');
+                document.getElementById('gradingStudentName').textContent = studentName;
 
-                    const answerCont = document.getElementById('studentAnswers');
-                    answerCont.innerHTML = '<div class="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse">Memuat jawaban...</div>';
+                const answerCont = document.getElementById('studentAnswers');
+                answerCont.innerHTML = '<div class="text-[10px] font-black uppercase tracking-widest text-slate-400 animate-pulse">Memuat jawaban...</div>';
 
-                    try {
-                        let query = supabaseClient.from('module_responses')
-                            .select('*')
-                            .eq('student_id', studentId);
+                try {
+                    let query = supabaseClient.from('module_responses')
+                        .select('*')
+                        .eq('student_id', studentId);
 
-                        if (filterDay) query = query.eq('day_id', parseInt(filterDay));
-                        if (filterModule) query = query.eq('module_type', filterModule);
+                    if (filterDay) query = query.eq('day_id', parseInt(filterDay));
+                    if (filterModule) query = query.eq('module_type', filterModule);
 
-                        const { data: responses, error } = await query
-                            .order('created_at', { ascending: false });
+                    const { data: responses, error } = await query
+                        .order('created_at', { ascending: false });
 
-                        if (error) throw error;
+                    if (error) throw error;
 
-                        if (!responses || !responses.length) {
-                            console.log('ℹ️ Belum ada respon untuk kriteria ini.');
-                            answerCont.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase tracking-widest text-[10px]">Belum ada jawaban' + (filterModule ? ' ' + filterModule : '') + '.</div>';
-                            return;
-                        }
+                    if (!responses || !responses.length) {
+                        console.log('ℹ️ Belum ada respon untuk kriteria ini.');
+                        answerCont.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase tracking-widest text-[10px]">Belum ada jawaban' + (filterModule ? ' ' + filterModule : '') + '.</div>';
+                        return;
+                    }
 
-                        console.log('✅ Respon ditemukan:', responses.length, 'data');
+                    console.log('✅ Respon ditemukan:', responses.length, 'data');
 
-                        // Priority: Picking 'submitted' response first within the filtered set
-                        let r = responses.find(res => res.status === 'submitted');
-                        if (!r) {
-                            r = responses.find(res => !res.score) || responses[0];
-                        }
+                    // Priority: Picking 'submitted' response first within the filtered set
+                    let r = responses.find(res => res.status === 'submitted');
+                    if (!r) {
+                        r = responses.find(res => !res.score) || responses[0];
+                    }
 
-                        if (!r) {
-                            alert('Gagal: Tidak bisa menentukan data mana yang akan dinilai.');
-                            return;
-                        }
+                    if (!r) {
+                        alert('Gagal: Tidak bisa menentukan data mana yang akan dinilai.');
+                        return;
+                    }
 
-                        selectedResponseId = r.id;
-                        const typeLabels = {
-                            'pemantik': 'Pertanyaan Pemantik',
-                            'materi': 'Ringkasan Materi',
-                            'dokumentasi': 'Dokumentasi Foto',
-                            'lkpd': 'LKPD Digital',
-                            'kuis': 'Assessment',
-                            'video': 'Video Belajar',
-                            'glosarium': 'Glosarium',
-                            'refleksi': 'Refleksi'
-                        };
-                        document.getElementById('gradingModuleTitle').textContent = `HARI ${r.day_id} • ${typeLabels[r.module_type] || r.module_type.toUpperCase()}`;
+                    selectedResponseId = r.id;
+                    const typeLabels = {
+                        'pemantik': 'Pertanyaan Pemantik',
+                        'materi': 'Ringkasan Materi',
+                        'dokumentasi': 'Dokumentasi Foto',
+                        'lkpd': 'LKPD Digital',
+                        'kuis': 'Assessment',
+                        'video': 'Video Belajar',
+                        'glosarium': 'Glosarium',
+                        'refleksi': 'Refleksi'
+                    };
+                    document.getElementById('gradingModuleTitle').textContent = `HARI ${r.day_id} • ${typeLabels[r.module_type] || r.module_type.toUpperCase()}`;
 
-                        const answers = Array.isArray(r.answers) ? r.answers : [];
+                    const answers = Array.isArray(r.answers) ? r.answers : [];
 
-                        if (r.module_type === 'dokumentasi') {
-                            // Check if Day 2 (5 categories) or other days (single photo)
-                            if (r.day_id === 2) {
-                                // Day 2: Fetch all 5 category photos
-                                const { data: allDocs, error: docError } = await supabaseClient
-                                    .from('module_responses')
-                                    .select('*')
-                                    .eq('student_id', studentId)
-                                    .eq('day_id', 2)
-                                    .eq('module_type', 'dokumentasi')
-                                    .order('category');
+                    if (r.module_type === 'dokumentasi') {
+                        // Check if Day 2 (5 categories) or other days (single photo)
+                        if (r.day_id === 2) {
+                            // Day 2: Fetch all 5 category photos
+                            const { data: allDocs, error: docError } = await supabaseClient
+                                .from('module_responses')
+                                .select('*')
+                                .eq('student_id', studentId)
+                                .eq('day_id', 2)
+                                .eq('module_type', 'dokumentasi')
+                                .order('category');
 
-                                if (docError) {
-                                    console.error('Error fetching Day 2 docs:', docError);
-                                    answerCont.innerHTML = `<div class="text-red-500 text-xs">Error loading photos</div>`;
-                                } else {
-                                    const categories = {
-                                        'makanan': '1. Pembuatan Makanan',
-                                        'minuman': '2. Pembuatan Minuman',
-                                        'stand': '3. Pembuatan Stand Booth',
-                                        'iklan': '4. Pembuatan Iklan',
-                                        'presentasi': '5. Presentasi Produk'
-                                    };
+                            if (docError) {
+                                console.error('Error fetching Day 2 docs:', docError);
+                                answerCont.innerHTML = `<div class="text-red-500 text-xs">Error loading photos</div>`;
+                            } else {
+                                const categories = {
+                                    'makanan': '1. Pembuatan Makanan',
+                                    'minuman': '2. Pembuatan Minuman',
+                                    'stand': '3. Pembuatan Stand Booth',
+                                    'iklan': '4. Pembuatan Iklan',
+                                    'presentasi': '5. Presentasi Produk'
+                                };
 
-                                    let photosHTML = '';
-                                    for (const [catKey, catLabel] of Object.entries(categories)) {
-                                        const doc = allDocs.find(d => d.category === catKey);
-                                        const photoUrl = doc && doc.answers && doc.answers[0] ? doc.answers[0] : '';
+                                let photosHTML = '';
+                                for (const [catKey, catLabel] of Object.entries(categories)) {
+                                    const doc = allDocs.find(d => d.category === catKey);
+                                    const photoUrl = doc && doc.answers && doc.answers[0] ? doc.answers[0] : '';
 
-                                        photosHTML += `
+                                    photosHTML += `
                                     <div class="bg-white p-3 rounded-2xl border border-indigo-100">
                                         <p class="text-[9px] font-black text-indigo-600 uppercase tracking-wider mb-2">${catLabel}</p>
                                         ${photoUrl ? `
@@ -1233,9 +1231,9 @@
                                         `}
                                     </div>
                                     `;
-                                    }
+                                }
 
-                                    answerCont.innerHTML = `
+                                answerCont.innerHTML = `
                                 <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100">
                                     <p class="text-[8px] font-black text-indigo-400 uppercase tracking-wider mb-4">Dokumentasi Foto - 5 Kategori</p>
                                     <div class="grid grid-cols-1 gap-3">
@@ -1244,11 +1242,11 @@
                                     <p class="text-[9px] text-indigo-300 mt-3 italic font-medium text-center">Klik foto untuk memperbesar</p>
                                 </div>
                                 `;
-                                }
-                            } else {
-                                // Other days: Single photo display
-                                const photoUrl = answers[0] || '';
-                                answerCont.innerHTML = `
+                            }
+                        } else {
+                            // Other days: Single photo display
+                            const photoUrl = answers[0] || '';
+                            answerCont.innerHTML = `
                             <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100 flex flex-col items-center">
                                 <p class="text-[8px] font-black text-indigo-400 uppercase tracking-wider mb-3">Foto Dokumentasi</p>
                                 <a href="${photoUrl}" target="_blank" class="w-full flex justify-center">
@@ -1257,13 +1255,13 @@
                                 <p class="text-[9px] text-indigo-300 mt-2 italic font-medium">Klik foto untuk memperbesar</p>
                             </div>
                             `;
-                            }
+                        }
 
-                        } else if (r.module_type === 'materi') {
-                            // Special display for Material Summary
-                            const summaryText = answers[0] || '';
-                            const words = summaryText.trim() ? summaryText.trim().split(/\s+/).length : 0;
-                            answerCont.innerHTML = `
+                    } else if (r.module_type === 'materi') {
+                        // Special display for Material Summary
+                        const summaryText = answers[0] || '';
+                        const words = summaryText.trim() ? summaryText.trim().split(/\s+/).length : 0;
+                        answerCont.innerHTML = `
                         <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
                             <div class="flex justify-between items-center mb-2">
                                 <p class="text-[8px] font-black text-blue-400 uppercase tracking-wider">Ringkasan Materi</p>
@@ -1272,11 +1270,11 @@
                             <p class="text-xs text-slate-700 font-medium leading-relaxed whitespace-pre-wrap">${summaryText}</p>
                         </div>
                         `;
-                        } else if (r.module_type === 'video') {
-                            // Special display for Video Summary
-                            const summaryText = answers[0] || '';
-                            const words = summaryText.trim() ? summaryText.trim().split(/\s+/).length : 0;
-                            answerCont.innerHTML = `
+                    } else if (r.module_type === 'video') {
+                        // Special display for Video Summary
+                        const summaryText = answers[0] || '';
+                        const words = summaryText.trim() ? summaryText.trim().split(/\s+/).length : 0;
+                        answerCont.innerHTML = `
                         <div class="bg-red-50 p-4 rounded-2xl border border-red-100">
                             <div class="flex justify-between items-center mb-2">
                                 <p class="text-[8px] font-black text-red-400 uppercase tracking-wider">Ringkasan Video Belajar</p>
@@ -1285,36 +1283,36 @@
                             <p class="text-xs text-slate-700 font-medium leading-relaxed whitespace-pre-wrap">${summaryText}</p>
                         </div>
                         `;
-                        } else if (r.module_type === 'kuis' || r.module_type === 'assessment') {
-                            // Display Assessment Results
-                            let userAnswers = {};
-                            try {
-                                userAnswers = JSON.parse(answers[0]);
-                            } catch (e) { console.error('Error parsing answers JSON', e); }
+                    } else if (r.module_type === 'kuis' || r.module_type === 'assessment') {
+                        // Display Assessment Results
+                        let userAnswers = {};
+                        try {
+                            userAnswers = JSON.parse(answers[0]);
+                        } catch (e) { console.error('Error parsing answers JSON', e); }
 
-                            if (typeof assessmentQuestions !== 'undefined') {
-                                answerCont.innerHTML = assessmentQuestions.map((q, idx) => {
-                                    const userIdx = userAnswers[q.id];
-                                    const isCorrect = userIdx === q.correctIndex;
-                                    const userOpt = q.options[userIdx];
-                                    const correctOpt = q.options[q.correctIndex];
+                        if (typeof assessmentQuestions !== 'undefined') {
+                            answerCont.innerHTML = assessmentQuestions.map((q, idx) => {
+                                const userIdx = userAnswers[q.id];
+                                const isCorrect = userIdx === q.correctIndex;
+                                const userOpt = q.options[userIdx];
+                                const correctOpt = q.options[q.correctIndex];
 
-                                    let statusBadge = '';
-                                    let bgClass = 'bg-slate-50 border-slate-100';
+                                let statusBadge = '';
+                                let bgClass = 'bg-slate-50 border-slate-100';
 
-                                    if (userIdx !== undefined) {
-                                        if (isCorrect) {
-                                            bgClass = 'bg-emerald-50 border-emerald-100';
-                                            statusBadge = '<span class="text-[9px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-lg">Benar</span>';
-                                        } else {
-                                            bgClass = 'bg-red-50 border-red-100';
-                                            statusBadge = '<span class="text-[9px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-lg">Salah</span>';
-                                        }
+                                if (userIdx !== undefined) {
+                                    if (isCorrect) {
+                                        bgClass = 'bg-emerald-50 border-emerald-100';
+                                        statusBadge = '<span class="text-[9px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-lg">Benar</span>';
                                     } else {
-                                        statusBadge = '<span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-lg">Tidak Dijawab</span>';
+                                        bgClass = 'bg-red-50 border-red-100';
+                                        statusBadge = '<span class="text-[9px] font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-lg">Salah</span>';
                                     }
+                                } else {
+                                    statusBadge = '<span class="text-[9px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-lg">Tidak Dijawab</span>';
+                                }
 
-                                    return `
+                                return `
                                 <div class="${bgClass} p-4 rounded-2xl border mb-3">
                                     <div class="flex justify-between items-start mb-2">
                                         <p class="text-[10px] font-bold text-slate-500">Soal ${q.id}</p>
@@ -1334,24 +1332,24 @@
                                     </div>` : ''}
                                 </div>
                                 `;
-                                }).join('');
-                            } else {
-                                answerCont.innerHTML = '<div class="text-center text-red-400 text-xs">Gagal memuat bank soal.</div>';
-                            }
-                        } else if (r.module_type === 'lkpd') {
-                            // Display LKPD Results (JSON)
-                            let lkpdData = {};
-                            try {
-                                lkpdData = JSON.parse(answers[0]);
-                            } catch (e) {
-                                console.error('Error parsing LKPD JSON', e);
-                                answerCont.innerHTML = `<div class="p-4 bg-red-50 text-red-500 text-xs rounded-xl">${answers[0]}</div>`;
-                                return;
-                            }
+                            }).join('');
+                        } else {
+                            answerCont.innerHTML = '<div class="text-center text-red-400 text-xs">Gagal memuat bank soal.</div>';
+                        }
+                    } else if (r.module_type === 'lkpd') {
+                        // Display LKPD Results (JSON)
+                        let lkpdData = {};
+                        try {
+                            lkpdData = JSON.parse(answers[0]);
+                        } catch (e) {
+                            console.error('Error parsing LKPD JSON', e);
+                            answerCont.innerHTML = `<div class="p-4 bg-red-50 text-red-500 text-xs rounded-xl">${answers[0]}</div>`;
+                            return;
+                        }
 
-                            let html = '<div class="space-y-4">';
-                            if (lkpdData.lkpd1) {
-                                html += `
+                        let html = '<div class="space-y-4">';
+                        if (lkpdData.lkpd1) {
+                            html += `
                                 <div class="p-4 bg-orange-50 border border-orange-100 rounded-2xl">
                                     <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-3">LKPD 1: Definisi & Budaya</p>
                                     <div class="space-y-3">
@@ -1376,21 +1374,21 @@
                                     </div>
                                 </div>
                             `;
-                            }
+                        }
 
-                            if (lkpdData.lkpd2) {
-                                let regionHtml = '';
-                                const regions = [
-                                    { id: 'sumatra', name: 'Sumatra', icon: 'landscape', color: 'text-emerald-500' },
-                                    { id: 'jawa', name: 'Jawa', icon: 'temple_hindu', color: 'text-blue-500' },
-                                    { id: 'sulawesi', name: 'Sulawesi', icon: 'waves', color: 'text-red-500' },
-                                    { id: 'bali', name: 'Bali', icon: 'surfing', color: 'text-indigo-500' },
-                                    { id: 'papua', name: 'Papua', icon: 'forest', color: 'text-orange-500' }
-                                ];
+                        if (lkpdData.lkpd2) {
+                            let regionHtml = '';
+                            const regions = [
+                                { id: 'sumatra', name: 'Sumatra', icon: 'landscape', color: 'text-emerald-500' },
+                                { id: 'jawa', name: 'Jawa', icon: 'temple_hindu', color: 'text-blue-500' },
+                                { id: 'sulawesi', name: 'Sulawesi', icon: 'waves', color: 'text-red-500' },
+                                { id: 'bali', name: 'Bali', icon: 'surfing', color: 'text-indigo-500' },
+                                { id: 'papua', name: 'Papua', icon: 'forest', color: 'text-orange-500' }
+                            ];
 
-                                regions.forEach(reg => {
-                                    const d = lkpdData.lkpd2[reg.id] || {};
-                                    regionHtml += `
+                            regions.forEach(reg => {
+                                const d = lkpdData.lkpd2[reg.id] || {};
+                                regionHtml += `
                                     <div class="p-3 bg-white rounded-xl border border-slate-100 flex items-start gap-3">
                                         <div class="size-8 rounded-full bg-slate-50 flex items-center justify-center ${reg.color} shrink-0">
                                             <span class="material-symbols-outlined text-[16px]">${reg.icon}</span>
@@ -1405,47 +1403,47 @@
                                         </div>
                                     </div>
                                 `;
-                                });
+                            });
 
-                                html += `
+                            html += `
                                 <div class="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl">
                                     <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-3">LKPD 2: Atlas Kuliner</p>
                                     <div class="grid grid-cols-2 gap-2">
                                         ${regionHtml}
                                     </div>
                                 </div>`;
-                            }
+                        }
 
-                            if (lkpdData.lkpd3) {
-                                let lkpd3QuestionsHtml = '';
-                                const lkpd3Labels = [
-                                    "Sumber Karbohidrat", "Serat Umbi vs Terigu", "Gizi Bika Ambon", "Serat Kelapa",
-                                    "Gizi Kacang Hijau", "Mineral Pisang", "Keunggulan Sagu", "Gula Aren vs Pasir",
-                                    "Gizi Panada", "Manfaat Santan"
-                                ];
-                                for (let i = 1; i <= 10; i++) {
-                                    const ans = lkpdData.lkpd3[`q${i}`];
-                                    if (ans) {
-                                        lkpd3QuestionsHtml += `
+                        if (lkpdData.lkpd3) {
+                            let lkpd3QuestionsHtml = '';
+                            const lkpd3Labels = [
+                                "Sumber Karbohidrat", "Serat Umbi vs Terigu", "Gizi Bika Ambon", "Serat Kelapa",
+                                "Gizi Kacang Hijau", "Mineral Pisang", "Keunggulan Sagu", "Gula Aren vs Pasir",
+                                "Gizi Panada", "Manfaat Santan"
+                            ];
+                            for (let i = 1; i <= 10; i++) {
+                                const ans = lkpdData.lkpd3[`q${i}`];
+                                if (ans) {
+                                    lkpd3QuestionsHtml += `
                                         <div class="p-3 bg-white rounded-xl border border-emerald-50 mb-2">
                                             <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">${i}. ${lkpd3Labels[i - 1] || 'Pertanyaan'}</p>
                                             <p class="text-xs text-slate-700 font-medium">${ans}</p>
                                         </div>`;
-                                    }
                                 }
-                                if (lkpd3QuestionsHtml) {
-                                    html += `
+                            }
+                            if (lkpd3QuestionsHtml) {
+                                html += `
                                     <div class="p-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl">
                                         <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-3">LKPD 3: Analisis Gizi & Bahan</p>
                                         <div class="space-y-1">${lkpd3QuestionsHtml}</div>
                                     </div>`;
-                                }
                             }
+                        }
 
-                            if (lkpdData.lkpd4) {
-                                const renderPart = (title, data, color) => {
-                                    if (!data || !data.nama && !data.alat) return '';
-                                    return `
+                        if (lkpdData.lkpd4) {
+                            const renderPart = (title, data, color) => {
+                                if (!data || !data.nama && !data.alat) return '';
+                                return `
                                     <div class="p-4 bg-${color}-50/50 border border-${color}-100 rounded-2xl">
                                         <p class="text-[9px] font-black text-${color}-600 uppercase tracking-widest mb-3">${title}</p>
                                         <div class="space-y-2">
@@ -1457,23 +1455,23 @@
                                             ${data.alat ? `<p class="text-[10px] text-slate-600"><strong>Alat:</strong> ${data.alat}</p>` : ''}
                                         </div>
                                     </div>`;
-                                };
+                            };
 
-                                html += `
+                            html += `
                                 <div class="space-y-4">
                                     <p class="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] px-2">LKPD 4: Inovasi Bazar</p>
                                     ${renderPart('Produk Makanan', lkpdData.lkpd4.makan, 'indigo')}
                                     ${renderPart('Produk Minuman', lkpdData.lkpd4.minum, 'blue')}
                                     ${renderPart('Persiapan Bazar', lkpdData.lkpd4.bazar, 'amber')}
                                 </div>`;
-                            }
+                        }
 
-                            html += '</div>';
-                            answerCont.innerHTML = html;
-                        } else if (r.module_type === 'glosarium') {
-                            // Display Glosarium Answer
-                            const glosText = answers[0] || '';
-                            answerCont.innerHTML = `
+                        html += '</div>';
+                        answerCont.innerHTML = html;
+                    } else if (r.module_type === 'glosarium') {
+                        // Display Glosarium Answer
+                        const glosText = answers[0] || '';
+                        answerCont.innerHTML = `
                         <div class="bg-cyan-50 p-4 rounded-2xl border border-cyan-100">
                             <div class="flex justify-between items-center mb-2">
                                 <p class="text-[8px] font-black text-cyan-500 uppercase tracking-wider">Jawaban Glosarium (5 Istilah Baru)</p>
@@ -1482,11 +1480,11 @@
                         </div>
                         `;
 
-                        } else if (r.module_type === 'bep_analisis') {
-                            let data = {};
-                            try { data = JSON.parse(answers[0]); } catch (e) { console.error(e); }
+                    } else if (r.module_type === 'bep_analisis') {
+                        let data = {};
+                        try { data = JSON.parse(answers[0]); } catch (e) { console.error(e); }
 
-                            answerCont.innerHTML = `
+                        answerCont.innerHTML = `
                         <div class="space-y-4">
                             <div class="bg-pink-50 p-4 rounded-2xl border border-pink-100">
                                 <p class="text-[9px] font-black text-pink-500 uppercase tracking-widest mb-1">Nama Produk</p>
@@ -1553,27 +1551,27 @@
                             </div>
                         </div>
                         `;
-                        } else if (r.module_type === 'refleksi') {
-                            // Display Refleksi Results (Array of 15 strings)
-                            let refData = [];
-                            try {
-                                // It's stored as an array of answers, but sometimes wrapped in JSON string if strict mode was used?
-                                // Based on my implementation: answers: [JSON.stringify(answersObject)] OR just generic answers array?
-                                // Wait, in submitRefleksi I did: answers: [JSON.stringify(answers)] where answers is an object {refleksi_q1: val...}
-                                // Let's check the submit logic in dashboard-kegiatan.html:
-                                // const answers = {}; ... answers[name] = value; ... answers: [JSON.stringify(answers)]
-                                // So answers[0] is the JSON string of the object.
-                                refData = JSON.parse(answers[0]);
-                            } catch (e) {
-                                console.error('Error parsing Refleksi JSON', e);
-                                answerCont.innerHTML = `<div class="p-4 bg-red-50 text-red-500 text-xs rounded-xl">Error: Format data tidak valid.</div>`;
-                                return;
-                            }
+                    } else if (r.module_type === 'refleksi') {
+                        // Display Refleksi Results (Array of 15 strings)
+                        let refData = [];
+                        try {
+                            // It's stored as an array of answers, but sometimes wrapped in JSON string if strict mode was used?
+                            // Based on my implementation: answers: [JSON.stringify(answersObject)] OR just generic answers array?
+                            // Wait, in submitRefleksi I did: answers: [JSON.stringify(answers)] where answers is an object {refleksi_q1: val...}
+                            // Let's check the submit logic in dashboard-kegiatan.html:
+                            // const answers = {}; ... answers[name] = value; ... answers: [JSON.stringify(answers)]
+                            // So answers[0] is the JSON string of the object.
+                            refData = JSON.parse(answers[0]);
+                        } catch (e) {
+                            console.error('Error parsing Refleksi JSON', e);
+                            answerCont.innerHTML = `<div class="p-4 bg-red-50 text-red-500 text-xs rounded-xl">Error: Format data tidak valid.</div>`;
+                            return;
+                        }
 
-                            // Helper to get value safely
-                            const getVal = (key) => refData[key] || '-';
+                        // Helper to get value safely
+                        const getVal = (key) => refData[key] || '-';
 
-                            answerCont.innerHTML = `
+                        answerCont.innerHTML = `
                         <div class="space-y-6">
                              <!-- BAGIAN 1: PERASAAN & MOOD -->
                             <div class="p-4 bg-rose-50/50 border border-rose-100 rounded-2xl space-y-3">
@@ -1660,279 +1658,279 @@
                             </div>
                         </div>
                         `;
-                        } else if (r.module_type === 'pemantik') {
-                            // Display Pemantik with dynamic questions
-                            const dayData = workshopContent[`day${r.day_id}`] || {};
-                            const questions = dayData.triggerQuestions || [];
-                            answerCont.innerHTML = answers.map((ans, i) => {
-                                const qText = questions[i] || `Pertanyaan ${i + 1}`;
-                                return `
+                    } else if (r.module_type === 'pemantik') {
+                        // Display Pemantik with dynamic questions
+                        const dayData = workshopContent[`day${r.day_id}`] || {};
+                        const questions = dayData.triggerQuestions || [];
+                        answerCont.innerHTML = answers.map((ans, i) => {
+                            const qText = questions[i] || `Pertanyaan ${i + 1}`;
+                            return `
                             <div class="bg-amber-50/50 p-4 rounded-2xl border border-amber-100/50 mb-3">
                                 <p class="text-[8px] font-black text-amber-500 uppercase tracking-wider mb-1">Pertanyaan ${i + 1}</p>
                                 <p class="text-[10px] font-bold text-slate-500 mb-2 leading-tight">${qText}</p>
                                 <p class="text-xs text-slate-800 font-medium leading-relaxed bg-white/80 p-3 rounded-xl border border-white shadow-sm">${ans}</p>
                             </div>
                             `;
-                            }).join('');
-                        } else {
-                            // Standard display for other modules - update 21:58
-                            answerCont.innerHTML = answers.map((ans, i) => `
+                        }).join('');
+                    } else {
+                        // Standard display for other modules - update 21:58
+                        answerCont.innerHTML = answers.map((ans, i) => `
                         <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
                             <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Butir ${i + 1}</p>
                             <p class="text-xs text-slate-700 font-medium leading-relaxed">${ans}</p>
                         </div>
                         `).join('');
-                        }
-
-                        const scoreInputArea = document.getElementById('scoreInputArea');
-                        const starRatingArea = document.getElementById('starRatingArea');
-                        const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi', 'lkpd', 'bep_analisis'];
-
-                        if (starModules.includes(r.module_type)) {
-                            scoreInputArea.classList.add('hidden');
-                            starRatingArea.classList.remove('hidden');
-                            // Pre-set stars based on existing score
-                            const currentStars = Math.round((r.score || 0) / 20);
-                            updateStarUI(currentStars);
-                        } else {
-                            scoreInputArea.classList.remove('hidden');
-                            starRatingArea.classList.add('hidden');
-                            document.getElementById('gradeScore').value = r.score || '';
-                        }
-
-                        document.getElementById('gradeFeedback').value = r.feedback || '';
-
-                    } catch (e) {
-                        console.error('❌ Error openGradingModal:', e);
-                        alert('Gagal memuat jawaban: ' + e.message);
                     }
+
+                    const scoreInputArea = document.getElementById('scoreInputArea');
+                    const starRatingArea = document.getElementById('starRatingArea');
+                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi', 'lkpd', 'bep_analisis'];
+
+                    if (starModules.includes(r.module_type)) {
+                        scoreInputArea.classList.add('hidden');
+                        starRatingArea.classList.remove('hidden');
+                        // Pre-set stars based on existing score
+                        const currentStars = Math.round((r.score || 0) / 20);
+                        updateStarUI(currentStars);
+                    } else {
+                        scoreInputArea.classList.remove('hidden');
+                        starRatingArea.classList.add('hidden');
+                        document.getElementById('gradeScore').value = r.score || '';
+                    }
+
+                    document.getElementById('gradeFeedback').value = r.feedback || '';
+
+                } catch (e) {
+                    console.error('❌ Error openGradingModal:', e);
+                    alert('Gagal memuat jawaban: ' + e.message);
                 }
+            }
 
-                async function saveGrade() {
-                    if (!selectedResponseId) {
-                        alert('Gagal: ID data tidak ditemukan. Silakan buka ulang modal.');
-                        return;
-                    }
-                    const score = document.getElementById('gradeScore').value;
-                    const feedback = document.getElementById('gradeFeedback').value;
+            async function saveGrade() {
+                if (!selectedResponseId) {
+                    alert('Gagal: ID data tidak ditemukan. Silakan buka ulang modal.');
+                    return;
+                }
+                const score = document.getElementById('gradeScore').value;
+                const feedback = document.getElementById('gradeFeedback').value;
 
+                console.log('💾 Menyimpan nilai...', { id: selectedResponseId, score, feedback });
+
+                try {
                     console.log('💾 Menyimpan nilai...', { id: selectedResponseId, score, feedback });
 
-                    try {
-                        console.log('💾 Menyimpan nilai...', { id: selectedResponseId, score, feedback });
-
-                        // Default query: update by ID
-                        let query = supabaseClient.from('module_responses').update({
-                            status: 'reviewed',
-                            feedback: feedback,
-                            score: parseInt(score) || 0,
-                            reviewed_at: new Date().toISOString()
-                        });
-
-                        // Special logic for Day 2 Documentation (bulk update)
-                        const titleElem = document.getElementById('gradingModuleTitle');
-                        const isDocDay2 = titleElem && titleElem.textContent.includes('HARI 2') && titleElem.textContent.includes('DOKUMENTASI');
-
-                        if (isDocDay2 && selectedStudentIdForGrading) {
-                            console.log('💾 MODE: Bulk Update Day 2 Documentation');
-                            query = query
-                                .eq('student_id', selectedStudentIdForGrading)
-                                .eq('day_id', 2)
-                                .eq('module_type', 'dokumentasi');
-                        } else {
-                            // Normal update by ID
-                            console.log('💾 MODE: Single Update by ID');
-                            query = query.eq('id', selectedResponseId);
-                        }
-
-                        const { data, error } = await query.select();
-
-                        if (error) throw error;
-
-                        if (!data || data.length === 0) {
-                            console.error('⚠️ Update berhasil (no error) tapi 0 baris berubah.');
-                            throw new Error('Gagal memperbarui data di database. Cek izin akses (RLS).');
-                        }
-
-                        console.log('✅ Update Berhasil:', data);
-                        alert('Pesan: Penilaian berhasil disimpan!');
-                        closeGradingModal();
-
-                        // Refresh ALL UI components
-                        loadStats(); // Updates progress circle and "Status Terbaru"
-                        loadStudentsByClass(currentClass); // Updates detailed student list
-
-                        // NEW [v1.0.7]: Force Refresh the Student Detail Modal if it's open
-                        if (currentDetailStudentId && typeof X_OPEN_STUDENT_STATUS_X === 'function') {
-                            X_OPEN_STUDENT_STATUS_X(currentDetailStudentId, currentDetailStudentName);
-                        }
-                    } catch (e) {
-                        console.error('❌ Error saveGrade:', e);
-                        alert('Gagal menyimpan: ' + e.message);
-                    }
-                }
-
-                function closeGradingModal() {
-                    document.getElementById('modalPenilaian').classList.add('hidden');
-                    selectedResponseId = null;
-                }
-
-                function switchTab(tab) {
-                    ['ringkasan', 'progres', 'laporan'].forEach(t => {
-                        document.getElementById('view-' + t).classList.add('hidden');
-                        document.getElementById('tab-' + t).classList.remove('active');
+                    // Default query: update by ID
+                    let query = supabaseClient.from('module_responses').update({
+                        status: 'reviewed',
+                        feedback: feedback,
+                        score: parseInt(score) || 0,
+                        reviewed_at: new Date().toISOString()
                     });
-                    document.getElementById('view-' + tab).classList.remove('hidden');
-                    document.getElementById('tab-' + tab).classList.add('active');
 
-                    const navs = { 'ringkasan': 'nav-dasbor', 'laporan': 'nav-analisis' };
-                    ['nav-dasbor', 'nav-analisis'].forEach(n => {
-                        const el = document.getElementById(n);
-                        el.classList.replace('text-primary', 'text-slate-400');
-                        el.querySelector('span').style.fontVariationSettings = "'FILL' 0";
-                    });
-                    if (navs[tab]) {
-                        const el = document.getElementById(navs[tab]);
-                        el.classList.replace('text-slate-400', 'text-primary');
-                        el.querySelector('span').style.fontVariationSettings = "'FILL' 1";
+                    // Special logic for Day 2 Documentation (bulk update)
+                    const titleElem = document.getElementById('gradingModuleTitle');
+                    const isDocDay2 = titleElem && titleElem.textContent.includes('HARI 2') && titleElem.textContent.includes('DOKUMENTASI');
+
+                    if (isDocDay2 && selectedStudentIdForGrading) {
+                        console.log('💾 MODE: Bulk Update Day 2 Documentation');
+                        query = query
+                            .eq('student_id', selectedStudentIdForGrading)
+                            .eq('day_id', 2)
+                            .eq('module_type', 'dokumentasi');
+                    } else {
+                        // Normal update by ID
+                        console.log('💾 MODE: Single Update by ID');
+                        query = query.eq('id', selectedResponseId);
                     }
+
+                    const { data, error } = await query.select();
+
+                    if (error) throw error;
+
+                    if (!data || data.length === 0) {
+                        console.error('⚠️ Update berhasil (no error) tapi 0 baris berubah.');
+                        throw new Error('Gagal memperbarui data di database. Cek izin akses (RLS).');
+                    }
+
+                    console.log('✅ Update Berhasil:', data);
+                    alert('Pesan: Penilaian berhasil disimpan!');
+                    closeGradingModal();
+
+                    // Refresh ALL UI components
+                    loadStats(); // Updates progress circle and "Status Terbaru"
+                    loadStudentsByClass(currentClass); // Updates detailed student list
+
+                    // NEW [v1.0.7]: Force Refresh the Student Detail Modal if it's open
+                    if (currentDetailStudentId && typeof X_OPEN_STUDENT_STATUS_X === 'function') {
+                        X_OPEN_STUDENT_STATUS_X(currentDetailStudentId, currentDetailStudentName);
+                    }
+                } catch (e) {
+                    console.error('❌ Error saveGrade:', e);
+                    alert('Gagal menyimpan: ' + e.message);
                 }
+            }
 
-                async function renderAnalysisChart() {
-                    const ctx = document.getElementById('analysisChart').getContext('2d');
-                    const grid = document.getElementById('statsGrid');
-                    grid.innerHTML = '';
+            function closeGradingModal() {
+                document.getElementById('modalPenilaian').classList.add('hidden');
+                selectedResponseId = null;
+            }
 
-                    const dataPoints = [];
-                    for (const cls of myClasses) {
-                        const clsTrimmed = cls.trim();
-                        const alternatives = [clsTrimmed];
-                        if (clsTrimmed.includes('. ')) {
-                            alternatives.push(clsTrimmed.replace('. ', '.'));
-                        } else if (clsTrimmed.includes('.') && !clsTrimmed.includes('. ')) {
-                            alternatives.push(clsTrimmed.replace('.', '. '));
-                        }
+            function switchTab(tab) {
+                ['ringkasan', 'progres', 'laporan'].forEach(t => {
+                    document.getElementById('view-' + t).classList.add('hidden');
+                    document.getElementById('tab-' + t).classList.remove('active');
+                });
+                document.getElementById('view-' + tab).classList.remove('hidden');
+                document.getElementById('tab-' + tab).classList.add('active');
 
-                        const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).in('kelas', alternatives);
-                        const { data: students } = await supabaseClient.from('students').select('id').in('kelas', alternatives);
-                        const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', students ? students.map(s => s.id) : []);
-                        const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
-                        dataPoints.push(pct);
-                        grid.innerHTML += `
+                const navs = { 'ringkasan': 'nav-dasbor', 'laporan': 'nav-analisis' };
+                ['nav-dasbor', 'nav-analisis'].forEach(n => {
+                    const el = document.getElementById(n);
+                    el.classList.replace('text-primary', 'text-slate-400');
+                    el.querySelector('span').style.fontVariationSettings = "'FILL' 0";
+                });
+                if (navs[tab]) {
+                    const el = document.getElementById(navs[tab]);
+                    el.classList.replace('text-slate-400', 'text-primary');
+                    el.querySelector('span').style.fontVariationSettings = "'FILL' 1";
+                }
+            }
+
+            async function renderAnalysisChart() {
+                const ctx = document.getElementById('analysisChart').getContext('2d');
+                const grid = document.getElementById('statsGrid');
+                grid.innerHTML = '';
+
+                const dataPoints = [];
+                for (const cls of myClasses) {
+                    const clsTrimmed = cls.trim();
+                    const alternatives = [clsTrimmed];
+                    if (clsTrimmed.includes('. ')) {
+                        alternatives.push(clsTrimmed.replace('. ', '.'));
+                    } else if (clsTrimmed.includes('.') && !clsTrimmed.includes('. ')) {
+                        alternatives.push(clsTrimmed.replace('.', '. '));
+                    }
+
+                    const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).in('kelas', alternatives);
+                    const { data: students } = await supabaseClient.from('students').select('id').in('kelas', alternatives);
+                    const { count: rCount } = await supabaseClient.from('module_responses').select('*', { count: 'exact', head: true }).in('student_id', students ? students.map(s => s.id) : []);
+                    const pct = sCount > 0 ? Math.round((rCount / (sCount * 24)) * 100) : 0;
+                    dataPoints.push(pct);
+                    grid.innerHTML += `
                         <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">${cls}</p>
                             <p class="text-xl font-black text-slate-800">${pct}%</p>
                         </div>
                         `;
-                    }
-
-                    if (myChart) myChart.destroy();
-                    myChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: myClasses,
-                            datasets: [{
-                                data: dataPoints,
-                                backgroundColor: '#0ea5e9',
-                                borderRadius: 12,
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { display: false } },
-                            scales: { y: { beginAtZero: true, max: 100 } }
-                        }
-                    });
                 }
 
-                async function loadRecentActivities() {
-                    const container = document.getElementById('activityHistoryContainer');
-                    try {
-                        console.log('=== LOAD RECENT ACTIVITIES ===');
+                if (myChart) myChart.destroy();
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: myClasses,
+                        datasets: [{
+                            data: dataPoints,
+                            backgroundColor: '#0ea5e9',
+                            borderRadius: 12,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, max: 100 } }
+                    }
+                });
+            }
 
-                        const { ids: studentIds, map: studentMap } = await getMyStudentsData();
-                        if (!studentIds || studentIds.length === 0) {
-                            container.innerHTML = `
+            async function loadRecentActivities() {
+                const container = document.getElementById('activityHistoryContainer');
+                try {
+                    console.log('=== LOAD RECENT ACTIVITIES ===');
+
+                    const { ids: studentIds, map: studentMap } = await getMyStudentsData();
+                    if (!studentIds || studentIds.length === 0) {
+                        container.innerHTML = `
                             <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
                                 <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
                             </div>`;
-                            return;
-                        }
+                        return;
+                    }
 
-                        const { data: recentRaw, error: rError } = await supabaseClient
-                            .from('module_responses')
-                            .select('*')
-                            .in('student_id', studentIds)
-                            .order('created_at', { ascending: false })
-                            .limit(50);
+                    const { data: recentRaw, error: rError } = await supabaseClient
+                        .from('module_responses')
+                        .select('*')
+                        .in('student_id', studentIds)
+                        .order('created_at', { ascending: false })
+                        .limit(50);
 
-                        if (rError) throw rError;
+                    if (rError) throw rError;
 
-                        if (!recentRaw || recentRaw.length === 0) {
-                            container.innerHTML = `
+                    if (!recentRaw || recentRaw.length === 0) {
+                        container.innerHTML = `
                             <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
                                 <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
                             </div>`;
-                            return;
-                        }
-
-                        const uniqueMap = new Map();
-                        recentRaw.forEach(r => {
-                            const key = `${r.student_id} -${r.module_type} -${r.day_id} `;
-                            if (!uniqueMap.has(key)) uniqueMap.set(key, r);
-                        });
-
-                        const processed = Array.from(uniqueMap.values()).sort((a, b) => {
-                            if (a.status === 'submitted' && b.status !== 'submitted') return -1;
-                            if (a.status !== 'submitted' && b.status === 'submitted') return 1;
-                            return 0;
-                        }).slice(0, 5);
-
-                        container.innerHTML = renderActivityItems(processed, studentMap);
-                    } catch (e) {
-                        console.error('Recent Activity Error:', e);
+                        return;
                     }
-                }
 
-                async function getMyStudentsData() {
-                    const allFormats = [];
-                    myClasses.forEach(c => {
-                        const trimmed = c.trim();
-                        allFormats.push(trimmed);
-                        if (trimmed.includes('. ')) allFormats.push(trimmed.replace('. ', '.'));
-                        else if (trimmed.includes('.') && !trimmed.includes('. ')) allFormats.push(trimmed.replace('.', '. '));
+                    const uniqueMap = new Map();
+                    recentRaw.forEach(r => {
+                        const key = `${r.student_id} -${r.module_type} -${r.day_id} `;
+                        if (!uniqueMap.has(key)) uniqueMap.set(key, r);
                     });
 
-                    const { data: students, error } = await supabaseClient
-                        .from('students')
-                        .select('id, nama')
-                        .in('kelas', allFormats);
+                    const processed = Array.from(uniqueMap.values()).sort((a, b) => {
+                        if (a.status === 'submitted' && b.status !== 'submitted') return -1;
+                        if (a.status !== 'submitted' && b.status === 'submitted') return 1;
+                        return 0;
+                    }).slice(0, 5);
 
-                    if (error) return { ids: [], map: {} };
-                    const ids = students ? students.map(s => s.id) : [];
-                    const map = Object.fromEntries(students ? students.map(s => [s.id, s.nama]) : []);
-                    return { ids, map };
+                    container.innerHTML = renderActivityItems(processed, studentMap);
+                } catch (e) {
+                    console.error('Recent Activity Error:', e);
                 }
+            }
 
-                function renderActivityItems(processed, studentMap) {
-                    return processed.map(r => {
-                        const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-                        const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
-                        const studentName = studentMap[r.student_id] || '?';
-                        const initials = studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                        const moduleLabel = {
-                            'pemantik': 'Pemantik',
-                            'materi': 'Materi',
-                            'video': 'Video',
-                            'lkpd': 'LKPD',
-                            'kuis': 'Assessment',
-                            'dokumentasi': 'Dokumentasi',
-                            'glosarium': 'Glosarium',
-                            'refleksi': 'Refleksi'
-                        }[r.module_type] || r.module_type.toUpperCase();
+            async function getMyStudentsData() {
+                const allFormats = [];
+                myClasses.forEach(c => {
+                    const trimmed = c.trim();
+                    allFormats.push(trimmed);
+                    if (trimmed.includes('. ')) allFormats.push(trimmed.replace('. ', '.'));
+                    else if (trimmed.includes('.') && !trimmed.includes('. ')) allFormats.push(trimmed.replace('.', '. '));
+                });
 
-                        return `
+                const { data: students, error } = await supabaseClient
+                    .from('students')
+                    .select('id, nama')
+                    .in('kelas', allFormats);
+
+                if (error) return { ids: [], map: {} };
+                const ids = students ? students.map(s => s.id) : [];
+                const map = Object.fromEntries(students ? students.map(s => [s.id, s.nama]) : []);
+                return { ids, map };
+            }
+
+            function renderActivityItems(processed, studentMap) {
+                return processed.map(r => {
+                    const time = new Date(r.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    const statusColor = r.status === 'reviewed' ? 'bg-emerald-500' : 'bg-amber-500';
+                    const studentName = studentMap[r.student_id] || '?';
+                    const initials = studentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    const moduleLabel = {
+                        'pemantik': 'Pemantik',
+                        'materi': 'Materi',
+                        'video': 'Video',
+                        'lkpd': 'LKPD',
+                        'kuis': 'Assessment',
+                        'dokumentasi': 'Dokumentasi',
+                        'glosarium': 'Glosarium',
+                        'refleksi': 'Refleksi'
+                    }[r.module_type] || r.module_type.toUpperCase();
+
+                    return `
                             <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentName.replace(/'/g, "\\'")}', '${r.day_id}', '${r.module_type}')">
                                 <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner">${initials}</div>
                             <div class="flex-1 min-w-0">
@@ -1947,160 +1945,160 @@
                                 </div>
                             </div>
                         </div>`;
-                    }).join('');
-                }
+                }).join('');
+            }
 
-                async function openAllActivitiesModal() {
-                    const modal = document.getElementById('modalAllActivities');
-                    const listContainer = document.getElementById('allActivitiesList');
-                    modal.classList.remove('hidden');
-                    listContainer.innerHTML = `
+            async function openAllActivitiesModal() {
+                const modal = document.getElementById('modalAllActivities');
+                const listContainer = document.getElementById('allActivitiesList');
+                modal.classList.remove('hidden');
+                listContainer.innerHTML = `
                     <div class="flex flex-col items-center justify-center py-24">
                         <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
                         <p class="mt-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Memuat Semua Aktivitas...</p>
                     </div>`;
 
-                    try {
-                        const { ids: studentIds, map: studentMap } = await getMyStudentsData();
-                        if (!studentIds || studentIds.length === 0) {
-                            listContainer.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold">Tidak ada aktivitas ditemukan.</div>';
-                            return;
-                        }
+                try {
+                    const { ids: studentIds, map: studentMap } = await getMyStudentsData();
+                    if (!studentIds || studentIds.length === 0) {
+                        listContainer.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold">Tidak ada aktivitas ditemukan.</div>';
+                        return;
+                    }
 
-                        const { data: allRecent, error } = await supabaseClient
-                            .from('module_responses')
-                            .select('*')
-                            .in('student_id', studentIds)
-                            .order('created_at', { ascending: false })
-                            .limit(100);
+                    const { data: allRecent, error } = await supabaseClient
+                        .from('module_responses')
+                        .select('*')
+                        .in('student_id', studentIds)
+                        .order('created_at', { ascending: false })
+                        .limit(100);
 
-                        if (error) throw error;
+                    if (error) throw error;
 
-                        if (!allRecent || allRecent.length === 0) {
-                            listContainer.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold">Tidak ada aktivitas ditemukan.</div>';
-                            return;
-                        }
+                    if (!allRecent || allRecent.length === 0) {
+                        listContainer.innerHTML = '<div class="text-center py-20 text-slate-400 font-bold">Tidak ada aktivitas ditemukan.</div>';
+                        return;
+                    }
 
-                        // Group by status (Submitted first)
-                        const sorted = allRecent.sort((a, b) => {
-                            if (a.status === 'submitted' && b.status !== 'submitted') return -1;
-                            if (a.status !== 'submitted' && b.status === 'submitted') return 1;
-                            return new Date(b.created_at) - new Date(a.created_at);
-                        });
+                    // Group by status (Submitted first)
+                    const sorted = allRecent.sort((a, b) => {
+                        if (a.status === 'submitted' && b.status !== 'submitted') return -1;
+                        if (a.status !== 'submitted' && b.status === 'submitted') return 1;
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    });
 
-                        listContainer.innerHTML = `
+                    listContainer.innerHTML = `
                             <div class="space-y-3">
                                 ${renderActivityItems(sorted, studentMap)}
                             </div>`;
 
-                    } catch (e) {
-                        console.error('Error openAllActivitiesModal:', e);
-                        listContainer.innerHTML = '<div class="text-center py-20 text-red-500 font-bold">Gagal memuat data.</div>';
+                } catch (e) {
+                    console.error('Error openAllActivitiesModal:', e);
+                    listContainer.innerHTML = '<div class="text-center py-20 text-red-500 font-bold">Gagal memuat data.</div>';
+                }
+            }
+
+            function closeAllActivitiesModal() {
+                document.getElementById('modalAllActivities').classList.add('hidden');
+            }
+
+            async function logout() {
+                if (confirm('Yakin ingin keluar?')) {
+                    await supabaseClient.auth.signOut();
+                    localStorage.clear();
+                    window.location.href = 'login.html';
+                }
+            }
+
+            function setStarRating(rating) {
+                const scoreField = document.getElementById('gradeScore');
+                const feedbackField = document.getElementById('gradeFeedback');
+
+                const feedbackMap = {
+                    1: "Masih sangat kurang, mohon tingkatkan lagi usahamu dan baca instruksi dengan teliti.",
+                    2: "Kurang lengkap, coba tambahkan detail lebih banyak pada jawaban atau tugasmu.",
+                    3: "Cukup baik, namun masih ada beberapa bagian yang perlu diperbaiki/dilengkapi.",
+                    4: "Bagus sekali! Jawabanmu sudah tepat dan lengkap. Pertahankan!",
+                    5: "Luar biasa! Hasil kerja yang sangat komprehensif dan melampaui ekspektasi."
+                };
+
+                updateStarUI(rating);
+
+                // Map stars to score (20, 40, 60, 80, 100)
+                scoreField.value = rating * 20;
+
+                // Auto-populate feedback if it's currently empty or already contains a mapped feedback
+                const currentFeedback = feedbackField.value.trim();
+                const isAutoFeedback = Object.values(feedbackMap).includes(currentFeedback);
+
+                if (!currentFeedback || isAutoFeedback) {
+                    feedbackField.value = feedbackMap[rating] || "";
+                }
+            }
+
+            function updateStarUI(rating) {
+                const buttons = document.querySelectorAll('.star-btn');
+                const labels = ['', 'Sangat Kurang', 'Kurang', 'Cukup Baik', 'Bagus', 'Sangat Bagus'];
+
+                buttons.forEach((btn, idx) => {
+                    const icon = btn.querySelector('.material-symbols-outlined');
+                    if (idx < rating) {
+                        icon.style.color = '#f59e0b'; // Amber-500
+                        icon.style.fontVariationSettings = "'FILL' 1";
+                    } else {
+                        icon.style.color = '#cbd5e1'; // Slate-300
+                        icon.style.fontVariationSettings = "'FILL' 0";
                     }
+                });
+
+                if (document.getElementById('starLabel')) {
+                    document.getElementById('starLabel').textContent = labels[rating] || '-';
+                }
+            }
+
+            function openBankSoalMenu() {
+                const modal = document.getElementById('modalBankSoalSelection');
+                modal.classList.remove('hidden');
+            }
+
+            function openAssessmentKeys(day) {
+                // Close selection modal
+                document.getElementById('modalBankSoalSelection').classList.add('hidden');
+
+                const modal = document.getElementById('modalAssessmentKeys');
+                const container = document.getElementById('keysContainer');
+
+                modal.classList.remove('hidden');
+                container.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase text-[10px] animate-pulse">Memuat soal...</div>';
+
+                if (day !== 1) {
+                    container.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold text-xs">Soal Hari ' + day + ' belum tersedia.</div>';
+                    return;
                 }
 
-                function closeAllActivitiesModal() {
-                    document.getElementById('modalAllActivities').classList.add('hidden');
+                if (typeof assessmentQuestions === 'undefined') {
+                    container.innerHTML = '<div class="text-center py-10 text-red-400 font-bold text-xs">Error: Data soal tidak dimuat.</div>';
+                    return;
                 }
 
-                async function logout() {
-                    if (confirm('Yakin ingin keluar?')) {
-                        await supabaseClient.auth.signOut();
-                        localStorage.clear();
-                        window.location.href = 'login.html';
-                    }
-                }
+                container.innerHTML = assessmentQuestions.map((q, i) => {
+                    let optionsHtml = q.options.map((opt, idx) => {
+                        const isCorrect = idx === q.correctIndex;
+                        const style = isCorrect
+                            ? 'bg-emerald-50 border-emerald-200 text-emerald-700 font-bold'
+                            : 'bg-white border-slate-100 text-slate-600';
+                        const icon = isCorrect
+                            ? '<span class="material-symbols-outlined text-sm text-emerald-500">check_circle</span>'
+                            : '<span class="size-4 block"></span>'; // spacer
 
-                function setStarRating(rating) {
-                    const scoreField = document.getElementById('gradeScore');
-                    const feedbackField = document.getElementById('gradeFeedback');
-
-                    const feedbackMap = {
-                        1: "Masih sangat kurang, mohon tingkatkan lagi usahamu dan baca instruksi dengan teliti.",
-                        2: "Kurang lengkap, coba tambahkan detail lebih banyak pada jawaban atau tugasmu.",
-                        3: "Cukup baik, namun masih ada beberapa bagian yang perlu diperbaiki/dilengkapi.",
-                        4: "Bagus sekali! Jawabanmu sudah tepat dan lengkap. Pertahankan!",
-                        5: "Luar biasa! Hasil kerja yang sangat komprehensif dan melampaui ekspektasi."
-                    };
-
-                    updateStarUI(rating);
-
-                    // Map stars to score (20, 40, 60, 80, 100)
-                    scoreField.value = rating * 20;
-
-                    // Auto-populate feedback if it's currently empty or already contains a mapped feedback
-                    const currentFeedback = feedbackField.value.trim();
-                    const isAutoFeedback = Object.values(feedbackMap).includes(currentFeedback);
-
-                    if (!currentFeedback || isAutoFeedback) {
-                        feedbackField.value = feedbackMap[rating] || "";
-                    }
-                }
-
-                function updateStarUI(rating) {
-                    const buttons = document.querySelectorAll('.star-btn');
-                    const labels = ['', 'Sangat Kurang', 'Kurang', 'Cukup Baik', 'Bagus', 'Sangat Bagus'];
-
-                    buttons.forEach((btn, idx) => {
-                        const icon = btn.querySelector('.material-symbols-outlined');
-                        if (idx < rating) {
-                            icon.style.color = '#f59e0b'; // Amber-500
-                            icon.style.fontVariationSettings = "'FILL' 1";
-                        } else {
-                            icon.style.color = '#cbd5e1'; // Slate-300
-                            icon.style.fontVariationSettings = "'FILL' 0";
-                        }
-                    });
-
-                    if (document.getElementById('starLabel')) {
-                        document.getElementById('starLabel').textContent = labels[rating] || '-';
-                    }
-                }
-
-                function openBankSoalMenu() {
-                    const modal = document.getElementById('modalBankSoalSelection');
-                    modal.classList.remove('hidden');
-                }
-
-                function openAssessmentKeys(day) {
-                    // Close selection modal
-                    document.getElementById('modalBankSoalSelection').classList.add('hidden');
-
-                    const modal = document.getElementById('modalAssessmentKeys');
-                    const container = document.getElementById('keysContainer');
-
-                    modal.classList.remove('hidden');
-                    container.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold uppercase text-[10px] animate-pulse">Memuat soal...</div>';
-
-                    if (day !== 1) {
-                        container.innerHTML = '<div class="text-center py-10 text-slate-400 font-bold text-xs">Soal Hari ' + day + ' belum tersedia.</div>';
-                        return;
-                    }
-
-                    if (typeof assessmentQuestions === 'undefined') {
-                        container.innerHTML = '<div class="text-center py-10 text-red-400 font-bold text-xs">Error: Data soal tidak dimuat.</div>';
-                        return;
-                    }
-
-                    container.innerHTML = assessmentQuestions.map((q, i) => {
-                        let optionsHtml = q.options.map((opt, idx) => {
-                            const isCorrect = idx === q.correctIndex;
-                            const style = isCorrect
-                                ? 'bg-emerald-50 border-emerald-200 text-emerald-700 font-bold'
-                                : 'bg-white border-slate-100 text-slate-600';
-                            const icon = isCorrect
-                                ? '<span class="material-symbols-outlined text-sm text-emerald-500">check_circle</span>'
-                                : '<span class="size-4 block"></span>'; // spacer
-
-                            return `
+                        return `
                             <div class="flex items-start gap-3 p-3 rounded-xl border ${style} text-xs">
                                 <div class="mt-0.5 shrink-0">${icon}</div>
                                 <span>${opt}</span>
                             </div>
                             `;
-                        }).join('');
+                    }).join('');
 
-                        return `
+                    return `
                             <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
                             <div class="flex items-center gap-3 mb-3">
                                 <span class="size-6 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black flex items-center justify-center uppercase">No. ${q.id}</span>
@@ -2112,114 +2110,114 @@
                             </div>
                         </div>
                     `;
-                    }).join('');
-                }
+                }).join('');
+            }
 
-                window.addEventListener('load', init);
+            window.addEventListener('load', init);
         </script>
         <script src="data/assessment_data.js"></script>
 
         <script>
-                // FINAL PROJECT ASSESSMENT LOGIC
-                let selectedFinalCategory = null;
+            // FINAL PROJECT ASSESSMENT LOGIC
+            let selectedFinalCategory = null;
 
-                async function openFinalizeGradeModal() {
-                    if (!currentDetailStudentId) {
-                        alert('Error: ID Siswa tidak ditemukan.');
-                        return;
-                    }
-
-                    const modal = document.getElementById('modalFinalisasi');
-                    modal.classList.remove('hidden');
-                    document.getElementById('finalStudentName').textContent = currentDetailStudentName;
-                    document.getElementById('finalTotalStars').innerHTML = '<span class="animate-pulse">...</span>';
-
-                    try {
-                        // 1. Calculate Total Stars from Module Responses
-                        // Get all 'reviewed' responses
-                        const { data: responses, error } = await supabaseClient
-                            .from('module_responses')
-                            .select('score')
-                            .eq('student_id', currentDetailStudentId)
-                            .eq('status', 'reviewed');
-
-                        if (error) throw error;
-
-                        let totalScore = 0;
-                        if (responses) {
-                            responses.forEach(r => {
-                                if (r.score) totalScore += r.score;
-                            });
-                        }
-
-                        // Convert to stars (Score / 20)
-                        const totalStars = Math.round(totalScore / 20);
-                        currentCalculatedStars = totalStars;
-
-                        document.getElementById('finalTotalStars').textContent = totalStars;
-
-                    } catch (err) {
-                        console.error('Finalize Error:', err);
-                        document.getElementById('finalTotalStars').textContent = 'Error';
-                    }
+            async function openFinalizeGradeModal() {
+                if (!currentDetailStudentId) {
+                    alert('Error: ID Siswa tidak ditemukan.');
+                    return;
                 }
 
-                function selectFinalCategory(category) {
-                    selectedFinalCategory = category;
+                const modal = document.getElementById('modalFinalisasi');
+                modal.classList.remove('hidden');
+                document.getElementById('finalStudentName').textContent = currentDetailStudentName;
+                document.getElementById('finalTotalStars').innerHTML = '<span class="animate-pulse">...</span>';
 
-                    // Reset styles
-                    ['mahir', 'berkembang', 'cakap'].forEach(c => {
-                        const btn = document.getElementById(`btn - cat - ${c} `);
-                        btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2');
-                        btn.classList.add('border-slate-200');
-                    });
+                try {
+                    // 1. Calculate Total Stars from Module Responses
+                    // Get all 'reviewed' responses
+                    const { data: responses, error } = await supabaseClient
+                        .from('module_responses')
+                        .select('score')
+                        .eq('student_id', currentDetailStudentId)
+                        .eq('status', 'reviewed');
 
-                    // Apply Active Style
-                    const btn = document.getElementById(`btn - cat - ${category.toLowerCase()} `);
-                    const colorMap = { 'Mahir': 'emerald', 'Berkembang': 'blue', 'Cakap': 'amber' };
-                    const col = colorMap[category];
+                    if (error) throw error;
 
-                    btn.classList.remove('border-slate-200');
-                    btn.classList.add(`bg - ${col} -50`, `border - ${col} -400`, 'ring-2', `ring - ${col} -200`, 'ring-offset-2');
-                }
-
-                async function submitFinalGrade() {
-                    if (!selectedFinalCategory) {
-                        alert('Harap pilih kategori penilaian (Mahir/Berkembang/Cakap).');
-                        return;
+                    let totalScore = 0;
+                    if (responses) {
+                        responses.forEach(r => {
+                            if (r.score) totalScore += r.score;
+                        });
                     }
 
-                    const feedback = document.getElementById('finalFeedback').value;
-                    const btn = document.querySelector('button[onclick="submitFinalGrade()"]');
-                    const originalText = btn.textContent;
-                    btn.textContent = 'Menyimpan...';
-                    btn.disabled = true;
+                    // Convert to stars (Score / 20)
+                    const totalStars = Math.round(totalScore / 20);
+                    currentCalculatedStars = totalStars;
 
-                    try {
-                        const { data, error } = await supabaseClient
-                            .from('final_project_grades')
-                            .upsert({
-                                student_id: currentDetailStudentId,
-                                total_stars: currentCalculatedStars,
-                                category: selectedFinalCategory,
-                                facilitator_feedback: feedback,
-                                status: 'published'
-                            }, { onConflict: 'student_id' })
-                            .select();
+                    document.getElementById('finalTotalStars').textContent = totalStars;
 
-                        if (error) throw error;
-
-                        alert('Nilai Akhir berhasil dipublikasikan!');
-                        document.getElementById('modalFinalisasi').classList.add('hidden');
-
-                    } catch (err) {
-                        console.error('Submit Final Grade Error:', err);
-                        alert('Gagal menyimpan nilai akhir: ' + err.message);
-                    } finally {
-                        btn.textContent = originalText;
-                        btn.disabled = false;
-                    }
+                } catch (err) {
+                    console.error('Finalize Error:', err);
+                    document.getElementById('finalTotalStars').textContent = 'Error';
                 }
+            }
+
+            function selectFinalCategory(category) {
+                selectedFinalCategory = category;
+
+                // Reset styles
+                ['mahir', 'berkembang', 'cakap'].forEach(c => {
+                    const btn = document.getElementById(`btn - cat - ${c} `);
+                    btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2');
+                    btn.classList.add('border-slate-200');
+                });
+
+                // Apply Active Style
+                const btn = document.getElementById(`btn - cat - ${category.toLowerCase()} `);
+                const colorMap = { 'Mahir': 'emerald', 'Berkembang': 'blue', 'Cakap': 'amber' };
+                const col = colorMap[category];
+
+                btn.classList.remove('border-slate-200');
+                btn.classList.add(`bg - ${col} -50`, `border - ${col} -400`, 'ring-2', `ring - ${col} -200`, 'ring-offset-2');
+            }
+
+            async function submitFinalGrade() {
+                if (!selectedFinalCategory) {
+                    alert('Harap pilih kategori penilaian (Mahir/Berkembang/Cakap).');
+                    return;
+                }
+
+                const feedback = document.getElementById('finalFeedback').value;
+                const btn = document.querySelector('button[onclick="submitFinalGrade()"]');
+                const originalText = btn.textContent;
+                btn.textContent = 'Menyimpan...';
+                btn.disabled = true;
+
+                try {
+                    const { data, error } = await supabaseClient
+                        .from('final_project_grades')
+                        .upsert({
+                            student_id: currentDetailStudentId,
+                            total_stars: currentCalculatedStars,
+                            category: selectedFinalCategory,
+                            facilitator_feedback: feedback,
+                            status: 'published'
+                        }, { onConflict: 'student_id' })
+                        .select();
+
+                    if (error) throw error;
+
+                    alert('Nilai Akhir berhasil dipublikasikan!');
+                    document.getElementById('modalFinalisasi').classList.add('hidden');
+
+                } catch (err) {
+                    console.error('Submit Final Grade Error:', err);
+                    alert('Gagal menyimpan nilai akhir: ' + err.message);
+                } finally {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            }
         </script>
 </body>
 
