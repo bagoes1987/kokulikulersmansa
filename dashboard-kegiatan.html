@@ -774,6 +774,14 @@
                     loadProgress();
                     updateDashboardUI();
                     checkAllModulesStatus();
+
+                    // SMART POLLING: Check for updates every 60 seconds (but only if tab is visible)
+                    // Optimizes server load by replacing Realtime subscriptions
+                    setInterval(() => {
+                        if (document.visibilityState === 'visible') {
+                            checkAllModulesStatus();
+                        }
+                    }, 60000);
                 } catch (internalError) {
                     console.error('Non-auth error in loadStudentData:', internalError);
                 }
@@ -1241,7 +1249,7 @@
                 allModules.forEach(moduleId => {
                     // If localStorage has this as completed/submitted but database doesn't have it, reset
                     if (studentProgress[dayKey][moduleId] === true && !dbModules.has(moduleId)) {
-                        console.log(`🔄 Syncing: ${moduleId} was deleted by facilitator, resetting to false`);
+                        // console.log(`🔄 Syncing: ${moduleId} was deleted by facilitator, resetting to false`);
                         studentProgress[dayKey][moduleId] = false;
                         updateModuleUI(moduleId, false);
                     }
@@ -1793,7 +1801,7 @@
 
         // --- LAPORAN AKHIR LOGIC ---
         function openLaporanAkhirModal() {
-            console.log("Opening Laporan Akhir Modal...");
+
             const modal = document.getElementById('modalLaporanAkhir');
             if (modal) {
                 modal.classList.remove('hidden');
