@@ -173,7 +173,7 @@
                 </div>
 
                 <!-- Analisis Produk (Day 2 Only) -->
-                <div id="module-bep" onclick="openBEPModal()" style="display: none;"
+                <div id="module-bep" onclick="toggleModule('bep')" style="display: none;"
                     class="bg-pink-50/50 p-4 rounded-[24px] ios-shadow border border-pink-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-pink-500 flex items-center justify-center text-white shadow-lg shadow-pink-200">
@@ -190,7 +190,7 @@
                 </div>
 
                 <!-- Laporan Akhir (Day 3 Only) -->
-                <div id="module-laporan-akhir" onclick="openLaporanAkhirModal()" style="display: none;"
+                <div id="module-laporan-akhir" onclick="toggleModule('laporan-akhir')" style="display: none;"
                     class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
                     <div
                         class="h-12 w-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
@@ -1657,68 +1657,289 @@
         };
 
         // ==========================================
-        // FITUR BEP CALCULATOR
+        // ==========================================
+        // FITUR BEP & LAPORAN AKHIR (CONSOLIDATED)
         // ==========================================
         function openBEPModal() {
-            document.getElementById('modalBEP').classList.remove('hidden');
-            document.getElementById('modalBEP').classList.add('flex');
-            switchBEPTab('makanan'); // Default tab
+            const modal = document.getElementById('modalBEP');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                checkExistingAnalisis();
+            }
         }
 
         function closeBEPModal() {
-            document.getElementById('modalBEP').classList.add('hidden');
-            document.getElementById('modalBEP').classList.remove('flex');
+            const modal = document.getElementById('modalBEP');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
         }
 
-        function switchBEPTab(tab) {
-            // Update UI Tabs
-            ['makanan', 'minuman'].forEach(t => {
-                const btn = document.getElementById(`tab-bep-${t}`);
-                const content = document.getElementById(`content-bep-${t}`);
+        function switchAnalisisTab(tab) {
+            const btnLaporan = document.getElementById('tab-analisis-laporan');
+            const btnSimulasi = document.getElementById('tab-analisis-simulasi');
+            const contentLaporan = document.getElementById('content-analisis-laporan');
+            const contentSimulasi = document.getElementById('content-analisis-simulasi');
 
-                if (t === tab) {
-                    btn.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all";
-                    btn.classList.remove('text-slate-400', 'hover:bg-slate-100');
-                    content.classList.remove('hidden');
-                } else {
-                    btn.className = "flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all";
-                    content.classList.add('hidden');
-                }
+            if (tab === 'laporan') {
+                btnLaporan.className = "flex-1 py-3 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all";
+                btnSimulasi.className = "flex-1 py-3 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all";
+                contentLaporan.classList.remove('hidden');
+                contentSimulasi.classList.add('hidden');
+            } else {
+                btnLaporan.className = "flex-1 py-3 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all";
+                btnSimulasi.className = "flex-1 py-3 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all";
+                contentLaporan.classList.add('hidden');
+                contentSimulasi.classList.remove('hidden');
+            }
+        }
+
+        function addIngredientRow(name = '', cost = '') {
+            const table = document.getElementById('ingredients-table-body');
+            const row = document.createElement('tr');
+            row.className = "border-b border-slate-50";
+            row.innerHTML = `<td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td><td class="py-2"><input type="number" placeholder="0" value="${cost}" oninput="calculateAnalisisTotal()" class="ingredient-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td><td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>`;
+            if (table) table.appendChild(row);
+        }
+
+        function addStandRow(name = '', cost = '') {
+            const table = document.getElementById('stand-table-body');
+            const row = document.createElement('tr');
+            row.className = "border-b border-slate-50";
+            row.innerHTML = `<td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td><td class="py-2"><input type="number" placeholder="0" value="${cost}" oninput="calculateAnalisisTotal()" class="stand-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td><td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>`;
+            if (table) table.appendChild(row);
+        }
+
+        function addDrinkRow(name = '', cost = '') {
+            const table = document.getElementById('drinks-table-body');
+            const row = document.createElement('tr');
+            row.className = "border-b border-slate-50";
+            row.innerHTML = `<td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td><td class="py-2"><input type="number" placeholder="0" value="${cost}" oninput="calculateAnalisisTotal()" class="drink-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td><td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>`;
+            if (table) table.appendChild(row);
+        }
+
+        function calculateAnalisisTotal() {
+            let totalHpp = 0, totalDrinks = 0, totalStand = 0;
+            document.querySelectorAll('.ingredient-cost').forEach(i => totalHpp += parseFloat(i.value) || 0);
+            document.querySelectorAll('.drink-cost').forEach(i => totalDrinks += parseFloat(i.value) || 0);
+            document.querySelectorAll('.stand-cost').forEach(i => totalStand += parseFloat(i.value) || 0);
+
+            const hppDisp = document.getElementById('total-hpp-display');
+            const drkDisp = document.getElementById('total-drinks-display');
+            const stDisp = document.getElementById('total-stand-display');
+
+            if (hppDisp) hppDisp.textContent = 'Rp ' + totalHpp.toLocaleString('id-ID');
+            if (drkDisp) drkDisp.textContent = 'Rp ' + totalDrinks.toLocaleString('id-ID');
+            if (stDisp) stDisp.textContent = 'Rp ' + totalStand.toLocaleString('id-ID');
+
+            const targetMakanan = parseFloat(document.getElementById('input-target-makanan').value) || 0;
+            const targetMinuman = parseFloat(document.getElementById('input-target-minuman').value) || 0;
+            const hargaMakanan = parseFloat(document.getElementById('input-harga-makanan').value) || 0;
+            const hargaMinuman = parseFloat(document.getElementById('input-harga-minuman').value) || 0;
+
+            const standShare = totalStand / 2;
+            const margin = 0.4;
+
+            const hppMakPerUnit = targetMakanan > 0 ? ((totalHpp + standShare) / targetMakanan) : 0;
+            const rekMak = hppMakPerUnit > 0 ? (Math.ceil((hppMakPerUnit * (1 + margin)) / 100) * 100) : 0;
+            const rekMakEl = document.getElementById('rek-harga-makanan');
+            if (rekMakEl) rekMakEl.textContent = rekMak > 0 ? 'Rp ' + rekMak.toLocaleString('id-ID') : '-';
+
+            const bepMakEl = document.getElementById('bep-makanan');
+            if (bepMakEl) {
+                if (hargaMakanan > 0) bepMakEl.textContent = Math.ceil((totalHpp + standShare) / hargaMakanan) + ' Unit';
+                else bepMakEl.textContent = '0 Unit';
+            }
+
+            const hppMinPerUnit = targetMinuman > 0 ? ((totalDrinks + standShare) / targetMinuman) : 0;
+            const rekMin = hppMinPerUnit > 0 ? (Math.ceil((hppMinPerUnit * (1 + margin)) / 100) * 100) : 0;
+            const rekMinEl = document.getElementById('rek-harga-minuman');
+            if (rekMinEl) rekMinEl.textContent = rekMin > 0 ? 'Rp ' + rekMin.toLocaleString('id-ID') : '-';
+
+            const bepMinEl = document.getElementById('bep-minuman');
+            if (bepMinEl) {
+                if (hargaMinuman > 0) bepMinEl.textContent = Math.ceil((totalDrinks + standShare) / hargaMinuman) + ' Unit';
+                else bepMinEl.textContent = '0 Unit';
+            }
+
+            const infoBox = document.getElementById('bep-info-box');
+            if (infoBox) {
+                if (targetMakanan > 0 || targetMinuman > 0) infoBox.classList.remove('hidden');
+                else infoBox.classList.add('hidden');
+            }
+        }
+
+        async function submitAnalisisProduk() {
+            const btn = document.getElementById('btnSubmitAnalisis');
+            const namaProduk = document.getElementById('input-nama-produk').value;
+            if (!namaProduk.trim()) { alert('Mohon isi Nama Produk.'); return; }
+
+            const ingredients = [], drinks = [], standItems = [];
+            document.querySelectorAll('#ingredients-table-body tr').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value.trim()) ingredients.push({ item: inputs[0].value, cost: parseFloat(inputs[1].value) || 0 });
+            });
+            document.querySelectorAll('#drinks-table-body tr').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value.trim()) drinks.push({ item: inputs[0].value, cost: parseFloat(inputs[1].value) || 0 });
+            });
+            document.querySelectorAll('#stand-table-body tr').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value.trim()) standItems.push({ item: inputs[0].value, cost: parseFloat(inputs[1].value) || 0 });
             });
 
-            // Reset Result UI for new tab (optional, or keep generic)
-            calculateBEP(tab);
+            const submissionData = {
+                nama_produk: namaProduk,
+                nama_minuman: document.getElementById('input-nama-minuman').value,
+                ingredients, drinks, stand_items: standItems,
+                target_makanan: parseFloat(document.getElementById('input-target-makanan').value) || 0,
+                target_minuman: parseFloat(document.getElementById('input-target-minuman').value) || 0,
+                harga_makanan: parseFloat(document.getElementById('input-harga-makanan').value) || 0,
+                harga_minuman: parseFloat(document.getElementById('input-harga-minuman').value) || 0,
+                total_hpp_makanan: ingredients.reduce((sum, item) => sum + item.cost, 0),
+                total_hpp_minuman: drinks.reduce((sum, item) => sum + item.cost, 0),
+                total_hpp_stand: standItems.reduce((sum, item) => sum + item.cost, 0),
+                total_modal: (ingredients.reduce((sum, item) => sum + item.cost, 0) + drinks.reduce((sum, item) => sum + item.cost, 0) + standItems.reduce((sum, item) => sum + item.cost, 0))
+            };
+
+            btn.disabled = true; btn.innerHTML = 'Mengirim...';
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error("Sesi habis");
+                const { error } = await supabaseClient.from('module_responses').insert({ student_id: user.id, day_id: currentDay, module_type: 'bep_analisis', answers: [JSON.stringify(submissionData)], status: 'submitted' });
+                if (error) throw error;
+                alert('Laporan Analisis Produk berhasil dikirim!');
+                closeBEPModal();
+                studentProgress[`day${currentDay}`]['bep'] = false;
+                saveProgress();
+                checkExistingAnalisis();
+            } catch (err) { alert('Gagal mengirim laporan: ' + err.message); } finally { btn.disabled = false; btn.innerHTML = 'Kirim Laporan'; }
         }
 
-        function calculateBEP(type) {
-            let fc = 0, vc = 0, p = 0, margin = 0;
-            let bepUnit = 0, bepRupiah = 0;
-            const resultUnit = document.getElementById('res-bep-unit');
-            const resultRupiah = document.getElementById('res-bep-rupiah');
-            const analysisBox = document.getElementById('bep-analysis');
-            const analysisText = analysisBox.querySelector('p');
-
-            // Makanan / Minuman
-            fc = parseFloat(document.getElementById(`fc-${type}`).value) || 0;
-            vc = parseFloat(document.getElementById(`vc-${type}`).value) || 0;
-            p = parseFloat(document.getElementById(`p-${type}`).value) || 0;
-
-            if (p > vc && p > 0) {
-                bepUnit = Math.ceil(fc / (p - vc));
-                bepRupiah = Math.ceil(fc / (1 - (vc / p)));
-
-                resultUnit.textContent = bepUnit.toLocaleString('id-ID');
-                resultRupiah.textContent = "Rp " + bepRupiah.toLocaleString('id-ID');
-                resultRupiah.previousElementSibling.textContent = "Target Omzet (Rp)";
-
-                analysisBox.classList.remove('hidden');
-                analysisBox.className = "mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-100";
-                analysisText.innerHTML = `Agar balik modal, kamu harus menjual minimal <b>${bepUnit} porsi</b>. Jika behasil jual lebih dari itu, kamu mulai UNTUNG! 🚀`;
+        // --- LAPORAN AKHIR LOGIC ---
+        function openLaporanAkhirModal() {
+            console.log("Opening Laporan Akhir Modal...");
+            const modal = document.getElementById('modalLaporanAkhir');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                checkExistingLaporanAkhir();
             } else {
-                resultUnit.textContent = "0";
-                resultRupiah.textContent = "Rp 0";
-                analysisBox.classList.add('hidden');
+                console.error("modalLaporanAkhir not found!");
             }
+        }
+
+        function closeLaporanAkhirModal() {
+            const modal = document.getElementById('modalLaporanAkhir');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        async function checkExistingLaporanAkhir() {
+            const statusSection = document.getElementById('laporanAkhirStatusSection');
+            const formContainer = document.getElementById('laporanAkhirFormContainer');
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+                const { data, error } = await supabaseClient.from('module_responses').select('*').eq('student_id', user.id).eq('day_id', 3).eq('module_type', 'laporan_akhir').maybeSingle();
+                if (error) throw error;
+                if (data) {
+                    const answers = JSON.parse(data.answers[0]);
+                    if (statusSection) {
+                        statusSection.classList.remove('hidden');
+                        if (data.status === 'submitted') {
+                            statusSection.innerHTML = `<div class="p-4 bg-yellow-50 border border-yellow-100 rounded-2xl flex items-start gap-3"><span class="material-symbols-outlined text-yellow-500">hourglass_top</span><div><p class="text-xs font-black text-yellow-700 uppercase">Menunggu Feedback</p><p class="text-[10px] text-yellow-600 font-medium">Laporanmu sedang ditinjau oleh Fasilitator.</p></div></div>`;
+                        } else if (data.status === 'reviewed') {
+                            const stars = '⭐'.repeat(data.score / 20) || '⭐';
+                            statusSection.innerHTML = `<div class="space-y-3"><div class="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-start gap-3"><span class="material-symbols-outlined text-emerald-500">verified</span><div><p class="text-xs font-black text-emerald-700 uppercase tracking-wider">Laporan Dinilai ${stars}</p><p class="text-[10px] text-emerald-600 font-medium">Fasilitator telah meninjau laporanmu.</p></div></div>${data.feedback ? `<div class="p-4 bg-white border border-emerald-100 rounded-2xl"><p class="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">Feedback Fasilitator:</p><p class="text-xs font-bold text-slate-600 italic leading-relaxed">"${data.feedback}"</p></div>` : ''}</div>`;
+                        }
+                    }
+                    if (document.getElementById('input-modal-kelas')) document.getElementById('input-modal-kelas').value = answers.modal_kelas;
+                    if (document.getElementById('input-prod-makanan')) document.getElementById('input-prod-makanan').value = answers.prod_makanan;
+                    if (document.getElementById('input-prod-minuman')) document.getElementById('input-prod-minuman').value = answers.prod_minuman;
+                    if (document.getElementById('input-jual-makanan')) document.getElementById('input-jual-makanan').value = answers.jual_makanan;
+                    if (document.getElementById('input-jual-minuman')) document.getElementById('input-jual-minuman').value = answers.jual_minuman;
+                    if (document.getElementById('input-laba')) document.getElementById('input-laba').value = answers.laba;
+                    if (document.getElementById('input-rugi')) document.getElementById('input-rugi').value = answers.rugi;
+                    if (formContainer) formContainer.querySelectorAll('input').forEach(i => i.disabled = true);
+                    const subBtn = document.getElementById('btnSubmitLaporanAkhir');
+                    if (subBtn) subBtn.style.display = 'none';
+                } else {
+                    if (statusSection) statusSection.classList.add('hidden');
+                    if (formContainer) formContainer.querySelectorAll('input').forEach(i => { i.disabled = false; i.value = ''; });
+                    const subBtn = document.getElementById('btnSubmitLaporanAkhir');
+                    if (subBtn) subBtn.style.display = 'block';
+                }
+            } catch (err) { console.error("Error checkExistingLaporanAkhir:", err); }
+        }
+
+        async function submitLaporanAkhir() {
+            const btn = document.getElementById('btnSubmitLaporanAkhir');
+            const dataFields = {
+                modal_kelas: parseFloat(document.getElementById('input-modal-kelas').value) || 0,
+                prod_makanan: parseFloat(document.getElementById('input-prod-makanan').value) || 0,
+                prod_minuman: parseFloat(document.getElementById('input-prod-minuman').value) || 0,
+                jual_makanan: parseFloat(document.getElementById('input-jual-makanan').value) || 0,
+                jual_minuman: parseFloat(document.getElementById('input-jual-minuman').value) || 0,
+                laba: parseFloat(document.getElementById('input-laba').value) || 0,
+                rugi: parseFloat(document.getElementById('input-rugi').value) || 0
+            };
+            if (Object.values(dataFields).every(v => v === 0)) { alert("Mohon isi data laporan dengan benar."); return; }
+            btn.disabled = true; btn.innerHTML = 'Mengirim...';
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error("Sesi habis");
+                const { error } = await supabaseClient.from('module_responses').insert({ student_id: user.id, day_id: 3, module_type: 'laporan_akhir', answers: [JSON.stringify(dataFields)], status: 'submitted' });
+                if (error) throw error;
+                showToast('Laporan Akhir berhasil dikirim!');
+                closeLaporanAkhirModal();
+                updateModuleUI('laporan-akhir', 'submitted');
+            } catch (err) { alert(err.message); } finally { btn.disabled = false; btn.innerHTML = 'Kirim Laporan Akhir'; }
+        }
+
+        async function checkExistingAnalisis() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+                const { data, error } = await supabaseClient.from('module_responses').select('*').eq('student_id', user.id).eq('day_id', currentDay).eq('module_type', 'bep_analisis').maybeSingle();
+                if (data) {
+                    const statusSection = document.getElementById('analisisStatusSection');
+                    const formContainer = document.getElementById('analisisFormContainer');
+                    const statusIcon = document.getElementById('status-bep');
+                    const statusLabel = document.getElementById('label-bep');
+                    let ans; try { ans = JSON.parse(data.answers[0]); } catch (e) { ans = {}; }
+                    if (statusSection) statusSection.classList.remove('hidden');
+                    if (formContainer) { formContainer.classList.remove('hidden'); formContainer.classList.add('opacity-70', 'pointer-events-none'); document.getElementById('btnSubmitAnalisis').classList.add('hidden'); }
+                    if (document.getElementById('input-nama-produk')) document.getElementById('input-nama-produk').value = ans.nama_produk || '';
+                    if (document.getElementById('input-nama-minuman')) document.getElementById('input-nama-minuman').value = ans.nama_minuman || '';
+                    if (document.getElementById('input-target-makanan')) document.getElementById('input-target-makanan').value = ans.target_makanan || '';
+                    if (document.getElementById('input-target-minuman')) document.getElementById('input-target-minuman').value = ans.target_minuman || '';
+                    if (document.getElementById('input-harga-makanan')) document.getElementById('input-harga-makanan').value = ans.harga_makanan || '';
+                    if (document.getElementById('input-harga-minuman')) document.getElementById('input-harga-minuman').value = ans.harga_minuman || '';
+                    const ingTable = document.getElementById('ingredients-table-body');
+                    const drkTable = document.getElementById('drinks-table-body');
+                    const stnTable = document.getElementById('stand-table-body');
+                    if (ingTable) ingTable.innerHTML = '';
+                    if (drkTable) drkTable.innerHTML = '';
+                    if (stnTable) stnTable.innerHTML = '';
+                    if (ans.ingredients) ans.ingredients.forEach(ing => addIngredientRow(ing.item, ing.cost));
+                    if (ans.drinks) ans.drinks.forEach(drk => addDrinkRow(drk.item, drk.cost));
+                    if (ans.stand_items) ans.stand_items.forEach(st => addStandRow(st.item, st.cost));
+                    calculateAnalisisTotal();
+                    if (data.status === 'submitted') {
+                        if (statusIcon) { statusIcon.textContent = 'hourglass_top'; statusIcon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse'; }
+                        if (statusLabel) { statusLabel.textContent = 'Menunggu Feedback'; statusLabel.className = 'text-[11px] font-semibold text-yellow-500'; }
+                        updateModuleUI('bep', 'submitted');
+                    } else if (data.status === 'reviewed') {
+                        updateModuleUI('bep', true, data.score || 0);
+                        studentProgress[`day${currentDay}`]['bep'] = true; saveProgress(); calculateGlobalProgress();
+                    }
+                }
+            } catch (err) { console.error('Check BEP error:', err); }
         }
 
         function openVideoModal() {
@@ -5918,511 +6139,6 @@
 
 
 
-        function openBEPModal() {
-            const modal = document.getElementById('modalBEP');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            checkExistingAnalisis();
-        }
-
-        function closeBEPModal() {
-            const modal = document.getElementById('modalBEP');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        // ==========================================
-        // ANALISIS PRODUK (LAPORAN & SIMULASI)
-        // ==========================================
-
-        function switchAnalisisTab(tab) {
-            // Update Tab UI
-            const btnLaporan = document.getElementById('tab-analisis-laporan');
-            const btnSimulasi = document.getElementById('tab-analisis-simulasi');
-            const contentLaporan = document.getElementById('content-analisis-laporan');
-            const contentSimulasi = document.getElementById('content-analisis-simulasi');
-
-            if (tab === 'laporan') {
-                btnLaporan.className = "flex-1 py-3 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all";
-                btnSimulasi.className = "flex-1 py-3 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all";
-                contentLaporan.classList.remove('hidden');
-                contentSimulasi.classList.add('hidden');
-            } else {
-                btnLaporan.className = "flex-1 py-3 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all";
-                btnSimulasi.className = "flex-1 py-3 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all";
-                contentLaporan.classList.add('hidden');
-                contentSimulasi.classList.remove('hidden');
-            }
-        }
-
-        // --- DYNAMIC ROWS Logic ---
-        function addIngredientRow(name = '', cost = '') {
-            const table = document.getElementById('ingredients-table-body');
-            const row = document.createElement('tr');
-            row.className = "border-b border-slate-50";
-            row.innerHTML = `
-                <td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td>
-                <td class="py-2"><input type="number" placeholder="0" value="${cost}" oninput="calculateAnalisisTotal()" class="ingredient-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td>
-                <td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>
-            `;
-            table.appendChild(row);
-        }
-
-        function addStandRow(name = '', cost = '') {
-            const table = document.getElementById('stand-table-body');
-            const row = document.createElement('tr');
-            row.className = "border-b border-slate-50";
-            row.innerHTML = `
-                <td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td>
-                <td class="py-2"><input type="number" placeholder="0" value="${cost}" oninput="calculateAnalisisTotal()" class="stand-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td>
-                <td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>
-            `;
-            table.appendChild(row);
-        }
-
-        // --- ADDED: Drink Row Logic ---
-        function addDrinkRow(name = '', cost = '') {
-            const table = document.getElementById('drinks-table-body');
-            const row = document.createElement('tr');
-            row.className = "border-b border-slate-50";
-            row.innerHTML = `
-                <td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td>
-                <td class="py-2"><input type="number" placeholder="0" value="${cost}" oninput="calculateAnalisisTotal()" class="drink-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td>
-                <td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>
-            `;
-            table.appendChild(row);
-        }
-
-        function calculateAnalisisTotal() {
-            // Calculate Ingredients (Makanan)
-            let totalHpp = 0;
-            document.querySelectorAll('.ingredient-cost').forEach(input => {
-                totalHpp += parseFloat(input.value) || 0;
-            });
-            document.getElementById('total-hpp-display').textContent = 'Rp ' + totalHpp.toLocaleString('id-ID');
-
-            // Calculate Drinks (Minuman)
-            let totalDrinks = 0;
-            document.querySelectorAll('.drink-cost').forEach(input => {
-                totalDrinks += parseFloat(input.value) || 0;
-            });
-            document.getElementById('total-drinks-display').textContent = 'Rp ' + totalDrinks.toLocaleString('id-ID');
-
-            // Calculate Stand
-            let totalStand = 0;
-            document.querySelectorAll('.stand-cost').forEach(input => {
-                totalStand += parseFloat(input.value) || 0;
-            });
-            document.getElementById('total-stand-display').textContent = 'Rp ' + totalStand.toLocaleString('id-ID');
-
-            // BEP & Rekomendasi (Terpisah)
-            const targetMakanan = parseFloat(document.getElementById('input-target-makanan').value) || 0;
-            const targetMinuman = parseFloat(document.getElementById('input-target-minuman').value) || 0;
-            const hargaMakanan = parseFloat(document.getElementById('input-harga-makanan').value) || 0;
-            const hargaMinuman = parseFloat(document.getElementById('input-harga-minuman').value) || 0;
-
-            const standShare = totalStand / 2;
-            const margin = 0.4; // 40% margin
-
-            // --- Makanan ---
-            const hppMakPerUnit = targetMakanan > 0 ? ((totalHpp + standShare) / targetMakanan) : 0;
-            const rekMak = hppMakPerUnit > 0 ? (Math.ceil((hppMakPerUnit * (1 + margin)) / 100) * 100) : 0;
-            document.getElementById('rek-harga-makanan').textContent = rekMak > 0 ? 'Rp ' + rekMak.toLocaleString('id-ID') : '-';
-
-            const bepMakEl = document.getElementById('bep-makanan');
-            if (hargaMakanan > 0) {
-                bepMakEl.textContent = Math.ceil((totalHpp + standShare) / hargaMakanan) + ' Unit';
-            } else {
-                bepMakEl.textContent = '0 Unit';
-            }
-
-            // --- Minuman ---
-            const hppMinPerUnit = targetMinuman > 0 ? ((totalDrinks + standShare) / targetMinuman) : 0;
-            const rekMin = hppMinPerUnit > 0 ? (Math.ceil((hppMinPerUnit * (1 + margin)) / 100) * 100) : 0;
-            document.getElementById('rek-harga-minuman').textContent = rekMin > 0 ? 'Rp ' + rekMin.toLocaleString('id-ID') : '-';
-
-            const bepMinEl = document.getElementById('bep-minuman');
-            if (hargaMinuman > 0) {
-                bepMinEl.textContent = Math.ceil((totalDrinks + standShare) / hargaMinuman) + ' Unit';
-            } else {
-                bepMinEl.textContent = '0 Unit';
-            }
-
-            // Info Box
-            const infoBox = document.getElementById('bep-info-box');
-            if (targetMakanan > 0 || targetMinuman > 0) {
-                infoBox.classList.remove('hidden');
-            } else {
-                infoBox.classList.add('hidden');
-            }
-        }
-
-        // --- SUBMIT Logic ---
-        async function submitAnalisisProduk() {
-            const btn = document.getElementById('btnSubmitAnalisis');
-            const namaProduk = document.getElementById('input-nama-produk').value;
-
-            if (!namaProduk.trim()) {
-                alert('Mohon isi Nama Produk.');
-                return;
-            }
-
-            // Gather Ingredients (Makanan)
-            const ingredients = [];
-            document.querySelectorAll('#ingredients-table-body tr').forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                if (inputs[0].value.trim()) {
-                    ingredients.push({
-                        item: inputs[0].value,
-                        cost: parseFloat(inputs[1].value) || 0
-                    });
-                }
-            });
-
-            // Gather Drinks (Minuman)
-            const drinks = [];
-            document.querySelectorAll('#drinks-table-body tr').forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                if (inputs[0].value.trim()) {
-                    drinks.push({
-                        item: inputs[0].value,
-                        cost: parseFloat(inputs[1].value) || 0
-                    });
-                }
-            });
-
-            // Gather Stand
-            const standItems = [];
-            document.querySelectorAll('#stand-table-body tr').forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                if (inputs[0].value.trim()) {
-                    standItems.push({
-                        item: inputs[0].value,
-                        cost: parseFloat(inputs[1].value) || 0
-                    });
-                }
-            });
-
-            const submissionData = {
-                nama_produk: namaProduk,
-                nama_minuman: document.getElementById('input-nama-minuman').value,
-                ingredients: ingredients,
-                drinks: drinks,
-                stand_items: standItems,
-                target_makanan: parseFloat(document.getElementById('input-target-makanan').value) || 0,
-                target_minuman: parseFloat(document.getElementById('input-target-minuman').value) || 0,
-                harga_makanan: parseFloat(document.getElementById('input-harga-makanan').value) || 0,
-                harga_minuman: parseFloat(document.getElementById('input-harga-minuman').value) || 0,
-                total_hpp_makanan: ingredients.reduce((sum, item) => sum + item.cost, 0),
-                total_hpp_minuman: drinks.reduce((sum, item) => sum + item.cost, 0),
-                total_hpp_stand: standItems.reduce((sum, item) => sum + item.cost, 0),
-                total_modal: (ingredients.reduce((sum, item) => sum + item.cost, 0) +
-                    drinks.reduce((sum, item) => sum + item.cost, 0) +
-                    standItems.reduce((sum, item) => sum + item.cost, 0))
-            };
-
-            btn.disabled = true;
-            btn.innerHTML = 'Mengirim...';
-
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error("Sesi habis");
-
-                const { error } = await supabaseClient
-                    .from('module_responses')
-                    .insert({
-                        student_id: user.id,
-                        day_id: currentDay,
-                        module_type: 'bep_analisis',
-                        answers: [JSON.stringify(submissionData)],
-                        status: 'submitted'
-                    });
-
-                if (error) throw error;
-
-                alert('Laporan Analisis Produk berhasil dikirim!');
-
-                // Tutup Modal Otomatis
-                const modal = document.getElementById('modalBEP');
-                if (modal) {
-                    modal.classList.add('hidden');
-                    document.body.style.overflow = '';
-                }
-
-                // Update Local Progress
-                studentProgress[`day${currentDay}`]['bep'] = false; // keep false as it waits for grading
-                saveProgress();
-
-                checkExistingAnalisis();
-
-            } catch (err) {
-                console.error('Submit failed:', err);
-                alert('Gagal mengirim laporan: ' + err.message);
-                btn.disabled = false;
-                btn.innerHTML = 'Kirim Laporan';
-            }
-        }
-
-        // ==========================================
-        // FITUR LAPORAN AKHIR (DAY 3)
-        // ==========================================
-        function openLaporanAkhirModal() {
-            document.getElementById('modalLaporanAkhir').classList.remove('hidden');
-            document.getElementById('modalLaporanAkhir').classList.add('flex');
-            checkExistingLaporanAkhir();
-        }
-
-        function closeLaporanAkhirModal() {
-            document.getElementById('modalLaporanAkhir').classList.add('hidden');
-            document.getElementById('modalLaporanAkhir').classList.remove('flex');
-        }
-
-        async function checkExistingLaporanAkhir() {
-            const statusSection = document.getElementById('laporanAkhirStatusSection');
-            const formContainer = document.getElementById('laporanAkhirFormContainer');
-
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) return;
-
-                const { data, error } = await supabaseClient
-                    .from('module_responses')
-                    .select('*')
-                    .eq('student_id', user.id)
-                    .eq('day_id', 3)
-                    .eq('module_type', 'laporan_akhir')
-                    .single();
-
-                if (error && error.code !== 'PGRST116') throw error;
-
-                if (data) {
-                    const answers = JSON.parse(data.answers[0]);
-
-                    // Show Status
-                    statusSection.classList.remove('hidden');
-                    let statusHtml = '';
-
-                    if (data.status === 'submitted') {
-                        statusHtml = `
-                            <div class="p-4 bg-yellow-50 border border-yellow-100 rounded-2xl flex items-start gap-3">
-                                <span class="material-symbols-outlined text-yellow-500">hourglass_top</span>
-                                <div>
-                                    <p class="text-xs font-black text-yellow-700 uppercase">Menunggu Feedback</p>
-                                    <p class="text-[10px] text-yellow-600 font-medium">Laporanmu sedang ditinjau oleh Fasilitator. Harap tunggu penilaian dan catatan evaluasinya.</p>
-                                </div>
-                            </div>`;
-                    } else if (data.status === 'reviewed') {
-                        const stars = '⭐'.repeat(data.score / 20) || '⭐';
-                        statusHtml = `
-                            <div class="space-y-3">
-                                <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-start gap-3">
-                                    <span class="material-symbols-outlined text-emerald-500">verified</span>
-                                    <div>
-                                        <p class="text-xs font-black text-emerald-700 uppercase tracking-wider">Laporan Dinilai ${stars}</p>
-                                        <p class="text-[10px] text-emerald-600 font-medium">Fasilitator telah meninjau laporanmu.</p>
-                                    </div>
-                                </div>
-                                ${data.feedback ? `
-                                <div class="p-4 bg-white border border-emerald-100 rounded-2xl">
-                                    <p class="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">Feedback Fasilitator:</p>
-                                    <p class="text-xs font-bold text-slate-600 italic leading-relaxed">"${data.feedback}"</p>
-                                </div>` : ''}
-                            </div>`;
-                    }
-                    statusSection.innerHTML = statusHtml;
-
-                    // Fill Form (View Only)
-                    document.getElementById('input-modal-kelas').value = answers.modal_kelas;
-                    document.getElementById('input-prod-makanan').value = answers.prod_makanan;
-                    document.getElementById('input-prod-minuman').value = answers.prod_minuman;
-                    document.getElementById('input-jual-makanan').value = answers.jual_makanan;
-                    document.getElementById('input-jual-minuman').value = answers.jual_minuman;
-                    document.getElementById('input-laba').value = answers.laba;
-                    document.getElementById('input-rugi').value = answers.rugi;
-
-                    // Disable inputs if already reviewed/submitted
-                    document.getElementById('laporanAkhirFormContainer').querySelectorAll('input').forEach(i => i.disabled = true);
-                    document.getElementById('btnSubmitLaporanAkhir').style.display = 'none';
-                } else {
-                    statusSection.classList.add('hidden');
-                    formContainer.querySelectorAll('input').forEach(i => {
-                        i.disabled = false;
-                        i.value = '';
-                    });
-                    document.getElementById('btnSubmitLaporanAkhir').style.display = 'block';
-                }
-            } catch (err) {
-                console.error("Error checkExistingLaporanAkhir:", err);
-            }
-        }
-
-        async function submitLaporanAkhir() {
-            const btn = document.getElementById('btnSubmitLaporanAkhir');
-            const dataFields = {
-                modal_kelas: parseFloat(document.getElementById('input-modal-kelas').value) || 0,
-                prod_makanan: parseFloat(document.getElementById('input-prod-makanan').value) || 0,
-                prod_minuman: parseFloat(document.getElementById('input-prod-minuman').value) || 0,
-                jual_makanan: parseFloat(document.getElementById('input-jual-makanan').value) || 0,
-                jual_minuman: parseFloat(document.getElementById('input-jual-minuman').value) || 0,
-                laba: parseFloat(document.getElementById('input-laba').value) || 0,
-                rugi: parseFloat(document.getElementById('input-rugi').value) || 0
-            };
-
-            if (Object.values(dataFields).every(v => v === 0)) {
-                alert("Mohon isi data laporan dengan benar.");
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = 'Mengirim...';
-
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error("Sesi habis");
-
-                const { error } = await supabaseClient
-                    .from('module_responses')
-                    .insert({
-                        student_id: user.id,
-                        day_id: 3,
-                        module_type: 'laporan_akhir',
-                        answers: [JSON.stringify(dataFields)],
-                        status: 'submitted'
-                    });
-
-                if (error) throw error;
-
-                showToast('Laporan Akhir berhasil dikirim!');
-                closeLaporanAkhirModal();
-                updateModuleUI('laporan-akhir', 'submitted');
-            } catch (err) {
-                alert(err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = 'Kirim Laporan Akhir';
-            }
-        }
-
-        async function checkExistingAnalisis() {
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) return;
-
-                const { data, error } = await supabaseClient
-                    .from('module_responses')
-                    .select('*')
-                    .eq('student_id', user.id)
-                    .eq('day_id', currentDay)
-                    .eq('module_type', 'bep_analisis')
-                    .maybeSingle();
-
-                if (data) {
-                    const statusSection = document.getElementById('analisisStatusSection');
-                    const formContainer = document.getElementById('analisisFormContainer');
-                    const statusIcon = document.getElementById('status-bep');
-                    const statusLabel = document.getElementById('label-bep');
-
-                    // Parse Data
-                    let ans;
-                    try {
-                        ans = JSON.parse(data.answers[0]);
-                    } catch (e) { ans = {}; }
-
-                    // Update UI: View Mode
-                    if (statusSection) statusSection.classList.remove('hidden');
-                    if (formContainer) {
-                        formContainer.classList.remove('hidden');
-                        formContainer.classList.add('opacity-70', 'pointer-events-none');
-                        document.getElementById('btnSubmitAnalisis').classList.add('hidden');
-                    }
-
-                    // Fill input values for visual confirmation (Optional, but good UX)
-                    if (document.getElementById('input-nama-produk')) document.getElementById('input-nama-produk').value = ans.nama_produk || '';
-                    if (document.getElementById('input-nama-minuman')) document.getElementById('input-nama-minuman').value = ans.nama_minuman || '';
-                    if (document.getElementById('input-target-makanan')) document.getElementById('input-target-makanan').value = ans.target_makanan || '';
-                    if (document.getElementById('input-target-minuman')) document.getElementById('input-target-minuman').value = ans.target_minuman || '';
-                    if (document.getElementById('input-harga-makanan')) document.getElementById('input-harga-makanan').value = ans.harga_makanan || '';
-                    if (document.getElementById('input-harga-minuman')) document.getElementById('input-harga-minuman').value = ans.harga_minuman || '';
-                    // Clear existing rows first
-                    document.getElementById('ingredients-table-body').innerHTML = '';
-                    document.getElementById('drinks-table-body').innerHTML = '';
-                    document.getElementById('stand-table-body').innerHTML = '';
-
-                    // Re-populate rows
-                    if (ans.ingredients) {
-                        ans.ingredients.forEach(ing => {
-                            addIngredientRow(ing.item, ing.cost);
-                        });
-                    }
-                    if (ans.drinks) {
-                        ans.drinks.forEach(drk => {
-                            addDrinkRow(drk.item, drk.cost);
-                        });
-                    }
-                    if (ans.stand_items) {
-                        ans.stand_items.forEach(st => {
-                            addStandRow(st.item, st.cost);
-                        });
-                    }
-
-                    // Final calculation to update displays
-                    calculateAnalisisTotal();
-
-
-                    if (data.status === 'submitted') {
-                        if (statusSection) {
-                            statusSection.innerHTML = `
-                                <div class="bg-yellow-50 p-4 rounded-2xl border border-yellow-100 flex items-center gap-3">
-                                    <div class="size-8 rounded-full bg-yellow-400 flex items-center justify-center text-white shrink-0 animate-pulse">
-                                        <span class="material-symbols-outlined text-sm">hourglass_top</span>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] font-black text-yellow-700 uppercase tracking-widest">Menunggu Review</p>
-                                        <p class="text-[10px] text-yellow-600 mt-0.5 font-medium">Laporanmu sudah diterima fasilitator.</p>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                        // Update Dashboard Grid
-                        if (statusIcon) {
-                            statusIcon.textContent = 'hourglass_top';
-                            statusIcon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse';
-                        }
-                        if (statusLabel) {
-                            statusLabel.textContent = 'Menunggu Feedback';
-                            statusLabel.className = 'text-[11px] font-semibold text-yellow-500';
-                        }
-                        updateModuleUI('bep', 'submitted');
-
-                    } else if (data.status === 'reviewed') {
-                        if (statusSection) {
-                            statusSection.innerHTML = `
-                                <div class="bg-emerald-50 p-5 rounded-2xl border border-emerald-100 space-y-3">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Dinilai Fasilitator</p>
-                                        <div class="flex items-center gap-1">
-                                            <span class="text-lg font-black text-emerald-600">${data.score || 0}</span>
-                                            <span class="text-[10px] text-emerald-500">Poin</span>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white rounded-xl border border-emerald-100">
-                                        <p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Feedback:</p>
-                                        <p class="text-xs text-slate-700 font-medium italic">"${data.feedback || 'Laporan diterima.'}"</p>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                        // Update Dashboard Grid
-                        updateModuleUI('bep', true, data.score || 0);
-
-                        // Mark as done in local progress
-                        studentProgress[`day${currentDay}`]['bep'] = true;
-                        saveProgress();
-                        calculateGlobalProgress();
-                    }
-                }
-            } catch (err) { console.error('Check BEP error:', err); }
-        }
     </script>
 </body>
 
