@@ -2004,15 +2004,33 @@
                     }
 
                     // Pre-fill fields
-                    if (document.getElementById('input-jual-makanan-rp')) document.getElementById('input-jual-makanan-rp').value = a.penjualan_makanan_rp || 0;
-                    if (document.getElementById('input-jual-minuman-rp')) document.getElementById('input-jual-minuman-rp').value = a.penjualan_minuman_rp || 0;
-                    if (document.getElementById('input-harga-makanan')) document.getElementById('input-harga-makanan').value = a.harga_makanan || 0;
-                    if (document.getElementById('input-harga-minuman')) document.getElementById('input-harga-minuman').value = a.harga_minuman || 0;
-                    if (document.getElementById('input-biaya-produksi')) document.getElementById('input-biaya-produksi').value = a.biaya_produksi || 0;
-                    if (document.getElementById('input-biaya-kemasan')) document.getElementById('input-biaya-kemasan').value = a.biaya_kemasan || 0;
-                    if (document.getElementById('input-biaya-tetap')) document.getElementById('input-biaya-tetap').value = a.biaya_tetap || 0;
-                    if (document.getElementById('input-var-makanan')) document.getElementById('input-var-makanan').value = a.var_makanan || 0;
-                    if (document.getElementById('input-var-minuman')) document.getElementById('input-var-minuman').value = a.var_minuman || 0;
+                    if (document.getElementById('input-jual-makanan-rp')) {
+                        document.getElementById('input-jual-makanan-rp').value = (a.penjualan_makanan_rp || 0).toLocaleString('id-ID');
+                    }
+                    if (document.getElementById('input-jual-minuman-rp')) {
+                        document.getElementById('input-jual-minuman-rp').value = (a.penjualan_minuman_rp || 0).toLocaleString('id-ID');
+                    }
+                    if (document.getElementById('input-harga-makanan')) {
+                        document.getElementById('input-harga-makanan').value = (a.harga_makanan || 0).toLocaleString('id-ID');
+                    }
+                    if (document.getElementById('input-harga-minuman')) {
+                        document.getElementById('input-harga-minuman').value = (a.harga_minuman || 0).toLocaleString('id-ID');
+                    }
+                    if (document.getElementById('input-biaya-prod-makan')) {
+                        document.getElementById('input-biaya-prod-makan').value = (a.biaya_prod_makan || 0).toLocaleString('id-ID');
+                    }
+                    if (document.getElementById('input-qty-makan')) {
+                        document.getElementById('input-qty-makan').value = (a.qty_makan || 0).toLocaleString('id-ID');
+                    }
+                    if (document.getElementById('input-biaya-prod-minum')) {
+                        document.getElementById('input-biaya-prod-minum').value = (a.biaya_prod_minum || 0).toLocaleString('id-ID');
+                    }
+                    if (document.getElementById('input-qty-minum')) {
+                        document.getElementById('input-qty-minum').value = (a.qty_minum || 0).toLocaleString('id-ID');
+                    }
+                    if (document.getElementById('input-biaya-tetap')) {
+                        document.getElementById('input-biaya-tetap').value = (a.biaya_tetap || 0).toLocaleString('id-ID');
+                    }
 
                     calculateFinancials(true); // Memunculkan ringkasan hasil
 
@@ -2061,19 +2079,48 @@
             }
         }
 
+        // Helper utilities for number formatting
+        function formatInputWithDots(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value === "") {
+                input.value = "";
+                return;
+            }
+            input.value = parseInt(value).toLocaleString('id-ID');
+        }
+
+        function parseFormattedNumber(val) {
+            if (typeof val !== 'string') return parseFloat(val) || 0;
+            return parseFloat(val.replace(/\./g, '')) || 0;
+        }
+
         function calculateFinancials(showCard = false) {
-            const jualMakanRp = parseFloat(document.getElementById('input-jual-makanan-rp')?.value) || 0;
-            const jualMinumRp = parseFloat(document.getElementById('input-jual-minuman-rp')?.value) || 0;
-            const hargaMakan = parseFloat(document.getElementById('input-harga-makanan')?.value) || 0;
-            const hargaMinum = parseFloat(document.getElementById('input-harga-minuman')?.value) || 0;
-            const biayaProduksi = parseFloat(document.getElementById('input-biaya-produksi')?.value) || 0;
-            const biayaKemasan = parseFloat(document.getElementById('input-biaya-kemasan')?.value) || 0;
-            const biayaTetap = parseFloat(document.getElementById('input-biaya-tetap')?.value) || 0;
-            const varMakan = parseFloat(document.getElementById('input-var-makanan')?.value) || 0;
-            const varMinum = parseFloat(document.getElementById('input-var-minuman')?.value) || 0;
+            // Get values using the parser
+            const jualMakanRp = parseFormattedNumber(document.getElementById('input-jual-makanan-rp')?.value);
+            const jualMinumRp = parseFormattedNumber(document.getElementById('input-jual-minuman-rp')?.value);
+            const hargaMakan = parseFormattedNumber(document.getElementById('input-harga-makanan')?.value);
+            const hargaMinum = parseFormattedNumber(document.getElementById('input-harga-minuman')?.value);
+
+            // New automation fields
+            const biayaProdMakan = parseFormattedNumber(document.getElementById('input-biaya-prod-makan')?.value);
+            const qtyMakan = parseFormattedNumber(document.getElementById('input-qty-makan')?.value);
+            const biayaProdMinum = parseFormattedNumber(document.getElementById('input-biaya-prod-minum')?.value);
+            const qtyMinum = parseFormattedNumber(document.getElementById('input-qty-minum')?.value);
+
+            const biayaTetap = parseFormattedNumber(document.getElementById('input-biaya-tetap')?.value);
+
+            // Automated Variable Cost / Unit
+            const varMakan = qtyMakan > 0 ? (biayaProdMakan / qtyMakan) : 0;
+            const varMinum = qtyMinum > 0 ? (biayaProdMinum / qtyMinum) : 0;
+
+            // Show automated results to user
+            const displayVarMakan = document.getElementById('display-var-makanan');
+            const displayVarMinum = document.getElementById('display-var-minuman');
+            if (displayVarMakan) displayVarMakan.textContent = `Rp ${Math.round(varMakan).toLocaleString('id-ID')}`;
+            if (displayVarMinum) displayVarMinum.textContent = `Rp ${Math.round(varMinum).toLocaleString('id-ID')}`;
 
             const totalPenjualan = jualMakanRp + jualMinumRp;
-            const totalBiaya = biayaProduksi + biayaKemasan + biayaTetap;
+            const totalBiaya = biayaProdMakan + biayaProdMinum + biayaTetap;
             const labaRugi = totalPenjualan - totalBiaya;
 
             // BEP Calculation (Weighted Average Contribution Margin)
@@ -2087,12 +2134,14 @@
             const cmMakan = hargaMakan - varMakan;
             const cmMinum = hargaMinum - varMinum;
 
+            const totalBiayaTarget = totalBiaya; // Target is Total Cost for break even
+
             if (totalUnits > 0) {
                 const weightedCM = ((unitsMakan / totalUnits) * cmMakan) + ((unitsMinum / totalUnits) * cmMinum);
                 const weightedPrice = ((unitsMakan / totalUnits) * hargaMakan) + ((unitsMinum / totalUnits) * hargaMinum);
 
                 if (weightedCM > 0) {
-                    bepUnit = Math.ceil(totalBiaya / weightedCM);
+                    bepUnit = Math.ceil(totalBiayaTarget / weightedCM);
                     bepRupiah = Math.round(bepUnit * weightedPrice);
                 }
             } else {
@@ -2100,7 +2149,7 @@
                 const unifiedCM = Math.max(cmMakan, cmMinum);
                 const unifiedPrice = cmMakan > cmMinum ? hargaMakan : hargaMinum;
                 if (unifiedCM > 0) {
-                    bepUnit = Math.ceil(totalBiaya / unifiedCM);
+                    bepUnit = Math.ceil(totalBiayaTarget / unifiedCM);
                     bepRupiah = bepUnit * unifiedPrice;
                 }
             }
@@ -2165,15 +2214,15 @@
         async function submitLaporanAkhir() {
             const btn = document.getElementById('btnSubmitLaporanAkhir');
             const fields = {
-                jualMakanRp: parseFloat(document.getElementById('input-jual-makanan-rp')?.value) || 0,
-                jualMinumRp: parseFloat(document.getElementById('input-jual-minuman-rp')?.value) || 0,
-                hargaMakan: parseFloat(document.getElementById('input-harga-makanan')?.value) || 0,
-                hargaMinum: parseFloat(document.getElementById('input-harga-minuman')?.value) || 0,
-                biayaProduksi: parseFloat(document.getElementById('input-biaya-produksi')?.value) || 0,
-                biayaKemasan: parseFloat(document.getElementById('input-biaya-kemasan')?.value) || 0,
-                biayaTetap: parseFloat(document.getElementById('input-biaya-tetap')?.value) || 0,
-                varMakan: parseFloat(document.getElementById('input-var-makanan')?.value) || 0,
-                varMinum: parseFloat(document.getElementById('input-var-minuman')?.value) || 0
+                jualMakanRp: parseFormattedNumber(document.getElementById('input-jual-makanan-rp')?.value),
+                jualMinumRp: parseFormattedNumber(document.getElementById('input-jual-minuman-rp')?.value),
+                hargaMakan: parseFormattedNumber(document.getElementById('input-harga-makanan')?.value),
+                hargaMinum: parseFormattedNumber(document.getElementById('input-harga-minuman')?.value),
+                biayaProdMakan: parseFormattedNumber(document.getElementById('input-biaya-prod-makan')?.value),
+                qtyMakan: parseFormattedNumber(document.getElementById('input-qty-makan')?.value),
+                biayaProdMinum: parseFormattedNumber(document.getElementById('input-biaya-prod-minum')?.value),
+                qtyMinum: parseFormattedNumber(document.getElementById('input-qty-minum')?.value),
+                biayaTetap: parseFormattedNumber(document.getElementById('input-biaya-tetap')?.value)
             };
 
             // Basic Validation
@@ -2207,11 +2256,13 @@
                     penjualan_minuman_rp: fields.jualMinumRp,
                     harga_makanan: fields.hargaMakan,
                     harga_minuman: fields.hargaMinum,
-                    biaya_produksi: fields.biayaProduksi,
-                    biaya_kemasan: fields.biayaKemasan,
+                    biaya_prod_makan: fields.biayaProdMakan,
+                    qty_makan: fields.qtyMakan,
+                    biaya_prod_minum: fields.biayaProdMinum,
+                    qty_minum: fields.qtyMinum,
                     biaya_tetap: fields.biayaTetap,
-                    var_makanan: fields.varMakan,
-                    var_minuman: fields.varMinum,
+                    var_makanan: results.totalUnits > 0 ? (fields.biayaProdMakan / (fields.qtyMakan || 1)) : 0,
+                    var_minuman: results.totalUnits > 0 ? (fields.biayaProdMinum / (fields.qtyMinum || 1)) : 0,
                     total_penjualan: results.totalPenjualan,
                     total_biaya: results.totalBiaya,
                     laba_rugi: results.labaRugi,
@@ -3555,7 +3606,8 @@
                                     <label
                                         class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Penjualan
                                         Makanan (Rp)</label>
-                                    <input type="number" id="input-jual-makanan-rp" oninput="calculateFinancials()"
+                                    <input type="text" id="input-jual-makanan-rp"
+                                        oninput="formatInputWithDots(this); calculateFinancials()"
                                         class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                         placeholder="0">
                                 </div>
@@ -3563,7 +3615,8 @@
                                     <label
                                         class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Penjualan
                                         Minuman (Rp)</label>
-                                    <input type="number" id="input-jual-minuman-rp" oninput="calculateFinancials()"
+                                    <input type="text" id="input-jual-minuman-rp"
+                                        oninput="formatInputWithDots(this); calculateFinancials()"
                                         class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                         placeholder="0">
                                 </div>
@@ -3572,17 +3625,19 @@
                                         <label
                                             class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Harga
                                             Makanan (Rp)</label>
-                                        <input type="number" id="input-harga-makanan" oninput="calculateFinancials()"
+                                        <input type="text" id="input-harga-makanan"
+                                            oninput="formatInputWithDots(this); calculateFinancials()"
                                             class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
-                                            placeholder="Gunakan harga/porsi">
+                                            placeholder="Ex: 10.000">
                                     </div>
                                     <div>
                                         <label
                                             class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Harga
                                             Minuman (Rp)</label>
-                                        <input type="number" id="input-harga-minuman" oninput="calculateFinancials()"
+                                        <input type="text" id="input-harga-minuman"
+                                            oninput="formatInputWithDots(this); calculateFinancials()"
                                             class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
-                                            placeholder="Gunakan harga/cup">
+                                            placeholder="Ex: 5.000">
                                     </div>
                                 </div>
                             </div>
@@ -3594,52 +3649,77 @@
                                 <span class="material-symbols-outlined text-sm text-emerald-500">payments</span> 2.
                                 Data Biaya
                             </h4>
-                            <div class="space-y-3 p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Biaya
-                                            Produksi (Rp)</label>
-                                        <input type="number" id="input-biaya-produksi" oninput="calculateFinancials()"
-                                            class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
-                                            placeholder="0">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Biaya
-                                            Kemasan (Rp)</label>
-                                        <input type="number" id="input-biaya-kemasan" oninput="calculateFinancials()"
-                                            class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
-                                            placeholder="0">
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Biaya
-                                            Tetap/Stand</label>
-                                        <input type="number" id="input-biaya-tetap" oninput="calculateFinancials()"
-                                            class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
-                                            placeholder="0">
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-4 p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                                <!-- Makanan Cost -->
+                                <div class="space-y-2">
+                                    <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Produksi
+                                        Makanan</p>
+                                    <div class="grid grid-cols-2 gap-3">
                                         <div>
                                             <label
-                                                class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Varian
-                                                Makan</label>
-                                            <input type="number" id="input-var-makanan" oninput="calculateFinancials()"
+                                                class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Total
+                                                Biaya (Bahan+Kemas)</label>
+                                            <input type="text" id="input-biaya-prod-makan"
+                                                oninput="formatInputWithDots(this); calculateFinancials()"
                                                 class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                                 placeholder="0">
                                         </div>
                                         <div>
                                             <label
-                                                class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Varian
-                                                Minum</label>
-                                            <input type="number" id="input-var-minuman" oninput="calculateFinancials()"
+                                                class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Jumlah
+                                                Porsi Dibuat</label>
+                                            <input type="text" id="input-qty-makan"
+                                                oninput="formatInputWithDots(this); calculateFinancials()"
+                                                class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
+                                                placeholder="Qty">
+                                        </div>
+                                    </div>
+                                    <p class="text-[9px] text-slate-400 italic">Otomatis biaya per porsi: <span
+                                            id="display-var-makanan" class="font-bold text-slate-600">Rp 0</span></p>
+                                </div>
+
+                                <div class="h-px bg-slate-50"></div>
+
+                                <!-- Minuman Cost -->
+                                <div class="space-y-2">
+                                    <p class="text-[9px] font-black text-blue-500 uppercase tracking-widest">Produksi
+                                        Minuman</p>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label
+                                                class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Total
+                                                Biaya (Bahan+Kemas)</label>
+                                            <input type="text" id="input-biaya-prod-minum"
+                                                oninput="formatInputWithDots(this); calculateFinancials()"
                                                 class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                                 placeholder="0">
                                         </div>
+                                        <div>
+                                            <label
+                                                class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Jumlah
+                                                Cup Dibuat</label>
+                                            <input type="text" id="input-qty-minum"
+                                                oninput="formatInputWithDots(this); calculateFinancials()"
+                                                class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
+                                                placeholder="Qty">
+                                        </div>
                                     </div>
+                                    <p class="text-[9px] text-slate-400 italic">Otomatis biaya per cup: <span
+                                            id="display-var-minuman" class="font-bold text-slate-600">Rp 0</span></p>
                                 </div>
-                                <p class="text-[9px] text-slate-400 italic mt-1 px-1">*Biaya Varian: Biaya bahan per
-                                    porsi.</p>
+
+                                <div class="h-px bg-slate-50"></div>
+
+                                <!-- Fixed Cost -->
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase spacing-wider">Biaya
+                                        Tetap / Sewa Stan (Rp)</label>
+                                    <input type="text" id="input-biaya-tetap"
+                                        oninput="formatInputWithDots(this); calculateFinancials()"
+                                        class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
+                                        placeholder="0">
+                                </div>
                             </div>
                         </div>
 
