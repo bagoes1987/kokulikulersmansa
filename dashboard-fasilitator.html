@@ -1012,11 +1012,6 @@
                             modulesHtml += renderModuleItem(sid, snama, day, 'kuis', responses);
                         }
 
-                        // BEP Analisis (Day 2 only)
-                        if (day === 2) {
-                            modulesHtml += renderModuleItem(sid, snama, day, 'bep_analisis', responses);
-                        }
-
                         // Dokumentasi (All days)
                         modulesHtml += renderModuleItem(sid, snama, day, 'dokumentasi', responses);
 
@@ -1026,10 +1021,7 @@
                             modulesHtml += renderModuleItem(sid, snama, day, 'refleksi', responses);
                         }
 
-                        // Laporan Akhir (Day 3 only)
-                        if (day === 3) {
-                            modulesHtml += renderModuleItem(sid, snama, day, 'laporan_akhir', responses);
-                        }
+
 
                         html += `
                         <div class="bg-white p-6 rounded-2xl border border-slate-100 mb-6 last:mb-0 shadow-sm">
@@ -1044,11 +1036,11 @@
                     }
 
                     container.innerHTML = html;
-                    console.log('✨ [v1.0.8] Modal UI Rendered.');
+                    console.log('✨ [v1.1.2] Modal UI Rendered.');
 
                 } catch (err) {
-                    console.error('❌ [v1.0.8] CRITICAL FAIL:', err);
-                    alert('MODAL FAIL [v1.0.8]: ' + err.message);
+                    console.error('❌ [v1.1.2] CRITICAL FAIL:', err);
+                    alert('MODAL FAIL [v1.1.2]: ' + err.message);
                 }
             }
 
