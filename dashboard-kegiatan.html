@@ -2092,7 +2092,7 @@
                 const weightedPrice = ((unitsMakan / totalUnits) * hargaMakan) + ((unitsMinum / totalUnits) * hargaMinum);
 
                 if (weightedCM > 0) {
-                    bepUnit = Math.ceil(biayaTetap / weightedCM);
+                    bepUnit = Math.ceil(totalBiaya / weightedCM);
                     bepRupiah = Math.round(bepUnit * weightedPrice);
                 }
             } else {
@@ -2100,7 +2100,7 @@
                 const unifiedCM = Math.max(cmMakan, cmMinum);
                 const unifiedPrice = cmMakan > cmMinum ? hargaMakan : hargaMinum;
                 if (unifiedCM > 0) {
-                    bepUnit = Math.ceil(biayaTetap / unifiedCM);
+                    bepUnit = Math.ceil(totalBiaya / unifiedCM);
                     bepRupiah = bepUnit * unifiedPrice;
                 }
             }
