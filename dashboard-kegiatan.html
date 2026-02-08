@@ -5668,6 +5668,13 @@
 
                 alert('Laporan Analisis Produk berhasil dikirim!');
 
+                // Tutup Modal Otomatis
+                const modal = document.getElementById('modalBEP');
+                if (modal) {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+
                 // Update Local Progress
                 studentProgress[`day${currentDay}`]['bep'] = false; // keep false as it waits for grading
                 saveProgress();
