@@ -189,23 +189,7 @@
                     </div>
                 </div>
 
-                <!-- Laporan Akhir (Day 3 Only) -->
-                <div id="module-laporan-akhir" onclick="handleModuleClick('laporan-akhir')" style="display: none;"
-                    class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
-                    <div
-                        class="h-12 w-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
-                        <span class="material-symbols-outlined !text-2xl">receipt_long</span>
-                    </div>
-                    <div>
-                        <h3 class="text-[15px] font-bold text-slate-800">Laporan Akhir</h3>
-                        <div class="flex items-center gap-1 mt-1">
-                            <span class="material-symbols-outlined !text-base text-slate-400"
-                                id="status-laporan-akhir">radio_button_unchecked</span>
-                            <span class="text-[13px] font-semibold text-slate-400" id="label-laporan-akhir">Belum
-                                Selesai</span>
-                        </div>
-                    </div>
-                </div>
+
 
                 <!-- Video Belajar -->
                 <div id="module-video" onclick="handleModuleClick('video')"
@@ -678,7 +662,7 @@
         const defaultProgress = {
             day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
             day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false, bep: false },
-            day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false, 'laporan-akhir': false }
+            day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false }
         };
 
         let studentProgress = JSON.parse(JSON.stringify(defaultProgress));
@@ -920,10 +904,7 @@
                 openBEPModal();
                 return;
             }
-            if (moduleId === 'laporan-akhir') {
-                openLaporanAkhirModal();
-                return;
-            }
+
 
             const dayKey = `day${currentDay}`;
             // Toggle status
@@ -1010,15 +991,7 @@
                 }
             }
 
-            // Laporan Akhir Visibility (Only Day 3)
-            const laporanAkhirModule = document.getElementById('module-laporan-akhir');
-            if (laporanAkhirModule) {
-                if (currentDay === 3) {
-                    laporanAkhirModule.style.display = '';
-                } else {
-                    laporanAkhirModule.style.display = 'none';
-                }
-            }
+
         }
 
         // Calculate and update global progress circle
