@@ -191,6 +191,24 @@
 
 
 
+                <!-- Laporan Akhir (Day 3 Only) -->
+                <div id="module-laporan-akhir" onclick="openLaporanAkhirModal()" style="display: none;"
+                    class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                        <span class="material-symbols-outlined !text-2xl">assignment_turned_in</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Laporan Akhir</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-laporan-akhir">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-laporan-akhir">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Video Belajar -->
                 <div id="module-video" onclick="handleModuleClick('video')"
                     class="bg-red-50/50 p-4 rounded-[24px] ios-shadow border border-red-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
@@ -912,6 +930,10 @@
                 openBEPModal();
                 return;
             }
+            if (moduleId === 'laporan-akhir') {
+                openLaporanAkhirModal();
+                return;
+            }
 
 
             const dayKey = `day${currentDay}`;
@@ -996,6 +1018,16 @@
                     bepModule.style.display = '';
                 } else {
                     bepModule.style.display = 'none';
+                }
+            }
+
+            // Laporan Akhir Module Visibility (Only Day 3)
+            const lpModule = document.getElementById('module-laporan-akhir');
+            if (lpModule) {
+                if (currentDay === 3) {
+                    lpModule.style.display = '';
+                } else {
+                    lpModule.style.display = 'none';
                 }
             }
 
@@ -1226,6 +1258,7 @@
                         if (moduleId === 'laporan_akhir') moduleId = 'laporan-akhir';
                         if (moduleId === 'summary') moduleId = 'materi';
                         if (moduleId === 'bep_analisis') moduleId = 'bep';
+                        if (moduleId === 'kuis') moduleId = 'asesmen';
 
                         dbModules.add(moduleId);
 
@@ -1247,6 +1280,15 @@
                 // Check for deleted modules: if localStorage says true but not in database, reset to false
                 const allModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'bep', 'dokumentasi', 'glosarium', 'refleksi'];
                 allModules.forEach(moduleId => {
+                    // FALLBACK FOR ASSESSMENT: If missing from DB but has local score, keep it
+                    if (moduleId === 'asesmen' && !dbModules.has(moduleId)) {
+                        const savedScore = localStorage.getItem(`asesmen_day${currentDay}_score`);
+                        if (savedScore) {
+                            forceCompleteModule('asesmen', parseInt(savedScore));
+                            return; // Skip reset
+                        }
+                    }
+
                     // If localStorage has this as completed/submitted but database doesn't have it, reset
                     if (studentProgress[dayKey][moduleId] === true && !dbModules.has(moduleId)) {
                         // console.log(`🔄 Syncing: ${moduleId} was deleted by facilitator, resetting to false`);
@@ -1324,6 +1366,99 @@
             const modal = document.getElementById('modalPemantik');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
+        }
+
+        async function checkExistingPemantik() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return; // Silent return
+
+                const { data, error } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', currentDay)
+                    .eq('module_type', 'pemantik')
+                    .maybeSingle();
+
+                if (data && data.answers) {
+                    const answers = data.answers;
+                    answers.forEach((ans, idx) => {
+                        const el = document.getElementById(`tanya${idx + 1}`);
+                        if (el) {
+                            el.value = ans;
+                            el.disabled = true;
+                            el.classList.add('bg-slate-100', 'text-slate-500');
+                        }
+                    });
+
+                    const btn = document.getElementById('btnSubmitPemantik');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = `<span class="material-symbols-outlined text-sm">check_circle</span> Terkirim`;
+                        btn.classList.add('bg-slate-200', 'text-slate-500', 'shadow-none');
+                        btn.classList.remove('bg-sky-500', 'text-white', 'shadow-lg', 'shadow-sky-200');
+                    }
+                    updateModuleUI('pemantik', true);
+                }
+            } catch (err) {
+                console.error("Error checkExistingPemantik:", err);
+            }
+        }
+
+        async function submitPemantik() {
+            const btn = document.getElementById('btnSubmitPemantik');
+            const dayKey = `day${currentDay}`;
+            const questions = workshopContent[dayKey]?.pemantik || [];
+            const answers = [];
+            let allFilled = true;
+
+            questions.forEach((_, idx) => {
+                const el = document.getElementById(`tanya${idx + 1}`);
+                if (!el || !el.value.trim()) {
+                    allFilled = false;
+                } else {
+                    answers.push(el.value.trim());
+                }
+            });
+
+            if (!allFilled) {
+                alert('Mohon jawab semua pertanyaan pemantik sebelum mengirim.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = 'Mengirim...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error("Sesi habis, silakan login ulang.");
+
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: currentDay,
+                        module_type: 'pemantik',
+                        answers: answers,
+                        status: 'submitted'
+                    });
+
+                if (error) throw error;
+
+                alert('Jawaban berhasil dikirim!');
+                studentProgress[`day${currentDay}`]['pemantik'] = true;
+                saveProgress();
+                updateModuleUI('pemantik', true);
+                closePemantikModal();
+                checkExistingPemantik(); // Refresh UI state
+
+            } catch (err) {
+                console.error(err);
+                alert('Gagal mengirim: ' + err.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Jawaban';
+            }
         }
 
 
@@ -4359,6 +4494,50 @@
         </div>
     </div>
 
+    <!-- MODAL PEMANTIK -->
+    <div id="modalPemantik"
+        class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+        <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="p-8 border-b flex justify-between items-center bg-sky-50/50">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="size-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center shadow-lg shadow-sky-200">
+                        <span class="material-symbols-outlined !text-2xl">psychology_alt</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-800">Pertanyaan Pemantik</h3>
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Pemanasan Sebelum
+                            Mulai</p>
+                    </div>
+                </div>
+                <button onclick="closePemantikModal()"
+                    class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 overflow-y-auto no-scrollbar flex-1 space-y-6">
+                <div class="p-4 rounded-2xl bg-sky-50 border border-sky-100">
+                    <p class="text-xs text-slate-500" id="pemantikSubtitle">Jawab pertanyaan berikut untuk memulai hari
+                        ini.</p>
+                </div>
+                <div id="pemantikQuestionsContainer" class="space-y-4">
+                    <!-- Dynamic Questions -->
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-8 bg-white border-t">
+                <button id="btnSubmitPemantik" onclick="submitPemantik()"
+                    class="w-full py-4 bg-sky-500 text-white rounded-2xl font-black shadow-lg shadow-sky-200 active:scale-95 transition-all">
+                    Kirim Jawaban
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL GLOSARIUM (MOVED OUTSIDE) -->
     <div id="modalGlosarium"
         class="fixed inset-0 z-[9999] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
@@ -6189,6 +6368,129 @@
         }
 
 
+
+
+        // --- GLOSARIUM LOGIC ---
+        function openGlosariumModal() {
+            const modal = document.getElementById('modalGlosarium');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                checkExistingGlosarium();
+            }
+        }
+
+        function closeGlosariumModal() {
+            const modal = document.getElementById('modalGlosarium');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        async function checkExistingGlosarium() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', currentDay)
+                    .eq('module_type', 'glosarium')
+                    .maybeSingle();
+
+                if (data) {
+                    const ans = data.answers[0];
+                    const area = document.getElementById('glosariumInput');
+                    if (area) {
+                        area.value = ans || '';
+                        area.disabled = true;
+                        area.classList.add('bg-slate-100', 'text-slate-500');
+                    }
+
+                    const btn = document.getElementById('btnSubmitGlosarium');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = `<span class="material-symbols-outlined text-sm">check_circle</span> Terkirim`;
+                        btn.classList.add('bg-slate-200', 'text-slate-500', 'shadow-none');
+                        btn.classList.remove('bg-emerald-500', 'text-white', 'shadow-lg');
+                    }
+
+                    const statusSection = document.getElementById('glosariumStatusSection');
+                    if (statusSection) {
+                        statusSection.classList.remove('hidden');
+                        if (data.status === 'submitted') {
+                            statusSection.innerHTML = `
+                                <div class="bg-yellow-50 p-4 rounded-xl flex items-center gap-3">
+                                    <span class="material-symbols-outlined text-yellow-500 animate-pulse">hourglass_top</span>
+                                    <p class="text-xs text-yellow-700 font-bold">Menunggu Review Fasilitator</p>
+                                </div>
+                             `;
+                            updateModuleUI('glosarium', 'submitted');
+                        } else if (data.status === 'reviewed') {
+                            statusSection.innerHTML = `
+                                <div class="bg-emerald-50 p-4 rounded-xl space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-emerald-500">check_circle</span>
+                                        <p class="text-xs text-emerald-700 font-bold">Dinilai: ${data.score}/100</p>
+                                    </div>
+                                    <p class="text-xs text-slate-600 italic">"${data.feedback || 'Bagus!'}"</p>
+                                </div>
+                             `;
+                            updateModuleUI('glosarium', true, data.score);
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('Error checkExistingGlosarium:', e);
+            }
+        }
+
+        async function submitGlosarium() {
+            const area = document.getElementById('glosariumInput');
+            const summary = area.value.trim();
+
+            if (!summary) {
+                alert('Mohon isi jawaban tugas mandiri Glosarium.');
+                return;
+            }
+
+            const btn = document.getElementById('btnSubmitGlosarium');
+            btn.disabled = true;
+            btn.innerHTML = 'Mengirim...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error("Sesi habis.");
+
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: currentDay,
+                        module_type: 'glosarium',
+                        answers: [summary],
+                        status: 'submitted'
+                    });
+
+                if (error) throw error;
+
+                alert('Jawaban Glosarium berhasil dikirim!');
+                studentProgress[`day${currentDay}`]['glosarium'] = false;
+                saveProgress();
+                checkAllModulesStatus();
+                checkExistingGlosarium();
+                closeGlosariumModal();
+
+            } catch (err) {
+                console.error(err);
+                alert('Gagal mengirim: ' + err.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Jawaban';
+            }
+        }
 
     </script>
 
