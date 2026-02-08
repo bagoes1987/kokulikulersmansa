@@ -817,6 +817,12 @@
 
             // HIDE modules for Day 2 and Day 3: Video, LKPD, Assessment, Glosarium, Refleksi
             const modulesToHide = ['module-video', 'module-lkpd', 'module-asesmen', 'module-glosarium', 'module-refleksi'];
+
+            // Special: Hide Materi for Day 3
+            if (currentDay === 3) {
+                modulesToHide.push('module-materi');
+            }
+
             modulesToHide.forEach(moduleId => {
                 const moduleElement = document.getElementById(moduleId);
                 if (moduleElement) {

@@ -961,7 +961,7 @@
                             </div>
                             <div class="grid grid-cols-1 gap-3.5">
                                 ${renderModuleItem(sid, snama, day, 'pemantik', responses)}
-                                ${renderModuleItem(sid, snama, day, 'materi', responses)}
+                                ${day === 3 ? '' : renderModuleItem(sid, snama, day, 'materi', responses)}
                                 ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'video', responses)}
                                 ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'lkpd', responses)}
                                 ${(day === 2 || day === 3) ? '' : renderModuleItem(sid, snama, day, 'kuis', responses)}
