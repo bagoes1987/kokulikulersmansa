@@ -2282,14 +2282,14 @@
 
                 const { error } = await supabaseClient
                     .from('module_responses')
-                    .upsert({
+                    .insert({
                         student_id: user.id,
                         day_id: 3,
                         module_type: 'laporan_akhir',
                         answers: [JSON.stringify(payload)],
                         status: 'submitted',
                         updated_at: new Date()
-                    }, { onConflict: 'student_id,day_id,module_type' });
+                    });
 
                 if (error) throw error;
 
