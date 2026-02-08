@@ -1096,12 +1096,12 @@
 
                     let query = supabaseClient.from('module_responses').delete();
 
-                    // Special logic for Day 2 Documentation (bulk delete)
-                    if (moduleLabel === 'Dokumentasi' && dayId == 2 && studentId) {
-                        console.log('🗑️ MODE: Bulk Delete Day 2 Documentation');
+                    // Special logic for Day 2 & 3 Documentation (bulk delete)
+                    if (moduleLabel === 'Dokumentasi' && (dayId == 2 || dayId == 3) && studentId) {
+                        console.log(`🗑️ MODE: Bulk Delete Day ${dayId} Documentation`);
                         query = query
                             .eq('student_id', studentId)
-                            .eq('day_id', 2)
+                            .eq('day_id', dayId)
                             .eq('module_type', 'dokumentasi');
                     } else {
                         // Default: delete single response by ID
@@ -1806,13 +1806,12 @@
                     });
 
                     // Special logic for Day 2 Documentation (bulk update)
-                    // Special logic for Day 2 Documentation (bulk update)
-                    // Use GLOBAL VARIABLES instead of parsing DOM title
-                    if (gradingModuleType === 'dokumentasi' && gradingDayId == 2 && selectedStudentIdForGrading) {
-                        console.log('💾 MODE: Bulk Update Day 2 Documentation');
+                    // Special logic for Day 2 & 3 Documentation (bulk update)
+                    if (gradingModuleType === 'dokumentasi' && (gradingDayId == 2 || gradingDayId == 3) && selectedStudentIdForGrading) {
+                        console.log(`💾 MODE: Bulk Update Day ${gradingDayId} Documentation`);
                         query = query
                             .eq('student_id', selectedStudentIdForGrading)
-                            .eq('day_id', 2)
+                            .eq('day_id', gradingDayId)
                             .eq('module_type', 'dokumentasi');
                     } else {
                         // Normal update by ID
