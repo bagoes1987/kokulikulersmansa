@@ -336,66 +336,7 @@
         <main class="max-w-2xl mx-auto px-5 pt-6 pb-24 space-y-6 bg-slate-50/30 min-h-screen">
             <!-- Tab 1: Ringkasan -->
             <div id="view-ringkasan" class="space-y-6 animate-in fade-in duration-300">
-                <!-- STATISTIK KEUANGAN (NEW DAY 3) -->
-                <div id="financialStats" class="space-y-4">
-                    <div class="flex items-center justify-between px-1">
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Statistik Keuangan
-                            (Hari 3)</h4>
-                        <span
-                            class="px-2 py-0.5 bg-emerald-100 text-emerald-600 rounded-md text-[9px] font-bold">Real-time</span>
-                    </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <!-- Total Omzet -->
-                        <div class="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-2">
-                            <div class="size-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-xl">payments</span>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Total Penjualan
-                                </p>
-                                <h5 class="text-lg font-black text-slate-800" id="totalOmzetDisplay">Rp 0</h5>
-                            </div>
-                        </div>
-
-                        <!-- Total Keuntungan -->
-                        <div class="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-2">
-                            <div
-                                class="size-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-xl">trending_up</span>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Laba Bersih</p>
-                                <h5 class="text-lg font-black text-emerald-600" id="totalProfitDisplay">Rp 0</h5>
-                            </div>
-                        </div>
-
-                        <!-- Total Modal -->
-                        <div class="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-2">
-                            <div
-                                class="size-9 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-xl">account_balance_wallet</span>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Total Modal</p>
-                                <h5 class="text-lg font-black text-slate-800" id="totalCapitalDisplay">Rp 0</h5>
-                            </div>
-                        </div>
-
-                        <!-- Efisiensi -->
-                        <div class="p-5 bg-white rounded-3xl border border-slate-100 shadow-sm flex flex-col gap-2">
-                            <div
-                                class="size-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-xl">query_stats</span>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">ROI Rata-rata
-                                </p>
-                                <h5 class="text-lg font-black text-slate-800" id="avgRoiDisplay">0%</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="space-y-1">
                     <h2 class="text-3xl font-bold text-slate-800">Kegiatan Kokulikuler</h2>
                     <p class="text-sm text-slate-500 font-medium">Fasilitator SMAN 1 Belitang</p>
@@ -859,8 +800,7 @@
                         const progress = Math.round(((rCount || 0) / (sCount * 24)) * 100);
                         updateProgressUI(progress);
 
-                        // Load Financial Stats (NEW)
-                        loadFinancialStats(ids);
+
                     } else {
                         updateProgressUI(0);
                     }
