@@ -631,10 +631,13 @@
             let allStudents = []; // State global untuk pencarian
             let allResponses = []; // State global untuk progres
             let selectedStudentIdForGrading = null; // Added for bulk updates
+            let gradingDayId = null; // New global for robust state
+            let gradingModuleType = null; // New global for robust state
 
             async function init() {
                 try {
                     const { data: { session } } = await supabaseClient.auth.getSession();
+
                     if (!session) {
                         window.location.href = 'login.html';
                         return;
@@ -1174,6 +1177,9 @@
                     }
 
                     selectedResponseId = r.id;
+                    // Set NEW global variables
+                    gradingDayId = r.day_id;
+                    gradingModuleType = r.module_type;
                     const typeLabels = {
                         'pemantik': 'Pertanyaan Pemantik',
                         'materi': 'Ringkasan Materi',
@@ -1728,10 +1734,9 @@
                     });
 
                     // Special logic for Day 2 Documentation (bulk update)
-                    const titleElem = document.getElementById('gradingModuleTitle');
-                    const isDocDay2 = titleElem && titleElem.textContent.includes('HARI 2') && titleElem.textContent.includes('DOKUMENTASI');
-
-                    if (isDocDay2 && selectedStudentIdForGrading) {
+                    // Special logic for Day 2 Documentation (bulk update)
+                    // Use GLOBAL VARIABLES instead of parsing DOM title
+                    if (gradingModuleType === 'dokumentasi' && gradingDayId == 2 && selectedStudentIdForGrading) {
                         console.log('💾 MODE: Bulk Update Day 2 Documentation');
                         query = query
                             .eq('student_id', selectedStudentIdForGrading)
