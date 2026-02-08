@@ -2504,17 +2504,7 @@
                 </button>
             </div>
 
-            <!-- Main Tabs -->
-            <div class="flex p-2 bg-slate-50 border-b border-slate-100 gap-1">
-                <button onclick="switchAnalisisTab('laporan')" id="tab-analisis-laporan"
-                    class="flex-1 py-3 rounded-xl text-xs font-bold bg-white text-pink-600 shadow-sm border border-slate-100 transition-all">
-                    📝 Laporan (Wajib)
-                </button>
-                <button onclick="switchAnalisisTab('simulasi')" id="tab-analisis-simulasi"
-                    class="flex-1 py-3 rounded-xl text-xs font-bold text-slate-400 hover:bg-slate-100 transition-all">
-                    🧮 Simulasi BEP
-                </button>
-            </div>
+
 
             <!-- Content Area -->
             <div class="flex-1 overflow-y-auto no-scrollbar bg-slate-50/30 relative">
@@ -2546,7 +2536,7 @@
                             <div class="flex justify-between items-center">
                                 <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
                                     <span class="material-symbols-outlined text-sm text-pink-500">shopping_basket</span>
-                                    2. Bahan Baku (HPP)
+                                    2. Bahan Baku Makanan
                                 </h4>
                                 <button onclick="addIngredientRow()"
                                     class="text-[10px] font-bold text-pink-500 bg-pink-50 px-2 py-1 rounded-lg border border-pink-100 hover:bg-pink-100">+
@@ -2576,38 +2566,42 @@
                             </div>
                         </div>
 
-                        <!-- 3. Kandungan Gizi -->
+
+
+
+                        <!-- 3. Bahan Baku Minuman (HPP) -->
                         <div class="space-y-3 pt-2">
-                            <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm text-pink-500">nutrition</span> 3. Nilai
-                                Gizi (Per Porsi)
-                            </h4>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-[9px] font-bold text-slate-400 mb-1">Energi (kkal)</label>
-                                    <input type="number" id="gizi-kalori"
-                                        class="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-bold outline-none focus:border-pink-500"
-                                        placeholder="0">
-                                </div>
-                                <div>
-                                    <label class="block text-[9px] font-bold text-slate-400 mb-1">Protein (g)</label>
-                                    <input type="number" id="gizi-protein"
-                                        class="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-bold outline-none focus:border-pink-500"
-                                        placeholder="0">
-                                </div>
-                                <div>
-                                    <label class="block text-[9px] font-bold text-slate-400 mb-1">Lemak (g)</label>
-                                    <input type="number" id="gizi-lemak"
-                                        class="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-bold outline-none focus:border-pink-500"
-                                        placeholder="0">
-                                </div>
-                                <div>
-                                    <label class="block text-[9px] font-bold text-slate-400 mb-1">Karbohidrat
-                                        (g)</label>
-                                    <input type="number" id="gizi-karbo"
-                                        class="w-full p-2.5 rounded-xl border border-slate-200 text-xs font-bold outline-none focus:border-pink-500"
-                                        placeholder="0">
-                                </div>
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm text-pink-500">local_bar</span>
+                                    3. Bahan Baku Minuman
+                                </h4>
+                                <button onclick="addDrinkRow()"
+                                    class="text-[10px] font-bold text-pink-500 bg-pink-50 px-2 py-1 rounded-lg border border-pink-100 hover:bg-pink-100">+
+                                    Tambah</button>
+                            </div>
+                            <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="text-[9px] text-slate-400 uppercase border-b border-slate-100">
+                                            <th class="pb-2 pl-1 font-bold">Nama Bahan</th>
+                                            <th class="pb-2 font-bold w-24">Harga (Rp)</th>
+                                            <th class="pb-2 w-6"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="drinks-table-body">
+                                        <!-- Dynamic Rows -->
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="border-t border-slate-100">
+                                            <td class="pt-2 pl-1 text-[10px] font-bold text-slate-600">Total Minuman
+                                            </td>
+                                            <td class="pt-2 text-[10px] font-black text-pink-600"
+                                                id="total-drinks-display">Rp 0</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
                         </div>
 
@@ -2661,93 +2655,6 @@
                             class="flex-1 py-2 rounded-lg text-[10px] font-bold text-slate-500 hover:text-slate-700 transition-all">Minuman</button>
                     </div>
 
-                    <!-- Tab Makanan -->
-                    <div id="content-bep-makanan" class="bep-tab-content space-y-4">
-                        <div class="bg-orange-50 p-4 rounded-2xl border border-orange-100">
-                            <h4 class="text-xs font-black text-orange-800 uppercase mb-3 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm">lunch_dining</span> Input Data Makanan
-                            </h4>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Tetap
-                                        (FC)</label>
-                                    <input type="number" id="fc-makanan" oninput="calculateBEP('makanan')"
-                                        placeholder="Contoh: 100000"
-                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Biaya Variabel per
-                                        Unit (VC)</label>
-                                    <input type="number" id="vc-makanan" oninput="calculateBEP('makanan')"
-                                        placeholder="Contoh: 2000"
-                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Jual per Unit
-                                        (P)</label>
-                                    <input type="number" id="p-makanan" oninput="calculateBEP('makanan')"
-                                        placeholder="Contoh: 5000"
-                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-pink-500 focus:ring-pink-500 outline-none">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tab Minuman -->
-                    <div id="content-bep-minuman" class="bep-tab-content hidden space-y-4">
-                        <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                            <h4 class="text-xs font-black text-blue-800 uppercase mb-3 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm">water_drop</span> Input Data Minuman
-                            </h4>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Total Biaya Tetap
-                                        (FC)</label>
-                                    <input type="number" id="fc-minuman" oninput="calculateBEP('minuman')"
-                                        placeholder="Contoh: 50000"
-                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Biaya Variabel per
-                                        Unit (VC)</label>
-                                    <input type="number" id="vc-minuman" oninput="calculateBEP('minuman')"
-                                        placeholder="Contoh: 1000"
-                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Harga Jual per Unit
-                                        (P)</label>
-                                    <input type="number" id="p-minuman" oninput="calculateBEP('minuman')"
-                                        placeholder="Contoh: 3000"
-                                        class="w-full p-3 rounded-xl border border-slate-200 text-xs font-bold focus:border-blue-500 focus:ring-blue-500 outline-none">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Results - Shared Structure -->
-                    <div id="result-bep-container" class="border-t border-slate-200 pt-6 mt-2">
-                        <h4 class="text-sm font-black text-slate-800 mb-4">Hasil Perhitungan</h4>
-
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
-                                <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-1">Target
-                                    Jual (Unit)</p>
-                                <p id="res-bep-unit" class="text-2xl font-black text-emerald-700">0</p>
-                                <span class="text-[10px] text-emerald-500">Pcs/Biji</span>
-                            </div>
-                            <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                                <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-1">Target
-                                    Omzet (Rp)</p>
-                                <p id="res-bep-rupiah" class="text-xl font-black text-blue-700">Rp 0</p>
-                                <span class="text-[10px] text-blue-500">Balik Modal</span>
-                            </div>
-                        </div>
-
-                        <div id="bep-analysis" class="mt-4 p-4 rounded-2xl bg-slate-100 border border-slate-200 hidden">
-                            <p class="text-[11px] font-medium text-slate-600 text-center italic"></p>
-                        </div>
-                    </div>
 
                 </div>
 
@@ -5484,13 +5391,33 @@
             table.appendChild(row);
         }
 
+        // --- ADDED: Drink Row Logic ---
+        function addDrinkRow() {
+            const table = document.getElementById('drinks-table-body');
+            const row = document.createElement('tr');
+            row.className = "border-b border-slate-50";
+            row.innerHTML = `
+                <td class="py-2 pl-1"><input type="text" placeholder="Item..." class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td>
+                <td class="py-2"><input type="number" placeholder="0" oninput="calculateAnalisisTotal()" class="drink-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td>
+                <td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>
+            `;
+            table.appendChild(row);
+        }
+
         function calculateAnalisisTotal() {
-            // Calculate Ingredients
+            // Calculate Ingredients (Makanan)
             let totalHpp = 0;
             document.querySelectorAll('.ingredient-cost').forEach(input => {
                 totalHpp += parseFloat(input.value) || 0;
             });
             document.getElementById('total-hpp-display').textContent = 'Rp ' + totalHpp.toLocaleString('id-ID');
+
+            // Calculate Drinks (Minuman)
+            let totalDrinks = 0;
+            document.querySelectorAll('.drink-cost').forEach(input => {
+                totalDrinks += parseFloat(input.value) || 0;
+            });
+            document.getElementById('total-drinks-display').textContent = 'Rp ' + totalDrinks.toLocaleString('id-ID');
 
             // Calculate Stand
             let totalStand = 0;
@@ -5510,7 +5437,7 @@
                 return;
             }
 
-            // Gather Ingredients
+            // Gather Ingredients (Makanan)
             const ingredients = [];
             document.querySelectorAll('#ingredients-table-body tr').forEach(row => {
                 const inputs = row.querySelectorAll('input');
@@ -5522,13 +5449,17 @@
                 }
             });
 
-            // Gather Nutrition
-            const nutrition = {
-                kalori: parseFloat(document.getElementById('gizi-kalori').value) || 0,
-                protein: parseFloat(document.getElementById('gizi-protein').value) || 0,
-                lemak: parseFloat(document.getElementById('gizi-lemak').value) || 0,
-                karbo: parseFloat(document.getElementById('gizi-karbo').value) || 0,
-            };
+            // Gather Drinks (Minuman)
+            const drinks = [];
+            document.querySelectorAll('#drinks-table-body tr').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if (inputs[0].value.trim()) {
+                    drinks.push({
+                        item: inputs[0].value,
+                        cost: parseFloat(inputs[1].value) || 0
+                    });
+                }
+            });
 
             // Gather Stand
             const standItems = [];
@@ -5545,9 +5476,10 @@
             const submissionData = {
                 nama_produk: namaProduk,
                 ingredients: ingredients,
-                nutrition: nutrition,
+                drinks: drinks, // Added drinks
                 stand_items: standItems,
                 total_hpp: ingredients.reduce((sum, item) => sum + item.cost, 0),
+                total_drinks: drinks.reduce((sum, item) => sum + item.cost, 0), // Added total drinks
                 total_stand: standItems.reduce((sum, item) => sum + item.cost, 0)
             };
 
