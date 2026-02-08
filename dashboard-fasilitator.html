@@ -1015,6 +1015,16 @@
                         // Dokumentasi (All days)
                         modulesHtml += renderModuleItem(sid, snama, day, 'dokumentasi', responses);
 
+                        // Analisis Produk / BEP (Day 2)
+                        if (day === 2) {
+                            modulesHtml += renderModuleItem(sid, snama, day, 'bep_analisis', responses);
+                        }
+
+                        // Laporan Akhir (Day 3)
+                        if (day === 3) {
+                            modulesHtml += renderModuleItem(sid, snama, day, 'laporan_akhir', responses);
+                        }
+
                         // Glosarium & Refleksi (Day 1 only)
                         if (day === 1) {
                             modulesHtml += renderModuleItem(sid, snama, day, 'glosarium', responses);
@@ -1333,8 +1343,8 @@
                             `;
                         }
 
-                    } else if (r.module_type === 'laporan_akhir') {
-                        // Special display for Final Report (Financial data)
+                    } else if (r.module_type === 'laporan_akhir' || r.module_type === 'bep_analisis') {
+                        // Special display for Final Report / BEP Analysis (Financial data)
                         const a = JSON.parse(answers[0]);
                         answerCont.innerHTML = `
                         <div class="space-y-4">
@@ -1360,35 +1370,27 @@
                                     <span class="font-black text-slate-700">Rp ${(a.penjualan_makanan_rp || 0).toLocaleString('id-ID')}</span>
                                 </div>
                                 <div class="flex justify-between items-center text-[10px] pl-3 text-slate-400">
-                                    <span>Harga: Rp ${(a.harga_makanan || 0).toLocaleString('id-ID')} / unit</span>
+                                    <span>Harga: Rp ${(a.harga_makanan || 0).toLocaleString('id-ID')} | Modal: Rp ${Math.round(a.var_makanan || 0).toLocaleString('id-ID')} / unit</span>
                                 </div>
                                 <div class="flex justify-between items-center text-[11px]">
                                     <span class="text-slate-500 font-bold uppercase truncate">Penjualan Minuman</span>
                                     <span class="font-black text-slate-700">Rp ${(a.penjualan_minuman_rp || 0).toLocaleString('id-ID')}</span>
                                 </div>
                                 <div class="flex justify-between items-center text-[10px] pl-3 text-slate-400">
-                                    <span>Harga: Rp ${(a.harga_minuman || 0).toLocaleString('id-ID')} / unit</span>
+                                    <span>Harga: Rp ${(a.harga_minuman || 0).toLocaleString('id-ID')} | Modal: Rp ${Math.round(a.var_minuman || 0).toLocaleString('id-ID')} / unit</span>
                                 </div>
                                 <div class="h-px bg-slate-200 my-1"></div>
                                 <div class="flex justify-between items-center text-[11px]">
-                                    <span class="text-slate-500 font-bold uppercase truncate">Biaya Produksi</span>
-                                    <span class="font-black text-slate-700">Rp ${(a.biaya_produksi || 0).toLocaleString('id-ID')}</span>
+                                    <span class="text-slate-500 font-bold uppercase truncate">Biaya Prod Makanan</span>
+                                    <span class="font-black text-slate-700">Rp ${(a.biaya_prod_makan || 0).toLocaleString('id-ID')} (${a.qty_makan || 0} Porsi)</span>
                                 </div>
                                 <div class="flex justify-between items-center text-[11px]">
-                                    <span class="text-slate-500 font-bold uppercase truncate">Biaya Kemasan</span>
-                                    <span class="font-black text-slate-700">Rp ${(a.biaya_kemasan || 0).toLocaleString('id-ID')}</span>
+                                    <span class="text-slate-500 font-bold uppercase truncate">Biaya Prod Minuman</span>
+                                    <span class="font-black text-slate-700">Rp ${(a.biaya_prod_minum || 0).toLocaleString('id-ID')} (${a.qty_minum || 0} Cup)</span>
                                 </div>
                                 <div class="flex justify-between items-center text-[11px]">
-                                    <span class="text-slate-500 font-bold uppercase truncate">Biaya Tetap</span>
+                                    <span class="text-slate-500 font-bold uppercase truncate">Biaya Tetap / Stand Booth</span>
                                     <span class="font-black text-slate-700">Rp ${(a.biaya_tetap || 0).toLocaleString('id-ID')}</span>
-                                </div>
-                                <div class="flex justify-between items-center text-[11px]">
-                                    <span class="text-slate-500 font-bold uppercase truncate">Var Makanan</span>
-                                    <span class="font-black text-slate-700">Rp ${(a.var_makanan || 0).toLocaleString('id-ID')} / unit</span>
-                                </div>
-                                <div class="flex justify-between items-center text-[11px]">
-                                    <span class="text-slate-500 font-bold uppercase truncate">Var Minuman</span>
-                                    <span class="font-black text-slate-700">Rp ${(a.var_minuman || 0).toLocaleString('id-ID')} / unit</span>
                                 </div>
                             </div>
 

@@ -2004,32 +2004,32 @@
                     }
 
                     // Pre-fill fields
-                    if (document.getElementById('input-jual-makanan-rp')) {
-                        document.getElementById('input-jual-makanan-rp').value = (a.penjualan_makanan_rp || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-akhir-jual-makanan-rp')) {
+                        document.getElementById('input-akhir-jual-makanan-rp').value = (a.penjualan_makanan_rp || 0).toLocaleString('id-ID');
                     }
-                    if (document.getElementById('input-jual-minuman-rp')) {
-                        document.getElementById('input-jual-minuman-rp').value = (a.penjualan_minuman_rp || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-akhir-jual-minuman-rp')) {
+                        document.getElementById('input-akhir-jual-minuman-rp').value = (a.penjualan_minuman_rp || 0).toLocaleString('id-ID');
                     }
-                    if (document.getElementById('input-harga-makanan')) {
-                        document.getElementById('input-harga-makanan').value = (a.harga_makanan || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-akhir-harga-makanan')) {
+                        document.getElementById('input-akhir-harga-makanan').value = (a.harga_makanan || 0).toLocaleString('id-ID');
                     }
-                    if (document.getElementById('input-harga-minuman')) {
-                        document.getElementById('input-harga-minuman').value = (a.harga_minuman || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-akhir-harga-minuman')) {
+                        document.getElementById('input-akhir-harga-minuman').value = (a.harga_minuman || 0).toLocaleString('id-ID');
                     }
-                    if (document.getElementById('input-biaya-prod-makan')) {
-                        document.getElementById('input-biaya-prod-makan').value = (a.biaya_prod_makan || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-akhir-biaya-prod-makan')) {
+                        document.getElementById('input-akhir-biaya-prod-makan').value = (a.biaya_prod_makan || 0).toLocaleString('id-ID');
                     }
-                    if (document.getElementById('input-qty-makan')) {
-                        document.getElementById('input-qty-makan').value = (a.qty_makan || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-akhir-qty-makan')) {
+                        document.getElementById('input-akhir-qty-makan').value = (a.qty_makan || 0).toLocaleString('id-ID');
                     }
-                    if (document.getElementById('input-biaya-prod-minum')) {
-                        document.getElementById('input-biaya-prod-minum').value = (a.biaya_prod_minum || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-akhir-biaya-prod-minum')) {
+                        document.getElementById('input-akhir-biaya-prod-minum').value = (a.biaya_prod_minum || 0).toLocaleString('id-ID');
                     }
-                    if (document.getElementById('input-qty-minum')) {
-                        document.getElementById('input-qty-minum').value = (a.qty_minum || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-akhir-qty-minum')) {
+                        document.getElementById('input-akhir-qty-minum').value = (a.qty_minum || 0).toLocaleString('id-ID');
                     }
-                    if (document.getElementById('input-biaya-tetap')) {
-                        document.getElementById('input-biaya-tetap').value = (a.biaya_tetap || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-akhir-biaya-tetap')) {
+                        document.getElementById('input-akhir-biaya-tetap').value = (a.biaya_tetap || 0).toLocaleString('id-ID');
                     }
 
                     calculateFinancials(true); // Memunculkan ringkasan hasil
@@ -2099,18 +2099,18 @@
 
         function calculateFinancials(showCard = false) {
             // Get values using the parser
-            const jualMakanRp = parseFormattedNumber(document.getElementById('input-jual-makanan-rp')?.value);
-            const jualMinumRp = parseFormattedNumber(document.getElementById('input-jual-minuman-rp')?.value);
-            const hargaMakan = parseFormattedNumber(document.getElementById('input-harga-makanan')?.value);
-            const hargaMinum = parseFormattedNumber(document.getElementById('input-harga-minuman')?.value);
+            const jualMakanRp = parseFormattedNumber(document.getElementById('input-akhir-jual-makanan-rp')?.value);
+            const jualMinumRp = parseFormattedNumber(document.getElementById('input-akhir-jual-minuman-rp')?.value);
+            const hargaMakan = parseFormattedNumber(document.getElementById('input-akhir-harga-makanan')?.value);
+            const hargaMinum = parseFormattedNumber(document.getElementById('input-akhir-harga-minuman')?.value);
 
             // New automation fields
-            const biayaProdMakan = parseFormattedNumber(document.getElementById('input-biaya-prod-makan')?.value);
-            const qtyMakan = parseFormattedNumber(document.getElementById('input-qty-makan')?.value);
-            const biayaProdMinum = parseFormattedNumber(document.getElementById('input-biaya-prod-minum')?.value);
-            const qtyMinum = parseFormattedNumber(document.getElementById('input-qty-minum')?.value);
+            const biayaProdMakan = parseFormattedNumber(document.getElementById('input-akhir-biaya-prod-makan')?.value);
+            const qtyMakan = parseFormattedNumber(document.getElementById('input-akhir-qty-makan')?.value);
+            const biayaProdMinum = parseFormattedNumber(document.getElementById('input-akhir-biaya-prod-minum')?.value);
+            const qtyMinum = parseFormattedNumber(document.getElementById('input-akhir-qty-minum')?.value);
 
-            const biayaTetap = parseFormattedNumber(document.getElementById('input-biaya-tetap')?.value);
+            const biayaTetap = parseFormattedNumber(document.getElementById('input-akhir-biaya-tetap')?.value);
 
             // Automated Variable Cost / Unit
             const varMakan = qtyMakan > 0 ? (biayaProdMakan / qtyMakan) : 0;
@@ -2224,15 +2224,15 @@
         async function submitLaporanAkhir() {
             const btn = document.getElementById('btnSubmitLaporanAkhir');
             const fields = {
-                jualMakanRp: parseFormattedNumber(document.getElementById('input-jual-makanan-rp')?.value),
-                jualMinumRp: parseFormattedNumber(document.getElementById('input-jual-minuman-rp')?.value),
-                hargaMakan: parseFormattedNumber(document.getElementById('input-harga-makanan')?.value),
-                hargaMinum: parseFormattedNumber(document.getElementById('input-harga-minuman')?.value),
-                biayaProdMakan: parseFormattedNumber(document.getElementById('input-biaya-prod-makan')?.value),
-                qtyMakan: parseFormattedNumber(document.getElementById('input-qty-makan')?.value),
-                biayaProdMinum: parseFormattedNumber(document.getElementById('input-biaya-prod-minum')?.value),
-                qtyMinum: parseFormattedNumber(document.getElementById('input-qty-minum')?.value),
-                biayaTetap: parseFormattedNumber(document.getElementById('input-biaya-tetap')?.value)
+                jualMakanRp: parseFormattedNumber(document.getElementById('input-akhir-jual-makanan-rp')?.value),
+                jualMinumRp: parseFormattedNumber(document.getElementById('input-akhir-jual-minuman-rp')?.value),
+                hargaMakan: parseFormattedNumber(document.getElementById('input-akhir-harga-makanan')?.value),
+                hargaMinum: parseFormattedNumber(document.getElementById('input-akhir-harga-minuman')?.value),
+                biayaProdMakan: parseFormattedNumber(document.getElementById('input-akhir-biaya-prod-makan')?.value),
+                qtyMakan: parseFormattedNumber(document.getElementById('input-akhir-qty-makan')?.value),
+                biayaProdMinum: parseFormattedNumber(document.getElementById('input-akhir-biaya-prod-minum')?.value),
+                qtyMinum: parseFormattedNumber(document.getElementById('input-akhir-qty-minum')?.value),
+                biayaTetap: parseFormattedNumber(document.getElementById('input-akhir-biaya-tetap')?.value)
             };
 
             // Basic Validation
@@ -2282,13 +2282,14 @@
 
                 const { error } = await supabaseClient
                     .from('module_responses')
-                    .insert({
+                    .upsert({
                         student_id: user.id,
                         day_id: 3,
                         module_type: 'laporan_akhir',
                         answers: [JSON.stringify(payload)],
-                        status: 'submitted'
-                    });
+                        status: 'submitted',
+                        updated_at: new Date()
+                    }, { onConflict: 'student_id,day_id,module_type' });
 
                 if (error) throw error;
 
@@ -3616,7 +3617,7 @@
                                     <label
                                         class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Penjualan
                                         Makanan (Rp)</label>
-                                    <input type="text" id="input-jual-makanan-rp"
+                                    <input type="text" id="input-akhir-jual-makanan-rp"
                                         oninput="formatInputWithDots(this); calculateFinancials()"
                                         class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                         placeholder="0">
@@ -3625,7 +3626,7 @@
                                     <label
                                         class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Penjualan
                                         Minuman (Rp)</label>
-                                    <input type="text" id="input-jual-minuman-rp"
+                                    <input type="text" id="input-akhir-jual-minuman-rp"
                                         oninput="formatInputWithDots(this); calculateFinancials()"
                                         class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                         placeholder="0">
@@ -3635,7 +3636,7 @@
                                         <label
                                             class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Harga
                                             Makanan (Rp)</label>
-                                        <input type="text" id="input-harga-makanan"
+                                        <input type="text" id="input-akhir-harga-makanan"
                                             oninput="formatInputWithDots(this); calculateFinancials()"
                                             class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                             placeholder="Ex: 10.000">
@@ -3644,7 +3645,7 @@
                                         <label
                                             class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Harga
                                             Minuman (Rp)</label>
-                                        <input type="text" id="input-harga-minuman"
+                                        <input type="text" id="input-akhir-harga-minuman"
                                             oninput="formatInputWithDots(this); calculateFinancials()"
                                             class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                             placeholder="Ex: 5.000">
@@ -3669,7 +3670,7 @@
                                             <label
                                                 class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Total
                                                 Biaya (Bahan+Kemas)</label>
-                                            <input type="text" id="input-biaya-prod-makan"
+                                            <input type="text" id="input-akhir-biaya-prod-makan"
                                                 oninput="formatInputWithDots(this); calculateFinancials()"
                                                 class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                                 placeholder="0">
@@ -3678,7 +3679,7 @@
                                             <label
                                                 class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Jumlah
                                                 Porsi Dibuat</label>
-                                            <input type="text" id="input-qty-makan"
+                                            <input type="text" id="input-akhir-qty-makan"
                                                 oninput="formatInputWithDots(this); calculateFinancials()"
                                                 class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                                 placeholder="Qty">
@@ -3699,7 +3700,7 @@
                                             <label
                                                 class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Total
                                                 Biaya (Bahan+Kemas)</label>
-                                            <input type="text" id="input-biaya-prod-minum"
+                                            <input type="text" id="input-akhir-biaya-prod-minum"
                                                 oninput="formatInputWithDots(this); calculateFinancials()"
                                                 class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                                 placeholder="0">
@@ -3708,7 +3709,7 @@
                                             <label
                                                 class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Jumlah
                                                 Cup Dibuat</label>
-                                            <input type="text" id="input-qty-minum"
+                                            <input type="text" id="input-akhir-qty-minum"
                                                 oninput="formatInputWithDots(this); calculateFinancials()"
                                                 class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                                 placeholder="Qty">
@@ -3725,7 +3726,7 @@
                                     <label
                                         class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Biaya
                                         Tetap / Sewa Stand Booth (Rp)</label>
-                                    <input type="text" id="input-biaya-tetap"
+                                    <input type="text" id="input-akhir-biaya-tetap"
                                         oninput="formatInputWithDots(this); calculateFinancials()"
                                         class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
                                         placeholder="0">
