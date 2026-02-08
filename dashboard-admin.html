@@ -37,6 +37,39 @@
             </button>
         </header>
 
+        <!-- STATISTIK KEUANGAN SEKOLAH (NEW DAY 3) -->
+        <section id="financialStatsAdmin"
+            class="bg-slate-800 p-6 rounded-3xl shadow-xl border border-slate-700 space-y-6">
+            <div class="flex items-center justify-between">
+                <h2 class="text-sm font-black text-slate-300 uppercase tracking-widest">Statistik Keuangan Sekolah</h2>
+                <span
+                    class="px-2 py-0.5 bg-emerald-500/10 text-emerald-500 rounded-md text-[9px] font-bold uppercase tracking-wider">Hari
+                    3</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-5 bg-slate-900/50 rounded-2xl border border-slate-700">
+                    <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider mb-1">Total Omzet</p>
+                    <h3 class="text-xl font-black text-white" id="totalOmzetAdmin">Rp 0</h3>
+                </div>
+                <div class="p-5 bg-slate-900/50 rounded-2xl border border-slate-700">
+                    <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider mb-1">Total Laba Bersih</p>
+                    <h3 class="text-xl font-black text-emerald-500" id="totalProfitAdmin">Rp 0</h3>
+                </div>
+                <div class="p-5 bg-slate-900/50 rounded-2xl border border-slate-700">
+                    <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider mb-1">Total Modal</p>
+                    <h3 class="text-xl font-black text-white" id="totalCapitalAdmin">Rp 0</h3>
+                </div>
+                <div class="p-5 bg-slate-900/50 rounded-2xl border border-slate-700">
+                    <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider mb-1">ROI Rata-rata</p>
+                    <h3 class="text-xl font-black text-blue-500" id="avgRoiAdmin">0%</h3>
+                </div>
+            </div>
+            <button onclick="loadGlobalFinancialStats()"
+                class="w-full py-3 bg-slate-700 rounded-xl text-[10px] font-black uppercase text-slate-300 hover:bg-slate-600 transition-all">Refresh
+                Statistik</button>
+        </section>
+
         <!-- Search Section -->
         <section class="bg-slate-800 p-6 rounded-3xl shadow-xl border border-slate-700 space-y-4">
             <h2 class="text-sm font-black text-slate-300 uppercase tracking-widest">Cari Siswa</h2>
@@ -168,7 +201,8 @@
 
                 const typeLabels = {
                     'pemantik': 'Pemantik', 'materi': 'Materi', 'video': 'Video', 'lkpd': 'LKPD',
-                    'kuis': 'Assessment', 'dokumentasi': 'Dokumentasi', 'glosarium': 'Glosarium', 'refleksi': 'Refleksi'
+                    'kuis': 'Assessment', 'dokumentasi': 'Dokumentasi', 'glosarium': 'Glosarium', 'refleksi': 'Refleksi',
+                    'laporan_akhir': 'Laporan Akhir'
                 };
 
                 let html = '';
@@ -227,6 +261,48 @@
         document.getElementById('studentSearch').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') searchStudent();
         });
+
+        async function loadGlobalFinancialStats() {
+            try {
+                const { data: responses, error } = await supabaseClient
+                    .from('module_responses')
+                    .select('answers')
+                    .eq('module_type', 'laporan_akhir')
+                    .eq('day_id', 3);
+
+                if (error) throw error;
+
+                let totalOmzet = 0;
+                let totalCapital = 0;
+                let totalProfit = 0;
+
+                responses.forEach(r => {
+                    try {
+                        const answers = JSON.parse(r.answers[0]);
+                        const cap = parseFloat(answers.modal_kelas) || 0;
+                        const laba = parseFloat(answers.laba) || 0;
+                        const rugi = parseFloat(answers.rugi) || 0;
+
+                        totalCapital += cap;
+                        totalProfit += (laba - rugi);
+                        // Omzet is total money circulating = Capital + Profit (or Capital - Loss)
+                        totalOmzet += (cap + laba - rugi);
+                    } catch (e) { }
+                });
+
+                document.getElementById('totalOmzetAdmin').textContent = 'Rp ' + totalOmzet.toLocaleString('id-ID');
+                document.getElementById('totalProfitAdmin').textContent = 'Rp ' + totalProfit.toLocaleString('id-ID');
+                document.getElementById('totalCapitalAdmin').textContent = 'Rp ' + totalCapital.toLocaleString('id-ID');
+
+                const avgRoi = totalCapital > 0 ? (totalProfit / totalCapital * 100) : 0;
+                document.getElementById('avgRoiAdmin').textContent = avgRoi.toFixed(1) + '%';
+            } catch (err) {
+                console.error("Error loading global financial stats:", err);
+            }
+        }
+
+        // Call on initial load
+        loadGlobalFinancialStats();
     </script>
 </body>
 

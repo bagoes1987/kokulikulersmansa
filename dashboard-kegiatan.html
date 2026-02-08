@@ -189,6 +189,24 @@
                     </div>
                 </div>
 
+                <!-- Laporan Akhir (Day 3 Only) -->
+                <div id="module-laporan-akhir" onclick="openLaporanAkhirModal()" style="display: none;"
+                    class="bg-emerald-50/50 p-4 rounded-[24px] ios-shadow border border-emerald-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                        <span class="material-symbols-outlined !text-2xl">receipt_long</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Laporan Akhir</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-laporan-akhir">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-laporan-akhir">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Video Belajar -->
                 <div id="module-video" onclick="toggleModule('video')"
                     class="bg-red-50/50 p-4 rounded-[24px] ios-shadow border border-red-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
@@ -660,7 +678,7 @@
         const defaultProgress = {
             day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
             day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false, bep: false },
-            day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false }
+            day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false, 'laporan-akhir': false }
         };
 
         let studentProgress = JSON.parse(JSON.stringify(defaultProgress));
@@ -804,7 +822,7 @@
 
                     // Validate structure - ensure all days exist
                     const requiredDays = ['day1', 'day2', 'day3'];
-                    const requiredModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi', 'bep'];
+                    const requiredModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi', 'bep', 'laporan-akhir'];
 
                     let isCorrupted = false;
                     requiredDays.forEach(day => {
@@ -814,14 +832,14 @@
                         }
                         requiredModules.forEach(module => {
                             // 'bep' only required for day2
-                            if (module === 'bep') {
-                                if (day === 'day2' && studentProgress[day][module] === undefined) {
-                                    isCorrupted = true;
-                                }
-                            } else {
-                                if (studentProgress[day][module] === undefined) {
-                                    isCorrupted = true;
-                                }
+                            if (day === 'day2' && module === 'bep' && studentProgress[day][module] === undefined) {
+                                isCorrupted = true;
+                            }
+                            if (day === 'day3' && module === 'laporan-akhir' && studentProgress[day][module] === undefined) {
+                                isCorrupted = true;
+                            }
+                            if (module !== 'bep' && module !== 'laporan-akhir' && studentProgress[day][module] === undefined) {
+                                isCorrupted = true;
                             }
                         });
                     });
@@ -900,6 +918,10 @@
             }
             if (moduleId === 'bep') {
                 openBEPModal();
+                return;
+            }
+            if (moduleId === 'laporan-akhir') {
+                openLaporanAkhirModal();
                 return;
             }
 
@@ -985,6 +1007,16 @@
                     bepModule.style.display = '';
                 } else {
                     bepModule.style.display = 'none';
+                }
+            }
+
+            // Laporan Akhir Visibility (Only Day 3)
+            const laporanAkhirModule = document.getElementById('module-laporan-akhir');
+            if (laporanAkhirModule) {
+                if (currentDay === 3) {
+                    laporanAkhirModule.style.display = '';
+                } else {
+                    laporanAkhirModule.style.display = 'none';
                 }
             }
         }
@@ -1209,7 +1241,8 @@
                     responses.forEach(r => {
                         // Mapping Database Type to UI ID
                         let moduleId = r.module_type;
-                        if (moduleId === 'kuis') moduleId = 'asesmen';
+                        if (moduleId === 'kategori') moduleId = 'dokumentasi';
+                        if (moduleId === 'laporan_akhir') moduleId = 'laporan-akhir';
                         if (moduleId === 'summary') moduleId = 'materi';
                         if (moduleId === 'bep_analisis') moduleId = 'bep';
 
@@ -3077,6 +3110,143 @@
 
                 </div>
 
+            </div>
+        </div>
+
+        <!-- MODAL LAPORAN AKHIR (DAY 3 NEW) -->
+        <div id="modalLaporanAkhir"
+            class="fixed inset-0 z-[200] hidden items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-fade-in">
+            <div
+                class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+                <!-- Header -->
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-emerald-50/50">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="size-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-200">
+                            <span class="material-symbols-outlined !text-2xl">receipt_long</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-black text-slate-800">Laporan Akhir</h3>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Evaluasi & Hasil
+                                Bazaar</p>
+                        </div>
+                    </div>
+                    <button onclick="closeLaporanAkhirModal()"
+                        class="size-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200 transition-all">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Content Area -->
+                <div class="flex-1 overflow-y-auto no-scrollbar bg-slate-50/30 p-6 space-y-6">
+                    <!-- Status Section (If Submitted) -->
+                    <div id="laporanAkhirStatusSection" class="hidden"></div>
+
+                    <!-- Form Container -->
+                    <div id="laporanAkhirFormContainer" class="space-y-6">
+                        <!-- 1. Modal & Produksi -->
+                        <div class="space-y-4">
+                            <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-emerald-500">payments</span> 1.
+                                Modal & Produksi
+                            </h4>
+                            <div class="space-y-3 p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Modal
+                                        Kelas (Rp)</label>
+                                    <input type="number" id="input-modal-kelas"
+                                        class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
+                                        placeholder="0">
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label
+                                            class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Produksi
+                                            Makanan</label>
+                                        <input type="number" id="input-prod-makanan"
+                                            class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
+                                            placeholder="Unit">
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Produksi
+                                            Minuman</label>
+                                        <input type="number" id="input-prod-minuman"
+                                            class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
+                                            placeholder="Unit">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Hasil Penjualan -->
+                        <div class="space-y-4 pt-2">
+                            <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-emerald-500">point_of_sale</span> 2.
+                                Hasil Penjualan
+                            </h4>
+                            <div class="space-y-3 p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label
+                                            class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Makanan
+                                            Terjual</label>
+                                        <input type="number" id="input-jual-makanan"
+                                            class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
+                                            placeholder="Unit">
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Minuman
+                                            Terjual</label>
+                                        <input type="number" id="input-jual-minuman"
+                                            class="w-full p-3 rounded-xl border border-slate-100 text-sm font-black text-slate-700 focus:border-emerald-500 outline-none"
+                                            placeholder="Unit">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Rekapitulasi Laba/Rugi -->
+                        <div class="space-y-4 pt-2">
+                            <h4 class="text-xs font-black text-slate-700 uppercase flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-emerald-500">balance</span> 3. Laba
+                                / Rugi
+                            </h4>
+                            <div class="space-y-3 p-4 bg-white rounded-3xl border border-slate-100 shadow-sm">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-100">
+                                        <label
+                                            class="block text-[10px] font-bold text-emerald-600 mb-1 uppercase tracking-wider">Keuntungan
+                                            (Rp)</label>
+                                        <input type="number" id="input-laba"
+                                            class="w-full bg-transparent text-sm font-black text-emerald-700 outline-none"
+                                            placeholder="0">
+                                    </div>
+                                    <div class="p-3 bg-red-50 rounded-2xl border border-red-100">
+                                        <label
+                                            class="block text-[10px] font-bold text-red-600 mb-1 uppercase tracking-wider">Kerugian
+                                            (Rp)</label>
+                                        <input type="number" id="input-rugi"
+                                            class="w-full bg-transparent text-sm font-black text-red-700 outline-none"
+                                            placeholder="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-6 pb-2">
+                            <button onclick="submitLaporanAkhir()" id="btnSubmitLaporanAkhir"
+                                class="w-full py-4 bg-emerald-500 text-white rounded-2xl font-black shadow-lg shadow-emerald-200 active:scale-95 transition-all">
+                                Kirim Laporan Akhir
+                            </button>
+                            <p class="text-[10px] text-center text-slate-400 mt-3 font-medium">Laporan ini akan
+                                dievaluasi oleh Fasilitator.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -5990,6 +6160,146 @@
                 alert('Gagal mengirim laporan: ' + err.message);
                 btn.disabled = false;
                 btn.innerHTML = 'Kirim Laporan';
+            }
+        }
+
+        // ==========================================
+        // FITUR LAPORAN AKHIR (DAY 3)
+        // ==========================================
+        function openLaporanAkhirModal() {
+            document.getElementById('modalLaporanAkhir').classList.remove('hidden');
+            document.getElementById('modalLaporanAkhir').classList.add('flex');
+            checkExistingLaporanAkhir();
+        }
+
+        function closeLaporanAkhirModal() {
+            document.getElementById('modalLaporanAkhir').classList.add('hidden');
+            document.getElementById('modalLaporanAkhir').classList.remove('flex');
+        }
+
+        async function checkExistingLaporanAkhir() {
+            const statusSection = document.getElementById('laporanAkhirStatusSection');
+            const formContainer = document.getElementById('laporanAkhirFormContainer');
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data, error } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', 3)
+                    .eq('module_type', 'laporan_akhir')
+                    .single();
+
+                if (error && error.code !== 'PGRST116') throw error;
+
+                if (data) {
+                    const answers = JSON.parse(data.answers[0]);
+
+                    // Show Status
+                    statusSection.classList.remove('hidden');
+                    let statusHtml = '';
+
+                    if (data.status === 'submitted') {
+                        statusHtml = `
+                            <div class="p-4 bg-yellow-50 border border-yellow-100 rounded-2xl flex items-start gap-3">
+                                <span class="material-symbols-outlined text-yellow-500">hourglass_top</span>
+                                <div>
+                                    <p class="text-xs font-black text-yellow-700 uppercase">Menunggu Feedback</p>
+                                    <p class="text-[10px] text-yellow-600 font-medium">Laporanmu sedang ditinjau oleh Fasilitator. Harap tunggu penilaian dan catatan evaluasinya.</p>
+                                </div>
+                            </div>`;
+                    } else if (data.status === 'reviewed') {
+                        const stars = '⭐'.repeat(data.score / 20) || '⭐';
+                        statusHtml = `
+                            <div class="space-y-3">
+                                <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-start gap-3">
+                                    <span class="material-symbols-outlined text-emerald-500">verified</span>
+                                    <div>
+                                        <p class="text-xs font-black text-emerald-700 uppercase tracking-wider">Laporan Dinilai ${stars}</p>
+                                        <p class="text-[10px] text-emerald-600 font-medium">Fasilitator telah meninjau laporanmu.</p>
+                                    </div>
+                                </div>
+                                ${data.feedback ? `
+                                <div class="p-4 bg-white border border-emerald-100 rounded-2xl">
+                                    <p class="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">Feedback Fasilitator:</p>
+                                    <p class="text-xs font-bold text-slate-600 italic leading-relaxed">"${data.feedback}"</p>
+                                </div>` : ''}
+                            </div>`;
+                    }
+                    statusSection.innerHTML = statusHtml;
+
+                    // Fill Form (View Only)
+                    document.getElementById('input-modal-kelas').value = answers.modal_kelas;
+                    document.getElementById('input-prod-makanan').value = answers.prod_makanan;
+                    document.getElementById('input-prod-minuman').value = answers.prod_minuman;
+                    document.getElementById('input-jual-makanan').value = answers.jual_makanan;
+                    document.getElementById('input-jual-minuman').value = answers.jual_minuman;
+                    document.getElementById('input-laba').value = answers.laba;
+                    document.getElementById('input-rugi').value = answers.rugi;
+
+                    // Disable inputs if already reviewed/submitted
+                    document.getElementById('laporanAkhirFormContainer').querySelectorAll('input').forEach(i => i.disabled = true);
+                    document.getElementById('btnSubmitLaporanAkhir').style.display = 'none';
+                } else {
+                    statusSection.classList.add('hidden');
+                    formContainer.querySelectorAll('input').forEach(i => {
+                        i.disabled = false;
+                        i.value = '';
+                    });
+                    document.getElementById('btnSubmitLaporanAkhir').style.display = 'block';
+                }
+            } catch (err) {
+                console.error("Error checkExistingLaporanAkhir:", err);
+            }
+        }
+
+        async function submitLaporanAkhir() {
+            const btn = document.getElementById('btnSubmitLaporanAkhir');
+            const dataFields = {
+                modal_kelas: parseFloat(document.getElementById('input-modal-kelas').value) || 0,
+                prod_makanan: parseFloat(document.getElementById('input-prod-makanan').value) || 0,
+                prod_minuman: parseFloat(document.getElementById('input-prod-minuman').value) || 0,
+                jual_makanan: parseFloat(document.getElementById('input-jual-makanan').value) || 0,
+                jual_minuman: parseFloat(document.getElementById('input-jual-minuman').value) || 0,
+                laba: parseFloat(document.getElementById('input-laba').value) || 0,
+                rugi: parseFloat(document.getElementById('input-rugi').value) || 0
+            };
+
+            if (Object.values(dataFields).every(v => v === 0)) {
+                alert("Mohon isi data laporan dengan benar.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = 'Mengirim...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error("Sesi habis");
+
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: 3,
+                        module_type: 'laporan_akhir',
+                        answers: [JSON.stringify(dataFields)],
+                        status: 'submitted'
+                    });
+
+                if (error) throw error;
+
+                showToast('Laporan Akhir berhasil dikirim!');
+                closeLaporanAkhirModal();
+                updateModuleUI('laporan-akhir', 'submitted');
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Laporan Akhir';
             }
         }
 
