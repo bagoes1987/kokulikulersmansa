@@ -907,7 +907,13 @@
                 return;
             }
             if (moduleId === 'dokumentasi') {
-                openDokumentasiModal();
+                if (currentDay === 2) {
+                    openDokumentasiDay2Modal();
+                } else if (currentDay === 3) {
+                    openDokumentasiDay3Modal();
+                } else {
+                    openDokumentasiModal();
+                }
                 return;
             }
             if (moduleId === 'video') {
