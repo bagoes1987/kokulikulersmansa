@@ -3076,18 +3076,31 @@
 
             // Check if all 5 photos are selected
             function checkAllPhotosSelected() {
-                const allSelected = Object.values(window.day2Photos).every(photo => photo !== null);
+                const photos = Object.values(window.day2Photos);
+                const allSelected = photos.every(photo => photo !== null);
+                const allExisting = photos.every(photo => photo === 'existing');
+
                 const submitBtn = document.getElementById('btnSubmitAllDocs');
                 if (submitBtn) {
+                    if (allExisting) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = 'Semua Dokumentasi Terkirim';
+                        submitBtn.classList.remove('bg-indigo-600', 'shadow-indigo-200', 'text-white', 'active:scale-95');
+                        submitBtn.classList.add('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
+                        return;
+                    }
+
                     submitBtn.disabled = !allSelected;
                     if (allSelected) {
-                        submitBtn.classList.add('bg-indigo-600', 'shadow-indigo-200', 'text-white');
-                        submitBtn.classList.remove('bg-slate-200', 'text-slate-400');
+                        submitBtn.classList.add('bg-indigo-600', 'shadow-indigo-200', 'text-white', 'active:scale-95');
+                        submitBtn.classList.remove('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
                         submitBtn.innerHTML = `
                         <span>Kirim 5 Dokumentasi</span>
                         <span class="material-symbols-outlined text-sm">send</span>
                     `;
                     } else {
+                        submitBtn.classList.add('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
+                        submitBtn.classList.remove('bg-indigo-600', 'shadow-indigo-200', 'text-white', 'active:scale-95');
                         submitBtn.innerHTML = `
                         <span>Kirim Semua Dokumentasi</span>
                         <span class="material-symbols-outlined text-sm">send</span>
