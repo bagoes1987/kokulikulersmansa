@@ -5618,14 +5618,34 @@
             if (data.lkpd5) {
                 // Helper to set preview
                 const setPreview = (type, url) => {
-                    if (url && url.startsWith('http')) {
-                        const img = document.getElementById(`lkpd5-preview-img-${type}`);
-                        const container = document.getElementById(`lkpd5-preview-container-${type}`);
-                        const ui = document.getElementById(`lkpd5-upload-ui-${type}`);
+                    const img = document.getElementById(`lkpd5-preview-img-${type}`);
+                    const container = document.getElementById(`lkpd5-preview-container-${type}`);
+                    const ui = document.getElementById(`lkpd5-upload-ui-${type}`);
+                    const statusEl = document.getElementById(`lkpd5-status-${type}`);
+
+                    // Reset state first
+                    if (container) container.classList.add('hidden');
+                    if (ui) ui.classList.remove('hidden');
+                    if (statusEl) statusEl.classList.add('hidden');
+
+                    // Strict Validation
+                    if (url && typeof url === 'string' && url.length > 10 && (url.startsWith('http') || url.startsWith('blob:') || url.startsWith('data:'))) {
                         if (img && container && ui) {
+                            // Handler jika gambar error/broken
+                            img.onerror = function () {
+                                console.warn(`[LKPD5] Gagal memuat gambar ${type}: ${url}`);
+                                container.classList.add('hidden');
+                                ui.classList.remove('hidden');
+                                img.src = ''; // Clear source
+                            };
+
+                            // Handler jika gambar sukses dimuat
+                            img.onload = function () {
+                                container.classList.remove('hidden');
+                                ui.classList.add('hidden');
+                            };
+
                             img.src = url;
-                            container.classList.remove('hidden');
-                            ui.classList.add('hidden');
                         }
                     }
                 };
