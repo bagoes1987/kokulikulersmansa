@@ -1970,7 +1970,8 @@
             const table = document.getElementById('ingredients-table-body');
             const row = document.createElement('tr');
             row.className = "border-b border-slate-50";
-            row.innerHTML = `<td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td><td class="py-2"><input type="number" placeholder="0" value="${cost}" oninput="calculateAnalisisTotal()" class="ingredient-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td><td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>`;
+            const formattedCost = cost ? parseInt(cost).toLocaleString('id-ID') : '';
+            row.innerHTML = `<td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td><td class="py-2"><input type="text" placeholder="0" value="${formattedCost}" oninput="formatInputWithDots(this); calculateAnalisisTotal()" class="ingredient-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td><td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>`;
             if (table) table.appendChild(row);
         }
 
@@ -1978,7 +1979,8 @@
             const table = document.getElementById('stand-table-body');
             const row = document.createElement('tr');
             row.className = "border-b border-slate-50";
-            row.innerHTML = `<td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td><td class="py-2"><input type="number" placeholder="0" value="${cost}" oninput="calculateAnalisisTotal()" class="stand-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td><td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>`;
+            const formattedCost = cost ? parseInt(cost).toLocaleString('id-ID') : '';
+            row.innerHTML = `<td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td><td class="py-2"><input type="text" placeholder="0" value="${formattedCost}" oninput="formatInputWithDots(this); calculateAnalisisTotal()" class="stand-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td><td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>`;
             if (table) table.appendChild(row);
         }
 
@@ -1986,15 +1988,16 @@
             const table = document.getElementById('drinks-table-body');
             const row = document.createElement('tr');
             row.className = "border-b border-slate-50";
-            row.innerHTML = `<td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td><td class="py-2"><input type="number" placeholder="0" value="${cost}" oninput="calculateAnalisisTotal()" class="drink-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td><td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>`;
+            const formattedCost = cost ? parseInt(cost).toLocaleString('id-ID') : '';
+            row.innerHTML = `<td class="py-2 pl-1"><input type="text" placeholder="Item..." value="${name}" class="w-full text-[10px] font-medium text-slate-700 outline-none bg-transparent"></td><td class="py-2"><input type="text" placeholder="0" value="${formattedCost}" oninput="formatInputWithDots(this); calculateAnalisisTotal()" class="drink-cost w-full text-[10px] font-bold text-right outline-none bg-transparent" style="direction: ltr;"></td><td class="py-2 text-right"><button onclick="this.closest('tr').remove(); calculateAnalisisTotal();" class="text-slate-300 hover:text-red-500"><span class="material-symbols-outlined !text-sm">close</span></button></td>`;
             if (table) table.appendChild(row);
         }
 
         function calculatePO() {
-            const qtyMakan = parseFloat(document.getElementById('input-po-makanan-qty').value) || 0;
-            const hrgMakan = parseFloat(document.getElementById('input-po-makanan-harga').value) || 0;
-            const qtyMinum = parseFloat(document.getElementById('input-po-minuman-qty').value) || 0;
-            const hrgMinum = parseFloat(document.getElementById('input-po-minuman-harga').value) || 0;
+            const qtyMakan = parseFormattedNumber(document.getElementById('input-po-makanan-qty').value);
+            const hrgMakan = parseFormattedNumber(document.getElementById('input-po-makanan-harga').value);
+            const qtyMinum = parseFormattedNumber(document.getElementById('input-po-minuman-qty').value);
+            const hrgMinum = parseFormattedNumber(document.getElementById('input-po-minuman-harga').value);
 
             const totalQty = qtyMakan + qtyMinum;
             const totalRp = (qtyMakan * hrgMakan) + (qtyMinum * hrgMinum);
@@ -2002,15 +2005,15 @@
             const dispQty = document.getElementById('display-total-po-qty');
             const dispRp = document.getElementById('display-total-po-rp');
 
-            if (dispQty) dispQty.textContent = `${totalQty} Item`;
+            if (dispQty) dispQty.textContent = `${totalQty.toLocaleString('id-ID')} Item`;
             if (dispRp) dispRp.textContent = `Rp ${totalRp.toLocaleString('id-ID')}`;
         }
 
         function calculateAnalisisTotal() {
             let totalHpp = 0, totalDrinks = 0, totalStand = 0;
-            document.querySelectorAll('.ingredient-cost').forEach(i => totalHpp += parseFloat(i.value) || 0);
-            document.querySelectorAll('.drink-cost').forEach(i => totalDrinks += parseFloat(i.value) || 0);
-            document.querySelectorAll('.stand-cost').forEach(i => totalStand += parseFloat(i.value) || 0);
+            document.querySelectorAll('.ingredient-cost').forEach(i => totalHpp += parseFormattedNumber(i.value));
+            document.querySelectorAll('.drink-cost').forEach(i => totalDrinks += parseFormattedNumber(i.value));
+            document.querySelectorAll('.stand-cost').forEach(i => totalStand += parseFormattedNumber(i.value));
 
             const hppDisp = document.getElementById('total-hpp-display');
             const drkDisp = document.getElementById('total-drinks-display');
@@ -2020,10 +2023,10 @@
             if (drkDisp) drkDisp.textContent = 'Rp ' + totalDrinks.toLocaleString('id-ID');
             if (stDisp) stDisp.textContent = 'Rp ' + totalStand.toLocaleString('id-ID');
 
-            const targetMakanan = parseFloat(document.getElementById('input-target-makanan').value) || 0;
-            const targetMinuman = parseFloat(document.getElementById('input-target-minuman').value) || 0;
-            const hargaMakanan = parseFloat(document.getElementById('input-harga-makanan').value) || 0;
-            const hargaMinuman = parseFloat(document.getElementById('input-harga-minuman').value) || 0;
+            const targetMakanan = parseFormattedNumber(document.getElementById('input-target-makanan').value);
+            const targetMinuman = parseFormattedNumber(document.getElementById('input-target-minuman').value);
+            const hargaMakanan = parseFormattedNumber(document.getElementById('input-harga-makanan').value);
+            const hargaMinuman = parseFormattedNumber(document.getElementById('input-harga-minuman').value);
 
             const standShare = totalStand / 2;
             const margin = 0.4;
@@ -2065,36 +2068,36 @@
             const ingredients = [], drinks = [], standItems = [];
             document.querySelectorAll('#ingredients-table-body tr').forEach(row => {
                 const inputs = row.querySelectorAll('input');
-                if (inputs[0].value.trim()) ingredients.push({ item: inputs[0].value, cost: parseFloat(inputs[1].value) || 0 });
+                if (inputs[0].value.trim()) ingredients.push({ item: inputs[0].value, cost: parseFormattedNumber(inputs[1].value) });
             });
             document.querySelectorAll('#drinks-table-body tr').forEach(row => {
                 const inputs = row.querySelectorAll('input');
-                if (inputs[0].value.trim()) drinks.push({ item: inputs[0].value, cost: parseFloat(inputs[1].value) || 0 });
+                if (inputs[0].value.trim()) drinks.push({ item: inputs[0].value, cost: parseFormattedNumber(inputs[1].value) });
             });
             document.querySelectorAll('#stand-table-body tr').forEach(row => {
                 const inputs = row.querySelectorAll('input');
-                if (inputs[0].value.trim()) standItems.push({ item: inputs[0].value, cost: parseFloat(inputs[1].value) || 0 });
+                if (inputs[0].value.trim()) standItems.push({ item: inputs[0].value, cost: parseFormattedNumber(inputs[1].value) });
             });
 
             const submissionData = {
                 nama_produk: namaProduk,
                 nama_minuman: document.getElementById('input-nama-minuman').value,
                 ingredients, drinks, stand_items: standItems,
-                target_makanan: parseFloat(document.getElementById('input-target-makanan').value) || 0,
-                target_minuman: parseFloat(document.getElementById('input-target-minuman').value) || 0,
-                harga_makanan: parseFloat(document.getElementById('input-harga-makanan').value) || 0,
-                harga_minuman: parseFloat(document.getElementById('input-harga-minuman').value) || 0,
+                target_makanan: parseFormattedNumber(document.getElementById('input-target-makanan').value),
+                target_minuman: parseFormattedNumber(document.getElementById('input-target-minuman').value),
+                harga_makanan: parseFormattedNumber(document.getElementById('input-harga-makanan').value),
+                harga_minuman: parseFormattedNumber(document.getElementById('input-harga-minuman').value),
                 total_hpp_makanan: ingredients.reduce((sum, item) => sum + item.cost, 0),
                 total_hpp_minuman: drinks.reduce((sum, item) => sum + item.cost, 0),
                 total_hpp_stand: standItems.reduce((sum, item) => sum + item.cost, 0),
                 total_modal: (ingredients.reduce((sum, item) => sum + item.cost, 0) + drinks.reduce((sum, item) => sum + item.cost, 0) + standItems.reduce((sum, item) => sum + item.cost, 0)),
                 // PO Data
-                po_makanan_qty: parseFloat(document.getElementById('input-po-makanan-qty').value) || 0,
-                po_makanan_harga: parseFloat(document.getElementById('input-po-makanan-harga').value) || 0,
-                po_minuman_qty: parseFloat(document.getElementById('input-po-minuman-qty').value) || 0,
-                po_minuman_harga: parseFloat(document.getElementById('input-po-minuman-harga').value) || 0,
-                po_total_qty: (parseFloat(document.getElementById('input-po-makanan-qty').value) || 0) + (parseFloat(document.getElementById('input-po-minuman-qty').value) || 0),
-                po_total_rp: ((parseFloat(document.getElementById('input-po-makanan-qty').value) || 0) * (parseFloat(document.getElementById('input-po-makanan-harga').value) || 0)) + ((parseFloat(document.getElementById('input-po-minuman-qty').value) || 0) * (parseFloat(document.getElementById('input-po-minuman-harga').value) || 0))
+                po_makanan_qty: parseFormattedNumber(document.getElementById('input-po-makanan-qty').value),
+                po_makanan_harga: parseFormattedNumber(document.getElementById('input-po-makanan-harga').value),
+                po_minuman_qty: parseFormattedNumber(document.getElementById('input-po-minuman-qty').value),
+                po_minuman_harga: parseFormattedNumber(document.getElementById('input-po-minuman-harga').value),
+                po_total_qty: parseFormattedNumber(document.getElementById('input-po-makanan-qty').value) + parseFormattedNumber(document.getElementById('input-po-minuman-qty').value),
+                po_total_rp: (parseFormattedNumber(document.getElementById('input-po-makanan-qty').value) * parseFormattedNumber(document.getElementById('input-po-makanan-harga').value)) + (parseFormattedNumber(document.getElementById('input-po-minuman-qty').value) * parseFormattedNumber(document.getElementById('input-po-minuman-harga').value))
             };
 
             btn.disabled = true; btn.innerHTML = 'Mengirim...';
@@ -2499,10 +2502,10 @@
                     if (formContainer) { formContainer.classList.remove('hidden'); formContainer.classList.add('opacity-70', 'pointer-events-none'); document.getElementById('btnSubmitAnalisis').classList.add('hidden'); }
                     if (document.getElementById('input-nama-produk')) document.getElementById('input-nama-produk').value = ans.nama_produk || '';
                     if (document.getElementById('input-nama-minuman')) document.getElementById('input-nama-minuman').value = ans.nama_minuman || '';
-                    if (document.getElementById('input-target-makanan')) document.getElementById('input-target-makanan').value = ans.target_makanan || '';
-                    if (document.getElementById('input-target-minuman')) document.getElementById('input-target-minuman').value = ans.target_minuman || '';
-                    if (document.getElementById('input-harga-makanan')) document.getElementById('input-harga-makanan').value = ans.harga_makanan || '';
-                    if (document.getElementById('input-harga-minuman')) document.getElementById('input-harga-minuman').value = ans.harga_minuman || '';
+                    if (document.getElementById('input-target-makanan')) document.getElementById('input-target-makanan').value = (ans.target_makanan || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-target-minuman')) document.getElementById('input-target-minuman').value = (ans.target_minuman || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-harga-makanan')) document.getElementById('input-harga-makanan').value = (ans.harga_makanan || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-harga-minuman')) document.getElementById('input-harga-minuman').value = (ans.harga_minuman || 0).toLocaleString('id-ID');
                     const ingTable = document.getElementById('ingredients-table-body');
                     const drkTable = document.getElementById('drinks-table-body');
                     const stnTable = document.getElementById('stand-table-body');
@@ -2514,10 +2517,10 @@
                     if (ans.stand_items) ans.stand_items.forEach(st => addStandRow(st.item, st.cost));
 
                     // Load PO Data
-                    if (document.getElementById('input-po-makanan-qty')) document.getElementById('input-po-makanan-qty').value = ans.po_makanan_qty || '';
-                    if (document.getElementById('input-po-makanan-harga')) document.getElementById('input-po-makanan-harga').value = ans.po_makanan_harga || '';
-                    if (document.getElementById('input-po-minuman-qty')) document.getElementById('input-po-minuman-qty').value = ans.po_minuman_qty || '';
-                    if (document.getElementById('input-po-minuman-harga')) document.getElementById('input-po-minuman-harga').value = ans.po_minuman_harga || '';
+                    if (document.getElementById('input-po-makanan-qty')) document.getElementById('input-po-makanan-qty').value = (ans.po_makanan_qty || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-po-makanan-harga')) document.getElementById('input-po-makanan-harga').value = (ans.po_makanan_harga || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-po-minuman-qty')) document.getElementById('input-po-minuman-qty').value = (ans.po_minuman_qty || 0).toLocaleString('id-ID');
+                    if (document.getElementById('input-po-minuman-harga')) document.getElementById('input-po-minuman-harga').value = (ans.po_minuman_harga || 0).toLocaleString('id-ID');
 
                     calculatePO(); // Recalculate PO totals
                     calculateAnalisisTotal();
@@ -3684,14 +3687,16 @@
                                     <div>
                                         <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Jml PO
                                             Makanan (Porsi)</label>
-                                        <input type="number" id="input-po-makanan-qty" oninput="calculatePO()"
+                                        <input type="text" id="input-po-makanan-qty"
+                                            oninput="formatInputWithDots(this); calculatePO()"
                                             class="w-full p-2.5 rounded-xl border border-purple-200 text-sm font-black text-slate-700 focus:border-purple-500 outline-none bg-white"
                                             placeholder="0">
                                     </div>
                                     <div>
                                         <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Harga
                                             Jual / Porsi</label>
-                                        <input type="number" id="input-po-makanan-harga" oninput="calculatePO()"
+                                        <input type="text" id="input-po-makanan-harga"
+                                            oninput="formatInputWithDots(this); calculatePO()"
                                             class="w-full p-2.5 rounded-xl border border-purple-200 text-sm font-black text-slate-700 focus:border-purple-500 outline-none bg-white"
                                             placeholder="Rp">
                                     </div>
@@ -3702,14 +3707,16 @@
                                     <div>
                                         <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Jml PO
                                             Minuman (Cup)</label>
-                                        <input type="number" id="input-po-minuman-qty" oninput="calculatePO()"
+                                        <input type="text" id="input-po-minuman-qty"
+                                            oninput="formatInputWithDots(this); calculatePO()"
                                             class="w-full p-2.5 rounded-xl border border-purple-200 text-sm font-black text-slate-700 focus:border-purple-500 outline-none bg-white"
                                             placeholder="0">
                                     </div>
                                     <div>
                                         <label class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Harga
                                             Jual / Cup</label>
-                                        <input type="number" id="input-po-minuman-harga" oninput="calculatePO()"
+                                        <input type="text" id="input-po-minuman-harga"
+                                            oninput="formatInputWithDots(this); calculatePO()"
                                             class="w-full p-2.5 rounded-xl border border-purple-200 text-sm font-black text-slate-700 focus:border-purple-500 outline-none bg-white"
                                             placeholder="Rp">
                                     </div>
@@ -3754,8 +3761,8 @@
                                                 <label
                                                     class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Target
                                                     Produksi</label>
-                                                <input type="number" id="input-target-makanan"
-                                                    oninput="calculateAnalisisTotal()"
+                                                <input type="text" id="input-target-makanan"
+                                                    oninput="formatInputWithDots(this); calculateAnalisisTotal()"
                                                     class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-black text-slate-700 focus:border-pink-500 outline-none"
                                                     placeholder="Unit">
                                             </div>
@@ -3763,8 +3770,8 @@
                                                 <label
                                                     class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Harga
                                                     Jual</label>
-                                                <input type="number" id="input-harga-makanan"
-                                                    oninput="calculateAnalisisTotal()"
+                                                <input type="text" id="input-harga-makanan"
+                                                    oninput="formatInputWithDots(this); calculateAnalisisTotal()"
                                                     class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-black text-slate-700 focus:border-pink-500 outline-none"
                                                     placeholder="Rp">
                                             </div>
@@ -3796,8 +3803,8 @@
                                                 <label
                                                     class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Target
                                                     Produksi</label>
-                                                <input type="number" id="input-target-minuman"
-                                                    oninput="calculateAnalisisTotal()"
+                                                <input type="text" id="input-target-minuman"
+                                                    oninput="formatInputWithDots(this); calculateAnalisisTotal()"
                                                     class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-black text-slate-700 focus:border-blue-500 outline-none"
                                                     placeholder="Unit">
                                             </div>
@@ -3805,8 +3812,8 @@
                                                 <label
                                                     class="block text-[9px] font-bold text-slate-400 mb-1 uppercase">Harga
                                                     Jual</label>
-                                                <input type="number" id="input-harga-minuman"
-                                                    oninput="calculateAnalisisTotal()"
+                                                <input type="text" id="input-harga-minuman"
+                                                    oninput="formatInputWithDots(this); calculateAnalisisTotal()"
                                                     class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-black text-slate-700 focus:border-blue-500 outline-none"
                                                     placeholder="Rp">
                                             </div>
