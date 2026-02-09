@@ -1480,25 +1480,31 @@
                     const { data: { user } } = await supabaseClient.auth.getUser();
                     if (!user) return;
 
-                    // Ambil semua respon hari ini dalam satu query
+                    // Ambil semua respon (SEMUA HARI) dalam satu query
                     const { data: responses, error } = await supabaseClient
                         .from('module_responses')
-                        .select('module_type, status, score')
-                        .eq('student_id', user.id)
-                        .eq('day_id', currentDay);
+                        .select('module_type, day_id, status, score')
+                        .eq('student_id', user.id);
 
                     if (error) throw error;
 
-                    // Reset UI dulu ke progress local
+                    // Reset UI dulu ke progress local (hanya untuk hari ini)
                     updateDashboardUI();
 
-                    // CRITICAL: Sync localStorage with database
-                    // If a module exists in localStorage but NOT in database, it was deleted by facilitator
-                    const dayKey = `day${currentDay}`;
-                    const dbModules = new Set();
+                    const dbModulesMap = {
+                        day1: new Set(),
+                        day2: new Set(),
+                        day3: new Set()
+                    };
 
                     if (responses && responses.length > 0) {
                         responses.forEach(r => {
+                            const rDay = r.day_id;
+                            const dayKey = `day${rDay}`;
+
+                            // Skip invalid days
+                            if (!studentProgress[dayKey]) return;
+
                             // Mapping Database Type to UI ID
                             let moduleId = r.module_type;
                             if (moduleId === 'kategori') moduleId = 'dokumentasi';
@@ -1507,45 +1513,76 @@
                             if (moduleId === 'bep_analisis') moduleId = 'bep';
                             if (moduleId === 'kuis') moduleId = 'asesmen';
 
-                            dbModules.add(moduleId);
+                            // Track what exists in DB
+                            if (dbModulesMap[dayKey]) {
+                                dbModulesMap[dayKey].add(moduleId);
+                            }
 
+                            // 1. Handle Submitted (Menunggu Feedback) - Hanya update UI jika di hari yg sama
                             if (r.status === 'submitted') {
-                                const icon = document.getElementById(`status-${moduleId}`);
-                                const label = document.getElementById(`label-${moduleId}`);
-                                if (icon && label) {
-                                    icon.textContent = 'hourglass_top';
-                                    icon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse';
-                                    label.textContent = 'Menunggu Feedback';
-                                    label.className = 'text-[11px] font-semibold text-yellow-500';
+                                if (rDay == currentDay) {
+                                    const icon = document.getElementById(`status-${moduleId}`);
+                                    const label = document.getElementById(`label-${moduleId}`);
+                                    if (icon && label) {
+                                        icon.textContent = 'hourglass_top';
+                                        icon.className = 'material-symbols-outlined !text-[14px] text-yellow-500 animate-pulse';
+                                        label.textContent = 'Menunggu Feedback';
+                                        label.className = 'text-[11px] font-semibold text-yellow-500';
+                                    }
                                 }
-                            } else if (r.status === 'reviewed') {
-                                forceCompleteModule(moduleId, r.score);
+                            }
+                            // 2. Handle Reviewed (Selesai & Dinilai)
+                            else if (r.status === 'reviewed') {
+                                // Update progress data untuk hari tersebut
+                                studentProgress[dayKey][moduleId] = true;
+
+                                // Jika ini hari yang sedang aktif, update UI secara visual
+                                if (rDay == currentDay) {
+                                    forceCompleteModule(moduleId, r.score);
+                                }
                             }
                         });
                     }
 
-                    // Check for deleted modules: if localStorage says true but not in database, reset to false
+                    // Check for deleted modules (Sync Delete)
+                    // Iterate over ALL days and ALL modules
                     const allModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'bep', 'dokumentasi', 'glosarium', 'refleksi', 'laporan-akhir'];
-                    allModules.forEach(moduleId => {
-                        // FALLBACK FOR ASSESSMENT: If missing from DB but has local score, keep it
-                        if (moduleId === 'asesmen' && !dbModules.has(moduleId)) {
-                            const savedScore = localStorage.getItem(`asesmen_day${currentDay}_score`);
-                            if (savedScore) {
-                                forceCompleteModule('asesmen', parseInt(savedScore));
-                                return; // Skip reset
-                            }
-                        }
 
-                        // If localStorage has this as completed/submitted but database doesn't have it, reset
-                        if (studentProgress[dayKey][moduleId] === true && !dbModules.has(moduleId)) {
-                            // console.log(`🔄 Syncing: ${moduleId} was deleted by facilitator, resetting to false`);
-                            studentProgress[dayKey][moduleId] = false;
-                            updateModuleUI(moduleId, false);
-                        }
+                    ['day1', 'day2', 'day3'].forEach(dKey => {
+                        if (!studentProgress[dKey]) return;
+
+                        allModules.forEach(moduleId => {
+                            // Skip modules that don't belong to this day (optional optimization, but safe to check)
+                            if (studentProgress[dKey][moduleId] === undefined) return;
+
+                            // FALLBACK FOR ASSESSMENT: If missing from DB but has local score, keep it (only for current day check usually, but keeping safe)
+                            if (moduleId === 'asesmen' && !dbModulesMap[dKey].has(moduleId)) {
+                                const savedScore = localStorage.getItem(`asesmen_${dKey}_score`);
+                                if (savedScore) {
+                                    // If we have a local score, assume it's valid for now to prevent data loss on erratic connections
+                                    studentProgress[dKey][moduleId] = true;
+                                    return;
+                                }
+                            }
+
+                            // If localStorage has this as completed but database doesn't have it, reset to false
+                            // Exception: 'asesmen' is handled above
+                            if (studentProgress[dKey][moduleId] === true && !dbModulesMap[dKey].has(moduleId)) {
+                                // console.log(`🔄 Syncing: ${moduleId} in ${dKey} was deleted/missing in DB, resetting.`);
+                                studentProgress[dKey][moduleId] = false;
+
+                                // Only update UI if it's the current day
+                                if (dKey == `day${currentDay}`) {
+                                    updateModuleUI(moduleId, false);
+                                }
+                            }
+                        });
                     });
 
-                    // Save synced progress
+                    // Save synced progress & Recalculate
                     saveProgress();
+                    calculateGlobalProgress();
+
                 } catch (err) {
                     console.error("Error checkAllModulesStatus:", err);
                 }
