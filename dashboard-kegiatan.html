@@ -4450,6 +4450,10 @@
                                         class="absolute bottom-2 right-2 bg-emerald-500 text-white text-[9px] font-bold px-2 py-1 rounded-lg shadow-sm">
                                         Terupload
                                     </div>
+                                    <button onclick="removeLKPD5Image('food')"
+                                        class="absolute top-2 right-2 size-8 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-all z-10">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
                                 </div>
 
                                 <div id="lkpd5-upload-ui-food">
@@ -4488,6 +4492,10 @@
                                         class="absolute bottom-2 right-2 bg-emerald-500 text-white text-[9px] font-bold px-2 py-1 rounded-lg shadow-sm">
                                         Terupload
                                     </div>
+                                    <button onclick="removeLKPD5Image('drink')"
+                                        class="absolute top-2 right-2 size-8 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-all z-10">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
                                 </div>
 
                                 <div id="lkpd5-upload-ui-drink">
@@ -4527,6 +4535,10 @@
                                         class="absolute bottom-2 right-2 bg-emerald-500 text-white text-[9px] font-bold px-2 py-1 rounded-lg shadow-sm">
                                         Terupload
                                     </div>
+                                    <button onclick="removeLKPD5Image('booth')"
+                                        class="absolute top-2 right-2 size-8 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-all z-10">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
                                 </div>
 
                                 <div id="lkpd5-upload-ui-booth">
@@ -4565,6 +4577,10 @@
                                         class="absolute bottom-2 right-2 bg-emerald-500 text-white text-[9px] font-bold px-2 py-1 rounded-lg shadow-sm">
                                         Terupload
                                     </div>
+                                    <button onclick="removeLKPD5Image('marketing')"
+                                        class="absolute top-2 right-2 size-8 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-all z-10">
+                                        <span class="material-symbols-outlined text-sm">delete</span>
+                                    </button>
                                 </div>
 
                                 <div id="lkpd5-upload-ui-marketing">
@@ -5869,8 +5885,49 @@
                             updateModuleUI('lkpd', true, data.score || 0);
                         }
                     }
+                } else {
+                    // NEW: Unlock inputs if data is gone (deleted by facilitator)
+                    console.log('⚠️ Data tidak ditemukan di server (mungkin dihapus). Resetting UI...');
+
+                    const inputs = document.querySelectorAll('#modalLKPD input, #modalLKPD textarea');
+                    inputs.forEach(i => i.disabled = false); // Unlock
+
+                    const btnSubmit = document.getElementById('btnSubmitLKPDAll');
+                    if (btnSubmit) btnSubmit.classList.remove('hidden'); // Show submit
+
+                    const statusSection = document.getElementById('lkpdStatusSection');
+                    if (statusSection) statusSection.classList.add('hidden'); // Hide status
                 }
             } catch (err) { console.error('Error checkExistingLKPD:', err); }
+        }
+
+        function removeLKPD5Image(type) {
+            if (!confirm('Hapus foto ini?')) return;
+
+            // 1. Clear UI
+            const img = document.getElementById(`lkpd5-preview-img-${type}`);
+            const container = document.getElementById(`lkpd5-preview-container-${type}`);
+            const ui = document.getElementById(`lkpd5-upload-ui-${type}`);
+            const input = document.getElementById(`lkpd5-file-${type}`);
+
+            if (img) img.src = '';
+            if (container) container.classList.add('hidden');
+            if (ui) ui.classList.remove('hidden');
+            if (input) input.value = ''; // Reset file input
+
+            // 2. Remove from LocalStorage Draft
+            try {
+                const dataStr = localStorage.getItem(`lkpd_draft_day${currentDay}`);
+                if (dataStr) {
+                    const data = JSON.parse(dataStr);
+                    if (data.lkpd5) {
+                        data.lkpd5[type] = ''; // Clear URL
+                        localStorage.setItem(`lkpd_draft_day${currentDay}`, JSON.stringify(data));
+                    }
+                }
+            } catch (e) {
+                console.error('Error removing Draft image', e);
+            }
         }
 
         async function submitVideoLog() {
