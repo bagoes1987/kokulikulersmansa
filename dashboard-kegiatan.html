@@ -408,124 +408,272 @@
 
         <!-- Modal Dokumentasi 5 Kategori untuk Hari 2 -->
         <div id="modal-dokumentasi-day2"
-            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-[2rem] w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+            class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4 animate-fade-in">
+            <div
+                class="bg-white rounded-[2.5rem] w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
                 <!-- Header -->
-                <div class="sticky top-0 bg-white border-b border-slate-100 p-6 rounded-t-[2rem] z-10">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-white !text-2xl">photo_camera</span>
-                            </div>
-                            <div>
-                                <h2 class="text-lg font-black text-slate-900">Dokumentasi Foto</h2>
-                                <p class="text-xs text-slate-500 font-bold">HARI 2 - 5 KATEGORI</p>
-                            </div>
+                <div class="p-6 border-b flex justify-between items-center bg-white z-10">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="size-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200">
+                            <span class="material-symbols-outlined !text-2xl">photo_library</span>
                         </div>
-                        <button onclick="closeDokumentasiDay2Modal()" class="text-slate-400 hover:text-slate-600">
-                            <span class="material-symbols-outlined !text-2xl">close</span>
-                        </button>
+                        <div>
+                            <h2 class="text-lg font-black text-slate-800 leading-tight">Upload Foto Kegiatan</h2>
+                            <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">HARI 2 • 5
+                                KATEGORI</p>
+                        </div>
                     </div>
+                    <button onclick="closeDokumentasiDay2Modal()"
+                        class="size-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all">
+                        <span class="material-symbols-outlined !text-xl">close</span>
+                    </button>
                 </div>
 
                 <!-- Content -->
-                <div class="p-6 space-y-6">
+                <div class="p-6 space-y-6 overflow-y-auto no-scrollbar flex-1 bg-slate-50/50">
                     <!-- Info -->
-                    <div class="p-4 rounded-2xl bg-blue-50 border border-blue-100">
-                        <p class="text-xs font-bold text-blue-700">
-                            📸 Upload 1 foto untuk setiap kategori (total 5 foto). Foto akan otomatis dikompres.
+                    <div class="p-4 rounded-2xl bg-indigo-50 border border-indigo-100 flex gap-3 items-start">
+                        <span class="material-symbols-outlined text-indigo-500 text-lg mt-0.5">info</span>
+                        <p class="text-[11px] font-medium text-indigo-800 leading-relaxed">
+                            Silakan upload 1 foto terbaik untuk setiap aktivitas di bawah ini. Foto akan otomatis
+                            dikompres agar hemat kuota.
                         </p>
                     </div>
 
-                    <!-- Category 1: Makanan -->
-                    <div class="doc-category-section">
-                        <h3 class="text-sm font-black text-slate-800 mb-3">1. Pembuatan Makanan</h3>
-                        <input type="file" id="doc-makanan" accept="image/*"
-                            onchange="handleCategoryPhoto('makanan', this)" class="hidden">
-                        <div id="upload-area-makanan"
-                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
-                            onclick="document.getElementById('doc-makanan').click()">
-                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
-                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                    <!-- Category 1: Makanan (Orange) -->
+                    <div
+                        class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden group transition-all hover:shadow-md">
+                        <div class="px-5 py-3 bg-orange-50/50 flex items-center gap-3 border-b border-orange-100/50">
+                            <div
+                                class="size-8 rounded-full bg-white flex items-center justify-center text-orange-500 shadow-sm">
+                                <span class="material-symbols-outlined text-lg">restaurant</span>
+                            </div>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-700">1. Proses
+                                Pembuatan Makanan</span>
                         </div>
-                        <div id="preview-area-makanan" class="hidden mt-3">
-                            <img id="preview-makanan" src="" alt="Preview" class="w-full rounded-2xl">
-                            <p id="status-makanan" class="text-xs mt-2"></p>
+
+                        <div class="p-5">
+                            <input type="file" id="doc-makanan" accept="image/*"
+                                onchange="handleCategoryPhoto('makanan', this)" class="hidden">
+
+                            <div id="upload-area-makanan"
+                                class="w-full py-8 border-2 border-dashed border-orange-200 bg-orange-50/30 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-orange-50 transition-colors group/upload"
+                                onclick="document.getElementById('doc-makanan').click()">
+                                <div
+                                    class="size-12 rounded-full bg-white text-orange-500 flex items-center justify-center mb-3 shadow-sm group-hover/upload:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined">add_a_photo</span>
+                                </div>
+                                <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Pilih Foto
+                                    Makanan</p>
+                            </div>
+
+                            <div id="preview-area-makanan" class="hidden relative animate-fade-in">
+                                <div class="relative rounded-2xl overflow-hidden border-4 border-white shadow-lg">
+                                    <img id="preview-makanan" src="" alt="Preview" class="w-full h-48 object-cover">
+                                    <div
+                                        class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                                    </div>
+
+                                    <!-- Delete Button -->
+                                    <button onclick="removeCategoryPhoto('makanan')"
+                                        class="absolute top-3 right-3 size-9 bg-white/90 backdrop-blur text-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-500 hover:text-white active:scale-90 transition-all z-10"
+                                        title="Hapus Foto">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                    </button>
+                                </div>
+                                <div id="status-makanan"
+                                    class="mt-3 flex items-center gap-2 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl w-fit">
+                                    <span class="material-symbols-outlined text-sm">check_circle</span> Foto siap
+                                    dikirim
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Category 2: Minuman -->
-                    <div class="doc-category-section">
-                        <h3 class="text-sm font-black text-slate-800 mb-3">2. Pembuatan Minuman</h3>
-                        <input type="file" id="doc-minuman" accept="image/*"
-                            onchange="handleCategoryPhoto('minuman', this)" class="hidden">
-                        <div id="upload-area-minuman"
-                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
-                            onclick="document.getElementById('doc-minuman').click()">
-                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
-                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                    <!-- Category 2: Minuman (Blue) -->
+                    <div
+                        class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden group transition-all hover:shadow-md">
+                        <div class="px-5 py-3 bg-blue-50/50 flex items-center gap-3 border-b border-blue-100/50">
+                            <div
+                                class="size-8 rounded-full bg-white flex items-center justify-center text-blue-500 shadow-sm">
+                                <span class="material-symbols-outlined text-lg">local_bar</span>
+                            </div>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-700">2. Proses
+                                Pembuatan Minuman</span>
                         </div>
-                        <div id="preview-area-minuman" class="hidden mt-3">
-                            <img id="preview-minuman" src="" alt="Preview" class="w-full rounded-2xl">
-                            <p id="status-minuman" class="text-xs mt-2"></p>
+
+                        <div class="p-5">
+                            <input type="file" id="doc-minuman" accept="image/*"
+                                onchange="handleCategoryPhoto('minuman', this)" class="hidden">
+
+                            <div id="upload-area-minuman"
+                                class="w-full py-8 border-2 border-dashed border-blue-200 bg-blue-50/30 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-blue-50 transition-colors group/upload"
+                                onclick="document.getElementById('doc-minuman').click()">
+                                <div
+                                    class="size-12 rounded-full bg-white text-blue-500 flex items-center justify-center mb-3 shadow-sm group-hover/upload:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined">add_a_photo</span>
+                                </div>
+                                <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Pilih Foto
+                                    Minuman</p>
+                            </div>
+
+                            <div id="preview-area-minuman" class="hidden relative animate-fade-in">
+                                <div class="relative rounded-2xl overflow-hidden border-4 border-white shadow-lg">
+                                    <img id="preview-minuman" src="" alt="Preview" class="w-full h-48 object-cover">
+                                    <button onclick="removeCategoryPhoto('minuman')"
+                                        class="absolute top-3 right-3 size-9 bg-white/90 backdrop-blur text-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-500 hover:text-white active:scale-90 transition-all z-10">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                    </button>
+                                </div>
+                                <div id="status-minuman"
+                                    class="mt-3 flex items-center gap-2 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl w-fit">
+                                    <span class="material-symbols-outlined text-sm">check_circle</span> Foto siap
+                                    dikirim
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Category 3: Stand Booth -->
-                    <div class="doc-category-section">
-                        <h3 class="text-sm font-black text-slate-800 mb-3">3. Pembuatan Stand Booth</h3>
-                        <input type="file" id="doc-stand" accept="image/*" onchange="handleCategoryPhoto('stand', this)"
-                            class="hidden">
-                        <div id="upload-area-stand"
-                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
-                            onclick="document.getElementById('doc-stand').click()">
-                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
-                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                    <!-- Category 3: Stand Booth (Purple) -->
+                    <div
+                        class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden group transition-all hover:shadow-md">
+                        <div class="px-5 py-3 bg-purple-50/50 flex items-center gap-3 border-b border-purple-100/50">
+                            <div
+                                class="size-8 rounded-full bg-white flex items-center justify-center text-purple-500 shadow-sm">
+                                <span class="material-symbols-outlined text-lg">storefront</span>
+                            </div>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-700">3. Proses
+                                Pembuatan Stand Booth</span>
                         </div>
-                        <div id="preview-area-stand" class="hidden mt-3">
-                            <img id="preview-stand" src="" alt="Preview" class="w-full rounded-2xl">
-                            <p id="status-stand" class="text-xs mt-2"></p>
+
+                        <div class="p-5">
+                            <input type="file" id="doc-stand" accept="image/*"
+                                onchange="handleCategoryPhoto('stand', this)" class="hidden">
+
+                            <div id="upload-area-stand"
+                                class="w-full py-8 border-2 border-dashed border-purple-200 bg-purple-50/30 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-purple-50 transition-colors group/upload"
+                                onclick="document.getElementById('doc-stand').click()">
+                                <div
+                                    class="size-12 rounded-full bg-white text-purple-500 flex items-center justify-center mb-3 shadow-sm group-hover/upload:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined">add_a_photo</span>
+                                </div>
+                                <p class="text-[10px] font-black text-purple-400 uppercase tracking-widest">Pilih Foto
+                                    Booth</p>
+                            </div>
+
+                            <div id="preview-area-stand" class="hidden relative animate-fade-in">
+                                <div class="relative rounded-2xl overflow-hidden border-4 border-white shadow-lg">
+                                    <img id="preview-stand" src="" alt="Preview" class="w-full h-48 object-cover">
+                                    <button onclick="removeCategoryPhoto('stand')"
+                                        class="absolute top-3 right-3 size-9 bg-white/90 backdrop-blur text-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-500 hover:text-white active:scale-90 transition-all z-10">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                    </button>
+                                </div>
+                                <div id="status-stand"
+                                    class="mt-3 flex items-center gap-2 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl w-fit">
+                                    <span class="material-symbols-outlined text-sm">check_circle</span> Foto siap
+                                    dikirim
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Category 4: Iklan -->
-                    <div class="doc-category-section">
-                        <h3 class="text-sm font-black text-slate-800 mb-3">4. Pembuatan Iklan (Flayer, Brosur dll)</h3>
-                        <input type="file" id="doc-iklan" accept="image/*" onchange="handleCategoryPhoto('iklan', this)"
-                            class="hidden">
-                        <div id="upload-area-iklan"
-                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
-                            onclick="document.getElementById('doc-iklan').click()">
-                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
-                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                    <!-- Category 4: Iklan (Rose) -->
+                    <div
+                        class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden group transition-all hover:shadow-md">
+                        <div class="px-5 py-3 bg-rose-50/50 flex items-center gap-3 border-b border-rose-100/50">
+                            <div
+                                class="size-8 rounded-full bg-white flex items-center justify-center text-rose-500 shadow-sm">
+                                <span class="material-symbols-outlined text-lg">campaign</span>
+                            </div>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-700">4. Proses
+                                Pembuatan Iklan</span>
                         </div>
-                        <div id="preview-area-iklan" class="hidden mt-3">
-                            <img id="preview-iklan" src="" alt="Preview" class="w-full rounded-2xl">
-                            <p id="status-iklan" class="text-xs mt-2"></p>
+
+                        <div class="p-5">
+                            <input type="file" id="doc-iklan" accept="image/*"
+                                onchange="handleCategoryPhoto('iklan', this)" class="hidden">
+
+                            <div id="upload-area-iklan"
+                                class="w-full py-8 border-2 border-dashed border-rose-200 bg-rose-50/30 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-rose-50 transition-colors group/upload"
+                                onclick="document.getElementById('doc-iklan').click()">
+                                <div
+                                    class="size-12 rounded-full bg-white text-rose-500 flex items-center justify-center mb-3 shadow-sm group-hover/upload:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined">add_a_photo</span>
+                                </div>
+                                <p class="text-[10px] font-black text-rose-400 uppercase tracking-widest">Pilih Foto
+                                    Iklan</p>
+                            </div>
+
+                            <div id="preview-area-iklan" class="hidden relative animate-fade-in">
+                                <div class="relative rounded-2xl overflow-hidden border-4 border-white shadow-lg">
+                                    <img id="preview-iklan" src="" alt="Preview" class="w-full h-48 object-cover">
+                                    <button onclick="removeCategoryPhoto('iklan')"
+                                        class="absolute top-3 right-3 size-9 bg-white/90 backdrop-blur text-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-500 hover:text-white active:scale-90 transition-all z-10">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                    </button>
+                                </div>
+                                <div id="status-iklan"
+                                    class="mt-3 flex items-center gap-2 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl w-fit">
+                                    <span class="material-symbols-outlined text-sm">check_circle</span> Foto siap
+                                    dikirim
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Category 5: Presentasi -->
-                    <div class="doc-category-section">
-                        <h3 class="text-sm font-black text-slate-800 mb-3">5. Presentasi Produk</h3>
-                        <input type="file" id="doc-presentasi" accept="image/*"
-                            onchange="handleCategoryPhoto('presentasi', this)" class="hidden">
-                        <div id="upload-area-presentasi"
-                            class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center cursor-pointer hover:border-indigo-300 transition-colors"
-                            onclick="document.getElementById('doc-presentasi').click()">
-                            <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
-                            <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
+                    <!-- Category 5: Presentasi (Cyan) -->
+                    <div
+                        class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden group transition-all hover:shadow-md">
+                        <div class="px-5 py-3 bg-cyan-50/50 flex items-center gap-3 border-b border-cyan-100/50">
+                            <div
+                                class="size-8 rounded-full bg-white flex items-center justify-center text-cyan-500 shadow-sm">
+                                <span class="material-symbols-outlined text-lg">co_present</span>
+                            </div>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-700">5. Presentasi
+                                Produk Dengan Fasil</span>
                         </div>
-                        <div id="preview-area-presentasi" class="hidden mt-3">
-                            <img id="preview-presentasi" src="" alt="Preview" class="w-full rounded-2xl">
-                            <p id="status-presentasi" class="text-xs mt-2"></p>
+
+                        <div class="p-5">
+                            <input type="file" id="doc-presentasi" accept="image/*"
+                                onchange="handleCategoryPhoto('presentasi', this)" class="hidden">
+
+                            <div id="upload-area-presentasi"
+                                class="w-full py-8 border-2 border-dashed border-cyan-200 bg-cyan-50/30 rounded-2xl flex flex-col items-center justify-center text-center cursor-pointer hover:bg-cyan-50 transition-colors group/upload"
+                                onclick="document.getElementById('doc-presentasi').click()">
+                                <div
+                                    class="size-12 rounded-full bg-white text-cyan-500 flex items-center justify-center mb-3 shadow-sm group-hover/upload:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined">add_a_photo</span>
+                                </div>
+                                <p class="text-[10px] font-black text-cyan-400 uppercase tracking-widest">Pilih Foto
+                                    Presentasi</p>
+                            </div>
+
+                            <div id="preview-area-presentasi" class="hidden relative animate-fade-in">
+                                <div class="relative rounded-2xl overflow-hidden border-4 border-white shadow-lg">
+                                    <img id="preview-presentasi" src="" alt="Preview" class="w-full h-48 object-cover">
+                                    <button onclick="removeCategoryPhoto('presentasi')"
+                                        class="absolute top-3 right-3 size-9 bg-white/90 backdrop-blur text-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-500 hover:text-white active:scale-90 transition-all z-10">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                    </button>
+                                </div>
+                                <div id="status-presentasi"
+                                    class="mt-3 flex items-center gap-2 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl w-fit">
+                                    <span class="material-symbols-outlined text-sm">check_circle</span> Foto siap
+                                    dikirim
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Submit Button -->
+                <!-- Footer -->
+                <div class="p-6 bg-white border-t border-slate-100 z-10">
                     <button id="btnSubmitAllDocs" onclick="submitAllDocumentation()" disabled
-                        class="w-full py-4 rounded-2xl bg-indigo-500 text-white font-bold shadow-lg disabled:bg-slate-200 disabled:text-slate-400 transition-all active:scale-95">
-                        Kirim Semua Dokumentasi
+                        class="w-full py-4 rounded-2xl bg-indigo-600 text-white font-black shadow-lg shadow-indigo-200 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <span>Kirim Semua Dokumentasi</span>
+                        <span class="material-symbols-outlined text-sm">send</span>
                     </button>
                 </div>
             </div>
@@ -2807,6 +2955,9 @@
                     preview.src = e.target.result;
                     uploadArea.classList.add('hidden');
                     previewArea.classList.remove('hidden');
+                    // Pastikan tombol hapus muncul (jika sebelumnya disembunyikan)
+                    const deleteBtn = previewArea.querySelector('button');
+                    if (deleteBtn) deleteBtn.classList.remove('hidden');
                 };
                 reader.readAsDataURL(compressedFile);
 
@@ -2833,7 +2984,38 @@
             const submitBtn = document.getElementById('btnSubmitAllDocs');
             if (submitBtn) {
                 submitBtn.disabled = !allSelected;
+                if (allSelected) {
+                    submitBtn.classList.add('bg-indigo-600', 'shadow-indigo-200', 'text-white');
+                    submitBtn.classList.remove('bg-slate-200', 'text-slate-400');
+                    submitBtn.innerHTML = `
+                        <span>Kirim 5 Dokumentasi</span>
+                        <span class="material-symbols-outlined text-sm">send</span>
+                    `;
+                } else {
+                    submitBtn.innerHTML = `
+                        <span>Kirim Semua Dokumentasi</span>
+                        <span class="material-symbols-outlined text-sm">send</span>
+                    `;
+                }
             }
+        }
+
+        // Hapus Foto Kategori
+        function removeCategoryPhoto(category) {
+            // 1. Clear global state
+            window.day2Photos[category] = null;
+
+            // 2. Clear input
+            const input = document.getElementById(`doc-${category}`);
+            if (input) input.value = '';
+
+            // 3. Update UI
+            document.getElementById(`upload-area-${category}`).classList.remove('hidden');
+            document.getElementById(`preview-area-${category}`).classList.add('hidden');
+            document.getElementById(`preview-${category}`).src = '';
+
+            // 4. Update Submit Button
+            checkAllPhotosSelected();
         }
 
         // --- HARI 2 DOCUMENTATION LOGIC (5 CATEGORIES) ---
@@ -2860,6 +3042,10 @@
                 // Upload each photo and insert to database
                 for (const category of categories) {
                     const file = window.day2Photos[category];
+
+                    // Skip jika foto sudah ada (existing)
+                    if (file === 'existing') continue;
+
                     const fileName = `${user.id}/day2_${category}_${Date.now()}.jpg`;
 
                     // 1. Upload to Storage
@@ -2930,23 +3116,25 @@
                             const status = document.getElementById(`status-${r.category}`);
 
                             if (uploadArea) uploadArea.classList.add('hidden');
-                            if (previewArea) previewArea.classList.remove('hidden');
+                            if (previewArea) {
+                                previewArea.classList.remove('hidden');
+                                // Sembunyikan tombol hapus untuk foto yang sudah disubmit
+                                const deleteBtn = previewArea.querySelector('button');
+                                if (deleteBtn) deleteBtn.classList.add('hidden');
+                            }
                             if (preview && r.answers[0]) preview.src = r.answers[0];
                             if (status) {
-                                status.className = "text-xs font-bold text-emerald-600";
-                                status.textContent = "✅ Sudah terkirim";
+                                status.className = "text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-100 flex items-center gap-2 w-fit mt-3";
+                                status.innerHTML = `<span class="material-symbols-outlined text-sm">verified</span> Sudah Terkirim`;
                             }
+
+                            // Tandai sebagai existing di global state
+                            window.day2Photos[r.category] = 'existing';
                         }
                     });
 
-                    // Disable submit if all uploaded
-                    if (responses.length >= 5) {
-                        const btn = document.getElementById('btnSubmitAllDocs');
-                        if (btn) {
-                            btn.disabled = true;
-                            btn.innerHTML = 'Semua Dokumentasi Hari 2 Terkirim';
-                        }
-                    }
+                    // Cek kelengkapan
+                    checkAllPhotosSelected();
                 }
             } catch (e) {
                 console.error('Error loading Day 2 documentation:', e);
