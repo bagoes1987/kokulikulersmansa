@@ -176,7 +176,11 @@
                         placeholder="Tulis masukan untuk siswa..."></textarea>
                 </div>
             </div>
-            <div class="p-6 bg-slate-50 border-t flex gap-4">
+            <div class="p-6 bg-slate-50 border-t flex gap-3">
+                <button onclick="deleteSubmission()"
+                    class="px-5 py-5 rounded-3xl bg-red-50 text-red-500 font-bold hover:bg-red-100 hover:text-red-600 transition-colors flex items-center justify-center">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
                 <button onclick="closeGradingModal()"
                     class="flex-1 py-5 font-black text-slate-400 hover:text-slate-600 transition-colors">BATAL</button>
                 <button onclick="saveGrade()"
@@ -1625,6 +1629,31 @@
                                 </div>`;
                         }
 
+                        if (lkpdData.lkpd5) {
+                            const renderImg = (title, url, color) => `
+                                <div class="p-4 bg-${color}-50/50 border border-${color}-100 rounded-2xl overflow-hidden">
+                                    <p class="text-[9px] font-black text-${color}-600 uppercase tracking-widest mb-3">${title}</p>
+                                    ${url && url.length > 10 ?
+                                    `<a href="${url}" target="_blank"><img src="${url}" class="w-full h-32 object-cover rounded-xl shadow-sm border border-white bg-white"></a>` :
+                                    `<div class="w-full h-24 flex items-center justify-center bg-slate-100 rounded-xl text-[10px] text-slate-400 font-bold">Belum Upload</div>`
+                                }
+                                </div>`;
+
+                            html += `
+                                <div class="space-y-4 pt-4 border-t border-dashed border-slate-200">
+                                    <div class="flex items-center gap-2 px-2">
+                                        <span class="material-symbols-outlined text-rose-500 text-lg">palette</span>
+                                        <p class="text-[10px] font-black text-rose-400 uppercase tracking-[0.2em]">LKPD 5: Desain & Sketsa</p>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        ${renderImg('1. Makanan', lkpdData.lkpd5.food, 'orange')}
+                                        ${renderImg('2. Minuman', lkpdData.lkpd5.drink, 'blue')}
+                                        ${renderImg('3. Booth', lkpdData.lkpd5.booth, 'purple')}
+                                        ${renderImg('4. Pemasaran', lkpdData.lkpd5.marketing, 'rose')}
+                                    </div>
+                                </div>`;
+                        }
+
                         html += '</div>';
                         answerCont.innerHTML = html;
                     } else if (r.module_type === 'glosarium') {
@@ -1966,6 +1995,42 @@
                 } catch (e) {
                     console.error('❌ Error saveGrade:', e);
                     alert('Gagal menyimpan: ' + e.message);
+                }
+            }
+
+            async function deleteSubmission() {
+                if (!selectedResponseId) return;
+                if (!confirm('PERINGATAN: Apakah Anda yakin ingin MENGHAPUS jawaban siswa ini?\n\nData yang dihapus tidak dapat dikembalikan.')) return;
+
+                try {
+                    console.log('🗑️ Menghapus submission...', selectedResponseId);
+
+                    let query = supabaseClient.from('module_responses').delete();
+
+                    if (gradingModuleType === 'dokumentasi' && (gradingDayId == 2 || gradingDayId == 3) && selectedStudentIdForGrading) {
+                        query = query
+                            .eq('student_id', selectedStudentIdForGrading)
+                            .eq('day_id', gradingDayId)
+                            .eq('module_type', 'dokumentasi');
+                    } else {
+                        query = query.eq('id', selectedResponseId);
+                    }
+
+                    const { error } = await query;
+                    if (error) throw error;
+
+                    alert('Data berhasil dihapus.');
+                    closeGradingModal();
+                    loadStats();
+                    loadStudentsByClass(currentClass);
+
+                    if (currentDetailStudentId && typeof X_OPEN_STUDENT_STATUS_X === 'function') {
+                        X_OPEN_STUDENT_STATUS_X(currentDetailStudentId, currentDetailStudentName);
+                    }
+
+                } catch (e) {
+                    console.error('❌ Error delete:', e);
+                    alert('Gagal menghapus: ' + e.message);
                 }
             }
 
