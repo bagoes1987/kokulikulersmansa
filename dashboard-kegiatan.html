@@ -722,8 +722,14 @@
                             <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
                             <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
                         </div>
-                        <div id="preview-area-day3-stand" class="hidden mt-3">
-                            <img id="preview-day3-stand" src="" alt="Preview" class="w-full rounded-2xl">
+                        <div id="preview-area-day3-stand" class="hidden mt-3 space-y-2">
+                            <img id="preview-day3-stand" src="" alt="Preview"
+                                class="w-full rounded-2xl border-2 border-slate-100 shadow-sm">
+                            <button onclick="changeCategoryPhotoDay3('stand')"
+                                class="w-full py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-sm">sync</span>
+                                Ganti Foto
+                            </button>
                             <p id="status-day3-stand" class="text-xs mt-2"></p>
                         </div>
                     </div>
@@ -740,8 +746,14 @@
                             <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
                             <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
                         </div>
-                        <div id="preview-area-day3-gizi" class="hidden mt-3">
-                            <img id="preview-day3-gizi" src="" alt="Preview" class="w-full rounded-2xl">
+                        <div id="preview-area-day3-gizi" class="hidden mt-3 space-y-2">
+                            <img id="preview-day3-gizi" src="" alt="Preview"
+                                class="w-full rounded-2xl border-2 border-slate-100 shadow-sm">
+                            <button onclick="changeCategoryPhotoDay3('gizi')"
+                                class="w-full py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-sm">sync</span>
+                                Ganti Foto
+                            </button>
                             <p id="status-day3-gizi" class="text-xs mt-2"></p>
                         </div>
                     </div>
@@ -758,8 +770,14 @@
                             <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
                             <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
                         </div>
-                        <div id="preview-area-day3-jajan" class="hidden mt-3">
-                            <img id="preview-day3-jajan" src="" alt="Preview" class="w-full rounded-2xl">
+                        <div id="preview-area-day3-jajan" class="hidden mt-3 space-y-2">
+                            <img id="preview-day3-jajan" src="" alt="Preview"
+                                class="w-full rounded-2xl border-2 border-slate-100 shadow-sm">
+                            <button onclick="changeCategoryPhotoDay3('jajan')"
+                                class="w-full py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-sm">sync</span>
+                                Ganti Foto
+                            </button>
                             <p id="status-day3-jajan" class="text-xs mt-2"></p>
                         </div>
                     </div>
@@ -775,8 +793,14 @@
                             <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
                             <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
                         </div>
-                        <div id="preview-area-day3-acara" class="hidden mt-3">
-                            <img id="preview-day3-acara" src="" alt="Preview" class="w-full rounded-2xl">
+                        <div id="preview-area-day3-acara" class="hidden mt-3 space-y-2">
+                            <img id="preview-day3-acara" src="" alt="Preview"
+                                class="w-full rounded-2xl border-2 border-slate-100 shadow-sm">
+                            <button onclick="changeCategoryPhotoDay3('acara')"
+                                class="w-full py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-sm">sync</span>
+                                Ganti Foto
+                            </button>
                             <p id="status-day3-acara" class="text-xs mt-2"></p>
                         </div>
                     </div>
@@ -793,8 +817,14 @@
                             <span class="material-symbols-outlined text-slate-300 !text-4xl">add_photo_alternate</span>
                             <p class="text-xs font-bold text-slate-500 mt-2">Pilih Foto</p>
                         </div>
-                        <div id="preview-area-day3-bersama" class="hidden mt-3">
-                            <img id="preview-day3-bersama" src="" alt="Preview" class="w-full rounded-2xl">
+                        <div id="preview-area-day3-bersama" class="hidden mt-3 space-y-2">
+                            <img id="preview-day3-bersama" src="" alt="Preview"
+                                class="w-full rounded-2xl border-2 border-slate-100 shadow-sm">
+                            <button onclick="changeCategoryPhotoDay3('bersama')"
+                                class="w-full py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-sm">sync</span>
+                                Ganti Foto
+                            </button>
                             <p id="status-day3-bersama" class="text-xs mt-2"></p>
                         </div>
                     </div>
@@ -3186,6 +3216,10 @@
                     preview.src = e.target.result;
                     uploadArea.classList.add('hidden');
                     previewArea.classList.remove('hidden');
+
+                    // Show Change Photo button
+                    const changeBtn = previewArea.querySelector('button');
+                    if (changeBtn) changeBtn.classList.remove('hidden');
                 };
                 reader.readAsDataURL(compressedFile);
 
@@ -3199,6 +3233,24 @@
                 status.className = "text-xs font-bold text-red-600";
                 status.textContent = "❌ Gagal.";
             }
+        }
+
+        function changeCategoryPhotoDay3(category) {
+            const input = document.getElementById(`doc-day3-${category}`);
+            const uploadArea = document.getElementById(`upload-area-day3-${category}`);
+            const previewArea = document.getElementById(`preview-area-day3-${category}`);
+            const status = document.getElementById(`status-day3-${category}`);
+
+            if (input) input.value = '';
+            if (uploadArea) uploadArea.classList.remove('hidden');
+            if (previewArea) previewArea.classList.add('hidden');
+            if (status) {
+                status.textContent = '';
+                status.className = "text-xs mt-2";
+            }
+
+            window.day3Photos[category] = null;
+            checkAllPhotosSelectedDay3();
         }
 
         function checkAllPhotosSelectedDay3() {
@@ -3280,7 +3332,12 @@
                         const status = document.getElementById(`status-day3-${r.category}`);
 
                         if (uploadArea) uploadArea.classList.add('hidden');
-                        if (previewArea) previewArea.classList.remove('hidden');
+                        if (previewArea) {
+                            previewArea.classList.remove('hidden');
+                            // Hide Change Photo button if already submitted (server data)
+                            const changeBtn = previewArea.querySelector('button');
+                            if (changeBtn) changeBtn.classList.add('hidden');
+                        }
                         if (preview && r.answers[0]) preview.src = r.answers[0];
                         if (status) {
                             status.className = "text-xs font-bold text-emerald-600";
