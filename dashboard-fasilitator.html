@@ -1931,7 +1931,7 @@
 
                     const scoreInputArea = document.getElementById('scoreInputArea');
                     const starRatingArea = document.getElementById('starRatingArea');
-                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi', 'lkpd', 'bep_analisis'];
+                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi', 'lkpd', 'bep_analisis', 'laporan_akhir'];
 
                     if (starModules.includes(r.module_type)) {
                         scoreInputArea.classList.add('hidden');
@@ -2305,11 +2305,11 @@
                 // Special feedback for Laporan Akhir (Day 3)
                 if (gradingModuleType === 'laporan_akhir') {
                     const lapsusFeedback = {
-                        1: "Data keuangan sangat tidak lengkap atau tidak masuk akal. Mohon periksa kembali input penjualan dan biaya produksi Anda agar laporan mencerminkan kondisi bisnis yang sebenarnya.",
-                        2: "Laporan sudah dikirim, namun terdapat ketidakkonsistenan dalam perhitungan biaya tetap yang belum sesuai. Coba evaluasi kembali biaya variabel dan harga jual Anda.",
-                        3: "Laporan cukup baik, namun analisis BEP menunjukkan margin keuntungan yang masih sangat tipis. Perlu inovasi lebih lanjut untuk menekan biaya produksi dan kemasan.",
-                        4: "Laporan sangat baik dan terperinci! Analisis BEP Anda akurat dan menunjukkan potensi keuntungan yang sehat. Pertahankan kedisiplinan dalam pencatatan keuangan ini.",
-                        5: "Luar biasa! Laporan sangat profesional, analisis BEP tepat, dan target profit tercapai secara signifikan. Kelompok Anda telah menunjukkan kemandirian finansial yang nyata!"
+                        1: "Data keuangan belum lengkap. Data penjualan dan biaya produksi tidak sinkron. Mohon hitung ulang dan pastikan semua transaksi tercatat dengan benar.",
+                        2: "Data sudah masuk, namun perhitungan Laba/Rugi masih keliru. Cek kembali HPP dan harga jual agar tidak terjadi kerugian dalam pencatatan.",
+                        3: "Laporan cukup rapi, namun analisis BEP belum optimal. Keuntungan masih tipis, coba evaluasi lagi efisiensi biaya operasional kalian.",
+                        4: "Laporan keuangan detail dan perhitungan akurat! Strategi harga sudah tepat sehingga menghasilkan margin profit yang sehat. Pertahankan!",
+                        5: "Analisis keuangan yang brilian! Laporan sangat transparan, BEP tercapai dengan cepat, dan profitabilitas tinggi. Calon wirausahawan sukses!"
                     };
                     Object.assign(feedbackMap, lapsusFeedback);
                 }
