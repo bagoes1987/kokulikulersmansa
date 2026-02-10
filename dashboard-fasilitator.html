@@ -1435,6 +1435,10 @@
                         const totalModal = isDay2 ? (a.total_modal || 0) : (a.total_biaya || 0);
                         const labaRugi = isDay2 ? (totalPenjualan - totalModal) : (a.laba_rugi || 0);
 
+                        // Unified BEP Target (Total Modal/Cost)
+                        const targetBEPRupiah = totalModal;
+                        const bepUnit = isDay2 ? (a.bep_unit || 0) : (a.bep_unit || 0); // Keep saved or recalculate if needed
+
                         const jualMakan = isDay2 ? ((a.po_makanan_qty || 0) * (a.po_makanan_harga || 0)) : (a.penjualan_makanan_rp || 0);
                         const jualMinum = isDay2 ? ((a.po_minuman_qty || 0) * (a.po_minuman_harga || 0)) : (a.penjualan_minuman_rp || 0);
 
@@ -1498,17 +1502,17 @@
                                 <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest text-center">Analisis BEP (Break Even Point)</p>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="text-center">
-                                        <p class="text-[8px] font-bold text-indigo-400 uppercase">BEP Unit</p>
+                                        <p class="text-[8px] font-bold text-indigo-400 uppercase">Target BEP (Unit)</p>
                                         <p class="text-sm font-black text-indigo-700">${(a.bep_unit || 0).toLocaleString('id-ID')} Unit</p>
                                     </div>
                                     <div class="text-center">
-                                        <p class="text-[8px] font-bold text-indigo-400 uppercase">BEP Rupiah</p>
-                                        <p class="text-sm font-black text-indigo-700">Rp ${(a.bep_rupiah || 0).toLocaleString('id-ID')}</p>
+                                        <p class="text-[8px] font-bold text-indigo-400 uppercase">Target BEP (Rupiah)</p>
+                                        <p class="text-sm font-black text-indigo-700">Rp ${targetBEPRupiah.toLocaleString('id-ID')}</p>
                                     </div>
                                 </div>
                                 <div class="p-2 bg-white/60 rounded-xl text-center border border-indigo-100/50">
-                                    <p class="text-[10px] font-black uppercase ${a.total_penjualan >= a.bep_rupiah ? 'text-emerald-600' : 'text-orange-500'}">
-                                        ${a.total_penjualan >= a.bep_rupiah ? '🎯 Target BEP Tercapai' : '⚠️ Belum Mencapai BEP'}
+                                    <p class="text-[10px] font-black uppercase ${totalPenjualan >= targetBEPRupiah && targetBEPRupiah > 0 ? 'text-emerald-600' : 'text-orange-500'}">
+                                        ${totalPenjualan >= targetBEPRupiah && targetBEPRupiah > 0 ? '🎯 Target BEP Tercapai' : '⚠️ Belum Mencapai BEP'}
                                     </p>
                                 </div>
                             </div>

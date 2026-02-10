@@ -2165,22 +2165,17 @@
                 const rekMakEl = document.getElementById('rek-harga-makanan');
                 if (rekMakEl) rekMakEl.textContent = rekMak > 0 ? 'Rp ' + rekMak.toLocaleString('id-ID') : '-';
 
-                const bepMakEl = document.getElementById('bep-makanan');
-                if (bepMakEl) {
-                    if (hargaMakanan > 0) bepMakEl.textContent = Math.ceil((totalHpp + standShare) / hargaMakanan) + ' Unit';
-                    else bepMakEl.textContent = '0 Unit';
-                }
+                const totalModal = totalHpp + totalDrinks + totalStand;
+                const avgPrice = (targetMakanan > 0 || targetMinuman > 0) ? (((targetMakanan * hargaMakanan) + (targetMinuman * hargaMinuman)) / ((targetMakanan + targetMinuman) || 1)) : 0;
 
-                const hppMinPerUnit = targetMinuman > 0 ? ((totalDrinks + standShare) / targetMinuman) : 0;
-                const rekMin = hppMinPerUnit > 0 ? (Math.ceil((hppMinPerUnit * (1 + margin)) / 100) * 100) : 0;
-                const rekMinEl = document.getElementById('rek-harga-minuman');
-                if (rekMinEl) rekMinEl.textContent = rekMin > 0 ? 'Rp ' + rekMin.toLocaleString('id-ID') : '-';
+                const bepRupiah = totalModal;
+                const bepUnit = avgPrice > 0 ? Math.ceil(totalModal / avgPrice) : 0;
 
-                const bepMinEl = document.getElementById('bep-minuman');
-                if (bepMinEl) {
-                    if (hargaMinuman > 0) bepMinEl.textContent = Math.ceil((totalDrinks + standShare) / hargaMinuman) + ' Unit';
-                    else bepMinEl.textContent = '0 Unit';
-                }
+                const bepMakEl = document.getElementById('bep-makanan'); // Reuse as total units
+                if (bepMakEl) bepMakEl.textContent = bepUnit + ' Unit';
+
+                const bepMinEl = document.getElementById('bep-minuman'); // Reuse as total rupiah
+                if (bepMinEl) bepMinEl.textContent = 'Rp ' + bepRupiah.toLocaleString('id-ID');
 
                 const infoBox = document.getElementById('bep-info-box');
                 if (infoBox) {
@@ -2435,43 +2430,10 @@
                 const totalBiaya = biayaProdMakan + biayaProdMinum + biayaTetap;
                 const labaRugi = totalPenjualan - totalBiaya;
 
-                // BEP Calculation (Weighted Average Contribution Margin)
-                let bepUnit = 0;
-                let bepRupiah = 0;
-
-                const unitsMakan = hargaMakan > 0 ? (jualMakanRp / hargaMakan) : 0;
-                const unitsMinum = hargaMinum > 0 ? (jualMinumRp / hargaMinum) : 0;
-                const totalUnits = unitsMakan + unitsMinum;
-
-                const cmMakan = hargaMakan - varMakan;
-                const cmMinum = hargaMinum - varMinum;
-
-                if (totalUnits > 0) {
-                    const weightedCM = ((unitsMakan / totalUnits) * cmMakan) + ((unitsMinum / totalUnits) * cmMinum);
-                    const weightedPrice = ((unitsMakan / totalUnits) * hargaMakan) + ((unitsMinum / totalUnits) * hargaMinum);
-
-                    if (weightedCM > 0) {
-                        bepUnit = Math.ceil(totalBiaya / weightedCM);
-                        bepRupiah = Math.round(bepUnit * weightedPrice);
-                    }
-                } else if (totalPenjualan === 0) {
-                    // Initial target (if no sales yet)
-                    const count = (hargaMakan > 0 ? 1 : 0) + (hargaMinum > 0 ? 1 : 0);
-                    const avgCM = (cmMakan + cmMinum) / (count || 1);
-                    const avgPrice = (hargaMakan + hargaMinum) / (count || 1);
-                    if (avgCM > 0) {
-                        bepUnit = Math.ceil(totalBiaya / avgCM);
-                        bepRupiah = Math.round(bepUnit * avgPrice);
-                    }
-                } else {
-                    // Fallback for single product
-                    const unifiedCM = Math.max(cmMakan, cmMinum);
-                    const unifiedPrice = cmMakan > cmMinum ? hargaMakan : hargaMinum;
-                    if (unifiedCM > 0) {
-                        bepUnit = Math.ceil(totalBiaya / unifiedCM);
-                        bepRupiah = bepUnit * unifiedPrice;
-                    }
-                }
+                // BEP Calculation (Balik Modal / Cash Flow BEP)
+                const bepRupiah = totalBiaya;
+                const avgPrice = totalUnits > 0 ? (totalPenjualan / totalUnits) : ((hargaMakan + hargaMinum) / ((hargaMakan > 0 ? 1 : 0) + (hargaMinum > 0 ? 1 : 0) || 1));
+                const bepUnit = avgPrice > 0 ? Math.ceil(totalBiaya / avgPrice) : 0;
 
                 // Update UI
                 if (showCard) document.getElementById('laporanAkhirResultCard')?.classList.remove('hidden');
