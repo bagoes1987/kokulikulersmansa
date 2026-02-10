@@ -506,6 +506,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Librari Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script>
         const supabaseUrl = 'https://jnsqqswpkigyzewnbvaf.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
@@ -1095,63 +1099,138 @@
         // --- EXPORT LOGIC ---
         function openExportMenu() {
             if (myClasses.length === 1) {
-                exportFinalGrades(myClasses[0]);
-                return;
+                // If only one class, we still show the format selection for clarity, or can default to Excel.
+                // For better UX, let's open the modal anyway or just exportToExcel(myClasses[0])
+                // Let's keep it simple: if only one, show format selection in modal
             }
             const modal = document.getElementById('modalExportSelection');
             const cont = document.getElementById('exportClassList');
             modal.classList.remove('hidden');
             cont.innerHTML = myClasses.map(cls => `
-                <button onclick="exportFinalGrades('${cls}')"
-                    class="w-full p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between hover:bg-emerald-50 hover:border-emerald-200 transition-all group">
-                    <div class="flex items-center gap-3">
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-3">
+                    <div class="flex items-center gap-3 mb-2">
                         <div class="size-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shadow-sm shadow-emerald-200">${cls}</div>
-                        <p class="text-sm font-bold text-slate-800">Export Kelas ${cls}</p>
+                        <p class="text-sm font-bold text-slate-800">Kelas ${cls}</p>
                     </div>
-                    <span class="material-symbols-outlined text-slate-400 group-hover:text-emerald-500">chevron_right</span>
-                </button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="exportToExcel('${cls}')"
+                            class="flex items-center justify-center gap-2 p-2.5 rounded-lg bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition-all text-[10px] font-black uppercase">
+                            <span class="material-symbols-outlined text-sm">table_view</span>
+                            Excel (.xlsx)
+                        </button>
+                        <button onclick="exportToPDF('${cls}')"
+                            class="flex items-center justify-center gap-2 p-2.5 rounded-lg bg-white border border-red-200 text-red-700 hover:bg-red-50 transition-all text-[10px] font-black uppercase">
+                            <span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+                            PDF (.pdf)
+                        </button>
+                    </div>
+                </div>
             `).join('');
         }
 
-        async function exportFinalGrades(cls) {
-            document.getElementById('modalExportSelection').classList.add('hidden');
-            try {
-                const { data: students, error: sErr } = await supabaseClient.from('students').select('id, nama, nisn, nis').eq('kelas', cls);
-                if (sErr) throw sErr;
-                const ids = students.map(s => s.id);
-                const { data: res, error: rErr } = await supabaseClient.from('module_responses').select('student_id, score, feedback').in('student_id', ids).eq('module_type', 'laporan_akhir');
-                if (rErr) throw rErr;
-                const rMap = {}; res.forEach(r => rMap[r.student_id] = r);
+        async function fetchExportData(cls) {
+            const { data: students, error: sErr } = await supabaseClient.from('students').select('id, nama, nisn, nis').eq('kelas', cls);
+            if (sErr) throw sErr;
+            const ids = students.map(s => s.id);
+            const { data: res, error: rErr } = await supabaseClient.from('module_responses').select('student_id, score').in('student_id', ids).eq('module_type', 'laporan_akhir');
+            if (rErr) throw rErr;
 
-                let csv = 'sep=;\nNo;NISN;NIS;Nama Siswa;Predikat;Deskripsi\n';
-                const descriptors = {
-                    'Mahir': 'Peserta didik sangat kreatif dalam menghasilkan gagasan orisinal dan inovatif pada pengembangan produk jajanan Nusantara yang sehat, bergizi dan kekinian. Mampu merumuskan solusi usaha secara matang serta melakukan perhitungan BEP dengan tepat untuk menilai kelayakan produk. Peserta didik juga mampu memanfaatkan teknologi digital secara optimal untuk pemasaran serta berkomunikasi secara efektif, santun, dan persuasif dalam mempresentasikan kandungan gizi produk sehingga menarik minat beli dan menunjukkan kepercayaan diri yang tinggi.',
-                    'Cakap': 'Peserta didik menunjukkan kreativitas yang baik dalam mengembangkan produk jajanan Nusantara sehat dan bergizi. Mampu merumuskan solusi usaha sederhana dan melakukan perhitungan BEP meskipun masih memerlukan pendampingan. Dalam komunikasi, peserta didik sudah mampu mempresentasikan produk dan kandungan gizinya dengan cukup jelas dan beretika, serta mulai memanfaatkan teknologi digital untuk mendukung penyampaian informasi, namun daya tarik penyampaian masih perlu ditingkatkan.',
-                    'Berkembang': 'Peserta didik mulai mampu menunjukkan kreativitas dalam mengolah jajanan Nusantara menjadi produk yang lebih sehat dan bergizi, meskipun gagasan yang dihasilkan masih terbatas. Perhitungan BEP dan perumusan solusi usaha masih memerlukan bimbingan. Peserta didik mampu menyampaikan informasi produk secara sederhana dan masih memerlukan pendampingan dalam pemanfaatan teknologi digital, serta penguatan keterampilan komunikasi dan kepercayaan diri dalam presentasi.',
-                    'Belum Dinilai': '-'
+            const rMap = {}; res.forEach(r => rMap[r.student_id] = r);
+            const descriptors = {
+                'Mahir': 'Peserta didik sangat kreatif dalam menghasilkan gagasan orisinal dan inovatif pada pengembangan produk jajanan Nusantara yang sehat, bergizi dan kekinian. Mampu merumuskan solusi usaha secara matang serta melakukan perhitungan BEP dengan tepat untuk menilai kelayakan produk. Peserta didik juga mampu memanfaatkan teknologi digital secara optimal untuk pemasaran serta berkomunikasi secara efektif, santun, dan persuasif dalam mempresentasikan kandungan gizi produk sehingga menarik minat beli dan menunjukkan kepercayaan diri yang tinggi.',
+                'Cakap': 'Peserta didik menunjukkan kreativitas yang baik dalam mengembangkan produk jajanan Nusantara sehat dan bergizi. Mampu merumuskan solusi usaha sederhana dan melakukan perhitungan BEP meskipun masih memerlukan pendampingan. Dalam komunikasi, peserta didik sudah mampu mempresentasikan produk dan kandungan gizinya dengan cukup jelas dan beretika, serta mulai memanfaatkan teknologi digital untuk mendukung penyampaian informasi, namun daya tarik penyampaian masih perlu ditingkatkan.',
+                'Berkembang': 'Peserta didik mulai mampu menunjukkan kreativitas dalam mengolah jajanan Nusantara menjadi produk yang lebih sehat dan bergizi, meskipun gagasan yang dihasilkan masih terbatas. Perhitungan BEP dan perumusan solusi usaha masih memerlukan bimbingan. Peserta didik mampu menyampaikan informasi produk secara sederhana dan masih memerlukan pendampingan dalam pemanfaatan teknologi digital, serta penguatan keterampilan komunikasi dan kepercayaan diri dalam presentasi.',
+                'Belum Dinilai': '-'
+            };
+
+            return students.sort((a, b) => a.nama.localeCompare(b.nama)).map((s, i) => {
+                const r = rMap[s.id];
+                let scoreVal = r ? (r.score || 0) : 0;
+                let stars = Math.round(scoreVal / 20);
+                let p = 'Belum Dinilai';
+                if (stars >= 5) p = 'Mahir';
+                else if (stars >= 4) p = 'Cakap';
+                else if (stars >= 1) p = 'Berkembang';
+
+                return {
+                    no: i + 1,
+                    nisn: s.nisn,
+                    nis: s.nis,
+                    nama: s.nama,
+                    predikat: p,
+                    deskripsi: descriptors[p]
                 };
+            });
+        }
 
-                students.sort((a, b) => a.nama.localeCompare(b.nama)).forEach((s, i) => {
-                    const r = rMap[s.id];
-                    let scoreVal = r ? (r.score || 0) : 0;
-                    let stars = Math.round(scoreVal / 20);
-                    let p = 'Belum Dinilai';
-                    if (stars >= 5) p = 'Mahir';
-                    else if (stars >= 4) p = 'Cakap';
-                    else if (stars >= 1) p = 'Berkembang';
+        async function exportToExcel(cls) {
+            try {
+                const data = await fetchExportData(cls);
+                const worksheet = XLSX.utils.json_to_sheet(data.map(item => ({
+                    'No': item.no,
+                    'NISN': item.nisn,
+                    'NIS': item.nis,
+                    'Nama Siswa': item.nama,
+                    'Predikat': item.predikat,
+                    'Deskripsi': item.deskripsi
+                })));
 
-                    const desc = descriptors[p];
-                    const cleanName = s.nama.replace(/;/g, ',').replace(/\n/g, ' ').replace(/"/g, '');
-                    const cleanDesc = desc.replace(/;/g, ',').replace(/\n/g, ' ');
+                // Set Column Widths
+                worksheet['!cols'] = [
+                    { wch: 5 },  // No
+                    { wch: 15 }, // NISN
+                    { wch: 15 }, // NIS
+                    { wch: 30 }, // Nama
+                    { wch: 15 }, // Predikat
+                    { wch: 100 } // Deskripsi
+                ];
 
-                    csv += `${i + 1};\t${s.nisn};\t${s.nis};${cleanName};${p};"${cleanDesc}"\n`;
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Nilai");
+                XLSX.writeFile(workbook, `Nilai_Kokurikuler2026_Kelas${cls}.xlsx`);
+                document.getElementById('modalExportSelection').classList.add('hidden');
+            } catch (err) { alert(err.message); }
+        }
+
+        async function exportToPDF(cls) {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('l', 'mm', 'a4');
+                const data = await fetchExportData(cls);
+
+                doc.setFontSize(14);
+                doc.text(`REKAPITULASI NILAI KOKURIKULER - KELAS ${cls}`, 14, 15);
+                doc.setFontSize(10);
+                doc.text(`SMAN 1 Belitang - Tahun Ajaran 2025/2026`, 14, 22);
+
+                const tableData = data.map(item => [
+                    item.no,
+                    item.nisn,
+                    item.nis,
+                    item.nama,
+                    item.predikat,
+                    item.deskripsi
+                ]);
+
+                doc.autoTable({
+                    startY: 30,
+                    head: [['No', 'NISN', 'NIS', 'Nama Siswa', 'Predikat', 'Deskripsi']],
+                    body: tableData,
+                    headStyles: { fillColor: [16, 185, 129], textColor: 255, fontStyle: 'bold' },
+                    columnStyles: {
+                        0: { cellWidth: 10 },
+                        1: { cellWidth: 25 },
+                        2: { cellWidth: 25 },
+                        3: { cellWidth: 45 },
+                        4: { cellWidth: 25 },
+                        5: { cellWidth: 'auto' }
+                    },
+                    styles: { fontSize: 8, cellPadding: 3 },
+                    alternateRowStyles: { fillColor: [248, 250, 252] }
                 });
 
-                const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = `Nilai_Kokurikuler2026_Kelas${cls}.csv`;
-                link.click();
+                doc.save(`Nilai_Kokurikuler2026_Kelas${cls}.pdf`);
+                document.getElementById('modalExportSelection').classList.add('hidden');
             } catch (err) { alert(err.message); }
         }
 
