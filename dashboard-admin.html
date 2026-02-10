@@ -862,12 +862,24 @@
                 };
 
                 let html = '';
-                const answers = data.answers;
+                let rawAnswers = data.answers;
+                let parsedAnswers = {};
+
+                // Coba parse jika elemen pertama adalah string JSON
+                try {
+                    if (rawAnswers && rawAnswers.length > 0 && typeof rawAnswers[0] === 'string' && rawAnswers[0].startsWith('{')) {
+                        parsedAnswers = JSON.parse(rawAnswers[0]);
+                    } else if (rawAnswers && rawAnswers.length > 0) {
+                        // Jika dalam format array murni
+                        rawAnswers.forEach((val, idx) => { parsedAnswers[`q${idx + 1}`] = val; });
+                    }
+                } catch (e) { console.error("Parse Error", e); }
 
                 if (data.module_type === 'refleksi' && qMap['refleksi']) {
                     const refQue = qMap['refleksi'];
-                    answers.forEach((ans, idx) => {
-                        const qText = refQue[idx] || `Pertanyaan ${idx + 1}`;
+                    refQue.forEach((qText, idx) => {
+                        const key = `refleksi_q${idx + 1}`;
+                        const ans = parsedAnswers[key] || parsedAnswers[`q${idx + 1}`] || '';
                         html += `
                         <div class="space-y-2">
                             <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">${idx + 1}. ${qText}</p>
@@ -877,7 +889,9 @@
                         </div>`;
                     });
                 } else if (data.module_type === 'pemantik') {
-                    answers.forEach((ans, idx) => {
+                    // Mapping untuk pemantik bisa lebih dinamis
+                    Object.keys(parsedAnswers).forEach((key, idx) => {
+                        const ans = parsedAnswers[key];
                         html += `
                         <div class="space-y-2">
                             <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Pertanyaan ${idx + 1}</p>
@@ -887,7 +901,9 @@
                         </div>`;
                     });
                 } else {
-                    html = `<div class="p-8 text-center"><p class="text-slate-500 font-bold uppercase text-xs">Konten JSON mentah:</p><pre class="mt-4 p-4 bg-slate-800 rounded-xl text-[10px] text-emerald-400 overflow-x-auto">${JSON.stringify(answers, null, 2)}</pre></div>`;
+                    // Fallback untuk display data apa adanya jika tidak terstruktur
+                    const displayData = Object.keys(parsedAnswers).length > 0 ? parsedAnswers : rawAnswers;
+                    html = `<div class="p-8 text-center"><p class="text-slate-500 font-bold uppercase text-xs">Konten Jawaban:</p><pre class="mt-4 p-4 bg-slate-800 rounded-xl text-[10px] text-emerald-400 overflow-x-auto text-left">${JSON.stringify(displayData, null, 2)}</pre></div>`;
                 }
 
                 body.innerHTML = html || '<p class="text-center text-slate-500">Tidak ada data untuk ditampilkan</p>';
