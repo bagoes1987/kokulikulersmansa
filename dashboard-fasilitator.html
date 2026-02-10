@@ -240,19 +240,34 @@
                 </button>
             </div>
 
-            <div class="space-y-4">
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Feedback
-                        Tambahan (Opsional)</label>
-                    <textarea id="finalFeedback" rows="2"
-                        class="w-full mt-2 p-4 bg-slate-50 rounded-2xl text-xs font-medium border-none focus:ring-2 focus:ring-primary/20"></textarea>
+            <div class="space-y-6">
+                <!-- Dynamic Description Container -->
+                <div id="finalCategoryDescription"
+                    class="hidden animate-in fade-in slide-in-from-bottom-2 duration-500">
+                    <div
+                        class="relative overflow-hidden rounded-2xl bg-white p-6 shadow-xl border border-slate-100 ring-1 ring-slate-900/5">
+                        <div
+                            class="absolute -top-10 -right-10 w-32 h-32 bg-gradient-to-br from-primary/20 to-purple-500/20 blur-3xl rounded-full">
+                        </div>
+                        <div
+                            class="absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-tr from-amber-400/20 to-emerald-500/20 blur-3xl rounded-full">
+                        </div>
+
+                        <div class="relative z-10">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2"
+                                id="descTitle">Deskripsi Kategori</p>
+                            <p class="text-sm font-medium text-slate-700 leading-relaxed text-justify" id="descText">
+                                Silakan pilih kategori penilaian di atas untuk melihat deskripsi detail capaian siswa.
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
                     <button onclick="document.getElementById('modalFinalisasi').classList.add('hidden')"
-                        class="py-4 rounded-xl font-bold text-slate-400 hover:text-slate-600 transition-colors">Batal</button>
+                        class="py-4 rounded-xl font-bold text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors">Batal</button>
                     <button onclick="submitFinalGrade()"
-                        class="py-4 rounded-xl bg-slate-800 text-white font-bold shadow-lg shadow-slate-200 hover:scale-[1.02] active:scale-95 transition-all">PUBLIKASI
+                        class="py-4 rounded-xl bg-slate-900 text-white font-bold shadow-lg shadow-slate-900/20 hover:scale-[1.02] active:scale-95 transition-all text-sm tracking-wide">PUBLIKASI
                         NILAI</button>
                 </div>
             </div>
@@ -2450,6 +2465,30 @@
             // FINAL PROJECT ASSESSMENT LOGIC
             let selectedFinalCategory = null;
 
+            const categoryDescriptions = {
+                'Mahir': {
+                    title: 'Kategori Mahir (Excellent)',
+                    text: 'Peserta didik sangat kreatif dalam menghasilkan gagasan orisinal dan inovatif pada pengembangan produk jajanan Nusantara yang sehat, bergizi dan kekinian. Mampu merumuskan solusi usaha secara matang serta melakukan perhitungan BEP dengan tepat untuk menilai kelayakan produk. Peserta didik juga mampu memanfaatkan teknologi digital secara optimal untuk pemasaran serta berkomunikasi secara efektif, santun, dan persuasif dalam mempresentasikan kandungan gizi produk sehingga menarik minat beli dan menunjukkan kepercayaan diri yang tinggi.',
+                    color: 'emerald',
+                    gradient: 'from-emerald-50 to-teal-50',
+                    border: 'border-emerald-200'
+                },
+                'Cakap': {
+                    title: 'Kategori Cakap (Proficient)',
+                    text: 'Peserta didik menunjukkan kreativitas yang baik dalam mengembangkan produk jajanan Nusantara sehat dan bergizi. Mampu merumuskan solusi usaha sederhana dan melakukan perhitungan BEP meskipun masih memerlukan pendampingan. Dalam komunikasi, peserta didik sudah mampu mempresentasikan produk dan kandungan gizinya dengan cukup jelas dan beretika, serta mulai memanfaatkan teknologi digital untuk mendukung penyampaian informasi, namun daya tarik penyampaian masih perlu ditingkatkan.',
+                    color: 'amber',
+                    gradient: 'from-amber-50 to-orange-50',
+                    border: 'border-amber-200'
+                },
+                'Berkembang': {
+                    title: 'Kategori Berkembang (Developing)',
+                    text: 'Peserta didik mulai mampu menunjukkan kreativitas dalam mengolah jajanan Nusantara menjadi produk yang lebih sehat dan bergizi, meskipun gagasan yang dihasilkan masih terbatas. Perhitungan BEP dan perumusan solusi usaha masih memerlukan bimbingan. Peserta didik mampu menyampaikan informasi produk secara sederhana dan masih memerlukan pendampingan dalam pemanfaatan teknologi digital, serta penguatan keterampilan komunikasi dan kepercayaan diri dalam presentasi.',
+                    color: 'blue',
+                    gradient: 'from-blue-50 to-indigo-50',
+                    border: 'border-blue-200'
+                }
+            };
+
             async function openFinalizeGradeModal() {
                 if (!currentDetailStudentId) {
                     alert('Error: ID Siswa tidak ditemukan.');
@@ -2460,6 +2499,15 @@
                 modal.classList.remove('hidden');
                 document.getElementById('finalStudentName').textContent = currentDetailStudentName;
                 document.getElementById('finalTotalStars').innerHTML = '<span class="animate-pulse">...</span>';
+
+                // Reset Selection
+                selectedFinalCategory = null;
+                document.getElementById('finalCategoryDescription').classList.add('hidden');
+                ['mahir', 'berkembang', 'cakap'].forEach(c => {
+                    const btn = document.getElementById(`btn-cat-${c}`);
+                    btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2', 'ring-emerald-200', 'ring-blue-200', 'ring-amber-200');
+                    btn.classList.add('border-slate-200');
+                });
 
                 try {
                     // 1. Calculate Total Stars from Module Responses
@@ -2493,21 +2541,40 @@
 
             function selectFinalCategory(category) {
                 selectedFinalCategory = category;
+                const config = categoryDescriptions[category];
 
                 // Reset styles
                 ['mahir', 'berkembang', 'cakap'].forEach(c => {
-                    const btn = document.getElementById(`btn - cat - ${c} `);
-                    btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2');
+                    const btn = document.getElementById(`btn-cat-${c}`);
+                    // Generic reset
+                    btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2', 'ring-emerald-200', 'ring-blue-200', 'ring-amber-200');
                     btn.classList.add('border-slate-200');
                 });
 
-                // Apply Active Style
-                const btn = document.getElementById(`btn - cat - ${category.toLowerCase()} `);
+                // Apply Active Style to Button
+                const btn = document.getElementById(`btn-cat-${category.toLowerCase()}`);
                 const colorMap = { 'Mahir': 'emerald', 'Berkembang': 'blue', 'Cakap': 'amber' };
                 const col = colorMap[category];
 
                 btn.classList.remove('border-slate-200');
-                btn.classList.add(`bg - ${col} -50`, `border - ${col} -400`, 'ring-2', `ring - ${col} -200`, 'ring-offset-2');
+                btn.classList.add(`bg-${col}-50`, `border-${col}-400`, 'ring-2', `ring-${col}-200`, 'ring-offset-2');
+
+                // Update Description Box
+                const descContainer = document.getElementById('finalCategoryDescription');
+                const descTitle = document.getElementById('descTitle');
+                const descText = document.getElementById('descText');
+                const innerBox = descContainer.querySelector('div.relative.overflow-hidden');
+
+                descTitle.textContent = config.title;
+                descText.textContent = config.text;
+
+                // Update styling of the description box
+                // Remove potential old color classes
+                innerBox.classList.remove('border-emerald-200', 'border-amber-200', 'border-blue-200');
+                innerBox.classList.add(config.border);
+
+                // Show container with animation
+                descContainer.classList.remove('hidden');
             }
 
             async function submitFinalGrade() {
@@ -2516,7 +2583,9 @@
                     return;
                 }
 
-                const feedback = document.getElementById('finalFeedback').value;
+                // NOTE: Feedback field removed as per request
+                const feedback = "";
+
                 const btn = document.querySelector('button[onclick="submitFinalGrade()"]');
                 const originalText = btn.textContent;
                 btn.textContent = 'Menyimpan...';
@@ -2529,7 +2598,7 @@
                             student_id: currentDetailStudentId,
                             total_stars: currentCalculatedStars,
                             category: selectedFinalCategory,
-                            facilitator_feedback: feedback,
+                            facilitator_feedback: feedback, // Sending empty string
                             status: 'published'
                         }, { onConflict: 'student_id' })
                         .select();
