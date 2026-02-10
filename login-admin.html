@@ -158,8 +158,11 @@
             submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-xl">sync</span>';
 
             try {
-                // Background email conversion: admin_xxx -> admin_xxx@kokulikuler.id
-                const email = `${username}@kokulikuler.id`;
+                // Background email conversion: Handle both plain username and full email
+                let email = username;
+                if (!email.includes('@')) {
+                    email = `${username}@kokulikuler.id`;
+                }
 
                 const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
