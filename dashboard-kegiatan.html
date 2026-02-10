@@ -2827,6 +2827,7 @@
 
             // BEP Calculation (Balik Modal / Cash Flow BEP)
             const bepRupiah = totalBiaya;
+            const totalUnits = qtyMakan + qtyMinum;
             const avgPrice = totalUnits > 0 ? (totalPenjualan / totalUnits) : ((hargaMakan + hargaMinum) / ((hargaMakan > 0 ? 1 : 0) + (hargaMinum > 0 ? 1 : 0) || 1));
             const bepUnit = avgPrice > 0 ? Math.ceil(totalBiaya / avgPrice) : 0;
 
