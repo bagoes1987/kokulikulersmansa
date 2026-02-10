@@ -917,11 +917,14 @@
 
             let currentDay = 1;
 
-            // Struktur data progress default (3 hari x 8 modul)
+            // Struktur data progress default (Cleaned up for Day 2 & 3)
+            // Day 1: 8 Modul (Pemantik, Materi, Video, LKPD, Asesmen, Dokumentasi, Glosarium, Refleksi)
+            // Day 2: 4 Modul (Pemantik, Materi, Analisis Modal/BEP, Dokumentasi)
+            // Day 3: 3 Modul (Pemantik, Dokumentasi, Laporan Akhir)
             const defaultProgress = {
                 day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
-                day2: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false, bep: false },
-                day3: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false, 'laporan-akhir': false }
+                day2: { pemantik: false, materi: false, bep: false, dokumentasi: false },
+                day3: { pemantik: false, dokumentasi: false, 'laporan-akhir': false }
             };
 
             let studentProgress = JSON.parse(JSON.stringify(defaultProgress));
@@ -1053,7 +1056,7 @@
 
             // Load progress logic with version control
             function loadProgress() {
-                const STORAGE_VERSION = '2.0'; // Increment this to force localStorage reset
+                const STORAGE_VERSION = '2.1'; // Increment to 2.1 to clean up ghost modules
                 const currentVersion = localStorage.getItem('progress_version');
 
                 // Force reset if version mismatch or corrupted data detected
@@ -1073,30 +1076,26 @@
 
                         // Validate structure - ensure all days exist
                         const requiredDays = ['day1', 'day2', 'day3'];
-                        const requiredModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi', 'bep', 'laporan-akhir'];
 
                         let isCorrupted = false;
                         requiredDays.forEach(day => {
                             if (!studentProgress[day]) {
                                 isCorrupted = true;
-                                return;
                             }
-                            requiredModules.forEach(module => {
-                                // 'bep' only required for day2
-                                if (day === 'day2' && module === 'bep' && studentProgress[day][module] === undefined) {
-                                    isCorrupted = true;
-                                }
-                                if (day === 'day3' && module === 'laporan-akhir' && studentProgress[day][module] === undefined) {
-                                    isCorrupted = true;
-                                }
-                                if (module !== 'bep' && module !== 'laporan-akhir' && studentProgress[day][module] === undefined) {
-                                    isCorrupted = true;
-                                }
-                            });
                         });
 
+                        // Deep check for missing new keys or extra old keys
+                        if (!isCorrupted) {
+                            // Check Day 1 (8 modules)
+                            if (Object.keys(studentProgress.day1).length !== 8) isCorrupted = true;
+                            // Check Day 2 (4 modules)
+                            if (Object.keys(studentProgress.day2).length !== 4) isCorrupted = true;
+                            // Check Day 3 (3 modules)
+                            if (Object.keys(studentProgress.day3).length !== 3) isCorrupted = true;
+                        }
+
                         if (isCorrupted) {
-                            console.warn('Corrupted progress data detected. Resetting...');
+                            console.warn('Corrupted or outdated progress data detected. Resetting...');
                             studentProgress = JSON.parse(JSON.stringify(defaultProgress));
                             saveProgress();
                             return;
