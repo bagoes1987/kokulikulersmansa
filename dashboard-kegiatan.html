@@ -1294,6 +1294,16 @@
                     }
                 }
 
+                // Refleksi Akhir Module Visibility (Only Day 3)
+                const rfModule = document.getElementById('module-refleksi-akhir');
+                if (rfModule) {
+                    if (currentDay === 3) {
+                        rfModule.style.display = '';
+                    } else {
+                        rfModule.style.display = 'none';
+                    }
+                }
+
 
             }
 
