@@ -409,6 +409,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- Answer Detail Modal (New) -->
+        <div id="answerDetailModal"
+            class="fixed inset-0 z-[1100] hidden items-center justify-center bg-slate-950/95 p-4 backdrop-blur-2xl">
+            <div
+                class="bg-slate-900 w-full max-w-xl rounded-[3rem] shadow-2xl overflow-hidden border border-slate-700 animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+                <div
+                    class="p-8 border-b border-slate-800 flex justify-between items-center bg-slate-900/80 sticky top-0 z-10">
+                    <div>
+                        <h3 class="text-xl font-black text-white" id="detailModuleTitle">Detail Jawaban</h3>
+                        <p class="text-[10px] text-emerald-500 font-black uppercase tracking-[0.3em] mt-1"
+                            id="detailStudentMeta">MEMUAT...</p>
+                    </div>
+                    <button onclick="closeAnswerDetail()"
+                        class="size-12 bg-slate-800 rounded-2xl flex items-center justify-center text-slate-400 hover:text-white transition-all ring-1 ring-slate-700">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="p-8 overflow-y-auto no-scrollbar space-y-6" id="answerDetailBody">
+                    <!-- Answers will be rendered here -->
+                </div>
+            </div>
+        </div>
     </div>
     </div>
 
@@ -777,10 +800,105 @@
                 const labels = { 'pemantik': 'Pemantik', 'materi': 'Materi', 'video': 'Video', 'lkpd': 'LKPD', 'kuis': 'Assessment', 'dokumentasi': 'Dokumentasi', 'glosarium': 'Glosarium', 'refleksi': 'Refleksi', 'laporan_akhir': 'Laporan Akhir' };
                 let html = '';
                 data.forEach(r => {
-                    html += `<div class="bg-slate-900 border border-slate-700 p-4 rounded-2xl flex items-center justify-between"><div><p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">HARI ${r.day_id} • ${labels[r.module_type] || r.module_type.toUpperCase()}</p><div class="flex items-center gap-2 mt-1"><span class="size-1.5 bg-${r.status === 'reviewed' ? 'emerald' : 'amber'}-500 rounded-full"></span><p class="text-xs font-bold text-white uppercase">${r.status}</p></div></div><button onclick="resetAction('${r.id}', '${sname.replace(/'/g, "\\'")}', '${labels[r.module_type] || r.module_type.toUpperCase()}', ${r.day_id})" class="size-10 bg-red-600/20 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-600 hover:text-white transition-all"><span class="material-symbols-outlined">delete</span></button></div>`;
+                    const mLabel = labels[r.module_type] || r.module_type.toUpperCase();
+                    html += `
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-2xl flex items-center justify-between group">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">HARI ${r.day_id} • ${mLabel}</p>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="size-1.5 bg-${r.status === 'reviewed' ? 'emerald' : 'amber'}-500 rounded-full"></span>
+                                <p class="text-xs font-bold text-white uppercase">${r.status}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="viewResponseDetail('${r.id}', '${sname.replace(/'/g, "\\'")}', '${mLabel}', ${r.day_id})" class="size-10 bg-emerald-600/20 text-emerald-500 rounded-xl flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all">
+                                <span class="material-symbols-outlined">visibility</span>
+                            </button>
+                            <button onclick="resetAction('${r.id}', '${sname.replace(/'/g, "\\'")}', '${mLabel}', ${r.day_id})" class="size-10 bg-red-600/20 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-600 hover:text-white transition-all">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                    </div>`;
                 });
                 cont.innerHTML = html;
             } catch (e) { cont.innerHTML = e.message; }
+        }
+
+        async function viewResponseDetail(rid, sname, mLabel, dayId) {
+            const modal = document.getElementById('answerDetailModal');
+            const body = document.getElementById('answerDetailBody');
+            const title = document.getElementById('detailModuleTitle');
+            const meta = document.getElementById('detailStudentMeta');
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            body.innerHTML = '<p class="text-center text-slate-500 py-20 animate-pulse font-black uppercase text-[10px] tracking-widest">Mengambil konten jawaban...</p>';
+
+            title.textContent = `${mLabel} - Hari ${dayId}`;
+            meta.textContent = sname;
+
+            try {
+                const { data, error } = await supabaseClient.from('module_responses').select('*').eq('id', rid).single();
+                if (error) throw error;
+
+                const qMap = {
+                    'refleksi': [
+                        "Bagaimana perasaanmu setelah mengikuti kegiatan hari ini?",
+                        "Apa satu hal baru yang paling menarik kamu pelajari hari ini?",
+                        "Apa bagian yang paling sulit atau menantang?",
+                        "Bagaimana caramu mengatasi kesulitan tersebut?",
+                        "Seberapa fokus kamu hari ini? (1-10)",
+                        "Apa kontrisibusimu dalam diskusi/kelompok hari ini?",
+                        "Skill/sikap apa yang kamu rasa berkembang hari ini?",
+                        "Apakah ada hambatan non-teknis (misal: mood, ngantuk, gangguan lain)?",
+                        "Apa targetmu untuk pembelajaran besok?",
+                        "Beri rating untuk keseruan aktivitas hari ini!",
+                        "Siapa nama Fasilitator & Koordinator di kelasmu hari ini?",
+                        "Bagaimana gaya mengajar/pendampingan mereka?",
+                        "Apa pendapatmu tentang aplikasi web ini?",
+                        "Apa saran untuk perbaikan kegiatan besok?",
+                        "(Bonus) Tebak siapa yang membuat aplikasi ini?"
+                    ]
+                };
+
+                let html = '';
+                const answers = data.answers;
+
+                if (data.module_type === 'refleksi' && qMap['refleksi']) {
+                    const refQue = qMap['refleksi'];
+                    answers.forEach((ans, idx) => {
+                        const qText = refQue[idx] || `Pertanyaan ${idx + 1}`;
+                        html += `
+                        <div class="space-y-2">
+                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">${idx + 1}. ${qText}</p>
+                            <div class="p-4 bg-slate-800 rounded-2xl border border-slate-700 text-sm text-white font-medium whitespace-pre-line">
+                                ${ans || '<span class="italic text-slate-500">Kosong</span>'}
+                            </div>
+                        </div>`;
+                    });
+                } else if (data.module_type === 'pemantik') {
+                    answers.forEach((ans, idx) => {
+                        html += `
+                        <div class="space-y-2">
+                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Pertanyaan ${idx + 1}</p>
+                            <div class="p-4 bg-slate-800 rounded-2xl border border-slate-700 text-sm text-white font-medium whitespace-pre-line">
+                                ${ans || '<span class="italic text-slate-500">Kosong</span>'}
+                            </div>
+                        </div>`;
+                    });
+                } else {
+                    html = `<div class="p-8 text-center"><p class="text-slate-500 font-bold uppercase text-xs">Konten JSON mentah:</p><pre class="mt-4 p-4 bg-slate-800 rounded-xl text-[10px] text-emerald-400 overflow-x-auto">${JSON.stringify(answers, null, 2)}</pre></div>`;
+                }
+
+                body.innerHTML = html || '<p class="text-center text-slate-500">Tidak ada data untuk ditampilkan</p>';
+            } catch (e) {
+                body.innerHTML = `<div class="p-10 text-center"><p class="text-red-500 font-black uppercase text-[10px]">Error: ${e.message}</p></div>`;
+            }
+        }
+
+        function closeAnswerDetail() {
+            document.getElementById('answerDetailModal').classList.add('hidden');
+            document.getElementById('answerDetailModal').classList.remove('flex');
         }
 
         async function resetAction(rid, sname, mLabel, dayId) {
