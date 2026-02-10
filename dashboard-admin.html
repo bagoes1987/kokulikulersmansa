@@ -190,7 +190,9 @@
                             class="bg-slate-900/50 border-b border-slate-700 text-[10px] font-black uppercase tracking-widest text-slate-500">
                             <tr>
                                 <th class="p-4">Kelas</th>
+                                <th class="p-4">Menu Makanan</th>
                                 <th class="p-4 text-center">PO Makanan</th>
+                                <th class="p-4">Menu Minuman</th>
                                 <th class="p-4 text-center">PO Minuman</th>
                                 <th class="p-4 text-right">Pemasukan PO</th>
                             </tr>
@@ -554,8 +556,10 @@
                         try {
                             const ans = JSON.parse(r.answers[0]);
                             poDataMap[cls] = {
+                                foodName: ans.nama_produk || '-',
                                 food: parseInt(ans.po_makanan_qty) || 0,
                                 foodPrice: parseInt(ans.po_makanan_harga) || 0,
+                                drinkName: ans.nama_minuman || '-',
                                 drink: parseInt(ans.po_minuman_qty) || 0,
                                 drinkPrice: parseInt(ans.po_minuman_harga) || 0
                             };
@@ -676,25 +680,31 @@
             });
 
             pageData.forEach(cls => {
-                const d = poDataMap[cls] || { food: 0, foodPrice: 0, drink: 0, drinkPrice: 0 };
+                const d = poDataMap[cls] || { foodName: '-', food: 0, foodPrice: 0, drinkName: '-', drink: 0, drinkPrice: 0 };
                 const classPoRp = (d.food * d.foodPrice) + (d.drink * d.drinkPrice);
                 html += `
                     <tr class="hover:bg-slate-800/50 transition-colors">
                         <td class="p-4 font-bold text-white text-xs">${cls}</td>
-                        <td class="p-4 text-center text-xs">
-                            <span class="${d.food > 0 ? 'text-slate-300' : 'text-slate-600'}">${d.food}</span>
-                            ${d.food > 0 ? `<span class="text-[9px] text-slate-500 block">@Rp${d.foodPrice.toLocaleString('id-ID')}</span>` : ''}
+                        <td class="p-4 text-xs">
+                            <p class="font-bold text-slate-200 line-clamp-1">${d.foodName}</p>
                         </td>
                         <td class="p-4 text-center text-xs">
-                            <span class="${d.drink > 0 ? 'text-slate-300' : 'text-slate-600'}">${d.drink}</span>
+                            <span class="${d.food > 0 ? 'text-white font-black' : 'text-slate-600'}">${d.food}</span>
+                            ${d.food > 0 ? `<span class="text-[9px] text-slate-500 block">@Rp${d.foodPrice.toLocaleString('id-ID')}</span>` : ''}
+                        </td>
+                        <td class="p-4 text-xs">
+                            <p class="font-bold text-slate-200 line-clamp-1">${d.drinkName}</p>
+                        </td>
+                        <td class="p-4 text-center text-xs">
+                            <span class="${d.drink > 0 ? 'text-white font-black' : 'text-slate-600'}">${d.drink}</span>
                             ${d.drink > 0 ? `<span class="text-[9px] text-slate-500 block">@Rp${d.drinkPrice.toLocaleString('id-ID')}</span>` : ''}
                         </td>
                         <td class="p-4 text-right font-black ${classPoRp > 0 ? 'text-blue-500' : 'text-slate-600'} text-xs">Rp ${classPoRp.toLocaleString('id-ID')}</td>
                     </tr>`;
             });
 
-            document.getElementById('poSummaryBody').innerHTML = html || '<tr><td colspan="4" class="p-8 text-center text-slate-600 text-[10px] font-black uppercase animate-pulse">Data tidak tersedia untuk Angkatan ' + currentGrade + '</td></tr>';
-            document.getElementById('poSummaryFoot').innerHTML = allClassNames.length ? `<tr class="border-t-2 border-slate-700 bg-slate-900/80"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Sekolah</td><td class="p-4 text-center text-xs font-black">${tFood}</td><td class="p-4 text-center text-xs font-black">${tDrink}</td><td class="p-4 text-right text-xs font-black text-blue-400">Rp ${tRp.toLocaleString('id-ID')}</td></tr>` : '';
+            document.getElementById('poSummaryBody').innerHTML = html || '<tr><td colspan="6" class="p-8 text-center text-slate-600 text-[10px] font-black uppercase animate-pulse">Data tidak tersedia untuk Angkatan ' + currentGrade + '</td></tr>';
+            document.getElementById('poSummaryFoot').innerHTML = allClassNames.length ? `<tr class="border-t-2 border-slate-700 bg-slate-900/80"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Sekolah</td><td class="p-4"></td><td class="p-4 text-center text-xs font-black">${tFood}</td><td class="p-4"></td><td class="p-4 text-center text-xs font-black">${tDrink}</td><td class="p-4 text-right text-xs font-black text-blue-400">Rp ${tRp.toLocaleString('id-ID')}</td></tr>` : '';
 
             document.getElementById('poPageInfo').textContent = `Angkatan ${currentGrade}`;
             document.getElementById('btnPoPrev').disabled = poGradeIdx === 0;
