@@ -98,10 +98,70 @@
                         <h3 class="text-2xl font-black text-blue-500" id="avgRoiAdmin">0%</h3>
                     </div>
                 </div>
-                <button onclick="loadGlobalFinancialStats(); loadClassSummaries();"
+                <button onclick="loadOverviewStats();"
                     class="w-full py-4 bg-slate-700 rounded-2xl text-xs font-black uppercase text-white hover:bg-slate-600 transition-all border border-slate-600 shadow-lg active:scale-[0.98]">
-                    Refresh Financial Data
+                    Refresh All Data
                 </button>
+            </section>
+
+            <!-- ANALYTICS HIGHLIGHTS -->
+            <section id="analyticsHighlight"
+                class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in duration-500">
+                <!-- PO Analysis -->
+                <div class="bg-slate-800 p-6 rounded-[2.5rem] border border-slate-700 space-y-4">
+                    <h3 class="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em]">PO Performance</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">PO Tertinggi
+                            </p>
+                            <p id="topPoClass" class="text-xs font-bold text-white">-</p>
+                            <p id="topPoValue" class="text-[10px] font-black text-blue-500 mt-1">0 Qty</p>
+                        </div>
+                        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Harga
+                                Tertinggi</p>
+                            <p id="topPriceClass" class="text-xs font-bold text-white">-</p>
+                            <p id="topPriceValue" class="text-[10px] font-black text-blue-500 mt-1">Rp 0</p>
+                        </div>
+                        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">PO Terendah
+                            </p>
+                            <p id="lowPoClass" class="text-xs font-bold text-white">-</p>
+                            <p id="lowPoValue" class="text-[10px] font-black text-slate-400 mt-1">0 Qty</p>
+                        </div>
+                        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Harga
+                                Terendah</p>
+                            <p id="lowPriceClass" class="text-xs font-bold text-white">-</p>
+                            <p id="lowPriceValue" class="text-[10px] font-black text-slate-400 mt-1">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Financial Analysis -->
+                <div class="bg-slate-800 p-6 rounded-[2.5rem] border border-slate-700 space-y-4">
+                    <h3 class="text-[10px] font-black text-amber-500 uppercase tracking-[0.3em]">Profit Performance</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Laba
+                                Tertinggi</p>
+                            <p id="topProfitClass" class="text-xs font-bold text-white">-</p>
+                            <p id="topProfitValue" class="text-[10px] font-black text-emerald-500 mt-1">Rp 0</p>
+                        </div>
+                        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Laba Terendah
+                            </p>
+                            <p id="lowProfitClass" class="text-xs font-bold text-white">-</p>
+                            <p id="lowProfitValue" class="text-[10px] font-black text-red-500 mt-1">Rp 0</p>
+                        </div>
+                        <div class="col-span-2 p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Kelas
+                                Mengalami Kerugian</p>
+                            <div id="lossClassesList" class="flex flex-wrap gap-2 mt-2">
+                                <span class="text-[10px] text-slate-600 italic">Tidak ada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
 
             <!-- RINGKASAN PRE-ORDER PER KELAS -->
@@ -137,6 +197,21 @@
                         <tfoot id="poSummaryFoot" class="bg-slate-900/80 font-bold text-white"></tfoot>
                     </table>
                 </div>
+                <!-- Pagination PO -->
+                <div class="flex items-center justify-between px-2 mt-4">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest" id="poPageInfo">Halaman 1
+                        dari 1</p>
+                    <div class="flex gap-2">
+                        <button onclick="prevPoPage()" id="btnPoPrev"
+                            class="p-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-400 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all">
+                            <span class="material-symbols-outlined text-sm">chevron_left</span>
+                        </button>
+                        <button onclick="nextPoPage()" id="btnPoNext"
+                            class="p-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-400 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all">
+                            <span class="material-symbols-outlined text-sm">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
             </section>
 
             <!-- RINGKASAN LAPORAN AKHIR PER KELAS -->
@@ -171,6 +246,21 @@
                         </tbody>
                         <tfoot id="financeSummaryFoot" class="bg-slate-900/80 font-bold text-white"></tfoot>
                     </table>
+                </div>
+                <!-- Pagination Finance -->
+                <div class="flex items-center justify-between px-2 mt-4">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest" id="finPageInfo">Halaman 1
+                        dari 1</p>
+                    <div class="flex gap-2">
+                        <button onclick="prevFinPage()" id="btnFinPrev"
+                            class="p-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-400 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all">
+                            <span class="material-symbols-outlined text-sm">chevron_left</span>
+                        </button>
+                        <button onclick="nextFinPage()" id="btnFinNext"
+                            class="p-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-400 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all">
+                            <span class="material-symbols-outlined text-sm">chevron_right</span>
+                        </button>
+                    </div>
                 </div>
             </section>
         </div>
@@ -321,6 +411,13 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+        // State untuk Paginasi
+        let allClassNames = [];
+        let poDataMap = {};
+        let finDataMap = {};
+        let poPage = 1, finPage = 1;
+        const pageSize = 10;
+
         // --- NAVIGATION LOGIC ---
         async function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -337,16 +434,20 @@
 
         // --- OVERVIEW TAB ---
         async function loadOverviewStats() {
-            loadGlobalFinancialStats();
-            loadClassSummaries();
             try {
-                const { data: profiles, error } = await supabaseClient.from('profiles').select('role');
-                if (error) throw error;
+                // Fetch accurate counts
+                const [pRes, sRes] = await Promise.all([
+                    supabaseClient.from('profiles').select('role'),
+                    supabaseClient.from('students').select('id', { count: 'exact', head: true })
+                ]);
+
+                if (pRes.error) throw pRes.error;
+                if (sRes.error) throw sRes.error;
 
                 const counts = {
-                    koordinator: profiles.filter(p => p.role === 'koordinator').length,
-                    fasilitator: profiles.filter(p => p.role === 'fasilitator').length,
-                    siswa: profiles.filter(p => p.role === 'siswa').length
+                    koordinator: pRes.data.filter(p => p.role === 'koordinator').length,
+                    fasilitator: pRes.data.filter(p => p.role === 'fasilitator').length,
+                    siswa: sRes.count
                 };
 
                 let userStatsSection = document.getElementById('userQuickStats');
@@ -371,131 +472,215 @@
                         <h3 class="text-2xl font-black text-white">${counts.siswa}</h3>
                     </div>
                 `;
-            } catch (err) { console.error(err); }
-        }
 
-        async function loadGlobalFinancialStats() {
-            try {
-                const { data: responses, error } = await supabaseClient
-                    .from('module_responses')
-                    .select('answers')
-                    .eq('module_type', 'laporan_akhir')
-                    .eq('day_id', 3);
-
-                if (error) throw error;
-
-                let totalOmzet = 0, totalCapital = 0, totalProfit = 0;
-                responses.forEach(r => {
-                    try {
-                        const answers = JSON.parse(r.answers[0]);
-                        const cap = parseFloat(answers.modal_kelas || answers.total_biaya || 0) || 0;
-                        const laba = parseFloat(answers.laba || answers.laba_rugi || 0) || 0;
-                        const rugi = parseFloat(answers.rugi || 0) || 0;
-                        totalCapital += cap;
-                        totalProfit += (laba - rugi);
-                        totalOmzet += (cap + laba - rugi);
-                    } catch (e) { }
-                });
-
-                document.getElementById('totalOmzetAdmin').textContent = 'Rp ' + totalOmzet.toLocaleString('id-ID');
-                document.getElementById('totalProfitAdmin').textContent = 'Rp ' + totalProfit.toLocaleString('id-ID');
-                document.getElementById('totalCapitalAdmin').textContent = 'Rp ' + totalCapital.toLocaleString('id-ID');
-                const avgRoi = totalCapital > 0 ? (totalProfit / totalCapital * 100) : 0;
-                document.getElementById('avgRoiAdmin').textContent = avgRoi.toFixed(1) + '%';
+                // Load summaries
+                await loadClassSummaries();
             } catch (err) { console.error(err); }
         }
 
         async function loadClassSummaries() {
             try {
-                const { data: students, error: sErr } = await supabaseClient.from('students').select('id, kelas');
-                if (sErr) throw sErr;
+                // 1. Ambil semua kelas unik
+                const { data: stData, error: stErr } = await supabaseClient.from('students').select('id, kelas');
+                if (stErr) throw stErr;
+
                 const studentClassMap = {};
-                students.forEach(s => studentClassMap[s.id] = s.kelas);
+                const classSet = new Set();
+                stData.forEach(s => {
+                    studentClassMap[s.id] = s.kelas;
+                    if (s.kelas) classSet.add(s.kelas);
+                });
+                allClassNames = Array.from(classSet).sort();
 
-                const { data: poRes, error: poErr } = await supabaseClient
-                    .from('module_responses')
-                    .select('student_id, answers, updated_at')
-                    .eq('module_type', 'bep_analisis')
-                    .eq('day_id', 2);
-                if (poErr) throw poErr;
+                // 2. Ambil data PO & Finance (Siswa pertama pengisi - sorting created_at ASC)
+                const [poRes, finRes] = await Promise.all([
+                    supabaseClient.from('module_responses').select('student_id, answers, created_at').eq('module_type', 'bep_analisis').eq('day_id', 2).order('created_at', { ascending: true }),
+                    supabaseClient.from('module_responses').select('student_id, answers, created_at').eq('module_type', 'laporan_akhir').eq('day_id', 3).order('created_at', { ascending: true })
+                ]);
 
-                const { data: finRes, error: finErr } = await supabaseClient
-                    .from('module_responses')
-                    .select('student_id, answers, updated_at')
-                    .eq('module_type', 'laporan_akhir')
-                    .eq('day_id', 3);
-                if (finErr) throw finErr;
+                if (poRes.error) throw poRes.error;
+                if (finRes.error) throw finRes.error;
 
-                const poDataByClass = {};
-                const finDataByClass = {};
-
-                poRes.forEach(r => {
-                    const classId = studentClassMap[r.student_id];
-                    if (!classId) return;
-                    if (!poDataByClass[classId] || new Date(r.updated_at) > new Date(poDataByClass[classId].updated_at)) {
+                // Logika First-In: Map data per kelas
+                poDataMap = {};
+                poRes.data.forEach(r => {
+                    const cls = studentClassMap[r.student_id];
+                    if (cls && !poDataMap[cls]) {
                         try {
                             const ans = JSON.parse(r.answers[0]);
-                            poDataByClass[classId] = {
+                            poDataMap[cls] = {
                                 food: parseInt(ans.po_makanan_qty) || 0,
                                 foodPrice: parseInt(ans.po_makanan_harga) || 0,
                                 drink: parseInt(ans.po_minuman_qty) || 0,
-                                drinkPrice: parseInt(ans.po_minuman_harga) || 0,
-                                updated_at: r.updated_at
+                                drinkPrice: parseInt(ans.po_minuman_harga) || 0
                             };
                         } catch (e) { }
                     }
                 });
 
-                finRes.forEach(r => {
-                    const classId = studentClassMap[r.student_id];
-                    if (!classId) return;
-                    if (!finDataByClass[classId] || new Date(r.updated_at) > new Date(finDataByClass[classId].updated_at)) {
+                finDataMap = {};
+                finRes.data.forEach(r => {
+                    const cls = studentClassMap[r.student_id];
+                    if (cls && !finDataMap[cls]) {
                         try {
                             const ans = JSON.parse(r.answers[0]);
                             const omzet = parseFloat(ans.total_penjualan || (parseFloat(ans.penjualan_makanan_rp || 0) + parseFloat(ans.penjualan_minuman_rp || 0))) || 0;
                             const modal = parseFloat(ans.total_biaya || (parseFloat(ans.biaya_prod_makan || 0) + parseFloat(ans.biaya_prod_minum || 0) + parseFloat(ans.biaya_tetap || 0))) || 0;
                             const laba = parseFloat(ans.laba_rugi || ans.laba || 0) || 0;
-                            finDataByClass[classId] = { omzet, modal, laba, updated_at: r.updated_at };
+                            finDataMap[cls] = { omzet, modal, laba };
                         } catch (e) { }
                     }
                 });
 
-                const poBody = document.getElementById('poSummaryBody');
-                const poFoot = document.getElementById('poSummaryFoot');
-                let poHtml = '', totalFood = 0, totalDrink = 0, totalPoRp = 0;
-                Object.keys(poDataByClass).sort().forEach(cls => {
-                    const d = poDataByClass[cls];
-                    const classPoRp = (d.food * d.foodPrice) + (d.drink * d.drinkPrice);
-                    totalFood += d.food; totalDrink += d.drink; totalPoRp += classPoRp;
-                    poHtml += `
-                        <tr class="hover:bg-slate-800/50 transition-colors">
-                            <td class="p-4 font-bold text-white text-xs">${cls}</td>
-                            <td class="p-4 text-center text-xs">
-                                <span class="text-slate-300">${d.food}</span>
-                                <span class="text-[9px] text-slate-500 block">@Rp${d.foodPrice.toLocaleString('id-ID')}</span>
-                            </td>
-                            <td class="p-4 text-center text-xs">
-                                <span class="text-slate-300">${d.drink}</span>
-                                <span class="text-[9px] text-slate-500 block">@Rp${d.drinkPrice.toLocaleString('id-ID')}</span>
-                            </td>
-                            <td class="p-4 text-right font-black text-blue-500 text-xs">Rp ${classPoRp.toLocaleString('id-ID')}</td>
-                        </tr>`;
-                });
-                poBody.innerHTML = poHtml || '<tr><td colspan="4" class="p-8 text-center text-slate-500 text-[10px] font-black uppercase">Belum ada data PO</td></tr>';
-                poFoot.innerHTML = poHtml ? `<tr class="border-t-2 border-slate-700 bg-slate-800/50"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-center text-xs font-black">${totalFood}</td><td class="p-4 text-center text-xs font-black">${totalDrink}</td><td class="p-4 text-right text-xs font-black text-blue-400">Rp ${totalPoRp.toLocaleString('id-ID')}</td></tr>` : '';
+                // 3. Hitung Global Financial Stats & Analytics
+                updateAnalyticsAndGlobalStats();
 
-                const finBody = document.getElementById('financeSummaryBody');
-                const finFoot = document.getElementById('financeSummaryFoot');
-                let finHtml = '', tOmzet = 0, tModal = 0, tLaba = 0;
-                Object.keys(finDataByClass).sort().forEach(cls => {
-                    const d = finDataByClass[cls];
-                    tOmzet += d.omzet; tModal += d.modal; tLaba += d.laba;
-                    finHtml += `<tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 font-bold text-white text-xs">${cls}</td><td class="p-4 text-right text-slate-300 text-xs">Rp ${d.omzet.toLocaleString('id-ID')}</td><td class="p-4 text-right text-slate-300 text-xs">Rp ${d.modal.toLocaleString('id-ID')}</td><td class="p-4 text-right font-black ${d.laba >= 0 ? 'text-emerald-500' : 'text-red-500'} text-xs">Rp ${d.laba.toLocaleString('id-ID')}</td></tr>`;
-                });
-                finBody.innerHTML = finHtml || '<tr><td colspan="4" class="p-8 text-center text-slate-500 text-[10px] font-black uppercase">Belum ada data laporan</td></tr>';
-                finFoot.innerHTML = finHtml ? `<tr class="border-t-2 border-slate-700 bg-slate-800/50"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tOmzet.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tModal.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-amber-400">Rp ${tLaba.toLocaleString('id-ID')}</td></tr>` : '';
-            } catch (e) { console.error("Summary Load Error:", e); }
+                // 4. Render Tables
+                poPage = 1; finPage = 1;
+                renderPoTable();
+                renderFinTable();
+
+            } catch (err) { console.error("Summary Load Error:", err); }
         }
+
+        function updateAnalyticsAndGlobalStats() {
+            let tOmzet = 0, tModal = 0, tLaba = 0;
+            let topPo = { cls: '-', val: -1 }, lowPo = { cls: '-', val: Infinity };
+            let topPrice = { cls: '-', val: -1 }, lowPrice = { cls: '-', val: Infinity };
+            let topProfit = { cls: '-', val: -Infinity }, lowProfit = { cls: '-', val: Infinity };
+            let lossClasses = [];
+
+            // Analytics PO
+            allClassNames.forEach(cls => {
+                const po = poDataMap[cls];
+                if (po) {
+                    const totalQty = po.food + po.drink;
+                    if (totalQty > topPo.val) { topPo = { cls, val: totalQty }; }
+                    if (totalQty < lowPo.val) { lowPo = { cls, val: totalQty }; }
+
+                    const maxPrice = Math.max(po.foodPrice, po.drinkPrice);
+                    const minPrice = Math.min(po.foodPrice > 0 ? po.foodPrice : Infinity, po.drinkPrice > 0 ? po.drinkPrice : Infinity);
+
+                    if (maxPrice > topPrice.val) { topPrice = { cls, val: maxPrice }; }
+                    if (minPrice !== Infinity && minPrice < lowPrice.val) { lowPrice = { cls, val: minPrice }; }
+                }
+
+                const fin = finDataMap[cls];
+                if (fin) {
+                    tOmzet += fin.omzet; tModal += fin.modal; tLaba += fin.laba;
+                    if (fin.laba > topProfit.val) { topProfit = { cls, val: fin.laba }; }
+                    if (fin.laba < lowProfit.val) { lowProfit = { cls, val: fin.laba }; }
+                    if (fin.laba < 0) { lossClasses.push(cls); }
+                }
+            });
+
+            // Update Global Stats Cards
+            document.getElementById('totalOmzetAdmin').textContent = 'Rp ' + tOmzet.toLocaleString('id-ID');
+            document.getElementById('totalProfitAdmin').textContent = 'Rp ' + tLaba.toLocaleString('id-ID');
+            document.getElementById('totalCapitalAdmin').textContent = 'Rp ' + tModal.toLocaleString('id-ID');
+            const avgRoi = tModal > 0 ? (tLaba / tModal * 100) : 0;
+            document.getElementById('avgRoiAdmin').textContent = avgRoi.toFixed(1) + '%';
+
+            // Update Analytics Cards
+            document.getElementById('topPoClass').textContent = topPo.cls;
+            document.getElementById('topPoValue').textContent = topPo.val + ' Qty';
+            document.getElementById('lowPoClass').textContent = lowPo.val === Infinity ? '-' : lowPo.cls;
+            document.getElementById('lowPoValue').textContent = (lowPo.val === Infinity ? 0 : lowPo.val) + ' Qty';
+
+            document.getElementById('topPriceClass').textContent = topPrice.cls;
+            document.getElementById('topPriceValue').textContent = 'Rp ' + (topPrice.val === -1 ? 0 : topPrice.val).toLocaleString('id-ID');
+            document.getElementById('lowPriceClass').textContent = lowPrice.val === Infinity ? '-' : lowPrice.cls;
+            document.getElementById('lowPriceValue').textContent = 'Rp ' + (lowPrice.val === Infinity ? 0 : lowPrice.val).toLocaleString('id-ID');
+
+            document.getElementById('topProfitClass').textContent = topProfit.cls;
+            document.getElementById('topProfitValue').textContent = 'Rp ' + (topProfit.val === -Infinity ? 0 : topProfit.val).toLocaleString('id-ID');
+            document.getElementById('lowProfitClass').textContent = lowProfit.cls;
+            document.getElementById('lowProfitValue').textContent = 'Rp ' + (lowProfit.val === Infinity ? 0 : lowProfit.val).toLocaleString('id-ID');
+
+            const lossCont = document.getElementById('lossClassesList');
+            if (lossClasses.length > 0) {
+                lossCont.innerHTML = lossClasses.map(c => `<span class="px-2 py-0.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded text-[9px] font-black uppercase">${c}</span>`).join('');
+            } else {
+                lossCont.innerHTML = '<span class="text-[10px] text-slate-600 italic">Tidak ada</span>';
+            }
+        }
+
+        function renderPoTable() {
+            const start = (poPage - 1) * pageSize;
+            const end = start + pageSize;
+            const pageData = allClassNames.slice(start, end);
+            const totalPages = Math.ceil(allClassNames.length / pageSize);
+
+            let html = '', tFood = 0, tDrink = 0, tRp = 0;
+            // Calculate totals for ALL classes (not just page)
+            allClassNames.forEach(cls => {
+                const d = poDataMap[cls];
+                if (d) {
+                    tFood += d.food; tDrink += d.drink; tRp += (d.food * d.foodPrice) + (d.drink * d.drinkPrice);
+                }
+            });
+
+            pageData.forEach(cls => {
+                const d = poDataMap[cls] || { food: 0, foodPrice: 0, drink: 0, drinkPrice: 0 };
+                const classPoRp = (d.food * d.foodPrice) + (d.drink * d.drinkPrice);
+                html += `
+                    <tr class="hover:bg-slate-800/50 transition-colors">
+                        <td class="p-4 font-bold text-white text-xs">${cls}</td>
+                        <td class="p-4 text-center text-xs">
+                            <span class="${d.food > 0 ? 'text-slate-300' : 'text-slate-600'}">${d.food}</span>
+                            ${d.food > 0 ? `<span class="text-[9px] text-slate-500 block">@Rp${d.foodPrice.toLocaleString('id-ID')}</span>` : ''}
+                        </td>
+                        <td class="p-4 text-center text-xs">
+                            <span class="${d.drink > 0 ? 'text-slate-300' : 'text-slate-600'}">${d.drink}</span>
+                            ${d.drink > 0 ? `<span class="text-[9px] text-slate-500 block">@Rp${d.drinkPrice.toLocaleString('id-ID')}</span>` : ''}
+                        </td>
+                        <td class="p-4 text-right font-black ${classPoRp > 0 ? 'text-blue-500' : 'text-slate-600'} text-xs">Rp ${classPoRp.toLocaleString('id-ID')}</td>
+                    </tr>`;
+            });
+
+            document.getElementById('poSummaryBody').innerHTML = html || '<tr><td colspan="4" class="p-8 text-center text-slate-600 text-[10px] font-black">Data tidak tersedia</td></tr>';
+            document.getElementById('poSummaryFoot').innerHTML = allClassNames.length ? `<tr class="border-t-2 border-slate-700 bg-slate-900/80"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-center text-xs font-black">${tFood}</td><td class="p-4 text-center text-xs font-black">${tDrink}</td><td class="p-4 text-right text-xs font-black text-blue-400">Rp ${tRp.toLocaleString('id-ID')}</td></tr>` : '';
+
+            document.getElementById('poPageInfo').textContent = `Halaman ${poPage} dari ${totalPages}`;
+            document.getElementById('btnPoPrev').disabled = poPage === 1;
+            document.getElementById('btnPoNext').disabled = poPage >= totalPages;
+        }
+
+        function renderFinTable() {
+            const start = (finPage - 1) * pageSize;
+            const end = start + pageSize;
+            const pageData = allClassNames.slice(start, end);
+            const totalPages = Math.ceil(allClassNames.length / pageSize);
+
+            let html = '', tO = 0, tM = 0, tL = 0;
+            allClassNames.forEach(cls => {
+                const d = finDataMap[cls];
+                if (d) { tO += d.omzet; tM += d.modal; tL += d.laba; }
+            });
+
+            pageData.forEach(cls => {
+                const d = finDataMap[cls] || { omzet: 0, modal: 0, laba: 0 };
+                html += `
+                    <tr class="hover:bg-slate-800/50 transition-colors">
+                        <td class="p-4 font-bold text-white text-xs">${cls}</td>
+                        <td class="p-4 text-right text-xs ${d.omzet > 0 ? 'text-slate-300' : 'text-slate-600'}">Rp ${d.omzet.toLocaleString('id-ID')}</td>
+                        <td class="p-4 text-right text-xs ${d.modal > 0 ? 'text-slate-300' : 'text-slate-600'}">Rp ${d.modal.toLocaleString('id-ID')}</td>
+                        <td class="p-4 text-right font-black ${d.laba > 0 ? 'text-emerald-500' : (d.laba < 0 ? 'text-red-500' : 'text-slate-600')} text-xs">Rp ${d.laba.toLocaleString('id-ID')}</td>
+                    </tr>`;
+            });
+
+            document.getElementById('financeSummaryBody').innerHTML = html || '<tr><td colspan="4" class="p-8 text-center text-slate-600 text-[10px] font-black">Data tidak tersedia</td></tr>';
+            document.getElementById('financeSummaryFoot').innerHTML = allClassNames.length ? `<tr class="border-t-2 border-slate-700 bg-slate-900/80"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tO.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tM.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-amber-400">Rp ${tL.toLocaleString('id-ID')}</td></tr>` : '';
+
+            document.getElementById('finPageInfo').textContent = `Halaman ${finPage} dari ${totalPages}`;
+            document.getElementById('btnFinPrev').disabled = finPage === 1;
+            document.getElementById('btnFinNext').disabled = finPage >= totalPages;
+        }
+
+        function prevPoPage() { if (poPage > 1) { poPage--; renderPoTable(); } }
+        function nextPoPage() { if (poPage * pageSize < allClassNames.length) { poPage++; renderPoTable(); } }
+        function prevFinPage() { if (finPage > 1) { finPage--; renderFinTable(); } }
+        function nextFinPage() { if (finPage * pageSize < allClassNames.length) { finPage++; renderFinTable(); } }
 
         // --- USER LISTS ---
         async function loadCoordinatorList() {
