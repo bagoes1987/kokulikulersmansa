@@ -643,11 +643,26 @@
                 const { count: sCount } = await supabaseClient.from('students').select('*', { count: 'exact', head: true }).eq('kelas', cls);
                 const { data: students } = await supabaseClient.from('students').select('id').eq('kelas', cls);
                 const sIds = students.map(s => s.id);
-                const { count: rCount } = await supabaseClient.from('module_responses')
-                    .select('*', { count: 'exact', head: true })
+                const { data: allClassResponses } = await supabaseClient.from('module_responses')
+                    .select('student_id')
                     .in('student_id', sIds)
                     .eq('status', 'reviewed');
+
+                const rCount = allClassResponses ? allClassResponses.length : 0;
                 const pct = sCount > 0 ? Math.round((rCount / (sCount * 15)) * 100) : 0;
+
+                // Calculate Headcount (Siswa Tuntas)
+                const studentCompletionCounts = {};
+                if (allClassResponses) {
+                    allClassResponses.forEach(r => {
+                        studentCompletionCounts[r.student_id] = (studentCompletionCounts[r.student_id] || 0) + 1;
+                    });
+                }
+
+                let completedStudents = 0;
+                Object.values(studentCompletionCounts).forEach(count => {
+                    if (count >= 15) completedStudents++;
+                });
 
                 cont.innerHTML += `
                     <div onclick="openClassDetail('${cls}')" class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-50 flex items-center gap-5 cursor-pointer active:scale-95 transition-all">
@@ -663,7 +678,10 @@
                                 <div class="bg-emerald-500 h-full rounded-full transition-all duration-1000" style="width: ${pct}%"></div>
                             </div>
                             <div class="flex items-center justify-between mt-3">
-                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">${sCount} Siswa Aktif</p>
+                                <div class="flex gap-2">
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">${sCount} Siswa</p>
+                                    <p class="text-[9px] text-emerald-600 font-bold uppercase tracking-widest">• ${completedStudents} Tuntas (100%)</p>
+                                </div>
                                 <span class="material-symbols-outlined text-slate-300 text-sm">arrow_forward_ios</span>
                             </div>
                         </div>

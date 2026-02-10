@@ -448,6 +448,25 @@
                     </div>
                 </div>
 
+                <!-- Target Kelulusan Card (Siswa Tuntas) -->
+                <div
+                    class="bg-emerald-500 rounded-3xl p-6 text-white shadow-xl overflow-hidden relative group cursor-pointer active:scale-95 transition-transform mt-4">
+                    <div class="relative z-10 flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] text-white/70 font-black uppercase tracking-[0.2em] mb-1">Target
+                                Kelulusan</p>
+                            <p class="text-3xl font-black mt-1" id="completedCount">0 <span
+                                    class="text-sm font-medium text-white/60 ml-1">Siswa Tuntas</span></p>
+                        </div>
+                        <div class="bg-white/10 p-3 rounded-2xl backdrop-blur-md">
+                            <span class="material-symbols-outlined text-3xl">verified</span>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute -bottom-10 -right-10 size-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors">
+                    </div>
+                </div>
+
 
 
             </div>
@@ -796,10 +815,27 @@
 
                     if (sCount > 0) {
                         const ids = students.map(s => s.id);
-                        const { count: rCount } = await supabaseClient.from('module_responses')
-                            .select('*', { count: 'exact', head: true })
+                        const { data: allResponseData } = await supabaseClient.from('module_responses')
+                            .select('student_id')
                             .in('student_id', ids)
                             .eq('status', 'reviewed');
+
+                        const rCount = allResponseData ? allResponseData.length : 0;
+
+                        // Calculate Headcount (Siswa Tuntas)
+                        const studentCompletionCounts = {};
+                        if (allResponseData) {
+                            allResponseData.forEach(r => {
+                                studentCompletionCounts[r.student_id] = (studentCompletionCounts[r.student_id] || 0) + 1;
+                            });
+                        }
+
+                        let completedStudents = 0;
+                        Object.values(studentCompletionCounts).forEach(count => {
+                            if (count >= 15) completedStudents++;
+                        });
+
+                        document.getElementById('completedCount').innerHTML = `${completedStudents} <span class="text-sm font-medium text-white/60 ml-1">Siswa Tuntas (15 Modul)</span>`;
 
                         const progress = Math.round(((rCount || 0) / (sCount * 15)) * 100);
                         updateProgressUI(progress);
