@@ -679,8 +679,7 @@
                             </div>
                             <div class="flex items-center justify-between mt-3">
                                 <div class="flex gap-2">
-                                    <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">${sCount} Siswa</p>
-                                    <p class="text-[9px] text-emerald-600 font-bold uppercase tracking-widest">• ${completedStudents} Tuntas (100%)</p>
+                                    <p class="text-[9px] text-emerald-600 font-bold uppercase tracking-widest">• ${completedStudents} Tuntas (${sCount > 0 ? Math.round((completedStudents / sCount) * 100) : 0}%)</p>
                                 </div>
                                 <span class="material-symbols-outlined text-slate-300 text-sm">arrow_forward_ios</span>
                             </div>
