@@ -920,6 +920,249 @@
             </div>
         </div>
 
+        <!-- Modal Refleksi (Standard) -->
+        <div id="modalRefleksi"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-[2rem] w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div class="sticky top-0 bg-white border-b border-slate-100 p-6 rounded-t-[2rem] z-10">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="h-12 w-12 rounded-2xl bg-rose-500 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-white !text-2xl">self_improvement</span>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-black text-slate-900">Refleksi Harian</h2>
+                                <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Evaluasi Dirimu
+                                </p>
+                            </div>
+                        </div>
+                        <button onclick="closeRefleksiModal()" class="text-slate-400 hover:text-slate-600">
+                            <span class="material-symbols-outlined !text-2xl">close</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <form id="refleksiForm" class="space-y-4">
+                        <!-- Questions will be dynamically loaded or use standard fields -->
+                        <div id="refleksi-questions-container" class="space-y-4">
+                            <!-- Standard fields for compatibility -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700">Ceritakan pengalamanmu hari ini</label>
+                                <textarea name="refleksi_q1" required
+                                    class="w-full p-4 rounded-xl bg-slate-50 border-none text-sm min-h-[100px]"></textarea>
+                            </div>
+                            <!-- ... (Simplified for restoration, logic handles the rest) ... -->
+                        </div>
+                        <button type="button" onclick="submitRefleksi()"
+                            class="w-full py-4 rounded-xl bg-rose-500 text-white font-bold shadow-lg shadow-rose-200">Kirim
+                            Refleksi</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal BEP (Standard) -->
+        <div id="modalBEP"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-[2rem] w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div class="sticky top-0 bg-white border-b border-slate-100 p-6 rounded-t-[2rem] z-10">
+                    <div class="flex items-center gap-3">
+                        <div class="h-12 w-12 rounded-2xl bg-amber-500 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white !text-2xl">calculate</span>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-black text-slate-900">Analisis BEP</h2>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Hitung Titik Impas
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="closeBEPModal()" class="text-slate-400 hover:text-slate-600">
+                        <span class="material-symbols-outlined !text-2xl">close</span>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <!-- BEP Form Content -->
+                    <div id="bepFormContainer" class="space-y-4 text-sm">
+                        <p class="text-slate-500 italic">Formulir analisis modal dan perhitungan BEP...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Laporan Akhir -->
+        <div id="modalLaporanAkhir"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-[2rem] w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl">
+                <div class="sticky top-0 bg-white border-b border-slate-100 p-6 rounded-t-[2rem] z-10">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="h-12 w-12 rounded-2xl bg-emerald-500 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-white !text-2xl">assignment</span>
+                            </div>
+                            <div>
+                                <h2 class="text-lg font-black text-slate-900">Laporan Akhir</h2>
+                                <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">Rangkuman Projek
+                                </p>
+                            </div>
+                        </div>
+                        <button onclick="closeLaporanAkhirModal()" class="text-slate-400 hover:text-slate-600">
+                            <span class="material-symbols-outlined !text-2xl">close</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div id="laporanAkhirContent" class="space-y-4">
+                        <p class="text-slate-500">Memuat data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Refleksi Akhir (The New One) -->
+        <div id="modal-refleksi-akhir"
+            class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[250] hidden flex items-center justify-center p-4 animate-fade-in">
+            <div
+                class="bg-white rounded-[2.5rem] w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+                <!-- Header -->
+                <div class="p-6 border-b flex justify-between items-center bg-white z-10">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="size-12 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-lg shadow-rose-200">
+                            <span class="material-symbols-outlined !text-2xl">history_edu</span>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-black text-slate-800 leading-tight">Refleksi Akhir Projek</h2>
+                            <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">3 HARI •
+                                10
+                                PERTANYAAN NARATIF</p>
+                        </div>
+                    </div>
+                    <button onclick="closeRefleksiAkhirModal()"
+                        class="size-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-all">
+                        <span class="material-symbols-outlined !text-xl">close</span>
+                    </button>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6 space-y-6 overflow-y-auto no-scrollbar flex-1 bg-slate-50/50">
+                    <form id="refleksiAkhirForm" class="space-y-6">
+                        <!-- Q1 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">1. Kilas Balik Emosi</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Apa perasaan pertamamu saat
+                                memulai projek ini di Hari 1, dan bagaimana perasaan itu berubah setelah mencapai Hari
+                                3?</p>
+                            <textarea name="ra_q1" required placeholder="Ceritakan perasaanmu..."
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+
+                        <!-- Q2 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">2. Momen "AHA!"</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Dari semua materi yang
+                                dipelajari, hal baru apa yang paling membuatmu terkejut atau mengubah cara pandangmu
+                                tentang kewirausahaan?</p>
+                            <textarea name="ra_q2" required placeholder="Bagikan momen inspirasimu..."
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+
+                        <!-- Q3 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">3. Lembah Tantangan</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Ceritakan momen paling sulit yang
+                                kelompokmu hadapi saat proses pembuatan produk di Hari 2. Bagaimana kalian solusinya?
+                            </p>
+                            <textarea name="ra_q3" required placeholder="Jelaskan tantangan dan solusinya..."
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+
+                        <!-- Q4 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">4. Sang Inspirator</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Siapa orang (teman/guru/fasil)
+                                yang paling memberimu inspirasi selama projek ini, dan apa satu hal darinya yang paling
+                                kamu ingat?</p>
+                            <textarea name="ra_q4" required placeholder="Tuliskan apresiasimu..."
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+
+                        <!-- Q5 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">5. Andai Bisa Mengulang</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Jika kamu punya "mesin waktu" ke
+                                Hari 1, apa satu hal yang ingin kamu lakukan secara berbeda agar hasil projekmu lebih
+                                keren?</p>
+                            <textarea name="ra_q5" required placeholder="Andai saja..."
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+
+                        <!-- Q6 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">6. Panggung Puncak</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Bagaimana rasanya saat produkmu
+                                akhirnya dipamerkan di bazar Hari 3? Apa satu komentar pengunjung yang paling membuatmu
+                                bangga?</p>
+                            <textarea name="ra_q6" required placeholder="Gambarkan suasana bazar..."
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+
+                        <!-- Q7 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">7. Satu Skill Baru</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Sebutkan satu keahlian (misal:
+                                desain, negosiasi, atau masak) yang kamu rasa jauh lebih jago sekarang dibanding sebelum
+                                projek dimulai.</p>
+                            <textarea name="ra_q7" required placeholder="Apa skill barumu?"
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+
+                        <!-- Q8 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">8. Dinamika Tim</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Apa pelajaran terpenting tentang
+                                kerja tim yang kamu dapatkan? Apakah ada konflik yang justru membuat kalian makin
+                                kompak?</p>
+                            <textarea name="ra_q8" required placeholder="Ceritakan kerja sama timmu..."
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+
+                        <!-- Q9 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">9. Nilai Kebanggaan</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Seberapa bangga kamu dengan hasil
+                                akhir projekmu (skala 1-10)? Jelaskan alasan di balik angka tersebut.</p>
+                            <div class="flex items-center gap-4 mb-3">
+                                <input type="number" name="ra_q9_score" min="1" max="10" step="1" value="10"
+                                    class="w-24 p-4 rounded-2xl bg-slate-50 border-none text-sm font-black text-rose-500 focus:ring-2 focus:ring-rose-500 text-center">
+                                <span class="text-xs font-bold text-slate-400">/ 10 SKALA</span>
+                            </div>
+                            <textarea name="ra_q9" required placeholder="Jelaskan alasanmu..."
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+
+                        <!-- Q10 -->
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <label class="block text-sm font-bold text-slate-800 mb-2">10. Ide Semester Depan</label>
+                            <p class="text-[11px] text-slate-500 mb-3 leading-relaxed">Apa ide cemerlangmu untuk tema
+                                kegiatan kokurikuler di semester depan? Topik apa yang menurutmu paling asyik untuk
+                                dijadikan projek bersama?</p>
+                            <textarea name="ra_q10" required placeholder="Tuliskan ide kreatifmu..."
+                                class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-rose-500 min-h-[100px]"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Footer -->
+                <div class="p-6 bg-white border-t border-slate-100 z-10">
+                    <button id="btnSubmitRefleksiAkhir" onclick="submitRefleksiAkhir()"
+                        class="w-full py-4 rounded-2xl bg-rose-500 text-white font-black shadow-lg shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <span>Simpan & Kirim Refleksi</span>
+                        <span class="material-symbols-outlined text-sm">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Supabase -->
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -2264,6 +2507,51 @@
                     saveProgress();
                     checkExistingAnalisis();
                 } catch (err) { alert('Gagal mengirim laporan: ' + err.message); } finally { btn.disabled = false; btn.innerHTML = 'Kirim Laporan'; }
+            }
+
+            // --- ANALISIS BEP LOGIC ---
+            function openBEPModal() {
+                const modal = document.getElementById('modalBEP');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    checkExistingAnalisis();
+                }
+            }
+
+            function closeBEPModal() {
+                const modal = document.getElementById('modalBEP');
+                if (modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            }
+
+            async function checkExistingAnalisis() {
+                try {
+                    const { data: { user } } = await supabaseClient.auth.getUser();
+                    if (!user) return;
+
+                    const { data, error } = await supabaseClient
+                        .from('module_responses')
+                        .select('*')
+                        .eq('student_id', user.id)
+                        .eq('day_id', 2)
+                        .eq('module_type', 'bep_analisis')
+                        .maybeSingle();
+
+                    if (data) {
+                        const form = document.getElementById('bepFormContainer');
+                        if (form) {
+                            form.classList.add('opacity-70', 'pointer-events-none');
+                            if (document.getElementById('btnSubmitBEP')) document.getElementById('btnSubmitBEP').classList.add('hidden');
+                        }
+                        updateModuleUI('bep', 'submitted');
+                        if (data.status === 'reviewed') {
+                            updateModuleUI('bep', true, data.score || 0);
+                        }
+                    }
+                } catch (e) { console.error('Error checkExistingAnalisis:', e); }
             }
 
             // --- LAPORAN AKHIR LOGIC ---
@@ -6721,144 +7009,6 @@
 
         }
 
-        // ==========================================
-        // FITUR GLOSARIUM & FEEDBACK
-        // ==========================================
-
-        function openGlosariumModal() {
-            const modal = document.getElementById('modalGlosarium');
-            if (!modal) {
-                alert('Error: Modal Glosarium tidak ditemukan. Hubungi pengembang.');
-                return;
-            }
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            // Ensure z-index is top
-            modal.style.zIndex = '9999';
-            try {
-                checkExistingGlosarium();
-            } catch (e) {
-                console.error('Error fetching glosarium data:', e);
-            }
-        }
-
-        function closeGlosariumModal() {
-            document.getElementById('modalGlosarium').classList.add('hidden');
-            document.getElementById('modalGlosarium').classList.remove('flex');
-        }
-
-        async function submitGlosarium() {
-            const btn = document.getElementById('btnSubmitGlosarium');
-            const input = document.getElementById('glosariumInput').value;
-
-            if (input.trim().length < 20) {
-                alert('Mohon isi jawaban dengan lengkap minimal 5 poin/istilah.');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = 'Mengirim...';
-
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error("User tidak ditemukan");
-
-                const { error } = await supabaseClient
-                    .from('module_responses')
-                    .insert({
-                        student_id: user.id,
-                        day_id: currentDay,
-                        module_type: 'glosarium',
-                        answers: [input],
-                        status: 'submitted'
-                    });
-
-                if (error) throw error;
-
-                alert('Berhasil dikirim! Menunggu penilaian fasilitator.');
-
-                // Update progress lokal agar sinkron
-                const dayKey = `day${currentDay}`;
-                studentProgress[dayKey]['glosarium'] = false; // Tetap false agar show "Menunggu Feedback"
-                saveProgress();
-
-                checkAllModulesStatus();
-                closeGlosariumModal();
-                checkExistingGlosarium();
-
-            } catch (e) {
-                console.error(e);
-                alert('Gagal mengirim: ' + e.message);
-                btn.disabled = false;
-                btn.innerHTML = 'Kirim Jawaban';
-            }
-        }
-
-        async function checkExistingGlosarium() {
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) return;
-
-                const { data } = await supabaseClient
-                    .from('module_responses')
-                    .select('*')
-                    .eq('student_id', user.id)
-                    .eq('day_id', currentDay)
-                    .eq('module_type', 'glosarium')
-                    .maybeSingle();
-
-                if (data) {
-                    const input = document.getElementById('glosariumInput');
-                    const btn = document.getElementById('btnSubmitGlosarium');
-                    const statusSection = document.getElementById('glosariumStatusSection');
-
-                    if (input) {
-                        input.value = data.answers[0];
-                        input.disabled = true;
-                        input.classList.add('bg-slate-50', 'text-slate-500');
-                    }
-                    if (btn) btn.classList.add('hidden');
-
-                    if (statusSection) {
-                        statusSection.classList.remove('hidden');
-                        if (data.status === 'submitted') {
-                            statusSection.className = "mb-4 rounded-2xl border border-yellow-100 bg-yellow-50 p-4";
-                            statusSection.innerHTML = `
-                                <div class="flex items-center gap-3">
-                                    <div class="size-8 rounded-full bg-yellow-400 flex items-center justify-center text-white shrink-0 animate-pulse">
-                                        <span class="material-symbols-outlined text-sm">hourglass_top</span>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] font-black text-yellow-700 uppercase tracking-widest">Menunggu Penilaian</p>
-                                        <p class="text-[10px] text-yellow-600">Fasilitator akan memberikan bintang.</p>
-                                    </div>
-                                </div>
-                            `;
-                            updateModuleUI('glosarium', 'submitted');
-                        } else if (data.status === 'reviewed') {
-                            statusSection.className = "mb-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-4";
-                            let starsHtml = '';
-                            const score = data.score || 0;
-                            const starCount = Math.round(score / 20);
-                            for (let i = 1; i <= 5; i++) {
-                                starsHtml += `<span class="material-symbols-outlined text-xl ${i <= starCount ? 'text-amber-400 fill-current' : 'text-slate-200'}">star</span>`;
-                            }
-
-                            statusSection.innerHTML = `
-                                <div class="flex items-center justify-between mb-2">
-                                    <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Hasil Penilaian</p>
-                                    <div class="flex">${starsHtml}</div>
-                                </div>
-                                <div class="bg-white p-3 rounded-xl border border-emerald-100">
-                                    <p class="text-[10px] text-slate-500 italic">"${data.feedback || 'Terima kasih!'}"</p>
-                                </div>
-                            `;
-                            forceCompleteModule('glosarium', data.score);
-                        }
-                    }
-                }
-            } catch (e) { console.error(e); }
-        }
         async function checkExistingRefleksi() {
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
@@ -7322,7 +7472,58 @@
         }
 
         async function submitRefleksiAkhir() {
-            alert('Fitur pengiriman refleksi akhir akan segera aktif setelah daftar pertanyaan tersedia!');
+            const form = document.getElementById('refleksiAkhirForm');
+            const formData = new FormData(form);
+            const btn = document.getElementById('btnSubmitRefleksiAkhir');
+
+            // Validation
+            let isValid = true;
+            for (let i = 1; i <= 10; i++) {
+                if (!formData.get(`ra_q${i}`)) isValid = false;
+            }
+            if (!formData.get('ra_q9_score')) isValid = false;
+
+            if (!isValid) {
+                alert('Mohon lengkapi semua 10 pertanyaan refleksi sebelum mengirim.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> Mengirim...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error("Sesi login berakhir.");
+
+                const answers = {};
+                for (let i = 1; i <= 10; i++) {
+                    answers[`q${i}`] = formData.get(`ra_q${i}`);
+                }
+                answers['q9_score'] = formData.get('ra_q9_score');
+
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: 3,
+                        module_type: 'refleksi_akhir',
+                        answers: [JSON.stringify(answers)],
+                        status: 'submitted'
+                    });
+
+                if (error) throw error;
+
+                alert('Refleksi akhir berhasil disimpan! Terima kasih atas partisipasimu dalam projek ini. ❤️');
+                closeRefleksiAkhirModal();
+                checkExistingRefleksiAkhir();
+                checkAllModulesStatus();
+
+            } catch (err) {
+                console.error(err);
+                alert('Gagal mengirim: ' + err.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Simpan & Kirim Refleksi';
+            }
         }
 
     </script>
