@@ -1003,8 +1003,8 @@
                 if (rErr) throw rErr;
                 const rMap = {}; res.forEach(r => rMap[r.student_id] = r);
 
-                // New Order: No | NISN | NIS | Nama Siswa | Predikat | Deskripsi
-                let csv = 'No,NISN,NIS,Nama Siswa,Predikat,Deskripsi\n';
+                // Use semicolon (;) as separator for better compatibility with Indonesian Excel
+                let csv = 'sep=;\nNo;NISN;NIS;Nama Siswa;Predikat;Deskripsi\n';
 
                 const descriptors = {
                     'Mahir': 'Peserta didik sangat kreatif dalam menghasilkan gagasan orisinal dan inovatif pada pengembangan produk jajanan Nusantara yang sehat, bergizi dan kekinian. Mampu merumuskan solusi usaha secara matang serta melakukan perhitungan BEP dengan tepat untuk menilai kelayakan produk. Peserta didik juga mampu memanfaatkan teknologi digital secara optimal untuk pemasaran serta berkomunikasi secara efektif, santun, dan persuasif dalam mempresentasikan kandungan gizi produk sehingga menarik minat beli dan menunjukkan kepercayaan diri yang tinggi.',
@@ -1025,13 +1025,15 @@
 
                     const desc = descriptors[p];
 
-                    // Clean CSV values (remove newlines and quotes)
-                    const cleanName = s.nama.replace(/"/g, '""').replace(/\n/g, ' ');
-                    const cleanDesc = desc.replace(/"/g, '""').replace(/\n/g, ' ');
+                    // Clean CSV values (remove newlines and semicolons to avoid breaking columns)
+                    const cleanName = s.nama.replace(/;/g, ',').replace(/\n/g, ' ').replace(/"/g, '');
+                    const cleanDesc = desc.replace(/;/g, ',').replace(/\n/g, ' ');
 
-                    csv += `${i + 1},${s.nisn},${s.nis},"${cleanName}",${p},"${cleanDesc}"\n`;
+                    csv += `${i + 1};${s.nisn};${s.nis};${cleanName};${p};"${cleanDesc}"\n`;
                 });
-                const blob = new Blob([csv], { type: 'text/csv' });
+
+                // Add UTF-8 BOM for Excel
+                const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement("a");
                 link.href = URL.createObjectURL(blob);
                 link.download = `Rekap_Nilai_${cls}.csv`;
