@@ -1005,16 +1005,25 @@
 
                 // New Order: No | NISN | NIS | Nama Siswa | Predikat | Deskripsi
                 let csv = 'No,NISN,NIS,Nama Siswa,Predikat,Deskripsi\n';
+
+                const descriptors = {
+                    'Mahir': 'Peserta didik sangat kreatif dalam menghasilkan gagasan orisinal dan inovatif pada pengembangan produk jajanan Nusantara yang sehat, bergizi dan kekinian. Mampu merumuskan solusi usaha secara matang serta melakukan perhitungan BEP dengan tepat untuk menilai kelayakan produk. Peserta didik juga mampu memanfaatkan teknologi digital secara optimal untuk pemasaran serta berkomunikasi secara efektif, santun, dan persuasif dalam mempresentasikan kandungan gizi produk sehingga menarik minat beli dan menunjukkan kepercayaan diri yang tinggi.',
+                    'Cakap': 'Peserta didik menunjukkan kreativitas yang baik dalam mengembangkan produk jajanan Nusantara sehat dan bergizi. Mampu merumuskan solusi usaha sederhana dan melakukan perhitungan BEP meskipun masih memerlukan pendampingan. Dalam komunikasi, peserta didik sudah mampu mempresentasikan produk dan kandungan gizinya dengan cukup jelas dan beretika, serta mulai memanfaatkan teknologi digital untuk mendukung penyampaian informasi, namun daya tarik penyampaian masih perlu ditingkatkan.',
+                    'Berkembang': 'Peserta didik mulai mampu menunjukkan kreativitas dalam mengolah jajanan Nusantara menjadi produk yang lebih sehat dan bergizi, meskipun gagasan yang dihasilkan masih terbatas. Perhitungan BEP dan perumusan solusi usaha masih memerlukan bimbingan. Peserta didik mampu menyampaikan informasi produk secara sederhana dan masih memerlukan pendampingan dalam pemanfaatan teknologi digital, serta penguatan keterampilan komunikasi dan kepercayaan diri dalam presentasi.',
+                    'Belum Dinilai': '-'
+                };
+
                 students.sort((a, b) => a.nama.localeCompare(b.nama)).forEach((s, i) => {
                     const r = rMap[s.id];
                     let scoreVal = r ? (r.score || 0) : 0;
                     let stars = Math.round(scoreVal / 20);
                     let p = 'Belum Dinilai';
-                    let desc = r ? (r.feedback || '-') : '-';
 
                     if (stars >= 5) p = 'Mahir';
                     else if (stars >= 4) p = 'Cakap';
                     else if (stars >= 1) p = 'Berkembang';
+
+                    const desc = descriptors[p];
 
                     // Clean CSV values (remove newlines and quotes)
                     const cleanName = s.nama.replace(/"/g, '""').replace(/\n/g, ' ');
