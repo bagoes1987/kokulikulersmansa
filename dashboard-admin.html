@@ -995,22 +995,32 @@
             const cls = document.getElementById('exportClassSelect').value;
             if (!cls) return alert("Pilih kelas");
             try {
-                const { data: students, error: sErr } = await supabaseClient.from('students').select('id, nama, nisn').eq('kelas', cls);
+                const { data: students, error: sErr } = await supabaseClient.from('students').select('id, nama, nisn, nis').eq('kelas', cls);
                 if (sErr) throw sErr;
                 const ids = students.map(s => s.id);
-                // Fix: Fetch 'score' instead of 'stars' which doesn't exist
-                const { data: res, error: rErr } = await supabaseClient.from('module_responses').select('student_id, score').in('student_id', ids).eq('module_type', 'laporan_akhir');
+                // Fix: Fetch 'score' and 'feedback'
+                const { data: res, error: rErr } = await supabaseClient.from('module_responses').select('student_id, score, feedback').in('student_id', ids).eq('module_type', 'laporan_akhir');
                 if (rErr) throw rErr;
                 const rMap = {}; res.forEach(r => rMap[r.student_id] = r);
-                let csv = 'No,Nama,NISN,Predikat,Bintang\n';
+
+                // New Order: No | NISN | NIS | Nama Siswa | Predikat | Deskripsi
+                let csv = 'No,NISN,NIS,Nama Siswa,Predikat,Deskripsi\n';
                 students.sort((a, b) => a.nama.localeCompare(b.nama)).forEach((s, i) => {
                     const r = rMap[s.id];
-                    // Convert score (0-100) to stars (0-5)
                     let scoreVal = r ? (r.score || 0) : 0;
                     let stars = Math.round(scoreVal / 20);
                     let p = 'Belum Dinilai';
-                    if (stars >= 5) p = 'Mahir'; else if (stars >= 4) p = 'Cakap'; else if (stars >= 1) p = 'Berkembang';
-                    csv += `${i + 1},"${s.nama}","${s.nisn}",${p},${stars}\n`;
+                    let desc = r ? (r.feedback || '-') : '-';
+
+                    if (stars >= 5) p = 'Mahir';
+                    else if (stars >= 4) p = 'Cakap';
+                    else if (stars >= 1) p = 'Berkembang';
+
+                    // Clean CSV values (remove newlines and quotes)
+                    const cleanName = s.nama.replace(/"/g, '""').replace(/\n/g, ' ');
+                    const cleanDesc = desc.replace(/"/g, '""').replace(/\n/g, ' ');
+
+                    csv += `${i + 1},'${s.nisn},'${s.nis},"${cleanName}",${p},"${cleanDesc}"\n`;
                 });
                 const blob = new Blob([csv], { type: 'text/csv' });
                 const link = document.createElement("a");
