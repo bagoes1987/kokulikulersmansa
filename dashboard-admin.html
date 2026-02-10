@@ -588,23 +588,33 @@
                 if (poRes.error) throw poRes.error;
                 if (finRes.error) throw finRes.error;
 
-                // Logika First-In: Map data per kelas
+                // Logika Pemetaan: Map data per kelas (Prioritaskan respon dengan kuantitas > 0)
                 poDataMap = {};
                 poRes.data.forEach(r => {
                     const studentInfo = studentClassMap[r.student_id];
                     const cls = studentInfo ? studentInfo.kelas : null;
-                    if (cls && !poDataMap[cls]) {
+                    if (cls) {
                         try {
                             const ans = JSON.parse(r.answers[0]);
-                            poDataMap[cls] = {
-                                submitter: studentInfo.nama,
-                                foodName: ans.nama_produk || '-',
-                                food: parseInt(ans.po_makanan_qty) || 0,
-                                foodPrice: parseInt(ans.po_makanan_harga) || 0,
-                                drinkName: ans.nama_minuman || '-',
-                                drink: parseInt(ans.po_minuman_qty) || 0,
-                                drinkPrice: parseInt(ans.po_minuman_harga) || 0
-                            };
+                            const newFoodQty = parseInt(ans.po_makanan_qty) || 0;
+                            const newDrinkQty = parseInt(ans.po_minuman_qty) || 0;
+                            const newTotal = newFoodQty + newDrinkQty;
+
+                            // Jika belum ada data ATAU jika data yang ada saat ini kosong (qty 0) sedang data baru ada isinya (> 0)
+                            const existing = poDataMap[cls];
+                            const existingTotal = existing ? (existing.food + existing.drink) : -1;
+
+                            if (!existing || (existingTotal === 0 && newTotal > 0)) {
+                                poDataMap[cls] = {
+                                    submitter: studentInfo.nama,
+                                    foodName: ans.nama_produk || '-',
+                                    food: newFoodQty,
+                                    foodPrice: parseInt(ans.po_makanan_harga) || 0,
+                                    drinkName: ans.nama_minuman || '-',
+                                    drink: newDrinkQty,
+                                    drinkPrice: parseInt(ans.po_minuman_harga) || 0
+                                };
+                            }
                         } catch (e) { }
                     }
                 });
