@@ -861,12 +861,12 @@
 
                         let completedStudents = 0;
                         Object.values(studentCompletionCounts).forEach(count => {
-                            if (count >= 15) completedStudents++;
+                            if (count >= 17) completedStudents++;
                         });
 
-                        document.getElementById('completedCount').innerHTML = `${completedStudents} <span class="text-sm font-medium text-white/60 ml-1">Siswa Tuntas (15 Modul)</span>`;
+                        document.getElementById('completedCount').innerHTML = `${completedStudents} <span class="text-sm font-medium text-white/60 ml-1">Siswa Tuntas (17 Modul)</span>`;
 
-                        const rawProgress = ((rCount || 0) / (sCount * 15)) * 100;
+                        const rawProgress = ((rCount || 0) / (sCount * 17)) * 100;
                         const progress = Math.min(100, Math.round(rawProgress));
                         updateProgressUI(progress);
 
@@ -970,7 +970,7 @@
                     const nameColor = pending ? 'text-slate-900 font-black' : 'text-slate-700 font-bold';
 
                     // Cap progress visual at 100% just in case
-                    const progressPct = Math.min(100, Math.round((comp / 15) * 100));
+                    const progressPct = Math.min(100, Math.round((comp / 17) * 100));
 
                     return `
                     <div onclick="X_OPEN_STUDENT_STATUS_X(this)" 
@@ -996,7 +996,7 @@
                                             <div class="flex-1 h-2 bg-slate-200/60 rounded-full overflow-hidden">
                                                 <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.4)]" style="width: ${progressPct}%"></div>
                                             </div>
-                                            <p class="text-[10px] text-slate-500 font-black uppercase tracking-wider whitespace-nowrap">${comp}/15</p>
+                                            <p class="text-[10px] text-slate-500 font-black uppercase tracking-wider whitespace-nowrap">${comp}/17</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1102,9 +1102,11 @@
                             modulesHtml += renderModuleItem(sid, snama, day, 'bep_analisis', responses);
                         }
 
-                        // Laporan Akhir (Day 3)
+                        // Laporan Akhir & Refleksi Akhir & Cerita Kecil (Day 3)
                         if (day === 3) {
                             modulesHtml += renderModuleItem(sid, snama, day, 'laporan_akhir', responses);
+                            modulesHtml += renderModuleItem(sid, snama, day, 'refleksi_akhir', responses);
+                            modulesHtml += renderModuleItem(sid, snama, day, 'cerita_kecil', responses);
                         }
 
                         // Glosarium & Refleksi (Day 1 only)
@@ -1158,7 +1160,9 @@
                         'glosarium': { label: 'Glosarium', icon: 'menu_book', color: 'cyan' },
                         'refleksi': { label: 'Refleksi', icon: 'self_improvement', color: 'rose' },
                         'bep_analisis': { label: 'Laporan Modal', icon: 'analytics', color: 'pink' },
-                        'laporan_akhir': { label: 'Laporan Akhir', icon: 'receipt_long', color: 'emerald' }
+                        'laporan_akhir': { label: 'Laporan Akhir', icon: 'receipt_long', color: 'emerald' },
+                        'refleksi_akhir': { label: 'Refleksi Akhir', icon: 'history_edu', color: 'rose' },
+                        'cerita_kecil': { label: 'Cerita Kecilku', icon: 'auto_stories', color: 'indigo' }
                     };
                     const c = config[type] || { label: type, icon: 'task', color: 'slate' };
 
@@ -1343,7 +1347,9 @@
                         'kuis': 'Assessment',
                         'video': 'Video Belajar',
                         'glosarium': 'Glosarium',
-                        'refleksi': 'Refleksi'
+                        'refleksi': 'Refleksi',
+                        'refleksi_akhir': 'Refleksi Akhir',
+                        'cerita_kecil': 'Cerita Kecilku'
                     };
                     document.getElementById('gradingModuleTitle').textContent = `HARI ${r.day_id} • ${typeLabels[r.module_type] || r.module_type.toUpperCase()}`;
 
@@ -1424,6 +1430,90 @@
                             </div>
                             `;
                         }
+
+                    } else if (r.module_type === 'cerita_kecil') {
+                        // Display Cerita Kecilku Results
+                        let payload = {};
+                        try {
+                            payload = JSON.parse(answers[0]);
+                        } catch (e) {
+                            console.error('Error parsing Cerita Kecil JSON', e);
+                            payload = { story: answers[0], photo_url: '' };
+                        }
+
+                        answerCont.innerHTML = `
+                        <div class="space-y-4">
+                            <div class="bg-indigo-50 p-4 rounded-3xl border border-indigo-100">
+                                <p class="text-[8px] font-black text-indigo-400 uppercase tracking-widest mb-3">Foto Kenangan Hari 3</p>
+                                ${payload.photo_url ? `
+                                    <a href="${payload.photo_url}" target="_blank" class="block w-full">
+                                        <img src="${payload.photo_url}" class="w-full max-h-[300px] object-contain rounded-2xl shadow-lg border-4 border-white hover:scale-[1.02] transition-transform" alt="Cerita Kecil Photo">
+                                    </a>
+                                    <p class="text-[9px] text-indigo-300 mt-2 italic text-center">Klik foto untuk memperbesar</p>
+                                ` : `
+                                    <div class="w-full h-32 bg-slate-100 rounded-2xl flex items-center justify-center">
+                                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Tidak Ada Foto</span>
+                                    </div>
+                                `}
+                            </div>
+                            <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="material-symbols-outlined text-indigo-500 text-sm">auto_stories</span>
+                                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Cerita Pengalaman</p>
+                                </div>
+                                <p class="text-[13px] text-slate-700 font-medium leading-relaxed italic whitespace-pre-wrap">"${payload.story || '-'}"</p>
+                            </div>
+                        </div>
+                        `;
+
+                    } else if (r.module_type === 'refleksi_akhir') {
+                        // Display Refleksi Akhir Results (10 Questions)
+                        let payload = {};
+                        try {
+                            payload = JSON.parse(answers[0]);
+                        } catch (e) { console.error('Error parsing Refleksi Akhir JSON', e); }
+
+                        const questions = [
+                            { q: 'Pencapaian Terbesar', p: 'Apa satu hal paling membanggakan yang kamu dan timmu berhasil buat di projek ini?' },
+                            { q: 'Hambatan Utama', p: 'Apa tantangan tersulit yang kamu hadapi, dan bagaimana caramu tetap semangat menghadapinya?' },
+                            { q: 'Keajaiban Kerja Sama', p: 'Sebutkan satu momen di mana timmu merasa sangat kompak dan saling bantu.' },
+                            { q: 'Sang Inspirator', p: 'Siapa orang yang paling memberimu inspirasi selama projek ini?' },
+                            { q: 'Andai Bisa Mengulang', p: 'Jika kamu punya "mesin waktu" ke Hari 1, apa satu hal yang ingin kamu lakukan secara berbeda?' },
+                            { q: 'Panggung Puncak', p: 'Bagaimana rasanya saat produkmu akhirnya dipamerkan di bazar Hari 3?' },
+                            { q: 'Satu Skill Baru', p: 'Sebutkan satu keahlian yang kamu rasa jauh lebih jago sekarang.' },
+                            { q: 'Dinamika Tim', p: 'Apa pelajaran terpenting tentang kerja tim yang kamu dapatkan?' },
+                            { q: 'Nilai Kebanggaan', p: 'Seberapa bangga kamu dengan hasil akhir projekmu (skala 1-10)?' },
+                            { q: 'Ide Semester Depan', p: 'Apa ide cemerlangmu untuk tema kegiatan kokurikuler di semester depan?' }
+                        ];
+
+                        let quesHtml = '';
+                        questions.forEach((item, idx) => {
+                            const ans = payload[`q${idx + 1}`] || '-';
+                            const scoreExtra = (idx === 8) ? ` <span class="ml-2 text-rose-500 font-black">[ ${payload['q9_score'] || 10} / 10 ]</span>` : '';
+                            quesHtml += `
+                            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+                                <div class="flex items-start gap-3">
+                                    <span class="size-6 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center text-[10px] font-black shrink-0">${idx + 1}</span>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-[11px] font-black text-slate-800 uppercase tracking-tight leading-none mb-1">${item.q}${scoreExtra}</p>
+                                        <p class="text-[9px] text-slate-400 mb-2 leading-tight">${item.p}</p>
+                                        <p class="text-xs text-slate-600 font-medium leading-relaxed italic border-l-2 border-rose-100 pl-3">"${ans}"</p>
+                                    </div>
+                                </div>
+                            </div>`;
+                        });
+
+                        answerCont.innerHTML = `
+                        <div class="space-y-3">
+                            <div class="bg-rose-50/50 p-4 rounded-2xl border border-rose-100 flex items-center gap-3">
+                                <span class="material-symbols-outlined text-rose-500">history_edu</span>
+                                <p class="text-[10px] font-bold text-rose-700 uppercase tracking-widest">10 Evaluasi Perjalanan Projek</p>
+                            </div>
+                            <div class="grid grid-cols-1 gap-3">
+                                ${quesHtml}
+                            </div>
+                        </div>
+                        `;
 
                     } else if (r.module_type === 'laporan_akhir' || r.module_type === 'bep_analisis') {
                         // Special display for Final Report / BEP Analysis (Financial data)

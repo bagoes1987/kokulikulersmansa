@@ -318,6 +318,25 @@
                     </div>
                 </div>
 
+                <!-- Cerita Kecilku Hari Ini (Day 3 Only) -->
+                <div id="module-cerita-kecil" onclick="handleModuleClick('cerita-kecil')" style="display: none;"
+                    class="bg-indigo-50/50 p-4 rounded-[24px] ios-shadow border border-indigo-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                        <span class="material-symbols-outlined !text-2xl">auto_stories</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Cerita Kecilku Hari Ini</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-cerita-kecil">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-cerita-kecil">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- Refleksi -->
                 <div id="module-refleksi" onclick="openRefleksiModal()"
                     class="bg-rose-50/50 p-4 rounded-[24px] ios-shadow border border-rose-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
@@ -1176,6 +1195,8 @@
             const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impuc3Fxc3dwa2lneXpld25idmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NjA3NDIsImV4cCI6MjA4NTIzNjc0Mn0.RrjPnddC55Xv9CLCtG8-1RyDmEkYg_04tHeKqRE7pok';
             const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+            // Versi Storage untuk pembaruan paksa (Naik ke 2.4 untuk Cerita Kecil)
+            const STORAGE_VERSION = '2.4';
             let currentDay = 1;
 
             // Struktur data progress default (Cleaned up for Day 2 & 3)
@@ -1185,7 +1206,7 @@
             const defaultProgress = {
                 day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
                 day2: { pemantik: false, materi: false, bep: false, dokumentasi: false },
-                day3: { pemantik: false, dokumentasi: false, 'laporan-akhir': false, 'refleksi-akhir': false }
+                day3: { pemantik: false, dokumentasi: false, 'laporan-akhir': false, 'refleksi-akhir': false, 'cerita-kecil': false }
             };
 
             let studentProgress = JSON.parse(JSON.stringify(defaultProgress));
@@ -1350,8 +1371,8 @@
                             if (Object.keys(studentProgress.day1).length !== 8) isCorrupted = true;
                             // Check Day 2 (4 modules)
                             if (Object.keys(studentProgress.day2).length !== 4) isCorrupted = true;
-                            // Check Day 3 (4 modules)
-                            if (Object.keys(studentProgress.day3).length !== 4) isCorrupted = true;
+                            // Check Day 3 (5 modules) - updated from 4 to 5
+                            if (Object.keys(studentProgress.day3).length !== 5) isCorrupted = true;
                         }
 
                         if (isCorrupted) {
@@ -1438,6 +1459,14 @@
                 }
                 if (moduleId === 'laporan-akhir') {
                     openLaporanAkhirModal();
+                    return;
+                }
+                if (moduleId === 'refleksi-akhir') {
+                    openRefleksiAkhirModal();
+                    return;
+                }
+                if (moduleId === 'cerita-kecil') {
+                    openCeritaKecilModal();
                     return;
                 }
 
@@ -1544,6 +1573,16 @@
                         rfModule.style.display = '';
                     } else {
                         rfModule.style.display = 'none';
+                    }
+                }
+
+                // Cerita Kecil Module Visibility (Only Day 3)
+                const ckModule = document.getElementById('module-cerita-kecil');
+                if (ckModule) {
+                    if (currentDay === 3) {
+                        ckModule.style.display = '';
+                    } else {
+                        ckModule.style.display = 'none';
                     }
                 }
 
@@ -7523,6 +7562,151 @@
                 alert('Gagal mengirim: ' + err.message);
                 btn.disabled = false;
                 btn.innerHTML = 'Simpan & Kirim Refleksi';
+            }
+        }
+
+        // --- CERITA KECILKU HARI INI LOGIC (DAY 3) ---
+        let currentCeritaPhoto = null;
+
+        function openCeritaKecilModal() {
+            document.getElementById('modalCeritaKecil').classList.remove('hidden');
+            document.getElementById('modalCeritaKecil').classList.add('flex');
+            checkExistingCeritaKecil();
+        }
+
+        function closeCeritaKecilModal() {
+            document.getElementById('modalCeritaKecil').classList.add('hidden');
+            document.getElementById('modalCeritaKecil').classList.remove('flex');
+        }
+
+        async function handleCeritaPhoto(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const areaUpload = document.getElementById('areaUploadCerita');
+            const areaPreview = document.getElementById('areaPreviewCerita');
+            const previewImg = document.getElementById('previewCeritaImage');
+
+            // Optimistic loading state
+            areaUpload.innerHTML = '<div class="animate-spin size-8 border-4 border-indigo-500 border-t-transparent rounded-full mb-3"></div><p class="text-xs font-bold text-indigo-400">Memproses Foto...</p>';
+
+            try {
+                // Gunakan utility compressImage yang sudah ada di file ini (jika ada)
+                // Jika tidak ada, gunakan logika standar
+                const compressed = await compressImage(file, 800, 0.7);
+                currentCeritaPhoto = compressed;
+
+                previewImg.src = URL.createObjectURL(compressed);
+                areaUpload.classList.add('hidden');
+                areaPreview.classList.remove('hidden');
+            } catch (e) {
+                console.error(e);
+                alert('Gagal memproses foto.');
+                areaUpload.innerHTML = '<div class="size-14 rounded-full bg-white text-indigo-500 flex items-center justify-center mb-3 shadow-md group-hover:scale-110 transition-transform"><span class="material-symbols-outlined text-3xl">add_a_photo</span></div><p class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Pilih Foto</p>';
+            }
+        }
+
+        async function submitCeritaKecil() {
+            const storyText = document.getElementById('textCerita').value.trim();
+            const btn = document.getElementById('btnSaveCerita');
+
+            if (!currentCeritaPhoto && !document.getElementById('previewCeritaImage').src.startsWith('http')) {
+                alert('Silakan ambil atau pilih satu foto kenangan hari ini.');
+                return;
+            }
+
+            if (storyText.length < 50) {
+                alert('Ceritakan lebih banyak pengalamanmu hari ini (minimal 50 karakter).');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> Menyimpan...';
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error("Sesi habis.");
+
+                let photoUrl = document.getElementById('previewCeritaImage').src;
+
+                // 1. Upload Photo to Storage if new
+                if (currentCeritaPhoto) {
+                    const fileName = `${user.id}_cerita_${Date.now()}.jpg`;
+                    const { data: uploadData, error: uploadErr } = await supabaseClient.storage
+                        .from('dokumentasi')
+                        .upload(`cerita/${fileName}`, currentCeritaPhoto);
+
+                    if (uploadErr) throw uploadErr;
+
+                    const { data: urlData } = supabaseClient.storage
+                        .from('dokumentasi')
+                        .getPublicUrl(`cerita/${fileName}`);
+
+                    photoUrl = urlData.publicUrl;
+                }
+
+                // 2. Save to DB
+                const answers = JSON.stringify({
+                    story: storyText,
+                    photo_url: photoUrl
+                });
+
+                const { error: dbErr } = await supabaseClient
+                    .from('module_responses')
+                    .insert({
+                        student_id: user.id,
+                        day_id: 3,
+                        module_type: 'cerita_kecil',
+                        answers: [answers],
+                        status: 'submitted'
+                    });
+
+                if (dbErr) throw dbErr;
+
+                alert('Cerita kenanganmu berhasil disimpan! ✨');
+                closeCeritaKecilModal();
+                checkAllModulesStatus();
+
+            } catch (err) {
+                console.error(err);
+                alert('Gagal menyimpan cerita: ' + err.message);
+                btn.disabled = false;
+                btn.innerHTML = 'Simpan Kenangan <span class="material-symbols-outlined text-sm">auto_stories</span>';
+            }
+        }
+
+        async function checkExistingCeritaKecil() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', 3)
+                    .eq('module_type', 'cerita_kecil')
+                    .maybeSingle();
+
+                if (data) {
+                    const payload = JSON.parse(data.answers[0]);
+                    document.getElementById('textCerita').value = payload.story;
+                    document.getElementById('previewCeritaImage').src = payload.photo_url;
+
+                    document.getElementById('areaUploadCerita').classList.add('hidden');
+                    document.getElementById('areaPreviewCerita').classList.remove('hidden');
+
+                    const btn = document.getElementById('btnSaveCerita');
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="material-symbols-outlined text-sm">check_circle</span> Kenangan Tersimpan';
+
+                    document.getElementById('textCerita').disabled = true;
+                    document.getElementById('inputCeritaPhoto').disabled = true;
+
+                    updateModuleUI('cerita-kecil', 'submitted');
+                }
+            } catch (e) {
+                console.error('Error checkExistingCeritaKecil:', e);
             }
         }
 

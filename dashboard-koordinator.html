@@ -657,7 +657,7 @@
                 });
 
                 const rCount = uniqueCompleted.size;
-                const progress = count > 0 ? Math.round((rCount / (count * 15)) * 100) : 0;
+                const progress = count > 0 ? Math.round((rCount / (count * 17)) * 100) : 0;
                 // Clamp max 100
                 const clampedProgress = Math.min(100, progress);
 
@@ -695,7 +695,7 @@
                 });
 
                 const rCount = uniqueClassModules.size;
-                const progress = sCount > 0 ? Math.round((rCount / (sCount * 15)) * 100) : 0;
+                const progress = sCount > 0 ? Math.round((rCount / (sCount * 17)) * 100) : 0;
                 const pct = Math.min(100, progress);
 
                 // Calculate Headcount (Siswa Tuntas)
@@ -708,7 +708,7 @@
 
                 let completedStudents = 0;
                 Object.values(studentCompletionCounts).forEach(count => {
-                    if (count >= 15) completedStudents++;
+                    if (count >= 17) completedStudents++;
                 });
 
                 cont.innerHTML += `
@@ -782,7 +782,7 @@
                     });
 
                     const comp = uniqueCompleted.size;
-                    const pct = Math.min(100, Math.round((comp / 15) * 100));
+                    const pct = Math.min(100, Math.round((comp / 17) * 100));
 
                     const pending = sRes.some(r => r.status === 'submitted');
                     const initials = s.nama.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
@@ -850,7 +850,7 @@
                 });
                 const rCount = uniqueSet.size;
 
-                const rawPct = sCount > 0 ? Math.round((rCount / (sCount * 15)) * 100) : 0;
+                const rawPct = sCount > 0 ? Math.round((rCount / (sCount * 17)) * 100) : 0;
                 const pct = Math.min(100, rawPct);
                 dataPoints.push(pct);
                 grid.innerHTML += `
