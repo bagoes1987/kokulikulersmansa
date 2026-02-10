@@ -124,7 +124,7 @@
                                 <th class="p-4">Kelas</th>
                                 <th class="p-4 text-center">PO Makanan</th>
                                 <th class="p-4 text-center">PO Minuman</th>
-                                <th class="p-4 text-right">Total Kelas</th>
+                                <th class="p-4 text-right">Pemasukan PO</th>
                             </tr>
                         </thead>
                         <tbody id="poSummaryBody" class="divide-y divide-slate-700/50">
@@ -437,7 +437,9 @@
                             const ans = JSON.parse(r.answers[0]);
                             poDataByClass[classId] = {
                                 food: parseInt(ans.po_makanan_qty) || 0,
+                                foodPrice: parseInt(ans.po_makanan_harga) || 0,
                                 drink: parseInt(ans.po_minuman_qty) || 0,
+                                drinkPrice: parseInt(ans.po_minuman_harga) || 0,
                                 updated_at: r.updated_at
                             };
                         } catch (e) { }
@@ -460,14 +462,27 @@
 
                 const poBody = document.getElementById('poSummaryBody');
                 const poFoot = document.getElementById('poSummaryFoot');
-                let poHtml = '', totalFood = 0, totalDrink = 0;
+                let poHtml = '', totalFood = 0, totalDrink = 0, totalPoRp = 0;
                 Object.keys(poDataByClass).sort().forEach(cls => {
                     const d = poDataByClass[cls];
-                    totalFood += d.food; totalDrink += d.drink;
-                    poHtml += `<tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 font-bold text-white text-xs">${cls}</td><td class="p-4 text-center text-slate-300 text-xs">${d.food}</td><td class="p-4 text-center text-slate-300 text-xs">${d.drink}</td><td class="p-4 text-right font-black text-blue-500 text-xs">${d.food + d.drink}</td></tr>`;
+                    const classPoRp = (d.food * d.foodPrice) + (d.drink * d.drinkPrice);
+                    totalFood += d.food; totalDrink += d.drink; totalPoRp += classPoRp;
+                    poHtml += `
+                        <tr class="hover:bg-slate-800/50 transition-colors">
+                            <td class="p-4 font-bold text-white text-xs">${cls}</td>
+                            <td class="p-4 text-center text-xs">
+                                <span class="text-slate-300">${d.food}</span>
+                                <span class="text-[9px] text-slate-500 block">@Rp${d.foodPrice.toLocaleString('id-ID')}</span>
+                            </td>
+                            <td class="p-4 text-center text-xs">
+                                <span class="text-slate-300">${d.drink}</span>
+                                <span class="text-[9px] text-slate-500 block">@Rp${d.drinkPrice.toLocaleString('id-ID')}</span>
+                            </td>
+                            <td class="p-4 text-right font-black text-blue-500 text-xs">Rp ${classPoRp.toLocaleString('id-ID')}</td>
+                        </tr>`;
                 });
                 poBody.innerHTML = poHtml || '<tr><td colspan="4" class="p-8 text-center text-slate-500 text-[10px] font-black uppercase">Belum ada data PO</td></tr>';
-                poFoot.innerHTML = poHtml ? `<tr class="border-t-2 border-slate-700 bg-slate-800/50"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-center text-xs font-black">${totalFood}</td><td class="p-4 text-center text-xs font-black">${totalDrink}</td><td class="p-4 text-right text-xs font-black text-blue-400">${totalFood + totalDrink}</td></tr>` : '';
+                poFoot.innerHTML = poHtml ? `<tr class="border-t-2 border-slate-700 bg-slate-800/50"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-center text-xs font-black">${totalFood}</td><td class="p-4 text-center text-xs font-black">${totalDrink}</td><td class="p-4 text-right text-xs font-black text-blue-400">Rp ${totalPoRp.toLocaleString('id-ID')}</td></tr>` : '';
 
                 const finBody = document.getElementById('financeSummaryBody');
                 const finFoot = document.getElementById('financeSummaryFoot');
