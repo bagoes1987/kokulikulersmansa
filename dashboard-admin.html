@@ -415,8 +415,8 @@
         let allClassNames = [];
         let poDataMap = {};
         let finDataMap = {};
-        let poPage = 1, finPage = 1;
-        const pageSize = 10;
+        let poGradeIdx = 0, finGradeIdx = 0;
+        const grades = ['X', 'XI', 'XII'];
 
         // Fungsi Sorting Kelas Natural (X.1 -> X.11 -> XI.1)
         function naturalClassSort(a, b) {
@@ -555,7 +555,7 @@
                 updateAnalyticsAndGlobalStats();
 
                 // 4. Render Tables
-                poPage = 1; finPage = 1;
+                poGradeIdx = 0; finGradeIdx = 0;
                 renderPoTable();
                 renderFinTable();
 
@@ -625,10 +625,8 @@
         }
 
         function renderPoTable() {
-            const start = (poPage - 1) * pageSize;
-            const end = start + pageSize;
-            const pageData = allClassNames.slice(start, end);
-            const totalPages = Math.ceil(allClassNames.length / pageSize);
+            const currentGrade = grades[poGradeIdx];
+            const pageData = allClassNames.filter(cls => cls.startsWith(currentGrade + '.'));
 
             let html = '', tFood = 0, tDrink = 0, tRp = 0;
             // Calculate totals for ALL classes (not just page)
@@ -657,19 +655,17 @@
                     </tr>`;
             });
 
-            document.getElementById('poSummaryBody').innerHTML = html || '<tr><td colspan="4" class="p-8 text-center text-slate-600 text-[10px] font-black">Data tidak tersedia</td></tr>';
-            document.getElementById('poSummaryFoot').innerHTML = allClassNames.length ? `<tr class="border-t-2 border-slate-700 bg-slate-900/80"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-center text-xs font-black">${tFood}</td><td class="p-4 text-center text-xs font-black">${tDrink}</td><td class="p-4 text-right text-xs font-black text-blue-400">Rp ${tRp.toLocaleString('id-ID')}</td></tr>` : '';
+            document.getElementById('poSummaryBody').innerHTML = html || '<tr><td colspan="4" class="p-8 text-center text-slate-600 text-[10px] font-black uppercase animate-pulse">Data tidak tersedia untuk Angkatan ' + currentGrade + '</td></tr>';
+            document.getElementById('poSummaryFoot').innerHTML = allClassNames.length ? `<tr class="border-t-2 border-slate-700 bg-slate-900/80"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Sekolah</td><td class="p-4 text-center text-xs font-black">${tFood}</td><td class="p-4 text-center text-xs font-black">${tDrink}</td><td class="p-4 text-right text-xs font-black text-blue-400">Rp ${tRp.toLocaleString('id-ID')}</td></tr>` : '';
 
-            document.getElementById('poPageInfo').textContent = `Halaman ${poPage} dari ${totalPages}`;
-            document.getElementById('btnPoPrev').disabled = poPage === 1;
-            document.getElementById('btnPoNext').disabled = poPage >= totalPages;
+            document.getElementById('poPageInfo').textContent = `Angkatan ${currentGrade}`;
+            document.getElementById('btnPoPrev').disabled = poGradeIdx === 0;
+            document.getElementById('btnPoNext').disabled = poGradeIdx >= grades.length - 1;
         }
 
         function renderFinTable() {
-            const start = (finPage - 1) * pageSize;
-            const end = start + pageSize;
-            const pageData = allClassNames.slice(start, end);
-            const totalPages = Math.ceil(allClassNames.length / pageSize);
+            const currentGrade = grades[finGradeIdx];
+            const pageData = allClassNames.filter(cls => cls.startsWith(currentGrade + '.'));
 
             let html = '', tO = 0, tM = 0, tL = 0;
             allClassNames.forEach(cls => {
@@ -688,18 +684,18 @@
                     </tr>`;
             });
 
-            document.getElementById('financeSummaryBody').innerHTML = html || '<tr><td colspan="4" class="p-8 text-center text-slate-600 text-[10px] font-black">Data tidak tersedia</td></tr>';
-            document.getElementById('financeSummaryFoot').innerHTML = allClassNames.length ? `<tr class="border-t-2 border-slate-700 bg-slate-900/80"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tO.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tM.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-amber-400">Rp ${tL.toLocaleString('id-ID')}</td></tr>` : '';
+            document.getElementById('financeSummaryBody').innerHTML = html || '<tr><td colspan="4" class="p-8 text-center text-slate-600 text-[10px] font-black uppercase animate-pulse">Data tidak tersedia untuk Angkatan ' + currentGrade + '</td></tr>';
+            document.getElementById('financeSummaryFoot').innerHTML = allClassNames.length ? `<tr class="border-t-2 border-slate-700 bg-slate-900/80"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Sekolah</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tO.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tM.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-amber-400">Rp ${tL.toLocaleString('id-ID')}</td></tr>` : '';
 
-            document.getElementById('finPageInfo').textContent = `Halaman ${finPage} dari ${totalPages}`;
-            document.getElementById('btnFinPrev').disabled = finPage === 1;
-            document.getElementById('btnFinNext').disabled = finPage >= totalPages;
+            document.getElementById('finPageInfo').textContent = `Angkatan ${currentGrade}`;
+            document.getElementById('btnFinPrev').disabled = finGradeIdx === 0;
+            document.getElementById('btnFinNext').disabled = finGradeIdx >= grades.length - 1;
         }
 
-        function prevPoPage() { if (poPage > 1) { poPage--; renderPoTable(); } }
-        function nextPoPage() { if (poPage * pageSize < allClassNames.length) { poPage++; renderPoTable(); } }
-        function prevFinPage() { if (finPage > 1) { finPage--; renderFinTable(); } }
-        function nextFinPage() { if (finPage * pageSize < allClassNames.length) { finPage++; renderFinTable(); } }
+        function prevPoPage() { if (poGradeIdx > 0) { poGradeIdx--; renderPoTable(); } }
+        function nextPoPage() { if (poGradeIdx < grades.length - 1) { poGradeIdx++; renderPoTable(); } }
+        function prevFinPage() { if (finGradeIdx > 0) { finGradeIdx--; renderFinTable(); } }
+        function nextFinPage() { if (finGradeIdx < grades.length - 1) { finGradeIdx++; renderFinTable(); } }
 
         // --- USER LISTS ---
         async function loadCoordinatorList() {
