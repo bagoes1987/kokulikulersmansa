@@ -137,26 +137,34 @@
                         </div>
                     </div>
                 </div>
-                <!-- Financial Analysis -->
+                <!-- Laporan PO (Replacing Profit Performance) -->
                 <div class="bg-slate-800 p-6 rounded-[2.5rem] border border-slate-700 space-y-4">
-                    <h3 class="text-[10px] font-black text-amber-500 uppercase tracking-[0.3em]">Profit Performance</h3>
+                    <h3 class="text-[10px] font-black text-amber-500 uppercase tracking-[0.3em]">Laporan PO</h3>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
-                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Laba
-                                Tertinggi</p>
-                            <p id="topProfitClass" class="text-xs font-bold text-white">-</p>
-                            <p id="topProfitValue" class="text-[10px] font-black text-emerald-500 mt-1">Rp 0</p>
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Total PO
+                                Makanan</p>
+                            <p id="totalPoFoodAnalytics" class="text-xs font-bold text-white">0 Qty</p>
                         </div>
                         <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
-                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Laba Terendah
-                            </p>
-                            <p id="lowProfitClass" class="text-xs font-bold text-white">-</p>
-                            <p id="lowProfitValue" class="text-[10px] font-black text-red-500 mt-1">Rp 0</p>
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Total PO
+                                Minuman</p>
+                            <p id="totalPoDrinkAnalytics" class="text-xs font-bold text-white">0 Qty</p>
+                        </div>
+                        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Kelas Sudah
+                                PO</p>
+                            <p id="classesReportedCount" class="text-xl font-bold text-emerald-500">0</p>
+                        </div>
+                        <div class="p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Total
+                                Pemasukan PO</p>
+                            <p id="totalPoIncomeAnalytics" class="text-xs font-bold text-blue-500">Rp 0</p>
                         </div>
                         <div class="col-span-2 p-4 bg-slate-900 rounded-2xl border border-slate-700/50">
-                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Kelas
-                                Mengalami Kerugian</p>
-                            <div id="lossClassesList" class="flex flex-wrap gap-2 mt-2">
+                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Kelas Belum
+                                PO (<span id="classesNotReportedCount">0</span>)</p>
+                            <div id="unreportedPoClassesList" class="flex flex-wrap gap-2 mt-2">
                                 <span class="text-[10px] text-slate-600 italic">Tidak ada</span>
                             </div>
                         </div>
@@ -566,14 +574,25 @@
             let tOmzet = 0, tModal = 0, tLaba = 0;
             let topPo = { cls: '-', val: -1 }, lowPo = { cls: '-', val: Infinity };
             let topPrice = { cls: '-', val: -1 }, lowPrice = { cls: '-', val: Infinity };
-            let topProfit = { cls: '-', val: -Infinity }, lowProfit = { cls: '-', val: Infinity };
-            let lossClasses = [];
 
-            // Analytics PO
+            let tPoFood = 0, tPoDrink = 0, tPoIncome = 0;
+            let reportedCount = 0;
+            let unreportedList = [];
+
+            // Analytics PO & Finance
             allClassNames.forEach(cls => {
                 const po = poDataMap[cls];
                 if (po) {
                     const totalQty = po.food + po.drink;
+                    if (totalQty > 0) {
+                        tPoFood += po.food;
+                        tPoDrink += po.drink;
+                        tPoIncome += (po.food * po.foodPrice) + (po.drink * po.drinkPrice);
+                        reportedCount++;
+                    } else {
+                        unreportedList.push(cls);
+                    }
+
                     if (totalQty > topPo.val) { topPo = { cls, val: totalQty }; }
                     if (totalQty < lowPo.val) { lowPo = { cls, val: totalQty }; }
 
@@ -582,14 +601,13 @@
 
                     if (maxPrice > topPrice.val) { topPrice = { cls, val: maxPrice }; }
                     if (minPrice !== Infinity && minPrice < lowPrice.val) { lowPrice = { cls, val: minPrice }; }
+                } else {
+                    unreportedList.push(cls);
                 }
 
                 const fin = finDataMap[cls];
                 if (fin) {
                     tOmzet += fin.omzet; tModal += fin.modal; tLaba += fin.laba;
-                    if (fin.laba > topProfit.val) { topProfit = { cls, val: fin.laba }; }
-                    if (fin.laba < lowProfit.val) { lowProfit = { cls, val: fin.laba }; }
-                    if (fin.laba < 0) { lossClasses.push(cls); }
                 }
             });
 
@@ -600,7 +618,7 @@
             const avgRoi = tModal > 0 ? (tLaba / tModal * 100) : 0;
             document.getElementById('avgRoiAdmin').textContent = avgRoi.toFixed(1) + '%';
 
-            // Update Analytics Cards
+            // Update PO Performance Cards
             document.getElementById('topPoClass').textContent = topPo.cls;
             document.getElementById('topPoValue').textContent = topPo.val + ' Qty';
             document.getElementById('lowPoClass').textContent = lowPo.val === Infinity ? '-' : lowPo.cls;
@@ -611,16 +629,18 @@
             document.getElementById('lowPriceClass').textContent = lowPrice.val === Infinity ? '-' : lowPrice.cls;
             document.getElementById('lowPriceValue').textContent = 'Rp ' + (lowPrice.val === Infinity ? 0 : lowPrice.val).toLocaleString('id-ID');
 
-            document.getElementById('topProfitClass').textContent = topProfit.cls;
-            document.getElementById('topProfitValue').textContent = 'Rp ' + (topProfit.val === -Infinity ? 0 : topProfit.val).toLocaleString('id-ID');
-            document.getElementById('lowProfitClass').textContent = lowProfit.cls;
-            document.getElementById('lowProfitValue').textContent = 'Rp ' + (lowProfit.val === Infinity ? 0 : lowProfit.val).toLocaleString('id-ID');
+            // Update Laporan PO Card (New)
+            document.getElementById('totalPoFoodAnalytics').textContent = tPoFood + ' Qty';
+            document.getElementById('totalPoDrinkAnalytics').textContent = tPoDrink + ' Qty';
+            document.getElementById('classesReportedCount').textContent = reportedCount;
+            document.getElementById('totalPoIncomeAnalytics').textContent = 'Rp ' + tPoIncome.toLocaleString('id-ID');
+            document.getElementById('classesNotReportedCount').textContent = unreportedList.length;
 
-            const lossCont = document.getElementById('lossClassesList');
-            if (lossClasses.length > 0) {
-                lossCont.innerHTML = lossClasses.map(c => `<span class="px-2 py-0.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded text-[9px] font-black uppercase">${c}</span>`).join('');
+            const unreportedCont = document.getElementById('unreportedPoClassesList');
+            if (unreportedList.length > 0) {
+                unreportedCont.innerHTML = unreportedList.map(c => `<span class="px-2 py-0.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded text-[9px] font-black uppercase">${c}</span>`).join('');
             } else {
-                lossCont.innerHTML = '<span class="text-[10px] text-slate-600 italic">Tidak ada</span>';
+                unreportedCont.innerHTML = '<span class="text-[10px] text-slate-600 italic">Semua sudah lapor</span>';
             }
         }
 
