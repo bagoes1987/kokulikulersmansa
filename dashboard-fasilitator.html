@@ -2103,7 +2103,7 @@
 
                     const scoreInputArea = document.getElementById('scoreInputArea');
                     const starRatingArea = document.getElementById('starRatingArea');
-                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi', 'lkpd', 'bep_analisis', 'laporan_akhir'];
+                    const starModules = ['pemantik', 'materi', 'video', 'glosarium', 'refleksi', 'dokumentasi', 'lkpd', 'bep_analisis', 'laporan_akhir', 'refleksi_akhir', 'cerita_kecil'];
 
                     if (starModules.includes(r.module_type)) {
                         scoreInputArea.classList.add('hidden');
@@ -2484,6 +2484,24 @@
                         5: "Analisis keuangan yang brilian! Laporan sangat transparan, BEP tercapai dengan cepat, dan profitabilitas tinggi. Calon wirausahawan sukses!"
                     };
                     Object.assign(feedbackMap, lapsusFeedback);
+                } else if (gradingModuleType === 'refleksi_akhir') {
+                    const refAkhirFeedback = {
+                        1: "Evaluasi sangat minim. Mohon berikan refleksi yang lebih mendalam tentang apa yang kamu pelajari selama projek ini.",
+                        2: "Jawaban masih singkat. Coba ceritakan lebih detail tantangan dan momen berkesan yang kamu alami.",
+                        3: "Refleksi cukup baik, sudah mencakup poin-poin penting perjalanan projekmu.",
+                        4: "Bagus! Kamu mampu menganalisis pengalaman projek dengan kritis dan jujur. Pertahankan kemampuan evaluasimu.",
+                        5: "Luar biasa! Refleksi yang sangat mendalam dan inspiratif. Terlihat sekali pertumbuhan dirimu selama projek ini."
+                    };
+                    Object.assign(feedbackMap, refAkhirFeedback);
+                } else if (gradingModuleType === 'cerita_kecil') {
+                    const ceritaFeedback = {
+                        1: "Cerita dan foto belum sesuai perintah. Mohon unggah foto kenangan dan ceritakan pengalamanmu dengan lebih baik.",
+                        2: "Ceritanya masih kurang detail. Coba ungkapkan lebih banyak perasaanmu di balik foto tersebut.",
+                        3: "Cerita yang menarik! Foto dan tulisanmu sudah cukup menggambarkan keseruan projek hari ini.",
+                        4: "Sangat menyentuh! Kamu berhasil mengabadikan momen berharga dan menceritakannya dengan apik.",
+                        5: "Sempurna! Foto yang bermakna dan narasi cerita yang sangat emosional. Ini akan jadi kenangan yang indah!"
+                    };
+                    Object.assign(feedbackMap, ceritaFeedback);
                 }
 
                 updateStarUI(rating);
