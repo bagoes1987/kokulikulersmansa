@@ -300,6 +300,24 @@
                     </div>
                 </div>
 
+                <!-- Refleksi Akhir (Day 3 Only) -->
+                <div id="module-refleksi-akhir" onclick="openRefleksiAkhirModal()" style="display: none;"
+                    class="bg-rose-50/50 p-4 rounded-[24px] ios-shadow border border-rose-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
+                    <div
+                        class="h-12 w-12 rounded-2xl bg-rose-500 flex items-center justify-center text-white shadow-lg shadow-rose-200">
+                        <span class="material-symbols-outlined !text-2xl">history_edu</span>
+                    </div>
+                    <div>
+                        <h3 class="text-[15px] font-bold text-slate-800">Refleksi Akhir</h3>
+                        <div class="flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined !text-base text-slate-400"
+                                id="status-refleksi-akhir">radio_button_unchecked</span>
+                            <span class="text-[13px] font-semibold text-slate-400" id="label-refleksi-akhir">Belum
+                                Selesai</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Refleksi -->
                 <div id="module-refleksi" onclick="openRefleksiModal()"
                     class="bg-rose-50/50 p-4 rounded-[24px] ios-shadow border border-rose-100/50 flex flex-col gap-4 cursor-pointer hover:scale-105 transition-transform active:scale-95">
@@ -924,7 +942,7 @@
             const defaultProgress = {
                 day1: { pemantik: false, materi: false, video: false, lkpd: false, asesmen: false, dokumentasi: false, glosarium: false, refleksi: false },
                 day2: { pemantik: false, materi: false, bep: false, dokumentasi: false },
-                day3: { pemantik: false, dokumentasi: false, 'laporan-akhir': false }
+                day3: { pemantik: false, dokumentasi: false, 'laporan-akhir': false, 'refleksi-akhir': false }
             };
 
             let studentProgress = JSON.parse(JSON.stringify(defaultProgress));
@@ -1054,9 +1072,8 @@
                 }
             }
 
-            // Load progress logic with version control
             function loadProgress() {
-                const STORAGE_VERSION = '2.1'; // Increment to 2.1 to clean up ghost modules
+                const STORAGE_VERSION = '2.2'; // Increment to 2.2 to add Refleksi Akhir Day 3
                 const currentVersion = localStorage.getItem('progress_version');
 
                 // Force reset if version mismatch or corrupted data detected
@@ -1090,8 +1107,8 @@
                             if (Object.keys(studentProgress.day1).length !== 8) isCorrupted = true;
                             // Check Day 2 (4 modules)
                             if (Object.keys(studentProgress.day2).length !== 4) isCorrupted = true;
-                            // Check Day 3 (3 modules)
-                            if (Object.keys(studentProgress.day3).length !== 3) isCorrupted = true;
+                            // Check Day 3 (4 modules)
+                            if (Object.keys(studentProgress.day3).length !== 4) isCorrupted = true;
                         }
 
                         if (isCorrupted) {
@@ -1238,8 +1255,8 @@
                     updateModuleUI(moduleId, currentDayProgress[moduleId]);
                 });
 
-                // HIDE modules for Day 2 and Day 3: Video, LKPD, Assessment, Glosarium, Refleksi
-                const modulesToHide = ['module-video', 'module-lkpd', 'module-asesmen', 'module-glosarium', 'module-refleksi'];
+                // HIDE modules for Day 2 and Day 3: Video, LKPD, Assessment, Glosarium, Refleksi, Refleksi Akhir
+                const modulesToHide = ['module-video', 'module-lkpd', 'module-asesmen', 'module-glosarium', 'module-refleksi', 'module-refleksi-akhir'];
 
                 // Special: Hide Materi for Day 3
                 if (currentDay === 3) {
@@ -1356,7 +1373,7 @@
                 }
 
                 // CRITICAL FIX: Reset ALL module UI to default state first
-                const allModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi'];
+                const allModules = ['pemantik', 'materi', 'video', 'lkpd', 'asesmen', 'dokumentasi', 'glosarium', 'refleksi', 'refleksi-akhir'];
                 allModules.forEach(moduleId => {
                     const statusIcon = document.getElementById(`status-${moduleId}`);
                     const statusLabel = document.getElementById(`label-${moduleId}`);
@@ -1508,6 +1525,7 @@
                             let moduleId = r.module_type;
                             if (moduleId === 'kategori') moduleId = 'dokumentasi';
                             if (moduleId === 'laporan_akhir') moduleId = 'laporan-akhir';
+                            if (moduleId === 'refleksi_akhir') moduleId = 'refleksi-akhir';
                             if (moduleId === 'summary') moduleId = 'materi';
                             if (moduleId === 'bep_analisis') moduleId = 'bep';
                             if (moduleId === 'kuis') moduleId = 'asesmen';
@@ -7247,6 +7265,54 @@
                 btn.disabled = false;
                 btn.innerHTML = 'Kirim Jawaban';
             }
+        }
+
+        // --- REFLEKSI AKHIR LOGIC (DAY 3) ---
+        function openRefleksiAkhirModal() {
+            const modal = document.getElementById('modal-refleksi-akhir');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                checkExistingRefleksiAkhir();
+            }
+        }
+
+        function closeRefleksiAkhirModal() {
+            const modal = document.getElementById('modal-refleksi-akhir');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        async function checkExistingRefleksiAkhir() {
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) return;
+
+                const { data } = await supabaseClient
+                    .from('module_responses')
+                    .select('*')
+                    .eq('student_id', user.id)
+                    .eq('day_id', 3)
+                    .eq('module_type', 'refleksi_akhir')
+                    .maybeSingle();
+
+                if (data) {
+                    const btn = document.getElementById('btnSubmitRefleksiAkhir');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = `<span class="material-symbols-outlined text-sm">check_circle</span> Terkirim`;
+                    }
+                    updateModuleUI('refleksi-akhir', 'submitted');
+                }
+            } catch (e) {
+                console.error('Error checkExistingRefleksiAkhir:', e);
+            }
+        }
+
+        async function submitRefleksiAkhir() {
+            alert('Fitur pengiriman refleksi akhir akan segera aktif setelah daftar pertanyaan tersedia!');
         }
 
     </script>
