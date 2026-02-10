@@ -98,10 +98,80 @@
                         <h3 class="text-2xl font-black text-blue-500" id="avgRoiAdmin">0%</h3>
                     </div>
                 </div>
-                <button onclick="loadGlobalFinancialStats()"
+                <button onclick="loadGlobalFinancialStats(); loadClassSummaries();"
                     class="w-full py-4 bg-slate-700 rounded-2xl text-xs font-black uppercase text-white hover:bg-slate-600 transition-all border border-slate-600 shadow-lg active:scale-[0.98]">
                     Refresh Financial Data
                 </button>
+            </section>
+
+            <!-- RINGKASAN PRE-ORDER PER KELAS -->
+            <section class="bg-slate-800 p-8 rounded-[2.5rem] shadow-xl border border-slate-700 space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xs font-black text-blue-500 uppercase tracking-[0.3em] mb-1">Pre-Order Summary
+                        </h2>
+                        <h3 class="text-xl font-bold text-white">Distribusi PO per Kelas</h3>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-[10px] font-black uppercase tracking-widest border border-blue-500/20">HARI
+                        2</span>
+                </div>
+                <div class="bg-slate-900 rounded-3xl border border-slate-700 overflow-hidden shadow-inner">
+                    <table class="w-full text-left text-sm">
+                        <thead
+                            class="bg-slate-900/50 border-b border-slate-700 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                            <tr>
+                                <th class="p-4">Kelas</th>
+                                <th class="p-4 text-center">PO Makanan</th>
+                                <th class="p-4 text-center">PO Minuman</th>
+                                <th class="p-4 text-right">Total Kelas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="poSummaryBody" class="divide-y divide-slate-700/50">
+                            <tr>
+                                <td colspan="4"
+                                    class="p-8 text-center text-slate-600 text-[10px] font-black uppercase animate-pulse">
+                                    Memuat data PO...</td>
+                            </tr>
+                        </tbody>
+                        <tfoot id="poSummaryFoot" class="bg-slate-900/80 font-bold text-white"></tfoot>
+                    </table>
+                </div>
+            </section>
+
+            <!-- RINGKASAN LAPORAN AKHIR PER KELAS -->
+            <section class="bg-slate-800 p-8 rounded-[2.5rem] shadow-xl border border-slate-700 space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xs font-black text-amber-500 uppercase tracking-[0.3em] mb-1">Final Report
+                            Summary</h2>
+                        <h3 class="text-xl font-bold text-white">Laporan Keuangan per Kelas</h3>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-500/20">HARI
+                        3</span>
+                </div>
+                <div class="bg-slate-900 rounded-3xl border border-slate-700 overflow-hidden shadow-inner">
+                    <table class="w-full text-left text-sm">
+                        <thead
+                            class="bg-slate-900/50 border-b border-slate-700 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                            <tr>
+                                <th class="p-4">Kelas</th>
+                                <th class="p-4 text-right">Omzet</th>
+                                <th class="p-4 text-right">Modal</th>
+                                <th class="p-4 text-right">Laba</th>
+                            </tr>
+                        </thead>
+                        <tbody id="financeSummaryBody" class="divide-y divide-slate-700/50">
+                            <tr>
+                                <td colspan="4"
+                                    class="p-8 text-center text-slate-600 text-[10px] font-black uppercase animate-pulse">
+                                    Memuat data laporan...</td>
+                            </tr>
+                        </tbody>
+                        <tfoot id="financeSummaryFoot" class="bg-slate-900/80 font-bold text-white"></tfoot>
+                    </table>
+                </div>
             </section>
         </div>
 
@@ -259,7 +329,7 @@
             document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
             document.getElementById('view-' + tabId).classList.remove('hidden');
 
-            if (tabId === 'overview') loadOverviewStats();
+            if (tabId === 'overview') { loadOverviewStats(); loadClassSummaries(); }
             if (tabId === 'koordinator') loadCoordinatorList();
             if (tabId === 'fasilitator') loadFacilitatorList();
             if (tabId === 'laporan') loadReportOptions();
@@ -268,6 +338,7 @@
         // --- OVERVIEW TAB ---
         async function loadOverviewStats() {
             loadGlobalFinancialStats();
+            loadClassSummaries();
             try {
                 const { data: profiles, error } = await supabaseClient.from('profiles').select('role');
                 if (error) throw error;
@@ -317,9 +388,9 @@
                 responses.forEach(r => {
                     try {
                         const answers = JSON.parse(r.answers[0]);
-                        const cap = parseFloat(answers.modal_kelas) || 0;
-                        const laba = parseFloat(answers.laba) || 0;
-                        const rugi = parseFloat(answers.rugi) || 0;
+                        const cap = parseFloat(answers.modal_kelas || answers.total_biaya || 0) || 0;
+                        const laba = parseFloat(answers.laba || answers.laba_rugi || 0) || 0;
+                        const rugi = parseFloat(answers.rugi || 0) || 0;
                         totalCapital += cap;
                         totalProfit += (laba - rugi);
                         totalOmzet += (cap + laba - rugi);
@@ -332,6 +403,83 @@
                 const avgRoi = totalCapital > 0 ? (totalProfit / totalCapital * 100) : 0;
                 document.getElementById('avgRoiAdmin').textContent = avgRoi.toFixed(1) + '%';
             } catch (err) { console.error(err); }
+        }
+
+        async function loadClassSummaries() {
+            try {
+                const { data: students, error: sErr } = await supabaseClient.from('students').select('id, kelas');
+                if (sErr) throw sErr;
+                const studentClassMap = {};
+                students.forEach(s => studentClassMap[s.id] = s.kelas);
+
+                const { data: poRes, error: poErr } = await supabaseClient
+                    .from('module_responses')
+                    .select('student_id, answers, updated_at')
+                    .eq('module_type', 'bep_analisis')
+                    .eq('day_id', 2);
+                if (poErr) throw poErr;
+
+                const { data: finRes, error: finErr } = await supabaseClient
+                    .from('module_responses')
+                    .select('student_id, answers, updated_at')
+                    .eq('module_type', 'laporan_akhir')
+                    .eq('day_id', 3);
+                if (finErr) throw finErr;
+
+                const poDataByClass = {};
+                const finDataByClass = {};
+
+                poRes.forEach(r => {
+                    const classId = studentClassMap[r.student_id];
+                    if (!classId) return;
+                    if (!poDataByClass[classId] || new Date(r.updated_at) > new Date(poDataByClass[classId].updated_at)) {
+                        try {
+                            const ans = JSON.parse(r.answers[0]);
+                            poDataByClass[classId] = {
+                                food: parseInt(ans.po_makanan_qty) || 0,
+                                drink: parseInt(ans.po_minuman_qty) || 0,
+                                updated_at: r.updated_at
+                            };
+                        } catch (e) { }
+                    }
+                });
+
+                finRes.forEach(r => {
+                    const classId = studentClassMap[r.student_id];
+                    if (!classId) return;
+                    if (!finDataByClass[classId] || new Date(r.updated_at) > new Date(finDataByClass[classId].updated_at)) {
+                        try {
+                            const ans = JSON.parse(r.answers[0]);
+                            const omzet = parseFloat(ans.total_penjualan || (parseFloat(ans.penjualan_makanan_rp || 0) + parseFloat(ans.penjualan_minuman_rp || 0))) || 0;
+                            const modal = parseFloat(ans.total_biaya || (parseFloat(ans.biaya_prod_makan || 0) + parseFloat(ans.biaya_prod_minum || 0) + parseFloat(ans.biaya_tetap || 0))) || 0;
+                            const laba = parseFloat(ans.laba_rugi || ans.laba || 0) || 0;
+                            finDataByClass[classId] = { omzet, modal, laba, updated_at: r.updated_at };
+                        } catch (e) { }
+                    }
+                });
+
+                const poBody = document.getElementById('poSummaryBody');
+                const poFoot = document.getElementById('poSummaryFoot');
+                let poHtml = '', totalFood = 0, totalDrink = 0;
+                Object.keys(poDataByClass).sort().forEach(cls => {
+                    const d = poDataByClass[cls];
+                    totalFood += d.food; totalDrink += d.drink;
+                    poHtml += `<tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 font-bold text-white text-xs">${cls}</td><td class="p-4 text-center text-slate-300 text-xs">${d.food}</td><td class="p-4 text-center text-slate-300 text-xs">${d.drink}</td><td class="p-4 text-right font-black text-blue-500 text-xs">${d.food + d.drink}</td></tr>`;
+                });
+                poBody.innerHTML = poHtml || '<tr><td colspan="4" class="p-8 text-center text-slate-500 text-[10px] font-black uppercase">Belum ada data PO</td></tr>';
+                poFoot.innerHTML = poHtml ? `<tr class="border-t-2 border-slate-700 bg-slate-800/50"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-center text-xs font-black">${totalFood}</td><td class="p-4 text-center text-xs font-black">${totalDrink}</td><td class="p-4 text-right text-xs font-black text-blue-400">${totalFood + totalDrink}</td></tr>` : '';
+
+                const finBody = document.getElementById('financeSummaryBody');
+                const finFoot = document.getElementById('financeSummaryFoot');
+                let finHtml = '', tOmzet = 0, tModal = 0, tLaba = 0;
+                Object.keys(finDataByClass).sort().forEach(cls => {
+                    const d = finDataByClass[cls];
+                    tOmzet += d.omzet; tModal += d.modal; tLaba += d.laba;
+                    finHtml += `<tr class="hover:bg-slate-800/50 transition-colors"><td class="p-4 font-bold text-white text-xs">${cls}</td><td class="p-4 text-right text-slate-300 text-xs">Rp ${d.omzet.toLocaleString('id-ID')}</td><td class="p-4 text-right text-slate-300 text-xs">Rp ${d.modal.toLocaleString('id-ID')}</td><td class="p-4 text-right font-black ${d.laba >= 0 ? 'text-emerald-500' : 'text-red-500'} text-xs">Rp ${d.laba.toLocaleString('id-ID')}</td></tr>`;
+                });
+                finBody.innerHTML = finHtml || '<tr><td colspan="4" class="p-8 text-center text-slate-500 text-[10px] font-black uppercase">Belum ada data laporan</td></tr>';
+                finFoot.innerHTML = finHtml ? `<tr class="border-t-2 border-slate-700 bg-slate-800/50"><td class="p-4 text-[10px] uppercase tracking-widest text-slate-400">Total Seluruh Kelas</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tOmzet.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-white">Rp ${tModal.toLocaleString('id-ID')}</td><td class="p-4 text-right text-xs font-black text-amber-400">Rp ${tLaba.toLocaleString('id-ID')}</td></tr>` : '';
+            } catch (e) { console.error("Summary Load Error:", e); }
         }
 
         // --- USER LISTS ---
