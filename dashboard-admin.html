@@ -1029,7 +1029,7 @@
                     const cleanName = s.nama.replace(/"/g, '""').replace(/\n/g, ' ');
                     const cleanDesc = desc.replace(/"/g, '""').replace(/\n/g, ' ');
 
-                    csv += `${i + 1},'${s.nisn},'${s.nis},"${cleanName}",${p},"${cleanDesc}"\n`;
+                    csv += `${i + 1},${s.nisn},${s.nis},"${cleanName}",${p},"${cleanDesc}"\n`;
                 });
                 const blob = new Blob([csv], { type: 'text/csv' });
                 const link = document.createElement("a");
