@@ -528,13 +528,13 @@
         async function loadClassSummaries() {
             try {
                 // 1. Ambil semua kelas unik
-                const { data: stData, error: stErr } = await supabaseClient.from('students').select('id, kelas');
+                const { data: stData, error: stErr } = await supabaseClient.from('students').select('id, nama, kelas');
                 if (stErr) throw stErr;
 
                 const studentClassMap = {};
                 const classSet = new Set();
                 stData.forEach(s => {
-                    studentClassMap[s.id] = s.kelas;
+                    studentClassMap[s.id] = { kelas: s.kelas, nama: s.nama };
                     if (s.kelas) classSet.add(s.kelas);
                 });
                 allClassNames = Array.from(classSet).sort(naturalClassSort);
@@ -551,11 +551,13 @@
                 // Logika First-In: Map data per kelas
                 poDataMap = {};
                 poRes.data.forEach(r => {
-                    const cls = studentClassMap[r.student_id];
+                    const studentInfo = studentClassMap[r.student_id];
+                    const cls = studentInfo ? studentInfo.kelas : null;
                     if (cls && !poDataMap[cls]) {
                         try {
                             const ans = JSON.parse(r.answers[0]);
                             poDataMap[cls] = {
+                                submitter: studentInfo.nama,
                                 foodName: ans.nama_produk || '-',
                                 food: parseInt(ans.po_makanan_qty) || 0,
                                 foodPrice: parseInt(ans.po_makanan_harga) || 0,
@@ -569,7 +571,8 @@
 
                 finDataMap = {};
                 finRes.data.forEach(r => {
-                    const cls = studentClassMap[r.student_id];
+                    const studentInfo = studentClassMap[r.student_id];
+                    const cls = studentInfo ? studentInfo.kelas : null;
                     if (cls && !finDataMap[cls]) {
                         try {
                             const ans = JSON.parse(r.answers[0]);
@@ -684,7 +687,10 @@
                 const classPoRp = (d.food * d.foodPrice) + (d.drink * d.drinkPrice);
                 html += `
                     <tr class="hover:bg-slate-800/50 transition-colors">
-                        <td class="p-4 font-bold text-white text-xs">${cls}</td>
+                        <td class="p-4 flex flex-col">
+                            <span class="font-bold text-white text-xs">${cls}</span>
+                            <span class="text-[9px] text-slate-500 font-medium truncate max-w-[80px]" title="${d.submitter || '-'}">${d.submitter || '-'}</span>
+                        </td>
                         <td class="p-4 text-xs">
                             <p class="font-bold text-slate-200 line-clamp-1">${d.foodName}</p>
                         </td>
