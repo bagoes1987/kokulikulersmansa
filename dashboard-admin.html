@@ -462,19 +462,14 @@
         // --- OVERVIEW TAB ---
         async function loadOverviewStats() {
             try {
-                // Fetch accurate counts
-                const [pRes, sRes] = await Promise.all([
-                    supabaseClient.from('profiles').select('role'),
-                    supabaseClient.from('students').select('id', { count: 'exact', head: true })
-                ]);
-
-                if (pRes.error) throw pRes.error;
-                if (sRes.error) throw sRes.error;
+                // Fetch accurate counts from profiles table
+                const { data, error } = await supabaseClient.from('profiles').select('role');
+                if (error) throw error;
 
                 const counts = {
-                    koordinator: pRes.data.filter(p => p.role === 'koordinator').length,
-                    fasilitator: pRes.data.filter(p => p.role === 'fasilitator').length,
-                    siswa: sRes.count
+                    koordinator: data.filter(p => p.role === 'koordinator').length,
+                    fasilitator: data.filter(p => p.role === 'fasilitator').length,
+                    siswa: data.filter(p => p.role === 'siswa').length
                 };
 
                 let userStatsSection = document.getElementById('userQuickStats');
