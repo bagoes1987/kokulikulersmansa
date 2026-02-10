@@ -1029,7 +1029,8 @@
                     const cleanName = s.nama.replace(/;/g, ',').replace(/\n/g, ' ').replace(/"/g, '');
                     const cleanDesc = desc.replace(/;/g, ',').replace(/\n/g, ' ');
 
-                    csv += `${i + 1};${s.nisn};${s.nis};${cleanName};${p};"${cleanDesc}"\n`;
+                    // Add \t (tab) prefix to force Excel to treat as text (preserving leading zeros and preventing scientific notation)
+                    csv += `${i + 1};\t${s.nisn};\t${s.nis};${cleanName};${p};"${cleanDesc}"\n`;
                 });
 
                 // Add UTF-8 BOM for Excel
