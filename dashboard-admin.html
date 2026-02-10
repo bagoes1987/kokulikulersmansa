@@ -1037,7 +1037,7 @@
                 const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement("a");
                 link.href = URL.createObjectURL(blob);
-                link.download = `Rekap_Nilai_${cls}.csv`;
+                link.download = `Nilai_Kokurikuler2026_Kelas${cls}.csv`;
                 link.click();
             } catch (err) { alert(err.message); }
         }
