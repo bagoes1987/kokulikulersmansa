@@ -1203,10 +1203,16 @@
                 <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-3">
                     <label class="block text-[13px] font-black text-slate-700 uppercase tracking-wider">Tulis Cerita
                         Singkatmu</label>
-                    <textarea id="textCerita"
+                    <textarea id="textCerita" oninput="updateCeritaCounter()"
                         class="w-full p-4 rounded-2xl bg-slate-50 border-none text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500 min-h-[150px]"
                         placeholder="Apa momen paling berkesan hari ini? Tuliskan di sini..."></textarea>
-                    <p class="text-[10px] text-slate-400 font-bold italic text-right">*Minimal 50 karakter</p>
+                    <div class="flex justify-between items-center px-1">
+                        <div class="flex gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            <span>Karakter: <span id="charCount">0</span>/50</span>
+                            <span>Kata: <span id="wordCount">0</span></span>
+                        </div>
+                        <p id="charStatus" class="text-[10px] text-red-400 font-bold italic">*Minimal 50 karakter</p>
+                    </div>
                 </div>
             </div>
 
@@ -7683,6 +7689,26 @@
             document.getElementById('areaPreviewCerita').classList.add('hidden');
         }
 
+        function updateCeritaCounter() {
+            const text = document.getElementById('textCerita').value;
+            const charCount = text.length;
+            const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+
+            document.getElementById('charCount').textContent = charCount;
+            document.getElementById('wordCount').textContent = wordCount;
+
+            const status = document.getElementById('charStatus');
+            if (charCount >= 50) {
+                status.textContent = 'Syarat Terpenuhi ✔';
+                status.classList.remove('text-red-400');
+                status.classList.add('text-emerald-500');
+            } else {
+                status.textContent = '*Minimal 50 karakter';
+                status.classList.remove('text-emerald-500');
+                status.classList.add('text-red-400');
+            }
+        }
+
         async function handleCeritaPhoto(input) {
             const file = input.files[0];
             if (!file) return;
@@ -7795,6 +7821,7 @@
                 if (data) {
                     const payload = JSON.parse(data.answers[0]);
                     document.getElementById('textCerita').value = payload.story;
+                    updateCeritaCounter();
                     document.getElementById('previewCeritaImage').src = payload.photo_url;
 
                     document.getElementById('areaUploadCerita').classList.add('hidden');
