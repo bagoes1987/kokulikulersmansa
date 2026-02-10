@@ -418,6 +418,25 @@
         let poPage = 1, finPage = 1;
         const pageSize = 10;
 
+        // Fungsi Sorting Kelas Natural (X.1 -> X.11 -> XI.1)
+        function naturalClassSort(a, b) {
+            if (!a || !b) return 0;
+            const romanMap = { 'X': 10, 'XI': 11, 'XII': 12 };
+            const aParts = a.split('.');
+            const bParts = b.split('.');
+
+            const aRoman = aParts[0];
+            const bRoman = bParts[0];
+            const aNum = parseInt(aParts[1]) || 0;
+            const bNum = parseInt(bParts[1]) || 0;
+
+            const aVal = romanMap[aRoman] || 99;
+            const bVal = romanMap[bRoman] || 99;
+
+            if (aVal !== bVal) return aVal - bVal;
+            return aNum - bNum;
+        }
+
         // --- NAVIGATION LOGIC ---
         async function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -490,7 +509,7 @@
                     studentClassMap[s.id] = s.kelas;
                     if (s.kelas) classSet.add(s.kelas);
                 });
-                allClassNames = Array.from(classSet).sort();
+                allClassNames = Array.from(classSet).sort(naturalClassSort);
 
                 // 2. Ambil data PO & Finance (Siswa pertama pengisi - sorting created_at ASC)
                 const [poRes, finRes] = await Promise.all([
@@ -773,7 +792,7 @@
             try {
                 const { data, error } = await supabaseClient.from('students').select('kelas');
                 if (error) throw error;
-                const classes = [...new Set(data.map(s => s.kelas))].sort();
+                const classes = [...new Set(data.map(s => s.kelas))].sort(naturalClassSort);
                 ['exportClassSelect', 'reportClassSelect'].forEach(id => {
                     const sel = document.getElementById(id);
                     sel.innerHTML = '<option value="">Pilih Kelas...</option>';
