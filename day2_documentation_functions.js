@@ -116,14 +116,14 @@ async function submitAllDocumentation() {
 
             // 1. Upload to Storage
             const { error: uploadError } = await supabaseClient.storage
-                .from('dokumentasi')
+                .from('documentation')
                 .upload(fileName, file);
 
             if (uploadError) throw uploadError;
 
             // 2. Get public URL
             const { data: { publicUrl } } = supabaseClient.storage
-                .from('dokumentasi')
+                .from('documentation')
                 .getPublicUrl(fileName);
 
             // 3. Insert to database

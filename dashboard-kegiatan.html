@@ -2584,7 +2584,17 @@
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) throw new Error("Sesi habis");
-                const { error } = await supabaseClient.from('module_responses').insert({ student_id: user.id, day_id: currentDay, module_type: 'bep_analisis', answers: [JSON.stringify(submissionData)], status: 'submitted' });
+                const { error } = await supabaseClient
+                    .from('module_responses')
+                    .upsert({
+                        student_id: user.id,
+                        day_id: currentDay,
+                        module_type: 'bep_analisis',
+                        answers: [JSON.stringify(submissionData)],
+                        status: 'submitted'
+                    }, {
+                        onConflict: 'student_id, day_id, module_type'
+                    });
                 if (error) throw error;
                 alert('Laporan Analisis Produk berhasil dikirim!');
                 closeBEPModal();
@@ -3294,7 +3304,7 @@
                 // 1. Upload ke Storage Bucket 'dokumentasi'
                 // NOTE: Pastikan bucket ini sudah dibuat di dashboard Supabase
                 const { data: uploadData, error: uploadErr } = await supabaseClient.storage
-                    .from('dokumentasi')
+                    .from('documentation')
                     .upload(fileName, file);
 
                 if (uploadErr) throw uploadErr;
@@ -3558,14 +3568,14 @@
 
                     // 1. Upload to Storage
                     const { data: uploadData, error: uploadErr } = await supabaseClient.storage
-                        .from('dokumentasi')
+                        .from('documentation')
                         .upload(fileName, file);
 
                     if (uploadErr) throw uploadErr;
 
                     // 2. Get public URL
                     const { data: urlData } = supabaseClient.storage
-                        .from('dokumentasi')
+                        .from('documentation')
                         .getPublicUrl(fileName);
 
                     // 3. Insert to database
@@ -3771,13 +3781,13 @@
                     const fileName = `${user.id}/day3_${category}_${Date.now()}.jpg`;
 
                     const { data: uploadData, error: uploadErr } = await supabaseClient.storage
-                        .from('dokumentasi')
+                        .from('documentation')
                         .upload(fileName, file);
 
                     if (uploadErr) throw uploadErr;
 
                     const { data: urlData } = supabaseClient.storage
-                        .from('dokumentasi')
+                        .from('documentation')
                         .getPublicUrl(fileName);
 
                     const { error: dbError } = await supabaseClient
@@ -6456,12 +6466,15 @@
 
                 const { error } = await supabaseClient
                     .from('module_responses')
-                    .insert({
+                    .upsert({
                         student_id: user.id,
                         day_id: currentDay,
                         module_type: 'lkpd',
                         answers: [JSON.stringify(lkpdData)],
-                        status: 'submitted'
+                        status: 'submitted',
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'student_id, day_id, module_type'
                     });
 
                 if (error) throw error;
@@ -7363,12 +7376,14 @@
                 } else {
                     const { error: insErr } = await supabaseClient
                         .from('module_responses')
-                        .insert({
+                        .upsert({
                             student_id: user.id,
                             day_id: currentDay,
                             module_type: 'refleksi',
                             answers: payloadAnswers,
                             status: 'submitted'
+                        }, {
+                            onConflict: 'student_id, day_id, module_type'
                         });
                     error = insErr;
                 }
@@ -7491,12 +7506,14 @@
 
                 const { error } = await supabaseClient
                     .from('module_responses')
-                    .insert({
+                    .upsert({
                         student_id: user.id,
-                        day_id: currentDay,
+                        day_id: currentDay, // Glosarium di Hari 1
                         module_type: 'glosarium',
                         answers: [summary],
                         status: 'submitted'
+                    }, {
+                        onConflict: 'student_id, day_id, module_type'
                     });
 
                 if (error) throw error;
@@ -7771,13 +7788,13 @@
                 if (currentCeritaPhoto) {
                     const fileName = `${user.id}_cerita_${Date.now()}.jpg`;
                     const { data: uploadData, error: uploadErr } = await supabaseClient.storage
-                        .from('dokumentasi')
+                        .from('documentation')
                         .upload(`cerita/${fileName}`, currentCeritaPhoto);
 
                     if (uploadErr) throw uploadErr;
 
                     const { data: urlData } = supabaseClient.storage
-                        .from('dokumentasi')
+                        .from('documentation')
                         .getPublicUrl(`cerita/${fileName}`);
 
                     photoUrl = urlData.publicUrl;
@@ -7955,13 +7972,13 @@
                     if (window.day2Photos[cat]) {
                         const fileName = `${user.id}_d2_${cat}_${Date.now()}.jpg`;
                         const { data: uploadData, error: uploadErr } = await supabaseClient.storage
-                            .from('dokumentasi')
+                            .from('documentation')
                             .upload(`day2/${fileName}`, window.day2Photos[cat]);
 
                         if (uploadErr) throw uploadErr;
 
                         const { data: urlData } = supabaseClient.storage
-                            .from('dokumentasi')
+                            .from('documentation')
                             .getPublicUrl(`day2/${fileName}`);
 
                         photoUrls[cat] = urlData.publicUrl;
@@ -8062,13 +8079,13 @@
                     if (window.day3Photos[cat]) {
                         const fileName = `${user.id}_d3_${cat}_${Date.now()}.jpg`;
                         const { data: uploadData, error: uploadErr } = await supabaseClient.storage
-                            .from('dokumentasi')
+                            .from('documentation')
                             .upload(`day3/${fileName}`, window.day3Photos[cat]);
 
                         if (uploadErr) throw uploadErr;
 
                         const { data: urlData } = supabaseClient.storage
-                            .from('dokumentasi')
+                            .from('documentation')
                             .getPublicUrl(`day3/${fileName}`);
 
                         photoUrls[cat] = urlData.publicUrl;
