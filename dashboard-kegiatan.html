@@ -3291,16 +3291,16 @@
 
                 const fileName = `${user.id}/day${currentDay}_${Date.now()}.jpg`;
 
-                // 1. Upload ke Storage Bucket 'documentation'
+                // 1. Upload ke Storage Bucket 'dokumentasi'
                 // NOTE: Pastikan bucket ini sudah dibuat di dashboard Supabase
-                const { error: uploadError } = await supabaseClient.storage
-                    .from('documentation')
+                const { data: uploadData, error: uploadErr } = await supabaseClient.storage
+                    .from('dokumentasi')
                     .upload(fileName, file);
 
-                if (uploadError) throw uploadError;
+                if (uploadErr) throw uploadErr;
 
-                const { data: { publicUrl } } = supabaseClient.storage
-                    .from('documentation')
+                const { data: urlData } = supabaseClient.storage
+                    .from('dokumentasi')
                     .getPublicUrl(fileName);
 
                 // 2. Simpan ke module_responses
@@ -3310,7 +3310,7 @@
                         student_id: user.id,
                         day_id: currentDay,
                         module_type: 'dokumentasi',
-                        answers: [publicUrl],
+                        answers: [urlData.publicUrl],
                         status: 'submitted'
                     });
 
@@ -3558,15 +3558,15 @@
                     const fileName = `${user.id}/day2_${category}_${Date.now()}.jpg`;
 
                     // 1. Upload to Storage
-                    const { error: uploadError } = await supabaseClient.storage
-                        .from('documentation')
+                    const { data: uploadData, error: uploadErr } = await supabaseClient.storage
+                        .from('dokumentasi')
                         .upload(fileName, file);
 
-                    if (uploadError) throw uploadError;
+                    if (uploadErr) throw uploadErr;
 
                     // 2. Get public URL
-                    const { data: { publicUrl } } = supabaseClient.storage
-                        .from('documentation')
+                    const { data: urlData } = supabaseClient.storage
+                        .from('dokumentasi')
                         .getPublicUrl(fileName);
 
                     // 3. Insert to database
@@ -3577,7 +3577,7 @@
                             day_id: 2,
                             module_type: 'dokumentasi',
                             category: category,
-                            answers: [publicUrl],
+                            answers: [urlData.publicUrl],
                             status: 'submitted'
                         });
 
@@ -3604,7 +3604,7 @@
 
         async function loadExistingDay2Documentation() {
             try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
+                const { data: { user } = {} } = await supabaseClient.auth.getUser();
                 if (!user) return;
 
                 const { data: responses } = await supabaseClient
@@ -3768,14 +3768,14 @@
 
                     const fileName = `${user.id}/day3_${category}_${Date.now()}.jpg`;
 
-                    const { error: uploadError } = await supabaseClient.storage
-                        .from('documentation')
+                    const { data: uploadData, error: uploadErr } = await supabaseClient.storage
+                        .from('dokumentasi')
                         .upload(fileName, file);
 
-                    if (uploadError) throw uploadError;
+                    if (uploadErr) throw uploadErr;
 
-                    const { data: { publicUrl } } = supabaseClient.storage
-                        .from('documentation')
+                    const { data: urlData } = supabaseClient.storage
+                        .from('dokumentasi')
                         .getPublicUrl(fileName);
 
                     const { error: dbError } = await supabaseClient

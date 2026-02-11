@@ -13,11 +13,10 @@ async function setupStorage() {
         const { data: buckets, error: listError } = await supabase.storage.listBuckets();
         if (listError) throw listError;
 
-        const exists = buckets.find(b => b.name === 'documentation');
-
+        const exists = buckets.find(b => b.name === 'dokumentasi');
         if (!exists) {
-            console.log('📦 Membuat bucket "documentation"...');
-            const { data, error } = await supabase.storage.createBucket('documentation', {
+            console.log('📦 Membuat bucket "dokumentasi"...');
+            const { data, error } = await supabase.storage.createBucket('dokumentasi', {
                 public: true, // Kita set public agar file bisa diakses via URL langsung
                 fileSizeLimit: 1048576, // 1MB limit per file (foto kita cuma ~50KB)
                 allowedMimeTypes: ['image/jpeg', 'image/png']
