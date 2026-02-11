@@ -2077,6 +2077,52 @@
                             </div>
                         </div>
                         `;
+                    } else if (r.module_type === 'refleksi_akhir') {
+                        // Display Refleksi Akhir Results (10 Narrative Questions)
+                        let refData = {};
+                        try {
+                            refData = JSON.parse(answers[0]);
+                        } catch (e) {
+                            console.error('Error parsing Refleksi Akhir JSON', e);
+                            answerCont.innerHTML = `<div class="p-4 bg-red-50 text-red-500 text-xs rounded-xl">Error: Format data tidak valid.</div>`;
+                            return;
+                        }
+
+                        const questions = [
+                            "Kilas Balik Emosi", "Momen 'AHA!'", "Lembah Tantangan",
+                            "Sang Inspirator", "Andai Bisa Mengulang", "Panggung Puncak",
+                            "Satu Skill Baru", "Dinamika Tim", "Nilai Kebanggaan", "Ide Semester Depan"
+                        ];
+
+                        const getVal = (i) => refData[`q${i}`] || '-';
+                        const getScore = () => refData['q9_score'] || '-';
+
+                        answerCont.innerHTML = `
+                        <div class="space-y-4">
+                            <div class="p-4 bg-rose-50 border border-rose-100 rounded-2xl">
+                                <p class="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-3">Rangkuman Refleksi</p>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="bg-white p-3 rounded-xl border border-rose-100">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Skala Kebanggaan</p>
+                                        <p class="text-lg font-black text-rose-500">${getScore()}<span class="text-xs text-slate-400 font-bold ml-1">/ 10</span></p>
+                                    </div>
+                                    <div class="bg-white p-3 rounded-xl border border-rose-100">
+                                        <p class="text-[8px] font-bold text-slate-400 uppercase mb-1">Status</p>
+                                        <p class="text-xs font-bold text-slate-700">Selesai 10 Poin</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                ${questions.map((q, i) => `
+                                    <div class="bg-white p-4 rounded-2xl border border-slate-100">
+                                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">${i + 1}. ${q}</p>
+                                        <p class="text-xs text-slate-700 font-medium leading-relaxed">${getVal(i + 1)}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                            `;
                     } else if (r.module_type === 'pemantik') {
                         // Display Pemantik with dynamic questions
                         const dayData = workshopContent[`day${r.day_id}`] || {};
@@ -2098,7 +2144,7 @@
                             <p class="text-[8px] font-black text-slate-400 uppercase tracking-wider mb-1">Butir ${i + 1}</p>
                             <p class="text-xs text-slate-700 font-medium leading-relaxed">${ans}</p>
                         </div>
-                        `).join('');
+                            `).join('');
                     }
 
                     const scoreInputArea = document.getElementById('scoreInputArea');
@@ -2270,11 +2316,11 @@
                     const pct = sCount > 0 ? Math.round((rCount / (sCount * 15)) * 100) : 0;
                     dataPoints.push(pct);
                     grid.innerHTML += `
-                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            < div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm" >
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">${cls}</p>
                             <p class="text-xl font-black text-slate-800">${pct}%</p>
-                        </div>
-                        `;
+                        </div >
+                            `;
                 }
 
                 if (myChart) myChart.destroy();
@@ -2305,9 +2351,9 @@
                     const { ids: studentIds, map: studentMap } = await getMyStudentsData();
                     if (!studentIds || studentIds.length === 0) {
                         container.innerHTML = `
-                            <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
+                            < div class="bg-white rounded-3xl p-8 border border-slate-100 text-center" >
                                 <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
-                            </div>`;
+                            </div > `;
                         return;
                     }
 
@@ -2322,9 +2368,9 @@
 
                     if (!recentRaw || recentRaw.length === 0) {
                         container.innerHTML = `
-                            <div class="bg-white rounded-3xl p-8 border border-slate-100 text-center">
+                            < div class="bg-white rounded-3xl p-8 border border-slate-100 text-center" >
                                 <p class="text-xs text-slate-400 font-medium italic">Belum ada aktivitas terbaru dari siswa bapak/ibu.</p>
-                            </div>`;
+                            </div > `;
                         return;
                     }
 
@@ -2384,8 +2430,8 @@
                     }[r.module_type] || r.module_type.toUpperCase();
 
                     return `
-                            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick="openGradingModal('${r.student_id}', '${studentName.replace(/'/g, "\\'")}', '${r.day_id}', '${r.module_type}')">
-                                <div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner">${initials}</div>
+                            < div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-95 transition-transform cursor-pointer" onclick = "openGradingModal('${r.student_id}', '${studentName.replace(/'/g, "\\'")}', '${r.day_id}', '${r.module_type}') ">
+                                < div class="size-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 shadow-inner" > ${initials}</div >
                             <div class="flex-1 min-w-0">
                                 <p class="text-[13px] font-black text-slate-800 leading-tight truncate">${studentName}</p>
                                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Hari ${r.day_id} • ${moduleLabel}</p>
@@ -2397,7 +2443,7 @@
                                     <span class="text-[8px] font-black uppercase text-slate-400 tracking-tighter">${r.status === 'reviewed' ? 'Dinilai' : 'Review'}</span>
                                 </div>
                             </div>
-                        </div>`;
+                        </div > `;
                 }).join('');
             }
 
@@ -2406,10 +2452,10 @@
                 const listContainer = document.getElementById('allActivitiesList');
                 modal.classList.remove('hidden');
                 listContainer.innerHTML = `
-                    <div class="flex flex-col items-center justify-center py-24">
+                            < div class="flex flex-col items-center justify-center py-24" >
                         <div class="size-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
                         <p class="mt-6 text-[10px] font-black uppercase text-slate-400 tracking-widest">Memuat Semua Aktivitas...</p>
-                    </div>`;
+                    </div > `;
 
                 try {
                     const { ids: studentIds, map: studentMap } = await getMyStudentsData();
@@ -2440,9 +2486,9 @@
                     });
 
                     listContainer.innerHTML = `
-                            <div class="space-y-3">
+                            < div class="space-y-3" >
                                 ${renderActivityItems(sorted, studentMap)}
-                            </div>`;
+                            </div > `;
 
                 } catch (e) {
                     console.error('Error openAllActivitiesModal:', e);
@@ -2574,15 +2620,15 @@
                             : '<span class="size-4 block"></span>'; // spacer
 
                         return `
-                            <div class="flex items-start gap-3 p-3 rounded-xl border ${style} text-xs">
+                            < div class="flex items-start gap-3 p-3 rounded-xl border ${style} text-xs" >
                                 <div class="mt-0.5 shrink-0">${icon}</div>
                                 <span>${opt}</span>
-                            </div>
+                            </div >
                             `;
                     }).join('');
 
                     return `
-                            <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                            < div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm" >
                             <div class="flex items-center gap-3 mb-3">
                                 <span class="size-6 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black flex items-center justify-center uppercase">No. ${q.id}</span>
                                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kunci: ${String.fromCharCode(65 + q.correctIndex)}</span>
@@ -2591,7 +2637,7 @@
                             <div class="space-y-2">
                                 ${optionsHtml}
                             </div>
-                        </div>
+                        </div >
                     `;
                 }).join('');
             }
@@ -2643,7 +2689,7 @@
                 selectedFinalCategory = null;
                 document.getElementById('finalCategoryDescription').classList.add('hidden');
                 ['mahir', 'berkembang', 'cakap'].forEach(c => {
-                    const btn = document.getElementById(`btn-cat-${c}`);
+                    const btn = document.getElementById(`btn - cat - ${c} `);
                     btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2', 'ring-emerald-200', 'ring-blue-200', 'ring-amber-200');
                     btn.classList.add('border-slate-200');
                 });
@@ -2684,19 +2730,19 @@
 
                 // Reset styles
                 ['mahir', 'berkembang', 'cakap'].forEach(c => {
-                    const btn = document.getElementById(`btn-cat-${c}`);
+                    const btn = document.getElementById(`btn - cat - ${c} `);
                     // Generic reset
                     btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2', 'ring-emerald-200', 'ring-blue-200', 'ring-amber-200');
                     btn.classList.add('border-slate-200');
                 });
 
                 // Apply Active Style to Button
-                const btn = document.getElementById(`btn-cat-${category.toLowerCase()}`);
+                const btn = document.getElementById(`btn - cat - ${category.toLowerCase()} `);
                 const colorMap = { 'Mahir': 'emerald', 'Berkembang': 'blue', 'Cakap': 'amber' };
                 const col = colorMap[category];
 
                 btn.classList.remove('border-slate-200');
-                btn.classList.add(`bg-${col}-50`, `border-${col}-400`, 'ring-2', `ring-${col}-200`, 'ring-offset-2');
+                btn.classList.add(`bg - ${col} -50`, `border - ${col} -400`, 'ring-2', `ring - ${col} -200`, 'ring-offset-2');
 
                 // Update Description Box
                 const descContainer = document.getElementById('finalCategoryDescription');

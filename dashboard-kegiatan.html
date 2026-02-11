@@ -7568,6 +7568,19 @@
                     const btn = document.getElementById('btnSubmitRefleksiAkhir');
                     const form = document.getElementById('refleksiAkhirForm');
 
+                    // NEW: Populate form with existing answers
+                    try {
+                        const answers = JSON.parse(data.answers[0]);
+                        for (let i = 1; i <= 10; i++) {
+                            const input = form.querySelector(`[name="ra_q${i}"]`);
+                            if (input) input.value = answers[`q${i}`] || '';
+                        }
+                        const scoreInput = form.querySelector('[name="ra_q9_score"]');
+                        if (scoreInput) scoreInput.value = answers['q9_score'] || 10;
+                    } catch (e) {
+                        console.error('Error parsing existing Refleksi Akhir answers:', e);
+                    }
+
                     if (btn) {
                         btn.disabled = true;
                         btn.innerHTML = `<span class="material-symbols-outlined text-sm">check_circle</span> Terkirim & Terkunci`;
