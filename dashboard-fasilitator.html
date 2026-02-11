@@ -1387,9 +1387,23 @@
                                 };
 
                                 let photosHTML = '';
+                                // Try to parse if it's stored as a single JSON object in answers[0]
+                                let photoMap = {};
+                                try {
+                                    if (answers[0] && answers[0].startsWith('{')) {
+                                        photoMap = JSON.parse(answers[0]);
+                                    }
+                                } catch (e) { console.error("Error parsing documentation JSON:", e); }
+
                                 for (const [catKey, catLabel] of Object.entries(categories)) {
+                                    // Fallback to searching in allDocs if it was saved as separate rows (legacy/fallback)
                                     const doc = allDocs ? allDocs.find(d => d.category === catKey) : null;
-                                    const photoUrl = doc && doc.answers && doc.answers[0] ? doc.answers[0] : '';
+                                    let photoUrl = doc && doc.answers && doc.answers[0] ? doc.answers[0] : '';
+
+                                    // If not found in separate rows, check the JSON map
+                                    if (!photoUrl && photoMap[catKey]) {
+                                        photoUrl = photoMap[catKey];
+                                    }
 
                                     photosHTML += `
                                     <div class="bg-white p-3 rounded-2xl border border-indigo-100">
@@ -2690,7 +2704,7 @@
                 selectedFinalCategory = null;
                 document.getElementById('finalCategoryDescription').classList.add('hidden');
                 ['mahir', 'berkembang', 'cakap'].forEach(c => {
-                    const btn = document.getElementById(`btn - cat - ${c} `);
+                    const btn = document.getElementById(`btn-cat-${c}`);
                     btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2', 'ring-emerald-200', 'ring-blue-200', 'ring-amber-200');
                     btn.classList.add('border-slate-200');
                 });
@@ -2707,21 +2721,25 @@
                     if (error) throw error;
 
                     let totalScore = 0;
-                    if (responses) {
+                    if (responses && responses.length > 0) {
                         responses.forEach(r => {
-                            if (r.score) totalScore += r.score;
+                            const val = parseFloat(r.score);
+                            if (!isNaN(val)) totalScore += val;
                         });
                     }
 
                     // Convert to stars (Score / 20)
-                    const totalStars = Math.round(totalScore / 20);
+                    // Assuming max score per module is 100, and there are 5-6 modules.
+                    // If max total is e.g. 500, then totalScore / 100 would give 0-5 stars.
+                    // User said "totalStars", let's ensure it's at least 0.
+                    const totalStars = Math.max(0, Math.round(totalScore / 20));
                     currentCalculatedStars = totalStars;
 
                     document.getElementById('finalTotalStars').textContent = totalStars;
 
                 } catch (err) {
                     console.error('Finalize Error:', err);
-                    document.getElementById('finalTotalStars').textContent = 'Error';
+                    document.getElementById('finalTotalStars').textContent = '0';
                 }
             }
 
@@ -2731,19 +2749,19 @@
 
                 // Reset styles
                 ['mahir', 'berkembang', 'cakap'].forEach(c => {
-                    const btn = document.getElementById(`btn - cat - ${c} `);
+                    const btn = document.getElementById(`btn-cat-${c}`);
                     // Generic reset
                     btn.classList.remove('bg-emerald-50', 'border-emerald-400', 'bg-blue-50', 'border-blue-400', 'bg-amber-50', 'border-amber-400', 'ring-2', 'ring-offset-2', 'ring-emerald-200', 'ring-blue-200', 'ring-amber-200');
                     btn.classList.add('border-slate-200');
                 });
 
                 // Apply Active Style to Button
-                const btn = document.getElementById(`btn - cat - ${category.toLowerCase()} `);
+                const btn = document.getElementById(`btn-cat-${category.toLowerCase()}`);
                 const colorMap = { 'Mahir': 'emerald', 'Berkembang': 'blue', 'Cakap': 'amber' };
                 const col = colorMap[category];
 
                 btn.classList.remove('border-slate-200');
-                btn.classList.add(`bg - ${col} -50`, `border - ${col} -400`, 'ring-2', `ring - ${col} -200`, 'ring-offset-2');
+                btn.classList.add(`bg-${col}-50`, `border-${col}-400`, 'ring-2', `ring-${col}-200`, 'ring-offset-2');
 
                 // Update Description Box
                 const descContainer = document.getElementById('finalCategoryDescription');
