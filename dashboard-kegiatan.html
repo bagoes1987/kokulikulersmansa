@@ -3299,19 +3299,18 @@
 
                 if (uploadErr) throw uploadErr;
 
-                const { data: urlData } = supabaseClient.storage
-                    .from('dokumentasi')
-                    .getPublicUrl(fileName);
-
                 // 2. Simpan ke module_responses
                 const { error: dbError } = await supabaseClient
                     .from('module_responses')
-                    .insert({
+                    .upsert({
                         student_id: user.id,
                         day_id: currentDay,
                         module_type: 'dokumentasi',
                         answers: [urlData.publicUrl],
-                        status: 'submitted'
+                        status: 'submitted',
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'student_id, day_id, module_type'
                     });
 
                 if (dbError) throw dbError;
@@ -3572,13 +3571,16 @@
                     // 3. Insert to database
                     const { error: dbError } = await supabaseClient
                         .from('module_responses')
-                        .insert({
+                        .upsert({
                             student_id: user.id,
                             day_id: 2,
                             module_type: 'dokumentasi',
                             category: category,
                             answers: [urlData.publicUrl],
-                            status: 'submitted'
+                            status: 'submitted',
+                            updated_at: new Date().toISOString()
+                        }, {
+                            onConflict: 'student_id, day_id, module_type, category'
                         });
 
                     if (dbError) throw dbError;
@@ -3780,13 +3782,16 @@
 
                     const { error: dbError } = await supabaseClient
                         .from('module_responses')
-                        .insert({
+                        .upsert({
                             student_id: user.id,
                             day_id: 3,
                             module_type: 'dokumentasi',
                             category: category,
-                            answers: [publicUrl],
-                            status: 'submitted'
+                            answers: [urlData.publicUrl],
+                            status: 'submitted',
+                            updated_at: new Date().toISOString()
+                        }, {
+                            onConflict: 'student_id, day_id, module_type, category'
                         });
 
                     if (dbError) throw dbError;
@@ -7605,12 +7610,15 @@
 
                 const { error } = await supabaseClient
                     .from('module_responses')
-                    .insert({
+                    .upsert({
                         student_id: user.id,
                         day_id: 3,
                         module_type: 'refleksi_akhir',
                         answers: [JSON.stringify(answers)],
-                        status: 'submitted'
+                        status: 'submitted',
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'student_id, day_id, module_type'
                     });
 
                 if (error) throw error;
@@ -7783,12 +7791,15 @@
 
                 const { error: dbErr } = await supabaseClient
                     .from('module_responses')
-                    .insert({
+                    .upsert({
                         student_id: user.id,
                         day_id: 3,
                         module_type: 'cerita_kecil',
                         answers: [answers],
-                        status: 'submitted'
+                        status: 'submitted',
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'student_id, day_id, module_type'
                     });
 
                 if (dbErr) throw dbErr;
