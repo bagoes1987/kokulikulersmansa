@@ -2548,7 +2548,7 @@
                         answers: [JSON.stringify(submissionData)],
                         status: 'submitted'
                     }, {
-                        onConflict: 'student_id, day_id, module_type'
+                        onConflict: 'student_id,day_id,module_type'
                     });
                 if (error) throw error;
                 alert('Laporan Analisis Produk berhasil dikirim!');
@@ -3212,64 +3212,6 @@
             }
         }
 
-        async function submitDokumentasi() {
-            const btn = document.getElementById('btnUploadDokumentasi');
-            const file = window.selectedDocFile;
-            if (!file) {
-                alert('Silakan pilih foto terlebih dahulu.');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = 'Mengirim...';
-
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error('Silakan login ulang.');
-
-                const fileName = `${user.id}/day${currentDay}_${Date.now()}.jpg`;
-
-                // 1. Upload ke Storage Bucket 'dokumentasi'
-                // NOTE: Pastikan bucket ini sudah dibuat di dashboard Supabase
-                const { data: uploadData, error: uploadErr } = await supabaseClient.storage
-                    .from('documentation')
-                    .upload(fileName, file);
-
-                if (uploadErr) throw uploadErr;
-
-                // 2. Simpan ke module_responses
-                const { error: dbError } = await supabaseClient
-                    .from('module_responses')
-                    .upsert({
-                        student_id: user.id,
-                        day_id: currentDay,
-                        module_type: 'dokumentasi',
-                        answers: [urlData.publicUrl],
-                        status: 'submitted',
-                        updated_at: new Date().toISOString()
-                    }, {
-                        onConflict: 'student_id, day_id, module_type'
-                    });
-
-                if (dbError) throw dbError;
-
-                alert('✅ Foto dokumentasi berhasil dikirim!');
-                // Reset local complete status
-                studentProgress[`day${currentDay}`]['dokumentasi'] = false;
-                saveProgress();
-                closeDokumentasiModal();
-                checkExistingDokumentasi();
-                checkExistingLKPD();
-                checkAllModulesStatus();
-                checkExistingDokumentasi();
-
-            } catch (e) {
-                console.error(e);
-                alert('Gagal mengirim: ' + e.message);
-                btn.disabled = false;
-                btn.innerHTML = 'Kirim Dokumentasi';
-            }
-        }
 
         async function checkExistingDokumentasi() {
             try {
@@ -3469,71 +3411,59 @@
             const btn = document.getElementById('btnSubmitAllDocs');
             if (!btn) return;
 
-            // Validate all photos selected
-            const categories = ['makanan', 'minuman', 'stand', 'iklan', 'presentasi'];
-            for (const cat of categories) {
-                if (!window.day2Photos[cat]) {
-                    alert(`Foto ${cat} belum dipilih!`);
-                    return;
-                }
-            }
-
             btn.disabled = true;
-            btn.innerHTML = 'Mengirim...';
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> Mengirim...';
 
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
                 if (!user) throw new Error('Silakan login ulang.');
 
-                // Upload each photo and insert to database
+                const categories = ['makanan', 'minuman', 'stand', 'iklan', 'presentasi'];
+                const photoUrls = {};
+
+                // 1. Upload new photos sequentially
                 for (const category of categories) {
                     const file = window.day2Photos[category];
-
-                    // Skip jika foto sudah ada (existing)
-                    if (file === 'existing') continue;
+                    if (file === 'existing') {
+                        photoUrls[category] = document.getElementById(`preview-${category}`).src;
+                        continue;
+                    }
+                    if (!file) continue;
 
                     const fileName = `${user.id}/day2_${category}_${Date.now()}.jpg`;
-
-                    // 1. Upload to Storage
                     const { data: uploadData, error: uploadErr } = await supabaseClient.storage
                         .from('documentation')
                         .upload(fileName, file);
 
                     if (uploadErr) throw uploadErr;
 
-                    // 2. Get public URL
                     const { data: urlData } = supabaseClient.storage
                         .from('documentation')
                         .getPublicUrl(fileName);
 
-                    // 3. Insert to database
-                    const { error: dbError } = await supabaseClient
-                        .from('module_responses')
-                        .upsert({
-                            student_id: user.id,
-                            day_id: 2,
-                            module_type: 'dokumentasi',
-                            category: category,
-                            answers: [urlData.publicUrl],
-                            status: 'submitted',
-                            updated_at: new Date().toISOString()
-                        }, {
-                            onConflict: 'student_id, day_id, module_type, category'
-                        });
-
-                    if (dbError) throw dbError;
+                    photoUrls[category] = urlData.publicUrl;
                 }
 
+                // 2. Upsert as single row (JSON)
+                const { error: dbError } = await supabaseClient
+                    .from('module_responses')
+                    .upsert({
+                        student_id: user.id,
+                        day_id: 2,
+                        module_type: 'dokumentasi',
+                        answers: [JSON.stringify(photoUrls)],
+                        status: 'submitted',
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'student_id,day_id,module_type'
+                    });
+
+                if (dbError) throw dbError;
+
                 alert('✅ Semua dokumentasi Hari 2 berhasil dikirim!');
-
-                // Reset
-                window.day2Photos = {
-                    makanan: null, minuman: null, stand: null, iklan: null, presentasi: null
-                };
-
+                window.day2Photos = { makanan: null, minuman: null, stand: null, iklan: null, presentasi: null };
                 closeDokumentasiDay2Modal();
                 checkAllModulesStatus();
-
             } catch (e) {
                 console.error(e);
                 alert('Gagal mengirim: ' + e.message);
@@ -3552,37 +3482,34 @@
                     .select('*')
                     .eq('student_id', user.id)
                     .eq('day_id', 2)
-                    .eq('module_type', 'dokumentasi');
+                    .eq('module_type', 'dokumentasi')
+                    .maybeSingle();
 
-                if (responses && responses.length > 0) {
+                if (responses && responses.answers && responses.answers[0]) {
+                    const photoUrls = JSON.parse(responses.answers[0]);
                     const categories = ['makanan', 'minuman', 'stand', 'iklan', 'presentasi'];
 
-                    responses.forEach(r => {
-                        if (r.category && categories.includes(r.category)) {
-                            const uploadArea = document.getElementById(`upload-area-${r.category}`);
-                            const previewArea = document.getElementById(`preview-area-${r.category}`);
-                            const preview = document.getElementById(`preview-${r.category}`);
-                            const status = document.getElementById(`status-${r.category}`);
+                    categories.forEach(cat => {
+                        if (photoUrls[cat]) {
+                            const uploadArea = document.getElementById(`upload-area-${cat}`);
+                            const previewArea = document.getElementById(`preview-area-${cat}`);
+                            const preview = document.getElementById(`preview-${cat}`);
+                            const status = document.getElementById(`status-${cat}`);
 
                             if (uploadArea) uploadArea.classList.add('hidden');
                             if (previewArea) {
                                 previewArea.classList.remove('hidden');
-                                // Sembunyikan tombol hapus untuk foto yang sudah disubmit
                                 const deleteBtn = previewArea.querySelector('button');
                                 if (deleteBtn) deleteBtn.classList.add('hidden');
                             }
-                            if (preview && r.answers[0]) preview.src = r.answers[0];
+                            if (preview) preview.src = photoUrls[cat];
                             if (status) {
                                 status.className = "text-[10px] font-bold text-emerald-600 bg-emerald-50 px-3 py-2 rounded-xl border border-emerald-100 flex items-center gap-2 w-fit mt-3";
                                 status.innerHTML = `<span class="material-symbols-outlined text-sm">verified</span> Sudah Terkirim`;
                             }
-
-                            // Tandai sebagai existing di global state
-                            window.day2Photos[r.category] = 'existing';
+                            window.day2Photos[cat] = 'existing';
                         }
                     });
-
-                    // Cek kelengkapan
                     checkAllPhotosSelected();
                 }
             } catch (e) {
@@ -3690,61 +3617,6 @@
             if (submitBtn) submitBtn.disabled = !allSelected;
         }
 
-        async function submitAllDocumentationDay3() {
-            const btn = document.getElementById('btnSubmitAllDocsDay3');
-            if (!btn) return;
-
-            btn.disabled = true;
-            btn.innerHTML = 'Mengirim...';
-
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error('Silakan login ulang.');
-
-                const categories = ['stand', 'gizi', 'jajan', 'acara', 'bersama'];
-                for (const category of categories) {
-                    const file = window.day3Photos[category];
-                    if (!file) continue;
-
-                    const fileName = `${user.id}/day3_${category}_${Date.now()}.jpg`;
-
-                    const { data: uploadData, error: uploadErr } = await supabaseClient.storage
-                        .from('documentation')
-                        .upload(fileName, file);
-
-                    if (uploadErr) throw uploadErr;
-
-                    const { data: urlData } = supabaseClient.storage
-                        .from('documentation')
-                        .getPublicUrl(fileName);
-
-                    const { error: dbError } = await supabaseClient
-                        .from('module_responses')
-                        .upsert({
-                            student_id: user.id,
-                            day_id: 3,
-                            module_type: 'dokumentasi',
-                            category: category,
-                            answers: [urlData.publicUrl],
-                            status: 'submitted',
-                            updated_at: new Date().toISOString()
-                        }, {
-                            onConflict: 'student_id, day_id, module_type, category'
-                        });
-
-                    if (dbError) throw dbError;
-                }
-
-                alert('✅ Dokumentasi Hari 3 berhasil dikirim!');
-                closeDokumentasiDay3Modal();
-                checkAllModulesStatus();
-            } catch (e) {
-                console.error(e);
-                alert('Gagal mengirim: ' + e.message);
-                btn.disabled = false;
-                btn.innerHTML = 'Kirim Semua Dokumentasi Hari 3';
-            }
-        }
 
         async function loadExistingDay3Documentation() {
             try {
@@ -6402,7 +6274,7 @@
                         status: 'submitted',
                         updated_at: new Date().toISOString()
                     }, {
-                        onConflict: 'student_id, day_id, module_type'
+                        onConflict: 'student_id,day_id,module_type'
                     });
 
                 if (error) throw error;
@@ -6832,7 +6704,7 @@
                         status: 'reviewed',
                         score: score,
                         answers: [] // Data jawaban detail mungkin tidak ada di localStorage, tapi skor cukup untuk status
-                    }, { onConflict: 'student_id, day_id, module_type' });
+                    }, { onConflict: 'student_id,day_id,module_type' });
 
                     showAssessmentResultUI(score, stars);
                     return true;
