@@ -7038,7 +7038,7 @@
                             answers: [answerData],
                             status: 'reviewed',
                             score: score
-                        }, { onConflict: 'student_id, day_id, module_type' });
+                        }, { onConflict: 'student_id,day_id,module_type' });
                 }
             } catch (err) {
                 console.error('Failed to save assessment to cloud:', err);
@@ -7319,7 +7319,7 @@
                             answers: payloadAnswers,
                             status: 'submitted'
                         }, {
-                            onConflict: 'student_id, day_id, module_type'
+                            onConflict: 'student_id,day_id,module_type'
                         });
                     error = insErr;
                 }
@@ -7449,7 +7449,7 @@
                         answers: [summary],
                         status: 'submitted'
                     }, {
-                        onConflict: 'student_id, day_id, module_type'
+                        onConflict: 'student_id,day_id,module_type'
                     });
 
                 if (error) throw error;
@@ -7584,7 +7584,7 @@
                         status: 'submitted',
                         updated_at: new Date().toISOString()
                     }, {
-                        onConflict: 'student_id, day_id, module_type'
+                        onConflict: 'student_id,day_id,module_type'
                     });
 
                 if (error) throw error;
@@ -7765,7 +7765,7 @@
                         status: 'submitted',
                         updated_at: new Date().toISOString()
                     }, {
-                        onConflict: 'student_id, day_id, module_type'
+                        onConflict: 'student_id,day_id,module_type'
                     });
 
                 if (dbErr) throw dbErr;
@@ -7837,6 +7837,9 @@
             const areaPreview = document.getElementById(`preview-area-${category}`);
             const previewImg = document.getElementById(`preview-${category}`);
 
+            // Store original innerHTML for recovery
+            const originalHTML = areaUpload.innerHTML;
+
             try {
                 areaUpload.innerHTML = '<p class="text-xs font-bold text-slate-400 animate-pulse">Memproses...</p>';
                 const compressed = await compressImage(file, 800, 0.6);
@@ -7846,9 +7849,13 @@
                 areaUpload.classList.add('hidden');
                 areaPreview.classList.remove('hidden');
                 checkDocumentationReady();
+
+                // Restore original HTML for next time (in case image is removed)
+                areaUpload.innerHTML = originalHTML;
             } catch (e) {
                 console.error(e);
-                alert("Gagal memproses foto.");
+                alert("Gagal memproses foto: " + e.message);
+                areaUpload.innerHTML = originalHTML;
             }
         }
 
@@ -7948,15 +7955,18 @@
                     }
                 }
 
-                // 2. Save to DB
+                // 2. Save to DB using upsert for reliability and retries
                 const { error: dbErr } = await supabaseClient
                     .from('module_responses')
-                    .insert({
+                    .upsert({
                         student_id: user.id,
                         day_id: 2,
                         module_type: 'dokumentasi',
                         answers: [JSON.stringify(photoUrls)],
-                        status: 'submitted'
+                        status: 'submitted',
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'student_id,day_id,module_type'
                     });
 
                 if (dbErr) throw dbErr;
