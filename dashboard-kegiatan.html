@@ -8066,7 +8066,7 @@
                         status: 'submitted',
                         updated_at: new Date().toISOString()
                     }, {
-                        onConflict: 'student_id, day_id, module_type'
+                        onConflict: 'student_id,day_id,module_type'
                     });
 
                 if (dbErr) throw dbErr;
