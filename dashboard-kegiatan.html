@@ -7024,17 +7024,18 @@
 
                     await supabaseClient
                         .from('module_responses')
-                        .insert({
+                        .upsert({
                             student_id: user.id,
                             day_id: currentDay,
-                            module_type: 'kuis', // 'kuis' maps to 'Asesmen' in facilitator view
+                            module_type: 'kuis',
                             answers: [answerData],
                             status: 'reviewed',
                             score: score
-                        });
+                        }, { onConflict: 'student_id, day_id, module_type' });
                 }
             } catch (err) {
                 console.error('Failed to save assessment to cloud:', err);
+                alert('Peringatan: Jawaban tersimpan secara lokal namun gagal mengirim ke cloud. Mohon cek koneksi internet Anda.');
             }
 
         }
