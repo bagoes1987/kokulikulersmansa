@@ -7868,18 +7868,26 @@
             const areaPreview = document.getElementById(`preview-area-day3-${category}`);
             const previewImg = document.getElementById(`preview-day3-${category}`);
 
+            // Store original innerHTML for recovery
+            const originalHTML = areaUpload.innerHTML;
+
             try {
                 areaUpload.innerHTML = '<p class="text-xs font-bold text-slate-400 animate-pulse">Memproses...</p>';
-                const compressed = await compressImage(file, 1000, 0.6);
+                // Lowered from 1000 to 800 for better memory management on mobile
+                const compressed = await compressImage(file, 800, 0.6);
                 window.day3Photos[category] = compressed;
 
                 previewImg.src = URL.createObjectURL(compressed);
                 areaUpload.classList.add('hidden');
                 areaPreview.classList.remove('hidden');
                 checkDocumentationReadyDay3();
+
+                // Restore original HTML for next time (in case image is removed)
+                areaUpload.innerHTML = originalHTML;
             } catch (e) {
                 console.error(e);
-                alert("Gagal memproses foto.");
+                alert("Gagal memproses foto: " + e.message);
+                areaUpload.innerHTML = originalHTML;
             }
         }
 
@@ -8020,10 +8028,11 @@
 
             try {
                 const { data: { user } } = await supabaseClient.auth.getUser();
-                if (!user) throw new Error("Sesi habis.");
+                if (!user) throw new Error("Sesi habis. Silakan login ulang.");
 
                 const photoUrls = {};
 
+                // 1. Upload new photos sequentially to avoid heavy concurrent memory/network usage
                 for (const cat of categories) {
                     if (window.day3Photos[cat]) {
                         const fileName = `${user.id}_d3_${cat}_${Date.now()}.jpg`;
@@ -8046,14 +8055,18 @@
                     }
                 }
 
+                // 2. Save to DB using upsert to prevent duplicate key errors and allow retries
                 const { error: dbErr } = await supabaseClient
                     .from('module_responses')
-                    .insert({
+                    .upsert({
                         student_id: user.id,
                         day_id: 3,
                         module_type: 'dokumentasi',
                         answers: [JSON.stringify(photoUrls)],
-                        status: 'submitted'
+                        status: 'submitted',
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'student_id, day_id, module_type'
                     });
 
                 if (dbErr) throw dbErr;
@@ -8062,8 +8075,8 @@
                 closeDokumentasiDay3Modal();
                 checkAllModulesStatus();
             } catch (err) {
-                console.error(err);
-                alert('Gagal mengirim dokumentasi: ' + err.message);
+                console.error('Final Submit Error:', err);
+                alert('Gagal mengirim dokumentasi: ' + (err.message || 'Terjadi kesalahan jaringan.'));
                 btn.disabled = false;
                 btn.innerHTML = 'Kirim Semua Dokumentasi Hari 3';
             }
