@@ -1476,7 +1476,11 @@
                 return;
             }
             if (moduleId === 'laporan-akhir') {
-                openLaporanAkhirModal();
+                if (typeof openLaporanAkhirModal === 'function') {
+                    openLaporanAkhirModal();
+                } else {
+                    console.error('openLaporanAkhirModal not defined');
+                }
                 return;
             }
             if (moduleId === 'refleksi-akhir') {
@@ -2893,13 +2897,15 @@
 
                 const { error } = await supabaseClient
                     .from('module_responses')
-                    .insert({
+                    .upsert({
                         student_id: user.id,
                         day_id: 3,
                         module_type: 'laporan_akhir',
                         answers: [JSON.stringify(payload)],
                         status: 'submitted',
-                        updated_at: new Date()
+                        updated_at: new Date().toISOString()
+                    }, {
+                        onConflict: 'student_id,day_id,module_type'
                     });
 
                 if (error) throw error;
@@ -3519,16 +3525,27 @@
 
         // --- HARI 3 DOCUMENTATION LOGIC (5 CATEGORIES) ---
         function openDokumentasiDay3Modal() {
+            console.log("Opening Dokumentasi Day 3...");
             const modal = document.getElementById('modal-dokumentasi-day3');
             if (modal) {
                 modal.classList.remove('hidden');
-                loadExistingDay3Documentation();
+                modal.classList.add('flex');
+                if (typeof checkExistingDocumentationDay3 === 'function') {
+                    checkExistingDocumentationDay3();
+                } else if (typeof loadExistingDay3Documentation === 'function') {
+                    loadExistingDay3Documentation();
+                }
+            } else {
+                console.error("modal-dokumentasi-day3 not found");
             }
         }
 
         function closeDokumentasiDay3Modal() {
             const modal = document.getElementById('modal-dokumentasi-day3');
-            if (modal) modal.classList.add('hidden');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
         }
 
         async function handleCategoryPhotoDay3(category, fileInput) {
@@ -8026,21 +8043,7 @@
                 modal.classList.remove('flex');
             }
         }
-        function openDokumentasiDay3Modal() {
-            const modal = document.getElementById('modal-dokumentasi-day3');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                checkExistingDocumentationDay3();
-            }
-        }
-        function closeDokumentasiDay3Modal() {
-            const modal = document.getElementById('modal-dokumentasi-day3');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        }
+
 
     </script>
 
